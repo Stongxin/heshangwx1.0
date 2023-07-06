@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "mao-scroll": "/components/mao-scroll/mao-scroll",
+    "calendar": "/components/calendar-boke/calendar",
+    "taisui": "/pages/pray/components/taisui/taisui",
+    "at": "/pages/pray/components/at/at",
+    "to-blessing": "/pages/pray/components/to_blessing/to_blessing",
+    "merit": "/pages/pray/components/merit/merit"
+  }
+}

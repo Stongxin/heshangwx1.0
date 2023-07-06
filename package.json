@@ -1,0 +1,15 @@
+{
+    "id": "calendar-boke",
+    "name": "公历农历日期选择器calendar",
+    "version": "1.0.0",
+    "description": "阳历/农历日期选择器 ",
+    "keywords": [
+        "选择器,阳历,阴历,公历,农历"
+    ],
+    "dcloudext": {
+        "category": [
+            "前端组件",
+            "通用组件"
+        ]
+    }
+}

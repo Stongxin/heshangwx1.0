@@ -1,0 +1,9 @@
+{
+    "id": "calendar-app",
+    "name": "日历选择器  农历公历互相切换 可返回农历 带天干地支属性 app 小程序 H5",
+    "version": "1.0",
+    "description": "日历选择器  农历公历互相切换",
+    "keywords": [
+        "日历农历选择器"
+    ]
+}
