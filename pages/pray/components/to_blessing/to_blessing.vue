@@ -1,240 +1,323 @@
 <template>
 	<view class="to_blessing">
-		<view class="desc">
-			<text class="title">{{urlOptions.title}}</text>
+		<view class="cover">
+			<image v-if="coverImage" :src="$common.disposeSrc(coverImage)" mode="widthFix"></image>
 		</view>
-		<view class="bully merit">
-			<view class="form_item flex_inline">
-				<view class="title">
-					<text>地点</text>
-				</view>
-				<view class="value" @click="openLocationPicker">
-					<input class="value_text" v-model="formState.location_address" :disabled="true" />
-					<image class="right" src="/static/right.png" mode=""></image>
-				</view>
+		<view class="to_blessing_content">
+			<view class="desc">
+				<text class="title">{{urlOptions.title}}</text>
 			</view>
-			<view class="form_item">
-				<view class="title">
-					<text>佛事类型</text>
-				</view>
-				<view class="items">
-					<view :class="{'active': formState.content_id == item.type_id}" v-for="(item,index) in foTypeList" :key="item.type_id"
-						@click="selectType(item)">
-						<text>{{item.type_name}}</text>
+			<view class="bully merit">
+				<view class="form_item flex_inline" v-if="!isEquipment">
+					<view class="title">
+						<text>地点</text>
+					</view>
+					<view class="value" @click="openLocationPicker">
+						<input class="value_text" v-model="formState.location_address" :disabled="true" />
+						<image class="right" src="/static/right.png" mode=""></image>
 					</view>
 				</view>
-			</view>
-			<view class="form_item">
-				<view class="title flex_inline">
-					<text>阳上姓名({{yang_number}})人</text>
-					<view class="btns" @click="addName()">
-						添加
+				<view class="form_item">
+					<view class="title">
+						<text>佛事类型</text>
 					</view>
-				</view>
-				<view class="names">
-					<view class="item" v-for="(item, index) in formState.yang_name" :key="index">
-						<input type="text" maxlength="6" v-model="item['name']" placeholder="请填写阳上姓名">
-						<view class="btn" @click="delName(index)">
-							删除
+					<view class="items">
+						<view :class="{'active': formState.content_id == item.type_id}" v-for="(item,index) in foTypeList" :key="item.type_id"
+							@click="selectType(item)">
+							<text>{{item.type_name}}</text>
 						</view>
 					</view>
 				</view>
-			</view>
-			<view class="form_item" v-if="[47,61,62].indexOf(Number(formState.content_id)) > -1">
-				<view class="title flex_inline">
-					<text>佛光接引({{people_num}})人</text>
-					<view class="btns" @click="addAppellation()">
-						添加
+				<view class="form_item" v-if="yang_number > 0">
+					<view class="title flex_inline">
+						<text>阳上姓名({{yang_number}})人</text>
+						<view class="btns" @click="addName()">
+							添加
+						</view>
 					</view>
-				</view>
-				<view class="names">
-					<view class="item appellation_item" v-for="(item, index) in formState.service_object" :key="index">
-						<template v-if="formState.content_id == 61">
-							<view class="appellation">
-								<text class="to">姓氏</text>
-								<input type="text" placeholder="请输入" v-model="item['name']">
-								<text class="to">氏门宗</text>
+					<view class="names">
+						<view class="item" v-for="(item, index) in formState.yang_name" :key="index">
+							<input type="text" maxlength="6" v-model="item['name']" placeholder="请填写阳上姓名">
+							<view class="btn" @click="delName(index)">
+								删除
 							</view>
-						</template>
-						<template v-else-if="[47,62].indexOf(Number(formState.content_id)) > -1 && serviceObjectList.length > 0">
-							<view class="appellation">
-								<text class="to" v-if="">称谓</text>
-								<input type="text" v-if="!item.isCustom" placeholder="请选择" :disabled="true" v-model="item['nickname']" @click="openNamePciker(index)">
-								<input type="text" v-if="item.isCustom" v-model="item['nickname']" placeholder="请输入">
-								<text class="to">名字</text>
-								<input type="text" maxlength="6" placeholder="请输入" v-model="item['name']">
+						</view>
+					</view>
+				</view>
+				<view class="form_item" v-if="[47,61,62].indexOf(Number(formState.content_id)) > -1 && people_num > 0">
+					<view class="title flex_inline">
+						<text>佛光接引({{people_num}})人</text>
+						<view class="btns" @click="addAppellation()">
+							添加
+						</view>
+					</view>
+					<view class="names">
+						<view class="item appellation_item" v-for="(item, index) in formState.service_object" :key="index">
+							<template v-if="formState.content_id == 61">
+								<view class="appellation">
+									<text class="to">姓氏</text>
+									<input type="text" placeholder="请输入" v-model="item['name']">
+									<text class="to">氏门宗</text>
+								</view>
+							</template>
+							<template v-else-if="[47,62].indexOf(Number(formState.content_id)) > -1 && serviceObjectList.length > 0">
+								<view class="appellation">
+									<text class="to" v-if="">称谓</text>
+									<input type="text" v-if="!item.isCustom" placeholder="请选择" :disabled="true" v-model="item['nickname']" @click="openNamePciker(index)">
+									<input type="text" v-if="item.isCustom" v-model="item['nickname']" placeholder="请输入">
+									<text class="to">名字</text>
+									<input type="text" maxlength="6" placeholder="请输入" v-model="item['name']">
+								</view>
+							</template>
+							<template v-else>
+								<view class="appellation ip">
+									<text class="to">名字</text>
+									<input type="text" maxlength="6" placeholder="请输入" v-model="item['name']">
+								</view>
+							</template>
+							<view class="btn" @click="delAppellation(index)">
+								删除
 							</view>
-						</template>
-						<template v-else>
-							<view class="appellation ip">
-								<text class="to">名字</text>
-								<input type="text" maxlength="6" placeholder="请输入" v-model="item['name']">
+						</view>
+					</view>
+				</view>
+				<view class="form_item" v-if="formState.one_year == 0">
+					<view class="title flex_inline">
+						<text>佛事农历日期</text>
+						<view class="btns" @click="addDate()">
+							添加
+						</view>
+					</view>
+					<view class="names">
+						<view class="item date" v-for="(item, index) in formState.lunar_date" :key="index">
+							<input type="text" placeholder="开始日期" :disabled="true" v-model="item['start']"
+								@click="openCalendar('lunar','start',index)">
+							<text class="to">至</text>
+							<input type="text" placeholder="结束日期" :disabled="true" v-model="item['end']"
+								@click="openCalendar('lunar','end',index)">
+							<view class="btn" @click="delDate(index)">
+								删除
 							</view>
-						</template>
-						<view class="btn" @click="delAppellation(index)">
-							删除
 						</view>
 					</view>
 				</view>
-			</view>
-			<view class="form_item" v-if="formState.one_year == 0">
-				<view class="title flex_inline">
-					<text>佛事农历日期</text>
-					<view class="btns" @click="addDate()">
-						添加
+				<view class="form_item" v-if="formState.one_year == 0">
+					<view class="title flex_inline">
+						<text>佛事公历日期</text>
+						<view class="btns" @click="addDate()">
+							添加
+						</view>
 					</view>
-				</view>
-				<view class="names">
-					<view class="item date" v-for="(item, index) in formState.lunar_date" :key="index">
-						<input type="text" placeholder="开始日期" :disabled="true" v-model="item['start']"
-							@click="openCalendar('lunar','start',index)">
-						<text class="to">至</text>
-						<input type="text" placeholder="结束日期" :disabled="true" v-model="item['end']"
-							@click="openCalendar('lunar','end',index)">
-						<view class="btn" @click="delDate(index)">
-							删除
+					<view class="names">
+						<view class="item date" v-for="(item, index) in formState.male_date" :key="index">
+							<input type="text" placeholder="开始日期" :disabled="true" v-model="item['start']"
+								@click="openCalendar('solar','start',index)">
+							<text class="to">至</text>
+							<input type="text" placeholder="结束日期" :disabled="true" v-model="item['end']"
+								@click="openCalendar('solar','end',index)">
+							<view class="btn" @click="delDate(index)">
+								删除
+							</view>
 						</view>
 					</view>
 				</view>
-			</view>
-			<view class="form_item" v-if="formState.one_year == 0">
-				<view class="title flex_inline">
-					<text>佛事公历日期</text>
-					<view class="btns" @click="addDate()">
-						添加
+				<view class="form_item flex inline" v-if="formState.one_year == 1">
+					<view class="title">
+						<text>年份</text>
+					</view>
+					<input class="input_value" type="text" v-model="formState.year" disabled placeholder="请选择年份" @click="openYearPicker()" />
+				</view>
+				<view class="form_item flex_inline" v-if="!isEquipment && other_buddha">
+					<view class="title">
+						<text>牌位位置</text>
+					</view>
+					<view class="value" @click="openPlacePicker">
+						<input class="value_text" v-model="formState.place_number" placeholder="请选择牌位展示位置" :disabled="true" />
+						<image class="right" src="/static/right.png" mode=""></image>
 					</view>
 				</view>
-				<view class="names">
-					<view class="item date" v-for="(item, index) in formState.male_date" :key="index">
-						<input type="text" placeholder="开始日期" :disabled="true" v-model="item['start']"
-							@click="openCalendar('solar','start',index)">
-						<text class="to">至</text>
-						<input type="text" placeholder="结束日期" :disabled="true" v-model="item['end']"
-							@click="openCalendar('solar','end',index)">
-						<view class="btn" @click="delDate(index)">
-							删除
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>登记人</text>
+					</view>
+					<input class="input_value" type="text" v-model="formState.name" placeholder="请填写登记人" />
+				</view>
+				<view class="form_item flex inline" style="">
+					<view class="title">
+						<text>联系方式</text>
+					</view>
+					<!-- <input class="input_value" type="number" maxlength="11" v-model="formState.mobile" placeholder="请填写联系方式" /> -->
+					<input v-if="formState.mobile" class="input_value" type="number" maxlength="11" v-model="formState.mobile" placeholder="请输入联系方式" />
+					<button v-else class="input_value btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
+						点击获取手机号
+					</button>
+				</view>
+				<view class="form_item" v-if="false">
+					<view class="title">
+						<text>水墨屏设备编号</text>
+					</view>
+					<input class="input_value" type="text" v-model="formState.equipment_code" placeholder="请填写水墨屏设备编号" />
+				</view>
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>省市区</text>
+					</view>
+					<input class="input_value" type="text" v-model="region" placeholder="请选择省市区" disabled @click="openAreaPicker" />
+				</view>
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>详细地址</text>
+					</view>
+					<input class="input_value" type="text" v-model="formState.address" placeholder="请填写详细地址" />
+				</view>
+				
+				<!-- <view class="form_item flex inline">
+					<view class="title">
+						<text>每堂</text>
+					</view>
+					<input class="input_value" type="number" v-model="formState.price" placeholder="请填写价格" />
+					<text class="suffix">元</text>
+				</view>
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>堂数</text>
+					</view>
+					<input class="input_value" type="number" v-model="formState.price" placeholder="请填写堂数" />
+					<text class="suffix">堂</text>
+				</view>
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>价格</text>
+					</view>
+					<input class="input_value" type="number" v-model="formState.price" placeholder="请填写价格" />
+					<text class="suffix">元</text>
+				</view>
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>地址</text>
+					</view>
+					<input class="input_value" type="number" v-model="formState.price" placeholder="请填写地址" />
+				</view>
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>登记人</text>
+					</view>
+					<input class="input_value" type="text" v-model="formState.price" placeholder="请填写登记人" />
+				</view>
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>联系方式</text>
+					</view>
+					<input class="input_value" type="number" v-model="formState.price" placeholder="请填写联系方式" />
+				</view> -->
+				<view class="form_item" v-if="formState.type == 'blessing'">
+					<view class="title">
+						<text>祈福语</text>
+					</view>
+					<view class="items grid3">
+						<view :class="{'active': formState.sentiment.indexOf(item) > -1}" v-for="(item,index) in blessing_language_str" :key="index"
+							@click="selectSentiment(item)">
+							<text>{{item}}</text>
 						</view>
 					</view>
 				</view>
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>登记人</text>
-				</view>
-				<input class="input_value" type="text" v-model="formState.name" placeholder="请填写登记人" />
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>联系方式</text>
-				</view>
-				<input class="input_value" type="number" maxlength="11" v-model="formState.mobile" placeholder="请填写联系方式" />
-			</view>
-			<view class="form_item" v-if="false">
-				<view class="title">
-					<text>水墨屏设备编号</text>
-				</view>
-				<input class="input_value" type="text" v-model="formState.equipment_code" placeholder="请填写水墨屏设备编号" />
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>省市区</text>
-				</view>
-				<input class="input_value" type="text" v-model="region" placeholder="请选择省市区" disabled @click="openAreaPicker" />
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>详细地址</text>
-				</view>
-				<input class="input_value" type="text" v-model="formState.address" placeholder="请填写详细地址" />
-			</view>
-			<view class="form_item flex inline" v-if="formState.location_id == 1">
-				<view class="title">
-					<text>年份</text>
-				</view>
-				<input class="input_value" type="text" v-model="formState.year" disabled placeholder="请选择年份" @click="openYearPicker()" />
-			</view>
-			<!-- <view class="form_item flex inline">
-				<view class="title">
-					<text>每堂</text>
-				</view>
-				<input class="input_value" type="number" v-model="formState.price" placeholder="请填写价格" />
-				<text class="suffix">元</text>
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>堂数</text>
-				</view>
-				<input class="input_value" type="number" v-model="formState.price" placeholder="请填写堂数" />
-				<text class="suffix">堂</text>
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>价格</text>
-				</view>
-				<input class="input_value" type="number" v-model="formState.price" placeholder="请填写价格" />
-				<text class="suffix">元</text>
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>地址</text>
-				</view>
-				<input class="input_value" type="number" v-model="formState.price" placeholder="请填写地址" />
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>登记人</text>
-				</view>
-				<input class="input_value" type="text" v-model="formState.price" placeholder="请填写登记人" />
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>联系方式</text>
-				</view>
-				<input class="input_value" type="number" v-model="formState.price" placeholder="请填写联系方式" />
-			</view> -->
-			<view class="form_item" v-if="formState.type == 'blessing'">
-				<view class="title">
-					<text>祈福语</text>
-				</view>
-				<view class="items grid3">
-					<view :class="{'active': formState.sentiment.indexOf(item) > -1}" v-for="(item,index) in blessing_language_str" :key="index"
-						@click="selectSentiment(item)">
-						<text>{{item}}</text>
+				<view class="form_item flex inline" v-if="formState.one_year != 1">
+					<view class="title">
+						<text>佛事</text>
 					</view>
+					<input class="input_value" type="text" v-model="days" disabled />
+					<text class="suffix">堂</text>
 				</view>
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>价格</text>
+					</view>
+					<input class="input_value" type="text" v-model="totalPrice" disabled />
+					<text class="suffix">元</text>
+				</view>
+				<view class="hint">
+					提示：提交后不可修改
+				</view>
+				 <!-- v-if="mobile" -->
+				<button class="submit" @click="submit()" >
+					提交
+				</button>
+				<!-- <button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
+					提交
+				</button> -->
 			</view>
-			<view class="hint">
-				提示：提交后不可修改
-			</view>
-			<button v-if="mobile" class="submit" @click="submit()" >
-				提交
-			</button>
-			<button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
-				提交
-			</button>
 		</view>
-		<uni-calendar 
+		
+		
+		
+		<uni-calendar
 		    ref="calendar"
 		    :insert="false"
 			:lunar="true"
 			:range="true"
+			:startDate="startDate"
 		    @confirm="confirmCalendar"
 		/>
 		<uni-data-picker
-			ref="locationPicker" v-model="formState.location_id" 
-			:localdata="tabletPlace" :map="{text:'name',value:'id'}" 
+			ref="locationPicker" v-model="formState.location_id"
+			:localdata="tabletPlace" :map="{text:'name',value:'id',one_year: 'one_year'}"
 			popup-title="请选择地点" @change="confirmLocation"
 		></uni-data-picker>
 		<uni-data-picker
-			ref="namePicker" v-model="formState.service_object[serviceObjectIndex].nickname" 
+			ref="namePicker" v-model="formState.service_object[serviceObjectIndex].nickname"
 			:localdata="serviceObjectList" popup-title="请选择称谓"
 			@change="confirmAppellation"
 		></uni-data-picker>
 		<uni-data-picker
-			ref="yearPicker" v-model="formState.year" 
+			ref="yearPicker" v-model="formState.year"
 			:localdata="yearList" popup-title="请选择年"
 			@change="confirmYear"
 		></uni-data-picker>
+		<!-- <uni-data-picker
+			ref="placePicker" v-model="formState.place_id"
+			:localdata="locationList" :map="{text:'location_number',value:'id'}"
+			popup-title="请选择牌位展示位置" @change="confirmPlace"
+		></uni-data-picker> -->
+		<u-popup v-model="placePicker" mode="bottom" border-radius="20">
+			<view class="placePicker">
+				<view class="title">
+					<view class="">
+						请选择牌位展示位置
+					</view>
+					<image src="/static/close.png" mode="" @click="placePicker = false"></image>
+				</view>
+				<u-tabs
+					v-if="placePicker"
+					:list="placeTabsList" 
+					:is-scroll="false" 
+					:current="placeTabsCurrent"
+					bg-color="#262626"
+					name="put_name"
+					inactive-color="#5C584E"
+					active-color="#B8AC76"
+					@change="placeTabsChange"
+				></u-tabs>
+				<view class="placeContent">
+					<view class="placeRow" v-for="(item,index) in placeList" :key="index">
+						<view class="row_title">
+							{{item.floorname}}
+						</view>
+						<view class="tablet_list">
+							<view 
+								:class="['tablet_item', {'active': formState.place_id == elem.id}]"
+								v-for="elem in item.list" :key="elem.id"
+								@click="confirmPlace(elem)"
+							>
+								<image src="/static/tablet.png" alt="">
+								<view class="tablet_name">
+									{{elem.location_number}}
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</u-popup>
 		<u-popup v-model="popupShow" mode="center" border-radius="20">
 			<view class="popupShow">
 				<image class="logo" src="/static/logo.png" mode=""></image>
@@ -262,6 +345,7 @@
 		},
 		data() {
 			return {
+				coverImage: '',
 				formState: {
 					temple_id: uni.getStorageSync('temple_id'), // 寺庙编号id
 					type: '', // 佛事类型[blessing:祈福佛事(禄位),to:往生佛事(莲位)]
@@ -306,6 +390,8 @@
 							end: ''
 						}
 					], // 公历日期
+					place_id: '', // 佛牌位置id
+					place_number: '', // 牌位位置编号
 				},
 				dataList: [], // 功德榜
 				dateIndex: '',
@@ -322,61 +408,148 @@
 				blessing_language_str: [], // 祈福语列表
 				verifyNickname: false, // 是否校验佛光接引称谓
 				rules: [
-					{key: 'yang_name',message: '请完善阳上姓名信息'},
+					// {key: 'yang_name',message: '请完善阳上姓名信息'},
 					{key: 'name',message: '请填写登记人'},
 					{key: 'mobile',message: '请输入联系方式'},
 					// {key: 'equipment_code',message: '请输入水墨屏编号'},
 					{key: 'address',message: '请输入地址'},
+					// {key: 'place_id',message: '请选择牌位展示位置'},
 				],
 				popupShow: false, // 显示金额弹窗
 				orderDetail: {}, // 提交后的订单信息
 				mobile: uni.getStorageSync('mobile') || '',
 				regionList: regions,
 				region: '', // 省市区
+				locationList: [], // 牌位展示位置
+				isEquipment: true,
+				placePicker: false, // 显示牌位位置
+				placeTabsList: [
+					{
+						name: '东'
+					}, {
+						name: '南'
+					}, {
+						name: '西'
+					}, {
+						name: '北'
+					}
+				],
+				placeTabsCurrent: 0,
+				placeList: {},
+				active_tablet: '',
+				other_buddha: false, // 是否存在牌位
+				startDate: '', // 限制日历的开始日期
+				foshiItem: {},// 选择的佛事item
 			};
 		},
 		created() {
+			this.startDate = this.$common.formatDate(new Date(),'YYYY-MM-DD')
 			let curPage = getCurrentPages();
 			let options = curPage[curPage.length - 1].options;
-			this.urlOptions = JSON.parse(options.column)
+			// this.urlOptions = JSON.parse(options.column)
+			if(options.scene){
+				let arr = options.scene.split('_')
+				this.urlOptions = {
+					id: arr[1],
+					column_type: arr[2],
+					buddhist_id: arr[3]
+				}
+			}else{
+				this.urlOptions = {
+					id: options.column_id,
+					column_type: options.column_type,
+					buddhist_id: options.buddhist_id
+				}
+			}
 			this.formState.type = this.urlOptions.column_type
 			this.formState.card_id = this.urlOptions.buddhist_id
-			this.createData()
-			this.getMeritTypeList()
 			this.getYears()
-			if(this.formState.type == 'blessing'){
-				this.getBlessingInfo()
+			// if(this.formState.type == 'blessing'){
+			// 	this.getBlessingInfo()
+			// }
+			this.getBlessingInfo()
+			if(uni.getStorageSync('location_id') && uni.getStorageSync('place_id')){
+				this.isEquipment = true
+				this.formState.location_id = uni.getStorageSync('location_id')
+				this.formState.place_id = uni.getStorageSync('place_id')
+				this.formState.location = '1-' + uni.getStorageSync('location_id')
+				this.getFoType()
+			}else{
+				this.isEquipment = false
+				this.getMeritTypeList()
+			}
+		},
+		computed: {
+			days(){
+				let day = 0
+				for (let i in this.formState.male_date) {
+					let elem = this.formState.male_date[i]
+					if(elem.start != '' && elem.end != ''){
+						day +=this.diffDays(elem.start,elem.end)
+					}
+				}
+				return day
+			},
+			// 计算价格
+			totalPrice(){
+				let total = 0;
+				if(this.formState.location_id == 1){
+					total = this.foshiItem.one_year_price
+				}else{
+					total = this.days*this.foshiItem.price
+				}
+				return total
 			}
 		},
 		watch: {
 			'formState.location_id': {
 				handler(newVal){
-					if(newVal == 1){
-						this.formState.one_year = 1
-					}else{
-						this.formState.one_year = 0
+					if(this.isEquipment){
+						return
 					}
-					console.log(newVal,111);
+					// if(newVal == 1){
+					// 	this.formState.one_year = 1
+					// }else{
+					// 	this.formState.one_year = 0
+					// }
 					this.getFoType()
+					this.formState.place_id = ''
+					this.formState.place_number = ''
+					// this.getLocation()
 				},
 				deep: true,
-				immediate: false,
+				immediate: true,
 			}
 		},
 		methods: {
+			diffDays(date1, date2) {
+				// 将两个日期都转换为时间戳（以毫秒为单位）
+				const d1 = new Date(date1).getTime();
+				const d2 = new Date(date2).getTime();
+				
+				// 计算两个日期之间相差的时间戳
+				const diff = Math.abs(d1 - d2);
+				  
+				// 将时间戳转换为天数并返回
+				return Math.floor(diff / (1000 * 60 * 60 * 24)) + 1;
+			},
 			getPhoneNumber(e){
+					// console.log(e,123123);
+					// return
 				if(e.detail.code){
 					this.$request({
 						url: 'user/WxXxLogin',
 						data: {
 							openid: uni.getStorageSync('openid'),
-							code: e.detail.code
+							code: e.detail.code,
+							temple_id: uni.getStorageSync('temple_id')
 						}
 					}).then(res=>{
 						uni.setStorageSync('token', res.token)
 						uni.setStorageSync('mobile', res.mobile)
-						this.mobile = res.mobile
-						this.submit()
+						this.formState.mobile = res.mobile
+						// this.mobile = res.mobile
+						// this.submit()
 					})
 				}
 			},
@@ -399,6 +572,7 @@
 						return elem.start + '*' + elem.end
 					}).join(',')
 				}
+				// 如果可添加人数大于0
 				params.service_object = params.service_object.map(elem=>{
 					if(params.content_id == 61){
 						elem.nickname = '氏门宗'
@@ -431,7 +605,15 @@
 				}
 				if(params.one_year == 0 && params.male_date == ''){
 					uni.showToast({
-						title: '请选择公历/农历日期',
+						title: '请选择佛事日期',
+						icon: 'none',
+						mask: true
+					})
+					return
+				}
+				if(params.yang_name == '' && this.yang_number > 0){
+					uni.showToast({
+						title: '请完善阳上姓名信息',
 						icon: 'none',
 						mask: true
 					})
@@ -448,9 +630,17 @@
 						return
 					}
 				}
-				if(params.type == 'to' && params.service_object == ''){
+				if(params.type == 'to' && params.service_object == '' && this.people_num > 0){
 					uni.showToast({
 						title: '请完善佛光接引信息',
+						icon: 'none',
+						mask: true
+					})
+					return
+				}
+				if(this.other_buddha && params.place_id == ''){
+					uni.showToast({
+						title: '请选择牌位位置',
 						icon: 'none',
 						mask: true
 					})
@@ -481,7 +671,8 @@
 							version: '/vx/',
 							method: 'GET',
 							data: {
-								code: loginRes.code
+								code: loginRes.code,
+								temple_id: uni.getStorageSync('temple_id')
 							}
 						}).then(openIdData=>{
 							uni.setStorageSync('openid', openIdData.openid)
@@ -518,9 +709,9 @@
 					package: this.orderDetail.miniPayRequest.package,
 					signType: this.orderDetail.miniPayRequest.signType, // 签名算法
 					paySign: this.orderDetail.miniPayRequest.paySign, // 签名
-					success: function (res) {
-						uni.reLaunch({
-							url: '/pages/index/paySuccess?result=true&showBack=true'
+					success: (res)=>{
+						uni.redirectTo({
+							url: `/pages/hisOrder/orderDetail?result=true&showImg=true&order_id=${this.orderDetail.merOrderId}`
 						})
 						console.log('支付成功',res);
 						// 业务逻辑。。。
@@ -545,6 +736,7 @@
 					this.formState.location_id = res[0].id
 					this.formState.location_address = res[0].name
 					this.formState.location = res[0].name + '-' + res[0].id
+					this.formState.one_year = res[0].one_year
 				})
 			},
 			// 获取佛事类型
@@ -552,26 +744,63 @@
 				this.$request({
 					url: 'temple/foType',
 					method: 'GET',
+					isTransformResponse: true,
 					data: {
 						temid: this.formState.temple_id, // 寺庙id
 						location_id: this.formState.location_id, // 地点id
 						type: this.urlOptions.column_type,
 					}
 				}).then(res=>{
-					this.foTypeList = res
-					this.selectType(res[0])
+					this.foTypeList = res.data
+					this.selectType(res.data[0])
+					this.other_buddha = res.other.buddha
+					if(res.other.buddha){
+						this.getMemorialTabletType()
+					}
+				})
+			},
+			// 	佛牌摆放位置列表(东、南、西、北)
+			getMemorialTabletType(){
+				this.$request({
+					url: 'temple/memorialTabletType',
+					method: 'GET',
+					data: {
+						location_id: this.formState.location_id, // 地点id
+						background_color: this.formState.type == 'blessing' ? 'red' : 'yellow'
+					}
+				},true).then(res=>{
+					this.placeTabsList = res
+					// if(res.length > 0){
+					// 	this.getMemorialTabletList();
+					// }
+				})
+			},
+			// 佛牌列表,地点-location_id、
+			getMemorialTabletList(){
+				this.$request({
+					url: 'temple/memorialTabletList',
+					method: 'POST',
+					data: {
+						location_id: this.formState.location_id, // 地点id
+						background_color: this.formState.type == 'blessing' ? 'red' : 'yellow',
+						put_name: this.placeTabsList[this.placeTabsCurrent].put_name,
+						years: this.formState.one_year == 1 ? 'y' : 'n',
+						years_date: this.formState.one_year == 1 ? this.formState.year : '',
+						times: this.formState.one_year == 1 ? '[]' : JSON.stringify(this.formState.male_date)
+					}
+				},true).then(res=>{
+					this.placeList = res
 				})
 			},
 			// 获取year数据
 			getYears(){
 				let year = new Date().getFullYear();
-				for(var i= year - 3;i <= year + 20;i++){
+				for(var i= year;i <= year + 20;i++){
 					this.yearList.push({
 						text: i,
 						value: i
 					})
 				}
-				console.log(this.yearList);
 			},
 			// 获取祈福语
 			getBlessingInfo(){
@@ -580,11 +809,41 @@
 					method: 'GET',
 				}).then(res=>{
 					this.blessing_language_str = res.info.blessing_language_str
+					this.coverImage = res.info.image
 				})
 			},
 			// 打开地点弹窗
 			openLocationPicker(){
 				this.$refs.locationPicker.show()
+			},
+			// 打开牌位展示位置弹窗
+			openPlacePicker(){
+				let params = JSON.parse(JSON.stringify(this.formState))
+				if(params.male_date.length > 0){
+					params.male_date = params.male_date.map(elem=>{
+						if(elem.start == '' || elem.end == ''){
+							return
+						}
+						return elem.start + '*' + elem.end
+					}).join(',')
+				}
+				if(params.one_year == 1 && params.year == ''){
+					uni.showToast({
+						title: '请先选择年份',
+						icon: 'none'
+					})
+					return;
+				}
+				if(params.one_year == 0 && params.male_date == ''){
+					uni.showToast({
+						title: '请先选择佛事日期',
+						icon: 'none'
+					})
+					return;
+				}
+				this.placePicker = true;
+				this.getMemorialTabletList();
+				// this.$refs.placePicker.show()
 			},
 			// 打开省市区选择器
 			openAreaPicker(){
@@ -598,11 +857,12 @@
 			},
 			// 选择佛事类型
 			selectType(item){
+				this.foshiItem = item
 				this.yang_number = item.yang_number
 				this.formState.content_id = item.type_id
-				this.formState.yang_name = [{
-					name: ''
-				}]
+				if(this.formState.yang_name.length > this.yang_number){
+					this.formState.yang_name = this.formState.yang_name.slice(0, this.yang_number)
+				}
 				this.formState.service_object = [{
 					name: '',
 					nickname: '',
@@ -610,6 +870,9 @@
 				}]
 				if([47,61,62].indexOf(Number(item.type_id)) > -1){
 					this.people_num = item.people_num
+					// if(this.formState.service_object.length > this.people_num){
+					// 	this.formState.service_object = this.formState.service_object.slice(0, this.people_num)
+					// }
 					if(item.diyname == ''){
 						this.serviceObjectList = []
 						this.verifyNickname = false
@@ -685,9 +948,34 @@
 			},
 			// 选择地点
 			confirmLocation(res){
+				console.log(res,3333);
 				let value = res.detail.value[0]
 				this.formState.location_address = value.text
 				this.formState.location = value.text + '-' + value.value
+				this.formState.one_year = value.one_year
+			},
+			// 选中牌位展示位置
+			confirmPlace(res){
+				// console.log(res);
+				// let value = res.detail.value[0]
+				// console.log(value);
+				this.formState.place_id = res.id
+				this.formState.place_number = res.location_number
+				this.placePicker = false;
+			},
+			// 获取牌位展示位置
+			getLocation(){
+				this.$request({
+					url: 'temple/location',
+					method: 'GET',
+					data: {
+						location_id: this.formState.location_id, // 地点id
+						type: 'location',
+						colortype: this.formState.type == 'blessing' ? 0 : 1
+					}
+				}).then(res=>{
+					this.locationList = res.location_number
+				})
 			},
 			// 选择祈福语
 			selectSentiment(item){
@@ -722,21 +1010,15 @@
 					this.formState.service_object[this.serviceObjectIndex].nickname = value
 				}
 			},
-			createData(){
-				for(let i = 1; i <= 20; i++){
-					this.dataList.push({
-						author: 'MaoUI',
-						subject: 'OnePlus手机 * ' + i + '部'
-					})
-				}
-			},
 			// 选择日期
 			confirmCalendar(value){
 				this.formState.put_time = value.range.data.length
-				this.formState.male_date[this.dateIndex] = {
-					start: value.range.before,
-					end: value.range.after
-				}
+				this.$set(this.formState.male_date[this.dateIndex],'start',value.range.before);
+				this.$set(this.formState.male_date[this.dateIndex],'end',value.range.after);
+				// this.formState.male_date[this.dateIndex] = {
+				// 	start: value.range.before,
+				// 	end: value.range.after
+				// }
 				this.$request({
 					url: `common/lunarDate/${value.range.before}`,
 					method: "GET"
@@ -779,14 +1061,25 @@
 				}
 				this.formState.lunar_date.splice(index, 1)
 				this.formState.male_date.splice(index, 1)
-			}
+			},
+			placeTabsChange(index){
+				this.placeTabsCurrent = index;
+				this.getMemorialTabletList();
+			},
 		}
 	}
 </script>
 
 <style lang="scss" scoped>
 	.to_blessing{
-		
+		.to_blessing_content{
+			padding: 0 50rpx;
+		}
+		.cover{
+			image{
+				width: 100%;
+			}
+		}
 	
 		.desc{
 			text{
@@ -824,7 +1117,6 @@
 					
 				}
 				.items{
-					
 					display: grid;
 					grid-template-columns: repeat(2, minmax(0, 1fr));
 					gap: 10px;
@@ -891,13 +1183,19 @@
 				.input_value{
 					flex: 1;
 					text-align: right;
+					background-color: inherit;
+					&.btn{
+						color: #808080;
+					}
 				}
 				.suffix{
 					color: #BEAD7A;
+					font-size: 26rpx;
+					font-weight: bold;
 				}
 			}
 			.inline{
-				height: 80rpx;
+				height: 100rpx;
 				.title{
 					flex: 0 0 120rpx;//长度根据最长的文字宽度设置
 					text-align: justify;
@@ -910,10 +1208,17 @@
 					}
 				}
 				.input_value{
-					height: 80rpx;
+					height: 100rpx;
+					background-color: inherit;
+					line-height: 100rpx;
+					&.btn{
+						color: #808080;
+					}
 				}
 				.suffix{
 					margin-left: 10rpx;
+					font-size: 26rpx;
+					font-weight: bold;
 				}
 			}
 		}
@@ -1125,5 +1430,70 @@
 				letter-spacing: 10rpx;
 			}
 		}	
+	
+		.placePicker{
+			width: 100%;
+			.title{
+				text-align: center;
+				line-height: 100rpx;
+				position: relative;
+				view{
+					font-size: 30rpx;
+					font-family: Source Han Serif CN;
+					font-weight: 500;
+					color: #B8AC76;
+				}
+				image{
+					position: absolute;
+					width: 44rpx;
+					height: 44rpx;
+					top: 25rpx;
+					right: 25rpx;
+				}
+			}
+			.placeContent{
+				padding: 13rpx 25rpx;
+				height: 800rpx;
+				overflow-y: scroll;
+				.placeRow{
+					background: #2B2A28;
+					border-radius: 10rpx;
+					margin-top: 12rpx;
+					padding: 18rpx;
+					.row_title{
+						font-size: 24rpx;
+						font-family: PingFang SC;
+						font-weight: 500;
+						color: #7B703E;
+					}
+					.tablet_list{
+						display: grid;
+						grid-template-columns: repeat(5, 1fr); /* 重复五次，每个列的宽度平分 */
+						grid-gap: 20rpx; /* 列之间的间距 */
+						.tablet_item{
+							text-align: center;
+							margin-top: 20rpx;
+							border: 1px solid #2B2A28;
+								border-radius: 10rpx;
+							&.active{
+								border: 1px solid #BCAA72;
+								border-radius: 10rpx;
+							}
+							image{
+								width: 114rpx;
+								height: 114rpx;
+							}
+							.tablet_name{
+								font-size: 28rpx;
+								font-family: PingFang SC;
+								font-weight: 500;
+								color: #B8AC76;
+							}
+						}
+					}
+				}
+			}
+			
+		}
 	}
 </style>

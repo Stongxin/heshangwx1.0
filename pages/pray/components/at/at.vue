@@ -1,8 +1,14 @@
 <template>
 	<view class="at">
+		<view class="cover">
+			<image v-if="atDetail.image" :src="$common.disposeSrc(atDetail.image)" mode="widthFix"></image>
+		</view>
+		<view class="at_content">
+			
+		
 		<view class="desc">
-			<text class="title">新年祈福弥勒佛圣诞</text>
-			<text class="lettle">印经是为在世人立的红色消灾、诞生排位，也叫祈福、吉祥、诞生排位，是增福增寿的意思。众僧大德通过诵经功德加持排位的主任。</text>
+			<text class="title">{{atDetail.category_name}}</text>
+			<text class="lettle">{{atDetail.content}}</text>
 		</view>
 		<view class="merit">
 			<view class="form_item flex inline">
@@ -21,17 +27,22 @@
 				<view class="title">
 					<text>联系方式</text>
 				</view>
-				<input class="input_value" type="number" maxlength="11" v-model="formState.mobile" placeholder="请输入联系方式" />
+				<input v-if="formState.mobile" class="input_value" type="number" maxlength="11" v-model="formState.mobile" placeholder="请输入联系方式" />
+				<button v-else class="input_value btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
+					点击获取手机号
+				</button>
 			</view>
 			<view class="hint">
 				提示：提交后不可修改
 			</view>
-			<button v-if="mobile" class="submit" @click="submit()" >
+			 <!-- v-if="mobile" -->
+			<button class="submit" @click="submit()" >
 				提交
 			</button>
-			<button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
+			<!-- <button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
 				提交
-			</button>
+			</button> -->
+		</view>
 		</view>
 		<u-popup v-model="popupShow" mode="center" border-radius="20">
 			<view class="popupShow">
@@ -56,6 +67,7 @@
 	export default {
 		data() {
 			return {
+				atDetail: {},
 				formState: {
 					ordinary_id: '', // 普佛编号
 					category_id: '', // 普佛法会类型
@@ -80,24 +92,50 @@
 		created() {
 			let curPage = getCurrentPages();
 			let options = curPage[curPage.length - 1].options;
-			this.urlOptions = JSON.parse(options.column)
+			// this.urlOptions = JSON.parse(options.column)
+			if(options.scene){
+				let arr = options.scene.split('_')
+				this.urlOptions = {
+					id: arr[1],
+					column_type: arr[2],
+					buddhist_id: arr[3]
+				}
+			}else{
+				this.urlOptions = {
+					id: options.column_id,
+					column_type: options.column_type,
+					buddhist_id: options.buddhist_id
+				}
+			}
 			this.formState.ordinary_id = options.ordinary_id
 			this.formState.category_id = options.category_id
+			this.getAtDetail()
 		},
 		methods: {
+			getAtDetail(){
+				this.$request({
+					url: `buddhist/atInfo/${this.formState.ordinary_id}/${this.formState.category_id}`,
+					method: 'GET'
+				}).then(res=>{
+					this.atDetail = res
+					console.log(res);
+				})
+			},
 			getPhoneNumber(e){
 				if(e.detail.code){
 					this.$request({
 						url: 'user/WxXxLogin',
 						data: {
 							openid: uni.getStorageSync('openid'),
-							code: e.detail.code
+							code: e.detail.code,
+							temple_id: uni.getStorageSync('temple_id')
 						}
 					}).then(res=>{
 						uni.setStorageSync('token', res.token)
 						uni.setStorageSync('mobile', res.mobile)
-						this.mobile = res.mobile
-						this.submit()
+						// this.mobile = res.mobile
+						this.formState.mobile = res.mobile
+						// this.submit()
 					})
 				}
 			},
@@ -121,7 +159,8 @@
 							version: '/vx/',
 							method: 'GET',
 							data: {
-								code: loginRes.code
+								code: loginRes.code,
+								temple_id: uni.getStorageSync('temple_id')
 							}
 						}).then(openIdData=>{
 							uni.setStorageSync('openid', openIdData.openid)
@@ -158,9 +197,9 @@
 					package: this.orderDetail.miniPayRequest.package,
 					signType: this.orderDetail.miniPayRequest.signType, // 签名算法
 					paySign: this.orderDetail.miniPayRequest.paySign, // 签名
-					success: function (res) {
-						uni.reLaunch({
-							url: '/pages/index/paySuccess?result=true&showBack=true'
+					success: (res)=>{
+						uni.redirectTo({
+							url: `/pages/hisOrder/orderDetail?result=true&showImg=true&order_id=${this.orderDetail.merOrderId}`
 						})
 						console.log('支付成功',res);
 						// 业务逻辑。。。
@@ -181,6 +220,14 @@
 
 <style lang="scss" scoped>
 	.at{
+		.at_content{
+			padding: 0 50rpx;
+		}
+		.cover{
+			image{
+				width: 100%;
+			}
+		}
 		.desc{
 			text{
 				display: block;
@@ -245,10 +292,16 @@
 					}
 				}
 				.input_value{
+					height: 100rpx;
+					line-height: 100rpx;
 					font-size: 30rpx;
 					font-family: PingFang SC;
 					font-weight: 500;
 					color: #BEAD7A;
+					background-color: inherit;
+					&.btn{
+						color: #808080;
+					}
 				}
 			}
 			.hint{
@@ -286,7 +339,7 @@
 				}
 			}
 			.inline{
-				height: 80rpx;
+				height: 100rpx;
 				.title{
 					flex: 0 0 120rpx;//长度根据最长的文字宽度设置
 					text-align: justify;
@@ -299,7 +352,8 @@
 					}
 				}
 				.input_value{
-					height: 80rpx;
+					height: 100rpx;
+					line-height: 100rpx;
 				}
 				.suffix{
 					margin-left: 10rpx;

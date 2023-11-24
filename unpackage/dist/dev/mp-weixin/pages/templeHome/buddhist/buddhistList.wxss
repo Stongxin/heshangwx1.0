@@ -1,0 +1,120 @@
+
+page{
+	background: #1E1E1E;
+}
+
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.buddhistList.data-v-69e4b083 {
+  padding: 0 30rpx calc(100rpx + env(safe-area-inset-bottom)) 30rpx;
+}
+.buddhistList .empty.data-v-69e4b083 {
+  margin: 50% auto;
+  font-size: 26rpx;
+  color: #fff;
+  text-align: center;
+}
+.buddhistList .item.data-v-69e4b083 {
+  padding: 30rpx;
+  margin-top: 30rpx;
+  background: #262626;
+  border-radius: 20rpx;
+  position: relative;
+}
+.buddhistList .item .name.data-v-69e4b083 {
+  font-size: 30rpx;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: #E9E2D0;
+}
+.buddhistList .item .line2.data-v-69e4b083 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20rpx;
+}
+.buddhistList .item .line2 .time.data-v-69e4b083 {
+  font-size: 22rpx;
+  font-family: PingFang SC;
+  font-weight: 400;
+  color: #88847A;
+}
+.buddhistList .item .line2 .edit.data-v-69e4b083 {
+  background: #f3a73f;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 8rpx;
+}
+.buddhistList .item .status.data-v-69e4b083 {
+  position: absolute;
+  font-size: 24rpx;
+  top: 20rpx;
+  right: 20rpx;
+  color: #fff;
+}
+.buddhistList .item .status.ing.data-v-69e4b083 {
+  color: #2979ff;
+}
+.buddhistList .item .status.success.data-v-69e4b083 {
+  color: #18bc37;
+}
+.buddhistList .item .status.error.data-v-69e4b083 {
+  color: #e43d33;
+}
+.buddhistList .add.data-v-69e4b083 {
+  position: fixed;
+  height: 100rpx;
+  bottom: env(safe-area-inset-bottom);
+  width: 100%;
+  left: 0;
+  padding: 10rpx;
+  background: #262626;
+}
+.buddhistList .add view.data-v-69e4b083 {
+  width: 100%;
+  height: 80rpx;
+  background: #BEAD7A;
+  border-radius: 40rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30rpx;
+  font-family: PingFang SC;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 10rpx;
+}
+.buddhistList .area.data-v-69e4b083 {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: env(safe-area-inset-bottom);
+  background: #262626;
+}
+

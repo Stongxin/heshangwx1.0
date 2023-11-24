@@ -151,14 +151,16 @@
 	}
 
 	.uni-calendar-item--isDay-text {
-		color: $uni-primary;
+		color: $uni-color-error;
+		font-weight: bold;
 	}
 
 	.uni-calendar-item--isDay {
 		// background-color: ;
 		// opacity: 0.8;
-		color: $uni-primary;
+		color: $uni-color-error;
 		font-weight: bold;
+		font-size: 28rpx;
 	}
 
 	.uni-calendar-item--extra {

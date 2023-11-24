@@ -134,7 +134,7 @@ export const common = {
 		}
 		return newTime;
 	},
-	disposeSrc(src) {
+	disposeSrc(src,type) {
 		try {
 			if (src == '') {
 				return ''
@@ -143,7 +143,11 @@ export const common = {
 			} else if (src.indexOf('base64') > -1) {
 				return src
 			} else {
-				return 'https://heshang-app.oss-cn-hangzhou.aliyuncs.com' + src
+				if(type == 'domain'){
+					return domain + '/' + src
+				}else{
+					return 'https://heshang-app.oss-cn-hangzhou.aliyuncs.com' + src
+				}
 			}
 		} catch (e) {
 			//TODO handle the exception
@@ -181,52 +185,71 @@ export const request = function(options, showLoading = false) {
 		requestTree[options.url] = uni.request({
 			url: domain + (options.version ? options.version : version) + options.url, // 请求接口地址
 			method: options.method || 'POST', // 方法从options中获取，如果没有传入method，则默认为POST，
-			data: options.data, // 请求接口参数
+			data: {...options.data,uuid: 'wx28e269b3f78c2d01'}, // 请求接口参数
 			dataType: 'json',
 			header: options.header || {
 				'content-type': 'application/x-www-form-urlencoded',
 				// 'Authorization': 'Bearer' + uni.getStorageSync('authorization'),
 				// token: uni.getStorageSync('token')
-				// token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJoZXNoYW5nX2dvIiwiYXVkIjoiIiwiaWF0IjoxNjgzMTc5NzQ3LCJleHAiOjE2OTAzNzk3NDcsImRhdGEiOnsiaWQiOjIsInVzZXJuYW1lIjoiOTY1MjM0NDY5NTQiLCJtb2JpbGUiOiIxNTAwNDY1MTQxMiIsIm5pY2tuYW1lIjoiXHU5NjMzXHU2NTRjIn19.2n1bQlgRosvZv29ibZx21niMssUbhGW84Wat1vkAeJY'
+				// token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJoZXNoYW5nX2dvIiwiYXVkIjoiIiwiaWF0IjoxNjk1Nzk5MTUzLCJleHAiOjE3MDI5OTkxNTMsImRhdGEiOnsiaWQiOjIsInVzZXJuYW1lIjoiOTY1MjM0NDY5NTQiLCJtb2JpbGUiOiIxNTAwNDY1MTQxMiIsIm5pY2tuYW1lIjoiXHU5NjMzXHU2NTRjIn19.7I7P7ZkdgGuFsV6OR7kdecm4d0QtxRR9rZyPkn6gvT0'
 			},
 			success: (res) => {
-				console.log(res);
+				// console.log(res);
 				if (res.statusCode == 200) {
 					if(res.data.code == 406){
-						uni.clearStorageSync()
-						// uni.login({
-						// 	provider: 'weixin', //使用微信登录
-						// 	success:  (loginRes)=>{
-						// 		request({
-						// 			url: 'onLogin',
-						// 			version: '/vx/',
-						// 			method: 'GET',
-						// 			data: {
-						// 				code: loginRes.code
-						// 			}
-						// 		}).then(openIdData=>{
-						// 			uni.setStorageSync('openid', openIdData.openid)
-						// 			request({
-						// 				url: 'user/WxXxOpendiLogin',
-						// 				data: {
-						// 					openid: openIdData.openid
-						// 				}
-						// 			}).then(res=>{
-						// 				uni.setStorageSync('token', res.token)
-						// 				uni.setStorageSync('mobile', res.mobile)
-						// 				// 页面重载
-						// 				const pages = getCurrentPages()
-						// 				// 声明一个pages使用getCurrentPages方法
-						// 				const curPage = pages[pages.length - 1]
-						// 				console.log(curPage);
-						// 				// 声明一个当前页面
-						// 				curPage.onLoad(curPage.options) // 传入参数
-						// 				curPage.onShow()
-						// 				curPage.onReady()
-						// 			})
-						// 		})
-						// 	}
-						// });
+						uni.login({
+							provider: 'weixin', //使用微信登录
+							success:  (loginRes)=>{
+								request({
+									url: 'onLogin',
+									version: '/vx/',
+									method: 'GET',
+									data: {
+										code: loginRes.code,
+										temple_id: uni.getStorageSync('temple_id')
+									}
+								}).then(openIdData=>{
+									if(!openIdData.openid){
+										uni.showModal({
+											title: '提示',
+											content: '配置信息错误',
+											success: function (res) {
+												if (res.confirm) {
+													console.log('用户点击确定');
+												} else if (res.cancel) {
+													console.log('用户点击取消');
+												}
+											}
+										});
+										return
+									}
+									let temple_id = uni.getStorageSync('temple_id')
+									let scene = uni.getStorageSync('scene')
+									uni.clearStorageSync()
+									uni.setStorageSync('openid', openIdData.openid)
+									uni.setStorageSync('temple_id', temple_id)
+									uni.setStorageSync('scene', scene)
+									request({
+										url: 'user/WxXxOpendiLogin',
+										data: {
+											openid: openIdData.openid
+										}
+									}).then(res=>{
+										uni.setStorageSync('token', res.token)
+										uni.setStorageSync('mobile', res.mobile)
+										// 页面重载
+										const pages = getCurrentPages()
+										// 声明一个pages使用getCurrentPages方法
+										const curPage = pages[pages.length - 1]
+										console.log(curPage);
+										// 声明一个当前页面
+										curPage.onLoad(curPage.options) // 传入参数
+										curPage.onShow()
+										curPage.onReady()
+									})
+								})
+							}
+						});
 					}else if (res.data.code != 1) {
 						uni.showToast({
 							title: res.data.msg,
@@ -253,7 +276,7 @@ export const request = function(options, showLoading = false) {
 					// 		}
 					// 	}
 					// });
-					uni.clearStorageSync()
+					// uni.clearStorageSync()
 					// uni.redirectTo({
 					// 	url: "/pages/login/login"
 					// })
@@ -277,10 +300,14 @@ export const request = function(options, showLoading = false) {
 					})
 					rejected(res)
 				}
-				resolved(res.data.data)
+				if(options.isTransformResponse){
+					resolved(res.data)
+				}else{
+					resolved(res.data.data)
+				}
+				
 			},
 			fail: (err) => {
-				console.log(err, 555)
 				rejected(err)
 			},
 			complete(all) {
@@ -289,6 +316,37 @@ export const request = function(options, showLoading = false) {
 				console.log('------------------------end------------------');
 			}
 		})
+	})
+}
+
+export const login = function(){
+	return new Promise((reslove,rejected)=>{
+		uni.login({
+			provider: 'weixin', //使用微信登录
+			success:  (loginRes)=>{
+				this.$request({
+					url: 'onLogin',
+					version: '/vx/',
+					method: 'GET',
+					data: {
+						code: loginRes.code,
+						temple_id: uni.getStorageSync('temple_id')
+					}
+				}).then(openIdData=>{
+					uni.setStorageSync('openid', openIdData.openid)
+					this.$request({
+						url: 'user/WxXxOpendiLogin',
+						data: {
+							openid: openIdData.openid
+						}
+					}).then(res=>{
+						uni.setStorageSync('token', res.token)
+						uni.setStorageSync('mobile', res.mobile)
+						reslove(true)
+					})
+				})
+			}
+		});
 	})
 }
 export const abortRequest = function(name){

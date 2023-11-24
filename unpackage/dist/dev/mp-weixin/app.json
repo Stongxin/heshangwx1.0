@@ -1,11 +1,18 @@
 {
   "pages": [
     "pages/templeHome/templeHome",
+    "pages/templeSubHome/templeSubHome",
     "pages/pray/pray",
     "pages/index/index",
     "pages/dynamic/dynamic",
     "pages/index/paySuccess",
-    "pages/pray/components/at/index"
+    "pages/pray/components/at/index",
+    "pages/templeHome/buddhist/buddhist",
+    "pages/templeHome/buddhist/buddhistList",
+    "pages/templeHome/volunteer/volunteer",
+    "pages/hisOrder/hisOrder",
+    "pages/hisOrder/orderDetail",
+    "pages/templeHome/buddhist/home"
   ],
   "subPackages": [],
   "window": {
@@ -14,5 +21,6 @@
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
+  "permission": {},
   "usingComponents": {}
 }

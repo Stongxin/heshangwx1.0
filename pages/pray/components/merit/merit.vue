@@ -1,7 +1,11 @@
 <template>
 	<view class="merit_box">
+		<view class="cover">
+			<image v-if="coverImage" :src="$common.disposeSrc(coverImage)" mode="widthFix"></image>
+		</view>
+		<view class="merit_box_content">
 		<view class="desc">
-			<text class="title">{{urlOptions.title}}</text>
+			<text class="title">{{detail.title}}</text>
 			<text class="lettle">{{detail.content}}</text>
 		</view>
 		<view class="merit">
@@ -16,11 +20,11 @@
 					</view>
 				</view>
 			</view>
-			<view class="form_item flex inline">
+			<view class="form_item flex inline" style="margin-top: 20rpx;">
 				<view class="title">
 					<text>价格</text>
 				</view>
-				<input class="input_value" type="number" v-model="formState.amount" :disabled="isCustom" placeholder="请输入随喜金额" />
+				<input class="input_value" type="digit" v-model="formState.amount" :disabled="isCustom" placeholder="请输入随喜金额" />
 				<text class="suffix">元</text>
 			</view>
 			<view class="form_item flex inline">
@@ -33,17 +37,23 @@
 				<view class="title">
 					<text>联系方式</text>
 				</view>
-				<input class="input_value" type="number" maxlength="11" v-model="formState.mobile" placeholder="请输入联系方式" />
+				<input v-if="formState.mobile" class="input_value" type="number" maxlength="11" v-model="formState.mobile" placeholder="请输入联系方式" />
+				<button v-else class="input_value btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
+					点击获取手机号
+				</button>
+				<!-- <input class="input_value" type="number" maxlength="11" v-model="formState.mobile" placeholder="请输入联系方式" /> -->
 			</view>
 			<view class="hint">
 				提示：提交后不可修改
 			</view>
-			<button v-if="mobile" class="submit" @click="submit()" >
+			 <!-- v-if="mobile" -->
+			<button class="submit" @click="submit()" >
 				提交
 			</button>
-			<button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
+			<!-- <button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
 				提交
-			</button>
+			</button> -->
+		</view>
 		</view>
 		<u-popup v-model="popupShow" mode="center" border-radius="20">
 			<view class="popupShow">
@@ -69,13 +79,14 @@
 	export default {
 		data() {
 			return {
+				coverImage: '',
 				formState: {
 					mid: '', // 功德随喜编号
 					content_type: '', // 功德随喜内容类型
 					name: '', // 功德主
 					mobile: '', // 联系方式
 					amount: '', // 随喜金额
-					source: 'wxxcx ', // 订单来源:App=App,wxxcx =微信小程序,admin=后台录入，balance=余额
+					source: 'wxxcx', // 订单来源:App=App,wxxcx =微信小程序,admin=后台录入，balance=余额
 					openid: uni.getStorageSync('openid'), /// 微信openid
 					pay_type: 'wechat', // 支付方式 alipay=支付宝，wechat=微信
 				},
@@ -93,11 +104,25 @@
 			};
 		},
 		created(){
-			console.log(666);
 			this.popupShow = false
 			let curPage = getCurrentPages();
 			let options = curPage[curPage.length - 1].options;
-			this.urlOptions = JSON.parse(options.column)
+			// this.urlOptions = JSON.parse(options.column)
+			if(options.scene){
+				let arr = options.scene.split('_')
+				uni.setStorageSync('temple_id',arr[0]);
+				this.urlOptions = {
+					id: arr[1],
+					column_type: arr[2],
+					buddhist_id: arr[3]
+				}
+			}else{
+				this.urlOptions = {
+					id: options.column_id,
+					column_type: options.column_type,
+					buddhist_id: options.buddhist_id
+				}
+			}
 			this.formState.mid = this.urlOptions.buddhist_id
 			this.getDetail()
 		},
@@ -108,13 +133,15 @@
 						url: 'user/WxXxLogin',
 						data: {
 							openid: uni.getStorageSync('openid'),
-							code: e.detail.code
+							code: e.detail.code,
+							temple_id: uni.getStorageSync('temple_id')
 						}
 					}).then(res=>{
 						uni.setStorageSync('token', res.token)
 						uni.setStorageSync('mobile', res.mobile)
-						this.mobile = res.mobile
-						this.submit()
+						this.formState.mobile = res.mobile
+						// this.mobile = res.mobile
+						// this.submit()
 					})
 				}
 			},
@@ -140,41 +167,65 @@
 						return
 					}
 				}
-				uni.login({
-					provider: 'weixin', //使用微信登录
-					success:  (loginRes)=>{
+				if(uni.getStorageSync('openid')){
+					this.$request({
+						url: 'user/WxXxOpendiLogin',
+						data: {
+							openid: uni.getStorageSync('openid')
+						}
+					}).then(res=>{
+						uni.setStorageSync('token', res.token)
+						uni.setStorageSync('mobile', res.mobile)
+						this.mobile = res.mobile
 						this.$request({
-							url: 'onLogin',
-							version: '/vx/',
-							method: 'GET',
-							data: {
-								code: loginRes.code
+							url: 'buddhist/meritTySubmit',
+							data: this.formState,
+							header: {
+								token: uni.getStorageSync('token')
 							}
-						}).then(openIdData=>{
-							uni.setStorageSync('openid', openIdData.openid)
+						},true).then(res=>{
+							this.popupShow = true
+							this.orderDetail = res
+						})
+					})
+				}else{
+					uni.login({
+						provider: 'weixin', //使用微信登录
+						success:  (loginRes)=>{
 							this.$request({
-								url: 'user/WxXxOpendiLogin',
+								url: 'onLogin',
+								version: '/vx/',
+								method: 'GET',
 								data: {
-									openid: openIdData.openid
+									code: loginRes.code,
+									temple_id: uni.getStorageSync('temple_id')
 								}
-							}).then(res=>{
-								uni.setStorageSync('token', res.token)
-								uni.setStorageSync('mobile', res.mobile)
-								this.mobile = res.mobile
+							}).then(openIdData=>{
+								uni.setStorageSync('openid', openIdData.openid)
 								this.$request({
-									url: 'buddhist/meritTySubmit',
-									data: this.formState,
-									header: {
-										token: uni.getStorageSync('token')
+									url: 'user/WxXxOpendiLogin',
+									data: {
+										openid: openIdData.openid
 									}
-								},true).then(res=>{
-									this.popupShow = true
-									this.orderDetail = res
+								}).then(res=>{
+									uni.setStorageSync('token', res.token)
+									uni.setStorageSync('mobile', res.mobile)
+									this.mobile = res.mobile
+									this.$request({
+										url: 'buddhist/meritTySubmit',
+										data: this.formState,
+										header: {
+											token: uni.getStorageSync('token')
+										}
+									},true).then(res=>{
+										this.popupShow = true
+										this.orderDetail = res
+									})
 								})
 							})
-						})
-					}
-				});
+						}
+					});
+				}
 			},
 			// 去支付
 			payment(){
@@ -185,9 +236,9 @@
 					package: this.orderDetail.miniPayRequest.package,
 					signType: this.orderDetail.miniPayRequest.signType, // 签名算法
 					paySign: this.orderDetail.miniPayRequest.paySign, // 签名
-					success: function (res) {
-						uni.reLaunch({
-							url: '/pages/index/paySuccess?result=true&showBack=true'
+					success: (res)=>{
+						uni.redirectTo({
+							url: `/pages/hisOrder/orderDetail?result=true&showImg=true&order_id=${this.orderDetail.merOrderId}`
 						})
 						console.log('支付成功',res);
 						// 业务逻辑。。。
@@ -208,6 +259,7 @@
 					method: 'GET'
 				},true).then(res=>{
 					this.detail = res
+					this.coverImage = res.image
 					this.selectType(res.multiplejson[0])
 				})
 			},
@@ -227,6 +279,15 @@
 
 <style lang="scss" scoped>
 	.merit_box{
+		.merit_box_content{
+			padding: 0 50rpx;
+		}
+		.cover{
+			width: 750rpx;
+			image{
+				width: 750rpx;
+			}
+		}
 		.desc{
 			text{
 				display: block;
@@ -291,10 +352,16 @@
 					}
 				}
 				.input_value{
+					height: 100rpx;
+					line-height: 100rpx;
 					font-size: 30rpx;
 					font-family: PingFang SC;
 					font-weight: 500;
 					color: #BEAD7A;
+					background-color: inherit;
+					&.btn{
+						color: #808080;
+					}
 				}
 			}
 			.hint{
@@ -332,7 +399,7 @@
 				}
 			}
 			.inline{
-				height: 80rpx;
+				height: 100rpx;
 				.title{
 					flex: 0 0 120rpx;//长度根据最长的文字宽度设置
 					text-align: justify;
@@ -345,7 +412,8 @@
 					}
 				}
 				.input_value{
-					height: 80rpx;
+					height: 100rpx;
+					line-height: 100rpx;
 				}
 				.suffix{
 					margin-left: 10rpx;

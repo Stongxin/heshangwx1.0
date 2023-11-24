@@ -24,6 +24,15 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.merit_box .merit_box_content.data-v-ac6078e4 {
+  padding: 0 50rpx;
+}
+.merit_box .cover.data-v-ac6078e4 {
+  width: 750rpx;
+}
+.merit_box .cover image.data-v-ac6078e4 {
+  width: 750rpx;
+}
 .merit_box .desc text.data-v-ac6078e4 {
   display: block;
 }
@@ -85,10 +94,16 @@
   color: #BCAA72;
 }
 .merit_box .merit .form_item .input_value.data-v-ac6078e4 {
+  height: 100rpx;
+  line-height: 100rpx;
   font-size: 30rpx;
   font-family: PingFang SC;
   font-weight: 500;
   color: #BEAD7A;
+  background-color: inherit;
+}
+.merit_box .merit .form_item .input_value.btn.data-v-ac6078e4 {
+  color: #808080;
 }
 .merit_box .merit .hint.data-v-ac6078e4 {
   font-size: 24rpx;
@@ -125,7 +140,7 @@
   color: #BEAD7A;
 }
 .merit_box .merit .inline.data-v-ac6078e4 {
-  height: 80rpx;
+  height: 100rpx;
 }
 .merit_box .merit .inline .title.data-v-ac6078e4 {
   flex: 0 0 120rpx;
@@ -139,7 +154,8 @@
   width: 100%;
 }
 .merit_box .merit .inline .input_value.data-v-ac6078e4 {
-  height: 80rpx;
+  height: 100rpx;
+  line-height: 100rpx;
 }
 .merit_box .merit .inline .suffix.data-v-ac6078e4 {
   margin-left: 10rpx;

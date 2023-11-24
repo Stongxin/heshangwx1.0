@@ -1,5 +1,11 @@
 <template>
 	<view class="taisui">
+		<view class="cover">
+			<image v-if="coverImage" :src="$common.disposeSrc(coverImage)" mode="widthFix"></image>
+		</view>
+		<view class="taisui_content">
+			
+		
 		<view class="desc">
 			<text class="title">太岁</text>
 			<view class="zodiac">
@@ -27,7 +33,7 @@
 				<input class="input_value" type="number" v-model="formState.amount" disabled />
 				<text class="suffix">元</text>
 			</view>
-			<view class="form_item zodiac_names">
+			<view class="form_item zodiac_names" v-if="people_num > 0">
 				<view class="title">
 					<text>解祸人({{people_num}})人</text>
 					<view class="btns" @click="addName()">
@@ -55,7 +61,11 @@
 				<view class="title">
 					<text>联系方式</text>
 				</view>
-				<input class="input_value" maxlength="11" type="number" v-model="formState.tel" placeholder="请填写登记人电话" />
+				<!-- <input class="input_value" maxlength="11" type="number" v-model="formState.tel" placeholder="请填写登记人电话" /> -->
+				<input v-if="formState.tel" class="input_value" type="number" maxlength="11" v-model="formState.tel" placeholder="请输入联系方式" />
+				<button v-else class="input_value btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
+					点击获取手机号
+				</button>
 			</view>
 			<view class="form_item flex inline">
 				<view class="title">
@@ -84,12 +94,14 @@
 			<view class="hint">
 				提示：提交后不可修改
 			</view>
-			<button v-if="mobile" class="submit" @click="submit()" >
+			 <!-- v-if="mobile" -->
+			<button class="submit" @click="submit()" >
 				提交
 			</button>
-			<button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
+			<!-- <button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
 				提交
-			</button>
+			</button> -->
+		</view>
 		</view>
 		<uni-data-picker 
 			ref="zodiacPicker" v-model="formState.solution_name[zodiacIndex].zodiac" 
@@ -126,6 +138,7 @@
 	export default {
 		data() {
 			return {
+				coverImage: '',
 				formState: {
 					temple_id: uni.getStorageSync('temple_id'), // 寺院id
 					mid: '', // 类型id
@@ -152,7 +165,7 @@
 				blessingList: [], // 祝福语
 				zodiacIndex: 0, // 当前点击的接货人项的生肖选择框
 				rules: [
-					{key: 'solution_name',message: '请完善解祸人信息',type: 'string'},
+					// {key: 'solution_name',message: '请完善解祸人信息',type: 'string'},
 					{key: 'name',message: '请填写登记人',type: 'string'},
 					{key: 'tel',message: '请填写登记人电话',type: 'string'},
 					{key: 'address',message: '请填写登记人地址',type: 'string'},
@@ -169,7 +182,21 @@
 		created() {
 			let curPage = getCurrentPages();
 			let options = curPage[curPage.length - 1].options;
-			this.urlOptions = JSON.parse(options.column)
+			// this.urlOptions = JSON.parse(options.column)
+			if(options.scene){
+				let arr = options.scene.split('_')
+				this.urlOptions = {
+					id: arr[1],
+					column_type: arr[2],
+					buddhist_id: arr[3]
+				}
+			}else{
+				this.urlOptions = {
+					id: options.column_id,
+					column_type: options.column_type,
+					buddhist_id: options.buddhist_id
+				}
+			}
 			this.getZodiacList()
 			this.getMultiple()
 			this.getBlessing()
@@ -181,13 +208,15 @@
 						url: 'user/WxXxLogin',
 						data: {
 							openid: uni.getStorageSync('openid'),
-							code: e.detail.code
+							code: e.detail.code,
+							temple_id: uni.getStorageSync('temple_id')
 						}
 					}).then(res=>{
 						uni.setStorageSync('token', res.token)
 						uni.setStorageSync('mobile', res.mobile)
-						this.mobile = res.mobile
-						this.submit()
+						this.formState.tel = res.mobile
+						// this.mobile = res.mobile
+						// this.submit()
 					})
 				}
 			},
@@ -202,6 +231,14 @@
 					}
 					return `${elem.zodiac}-${elem.name}`
 				}).join(',')
+				if(this.people_num > 0 && params.solution_name == ''){
+					uni.showToast({
+						title: '请完善解祸人信息',
+						icon: 'none',
+						mask: true
+					})
+					return
+				}
 				params.mid = this.urlOptions.buddhist_id
 				for (const i in this.rules) {
 					let key = this.rules[i].key
@@ -242,7 +279,8 @@
 							version: '/vx/',
 							method: 'GET',
 							data: {
-								code: loginRes.code
+								code: loginRes.code,
+								temple_id: uni.getStorageSync('temple_id')
 							}
 						}).then(openIdData=>{
 							uni.setStorageSync('openid', openIdData.openid)
@@ -281,9 +319,9 @@
 					package: this.orderDetail.miniPayRequest.package,
 					signType: this.orderDetail.miniPayRequest.signType, // 签名算法
 					paySign: this.orderDetail.miniPayRequest.paySign, // 签名
-					success: function (res) {
-						uni.reLaunch({
-							url: '/pages/index/paySuccess?result=true&showBack=true'
+					success: (res)=>{
+						uni.redirectTo({
+							url: `/pages/hisOrder/orderDetail?result=true&showImg=true&order_id=${this.orderDetail.merOrderId}`
 						})
 						console.log('支付成功',res);
 						// 业务逻辑。。。
@@ -316,6 +354,7 @@
 					method: 'GET'
 				}).then(res=>{
 					this.multiplejson = res.multiplejson
+					this.coverImage = res.image
 					this.selectMultiple(this.multiplejson[0])
 					console.log(res);
 				})
@@ -332,10 +371,13 @@
 			},
 			// 选择太岁类型/
 			selectMultiple(item){
-				console.log(item);
+				
 				this.people_num = item.people_num
 				this.formState.content_type = item.type_name
 				this.formState.amount = item.price
+				if(this.formState.solution_name.length > this.people_num){
+					this.formState.solution_name = this.formState.solution_name.slice(0, this.people_num)
+				}
 			},
 			// 添加祝福语
 			selectBlessing(item){
@@ -398,6 +440,14 @@
 <style lang="scss" scoped>
 	
 .taisui{
+	.taisui_content{
+		padding: 0 50rpx;
+	}
+	.cover{
+		image{
+			width: 100%;
+		}
+	}
 	.desc{
 		.title{
 			display: block;
@@ -449,13 +499,18 @@
 			.input_value{
 				flex: 1;
 				text-align: right;
+				background-color: inherit;
+				font-size: 30rpx;
+				&.btn{
+					color: #808080;
+				}
 			}
 			.suffix{
 				color: #BEAD7A;
 			}
 		}
 		.inline{
-			height: 80rpx;
+			height: 100rpx;
 			.title{
 				flex: 0 0 120rpx;//长度根据最长的文字宽度设置
 				text-align: justify;
@@ -468,8 +523,14 @@
 				}
 			}
 			.input_value{
-				height: 80rpx;
+				height: 100rpx;
+				line-height: 100rpx;
 				color: #BCAA72;
+				background-color: inherit;
+				font-size: 30rpx;
+				&.btn{
+					color: #808080;
+				}
 			}
 			.suffix{
 				margin-left: 10rpx;
@@ -477,8 +538,9 @@
 		}
 		.taisui_type{
 			.types{
+				padding: 10rpx 50rpx;
 				display: flex;
-				justify-content: flex-start;
+				justify-content: space-around;
 				align-items: center;
 				view{
 					margin: 0 20rpx;

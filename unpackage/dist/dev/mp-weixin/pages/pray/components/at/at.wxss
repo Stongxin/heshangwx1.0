@@ -24,6 +24,12 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.at .at_content.data-v-2aeafae2 {
+  padding: 0 50rpx;
+}
+.at .cover image.data-v-2aeafae2 {
+  width: 100%;
+}
 .at .desc text.data-v-2aeafae2 {
   display: block;
 }
@@ -85,10 +91,16 @@
   color: #BCAA72;
 }
 .at .merit .form_item .input_value.data-v-2aeafae2 {
+  height: 100rpx;
+  line-height: 100rpx;
   font-size: 30rpx;
   font-family: PingFang SC;
   font-weight: 500;
   color: #BEAD7A;
+  background-color: inherit;
+}
+.at .merit .form_item .input_value.btn.data-v-2aeafae2 {
+  color: #808080;
 }
 .at .merit .hint.data-v-2aeafae2 {
   font-size: 24rpx;
@@ -125,7 +137,7 @@
   color: #BEAD7A;
 }
 .at .merit .inline.data-v-2aeafae2 {
-  height: 80rpx;
+  height: 100rpx;
 }
 .at .merit .inline .title.data-v-2aeafae2 {
   flex: 0 0 120rpx;
@@ -139,7 +151,8 @@
   width: 100%;
 }
 .at .merit .inline .input_value.data-v-2aeafae2 {
-  height: 80rpx;
+  height: 100rpx;
+  line-height: 100rpx;
 }
 .at .merit .inline .suffix.data-v-2aeafae2 {
   margin-left: 10rpx;

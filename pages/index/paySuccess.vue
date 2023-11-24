@@ -1,11 +1,14 @@
 <template>
 	<view class="content">
 		<view class="">
-			<image src="/static/success.png" mode=""></image>
-			<text>支付成功</text>
-			<view class="backHome" v-if="showBack" @click="backHome()">
+			<image v-if="result" src="/static/success.png" mode=""></image>
+			<image v-else src="/static/error.png" mode=""></image>
+			<text v-if="result">支付成功</text>
+			<text v-else>支付失败</text>
+			<button class="backHome" open-type="launchApp" app-parameter="wechat" @error="launchAppError">返回和上</button>
+			<!-- <view class="backHome" v-if="showBack" @click="backHome()">
 				返回主页
-			</view>
+			</view> -->
 		</view>
 	</view>
 </template>
@@ -29,10 +32,14 @@
 			uni.hideHomeButton()
 		},
 		methods: {
+			launchAppError (e) {
+			    console.log(e.detail.errMsg)
+			},
 			backHome(){
-				uni.reLaunch({
-					url: '/pages/templeHome/templeHome?scene=' + uni.getStorageSync('temple_id')
-				})
+				
+				// uni.reLaunch({
+				// 	url: '/pages/templeHome/templeHome?scene=' + uni.getStorageSync('temple_id')
+				// })
 			}
 		}
 	}

@@ -14,7 +14,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var objectKeys = ['qy', 'env', 'error', 'version', 'lanDebug', 'cloud', 'serviceMarket', 'router', 'worklet'];
+var objectKeys = ['qy', 'env', 'error', 'version', 'lanDebug', 'cloud', 'serviceMarket', 'router', 'worklet', '__webpack_require_UNI_MP_PLUGIN__'];
 var singlePageDisableKey = ['lanDebug', 'router', 'worklet'];
 var target = typeof globalThis !== 'undefined' ? globalThis : function () {
   return this;
@@ -780,8 +780,8 @@ function populateParameters(result) {
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "3.8.4",
-    uniRuntimeVersion: "3.8.4",
+    uniCompileVersion: "3.8.7",
+    uniRuntimeVersion: "3.8.7",
     uniPlatform: undefined || "mp-weixin",
     deviceBrand: deviceBrand,
     deviceModel: model,
@@ -1954,14 +1954,10 @@ function handleEvent(event) {
   }
 }
 var eventChannels = {};
-var eventChannelStack = [];
 function getEventChannel(id) {
-  if (id) {
-    var eventChannel = eventChannels[id];
-    delete eventChannels[id];
-    return eventChannel;
-  }
-  return eventChannelStack.shift();
+  var eventChannel = eventChannels[id];
+  delete eventChannels[id];
+  return eventChannel;
 }
 var hooks = ['onShow', 'onHide', 'onError', 'onPageNotFound', 'onThemeChange', 'onUnhandledRejection'];
 function initEventChannel() {
@@ -2428,7 +2424,7 @@ if (typeof Proxy !== 'undefined' && "mp-weixin" !== 'app-plus') {
       uni[name] = promisify(name, todoApis[name]);
     });
     Object.keys(extraApi).forEach(function (name) {
-      uni[name] = promisify(name, todoApis[name]);
+      uni[name] = promisify(name, extraApi[name]);
     });
   }
   Object.keys(eventApi).forEach(function (name) {
@@ -9481,9 +9477,9 @@ internalMixin(Vue);
 
 /***/ }),
 /* 26 */
-/*!************************************!*\
-  !*** D:/youa/heshangWX/pages.json ***!
-  \************************************/
+/*!**************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/pages.json ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
@@ -9627,20 +9623,24 @@ function normalizeComponent (
 
 /***/ }),
 /* 33 */
-/*!*****************************************!*\
-  !*** D:/youa/heshangWX/utils/common.js ***!
-  \*****************************************/
+/*!*******************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/utils/common.js ***!
+  \*******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(uni) {
 
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.version = exports.throttle = exports.requestTree = exports.request = exports.push = exports.domain = exports.debounce = exports.common = exports.alUploadImage = exports.abortRequest = void 0;
+exports.version = exports.throttle = exports.requestTree = exports.request = exports.push = exports.login = exports.domain = exports.debounce = exports.common = exports.alUploadImage = exports.abortRequest = void 0;
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
 var _bundle = __webpack_require__(/*! @/utils/bundle.js */ 34);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 //引入上面的代码
 // export const domain = 'https://www.heshangsz.com' // 线上域名
 var domain = 'https://develop.heshangsz.com'; // 本地域名
@@ -9763,7 +9763,7 @@ var common = {
     }
     return newTime;
   },
-  disposeSrc: function disposeSrc(src) {
+  disposeSrc: function disposeSrc(src, type) {
     try {
       if (src == '') {
         return '';
@@ -9772,7 +9772,11 @@ var common = {
       } else if (src.indexOf('base64') > -1) {
         return src;
       } else {
-        return 'https://heshang-app.oss-cn-hangzhou.aliyuncs.com' + src;
+        if (type == 'domain') {
+          return domain + '/' + src;
+        } else {
+          return 'https://heshang-app.oss-cn-hangzhou.aliyuncs.com' + src;
+        }
       }
     } catch (e) {
       //TODO handle the exception
@@ -9813,54 +9817,76 @@ var request = function request(options) {
       // 请求接口地址
       method: options.method || 'POST',
       // 方法从options中获取，如果没有传入method，则默认为POST，
-      data: options.data,
+      data: _objectSpread(_objectSpread({}, options.data), {}, {
+        uuid: 'wx28e269b3f78c2d01'
+      }),
       // 请求接口参数
       dataType: 'json',
       header: options.header || {
         'content-type': 'application/x-www-form-urlencoded'
         // 'Authorization': 'Bearer' + uni.getStorageSync('authorization'),
         // token: uni.getStorageSync('token')
-        // token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJoZXNoYW5nX2dvIiwiYXVkIjoiIiwiaWF0IjoxNjgzMTc5NzQ3LCJleHAiOjE2OTAzNzk3NDcsImRhdGEiOnsiaWQiOjIsInVzZXJuYW1lIjoiOTY1MjM0NDY5NTQiLCJtb2JpbGUiOiIxNTAwNDY1MTQxMiIsIm5pY2tuYW1lIjoiXHU5NjMzXHU2NTRjIn19.2n1bQlgRosvZv29ibZx21niMssUbhGW84Wat1vkAeJY'
+        // token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJoZXNoYW5nX2dvIiwiYXVkIjoiIiwiaWF0IjoxNjk1Nzk5MTUzLCJleHAiOjE3MDI5OTkxNTMsImRhdGEiOnsiaWQiOjIsInVzZXJuYW1lIjoiOTY1MjM0NDY5NTQiLCJtb2JpbGUiOiIxNTAwNDY1MTQxMiIsIm5pY2tuYW1lIjoiXHU5NjMzXHU2NTRjIn19.7I7P7ZkdgGuFsV6OR7kdecm4d0QtxRR9rZyPkn6gvT0'
       },
 
       success: function success(res) {
-        console.log(res);
+        // console.log(res);
         if (res.statusCode == 200) {
           if (res.data.code == 406) {
-            uni.clearStorageSync();
-            // uni.login({
-            // 	provider: 'weixin', //使用微信登录
-            // 	success:  (loginRes)=>{
-            // 		request({
-            // 			url: 'onLogin',
-            // 			version: '/vx/',
-            // 			method: 'GET',
-            // 			data: {
-            // 				code: loginRes.code
-            // 			}
-            // 		}).then(openIdData=>{
-            // 			uni.setStorageSync('openid', openIdData.openid)
-            // 			request({
-            // 				url: 'user/WxXxOpendiLogin',
-            // 				data: {
-            // 					openid: openIdData.openid
-            // 				}
-            // 			}).then(res=>{
-            // 				uni.setStorageSync('token', res.token)
-            // 				uni.setStorageSync('mobile', res.mobile)
-            // 				// 页面重载
-            // 				const pages = getCurrentPages()
-            // 				// 声明一个pages使用getCurrentPages方法
-            // 				const curPage = pages[pages.length - 1]
-            // 				console.log(curPage);
-            // 				// 声明一个当前页面
-            // 				curPage.onLoad(curPage.options) // 传入参数
-            // 				curPage.onShow()
-            // 				curPage.onReady()
-            // 			})
-            // 		})
-            // 	}
-            // });
+            uni.login({
+              provider: 'weixin',
+              //使用微信登录
+              success: function success(loginRes) {
+                request({
+                  url: 'onLogin',
+                  version: '/vx/',
+                  method: 'GET',
+                  data: {
+                    code: loginRes.code,
+                    temple_id: uni.getStorageSync('temple_id')
+                  }
+                }).then(function (openIdData) {
+                  if (!openIdData.openid) {
+                    uni.showModal({
+                      title: '提示',
+                      content: '配置信息错误',
+                      success: function success(res) {
+                        if (res.confirm) {
+                          console.log('用户点击确定');
+                        } else if (res.cancel) {
+                          console.log('用户点击取消');
+                        }
+                      }
+                    });
+                    return;
+                  }
+                  var temple_id = uni.getStorageSync('temple_id');
+                  var scene = uni.getStorageSync('scene');
+                  uni.clearStorageSync();
+                  uni.setStorageSync('openid', openIdData.openid);
+                  uni.setStorageSync('temple_id', temple_id);
+                  uni.setStorageSync('scene', scene);
+                  request({
+                    url: 'user/WxXxOpendiLogin',
+                    data: {
+                      openid: openIdData.openid
+                    }
+                  }).then(function (res) {
+                    uni.setStorageSync('token', res.token);
+                    uni.setStorageSync('mobile', res.mobile);
+                    // 页面重载
+                    var pages = getCurrentPages();
+                    // 声明一个pages使用getCurrentPages方法
+                    var curPage = pages[pages.length - 1];
+                    console.log(curPage);
+                    // 声明一个当前页面
+                    curPage.onLoad(curPage.options); // 传入参数
+                    curPage.onShow();
+                    curPage.onReady();
+                  });
+                });
+              }
+            });
           } else if (res.data.code != 1) {
             uni.showToast({
               title: res.data.msg,
@@ -9887,7 +9913,7 @@ var request = function request(options) {
           // 		}
           // 	}
           // });
-          uni.clearStorageSync();
+          // uni.clearStorageSync()
           // uni.redirectTo({
           // 	url: "/pages/login/login"
           // })
@@ -9911,10 +9937,13 @@ var request = function request(options) {
           });
           rejected(res);
         }
-        resolved(res.data.data);
+        if (options.isTransformResponse) {
+          resolved(res.data);
+        } else {
+          resolved(res.data.data);
+        }
       },
       fail: function fail(err) {
-        console.log(err, 555);
         rejected(err);
       },
       complete: function complete(all) {
@@ -9926,6 +9955,39 @@ var request = function request(options) {
   });
 };
 exports.request = request;
+var login = function login() {
+  var _this = this;
+  return new Promise(function (reslove, rejected) {
+    uni.login({
+      provider: 'weixin',
+      //使用微信登录
+      success: function success(loginRes) {
+        _this.$request({
+          url: 'onLogin',
+          version: '/vx/',
+          method: 'GET',
+          data: {
+            code: loginRes.code,
+            temple_id: uni.getStorageSync('temple_id')
+          }
+        }).then(function (openIdData) {
+          uni.setStorageSync('openid', openIdData.openid);
+          _this.$request({
+            url: 'user/WxXxOpendiLogin',
+            data: {
+              openid: openIdData.openid
+            }
+          }).then(function (res) {
+            uni.setStorageSync('token', res.token);
+            uni.setStorageSync('mobile', res.mobile);
+            reslove(true);
+          });
+        });
+      }
+    });
+  });
+};
+exports.login = login;
 var abortRequest = function abortRequest(name) {
   console.log(requestTree, 111111);
   requestTree[name].abort();
@@ -10011,10 +10073,10 @@ var debounce = function debounce(func, wait) {
   var _lastTime;
   return function () {
     var _arguments = arguments,
-      _this = this;
+      _this2 = this;
     clearTimeout(_lastTime);
     _lastTime = setTimeout(function () {
-      func.apply(_this, _arguments);
+      func.apply(_this2, _arguments);
     }, wait);
   };
 };
@@ -10043,9 +10105,9 @@ exports.throttle = throttle;
 
 /***/ }),
 /* 34 */
-/*!*****************************************!*\
-  !*** D:/youa/heshangWX/utils/bundle.js ***!
-  \*****************************************/
+/*!*******************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/utils/bundle.js ***!
+  \*******************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10392,9 +10454,9 @@ exports.Base64 = Base64;
 
 /***/ }),
 /* 35 */
-/*!********************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/index.js ***!
-  \********************************************************/
+/*!**********************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/index.js ***!
+  \**********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10526,9 +10588,9 @@ exports.default = _default;
 
 /***/ }),
 /* 36 */
-/*!*******************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/mixin/mixin.js ***!
-  \*******************************************************************/
+/*!*********************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/mixin/mixin.js ***!
+  \*********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10601,9 +10663,9 @@ exports.default = _default;
 
 /***/ }),
 /* 37 */
-/*!*********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/request/index.js ***!
-  \*********************************************************************/
+/*!***********************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/request/index.js ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10812,9 +10874,9 @@ exports.default = _default;
 
 /***/ }),
 /* 38 */
-/*!**************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/deepMerge.js ***!
-  \**************************************************************************/
+/*!****************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/deepMerge.js ***!
+  \****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10861,9 +10923,9 @@ exports.default = _default;
 
 /***/ }),
 /* 39 */
-/*!**************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/deepClone.js ***!
-  \**************************************************************************/
+/*!****************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/deepClone.js ***!
+  \****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -10902,9 +10964,9 @@ exports.default = _default;
 
 /***/ }),
 /* 40 */
-/*!*********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/test.js ***!
-  \*********************************************************************/
+/*!***********************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/test.js ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11150,9 +11212,9 @@ exports.default = _default;
 
 /***/ }),
 /* 41 */
-/*!****************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/queryParams.js ***!
-  \****************************************************************************/
+/*!******************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/queryParams.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11231,9 +11293,9 @@ exports.default = _default;
 
 /***/ }),
 /* 42 */
-/*!**********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/route.js ***!
-  \**********************************************************************/
+/*!************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/route.js ***!
+  \************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11786,9 +11848,9 @@ module.exports = _asyncToGenerator, module.exports.__esModule = true, module.exp
 
 /***/ }),
 /* 46 */
-/*!***************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/timeFormat.js ***!
-  \***************************************************************************/
+/*!*****************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/timeFormat.js ***!
+  \*****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11862,9 +11924,9 @@ exports.default = _default;
 
 /***/ }),
 /* 47 */
-/*!*************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/timeFrom.js ***!
-  \*************************************************************************/
+/*!***************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/timeFrom.js ***!
+  \***************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -11926,9 +11988,9 @@ exports.default = _default;
 
 /***/ }),
 /* 48 */
-/*!******************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/colorGradient.js ***!
-  \******************************************************************************/
+/*!********************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/colorGradient.js ***!
+  \********************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12079,9 +12141,9 @@ exports.default = _default;
 
 /***/ }),
 /* 49 */
-/*!*********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/guid.js ***!
-  \*********************************************************************/
+/*!***********************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/guid.js ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12139,9 +12201,9 @@ exports.default = _default;
 
 /***/ }),
 /* 50 */
-/*!**********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/color.js ***!
-  \**********************************************************************/
+/*!************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/color.js ***!
+  \************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12187,9 +12249,9 @@ exports.default = _default;
 
 /***/ }),
 /* 51 */
-/*!**************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/type2icon.js ***!
-  \**************************************************************************/
+/*!****************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/type2icon.js ***!
+  \****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12240,9 +12302,9 @@ exports.default = _default;
 
 /***/ }),
 /* 52 */
-/*!****************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/randomArray.js ***!
-  \****************************************************************************/
+/*!******************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/randomArray.js ***!
+  \******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12266,9 +12328,9 @@ exports.default = _default;
 
 /***/ }),
 /* 53 */
-/*!************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/addUnit.js ***!
-  \************************************************************************/
+/*!**************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/addUnit.js ***!
+  \**************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12292,9 +12354,9 @@ function addUnit() {
 
 /***/ }),
 /* 54 */
-/*!***********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/random.js ***!
-  \***********************************************************************/
+/*!*************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/random.js ***!
+  \*************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12318,9 +12380,9 @@ exports.default = _default;
 
 /***/ }),
 /* 55 */
-/*!*********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/trim.js ***!
-  \*********************************************************************/
+/*!***********************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/trim.js ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12350,9 +12412,9 @@ exports.default = _default;
 
 /***/ }),
 /* 56 */
-/*!**********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/toast.js ***!
-  \**********************************************************************/
+/*!************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/toast.js ***!
+  \************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12377,9 +12439,9 @@ exports.default = _default;
 
 /***/ }),
 /* 57 */
-/*!**************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/getParent.js ***!
-  \**************************************************************************/
+/*!****************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/getParent.js ***!
+  \****************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12446,9 +12508,9 @@ function getParent(name, keys) {
 
 /***/ }),
 /* 58 */
-/*!************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/$parent.js ***!
-  \************************************************************************/
+/*!**************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/$parent.js ***!
+  \**************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12481,9 +12543,9 @@ function $parent() {
 
 /***/ }),
 /* 59 */
-/*!********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/sys.js ***!
-  \********************************************************************/
+/*!**********************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/sys.js ***!
+  \**********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12506,9 +12568,9 @@ function sys() {
 
 /***/ }),
 /* 60 */
-/*!*************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/debounce.js ***!
-  \*************************************************************************/
+/*!***************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/debounce.js ***!
+  \***************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12553,9 +12615,9 @@ exports.default = _default;
 
 /***/ }),
 /* 61 */
-/*!*************************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/function/throttle.js ***!
-  \*************************************************************************/
+/*!***************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/function/throttle.js ***!
+  \***************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12604,9 +12666,9 @@ exports.default = _default;
 
 /***/ }),
 /* 62 */
-/*!*********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/config/config.js ***!
-  \*********************************************************************/
+/*!***********************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/config/config.js ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12629,9 +12691,9 @@ exports.default = _default;
 
 /***/ }),
 /* 63 */
-/*!*********************************************************************!*\
-  !*** D:/youa/heshangWX/node_modules/uview-ui/libs/config/zIndex.js ***!
-  \*********************************************************************/
+/*!***********************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/node_modules/uview-ui/libs/config/zIndex.js ***!
+  \***********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -12735,10 +12797,80 @@ exports.default = _default;
 /* 132 */,
 /* 133 */,
 /* 134 */,
-/* 135 */
-/*!**************************************************************!*\
-  !*** D:/youa/heshangWX/components/calendar-boke/calendar.js ***!
-  \**************************************************************/
+/* 135 */,
+/* 136 */,
+/* 137 */,
+/* 138 */,
+/* 139 */,
+/* 140 */,
+/* 141 */,
+/* 142 */,
+/* 143 */,
+/* 144 */,
+/* 145 */,
+/* 146 */,
+/* 147 */,
+/* 148 */,
+/* 149 */,
+/* 150 */,
+/* 151 */,
+/* 152 */,
+/* 153 */,
+/* 154 */,
+/* 155 */,
+/* 156 */,
+/* 157 */,
+/* 158 */,
+/* 159 */,
+/* 160 */,
+/* 161 */,
+/* 162 */,
+/* 163 */,
+/* 164 */,
+/* 165 */,
+/* 166 */,
+/* 167 */,
+/* 168 */,
+/* 169 */,
+/* 170 */,
+/* 171 */,
+/* 172 */,
+/* 173 */,
+/* 174 */,
+/* 175 */,
+/* 176 */,
+/* 177 */,
+/* 178 */,
+/* 179 */,
+/* 180 */,
+/* 181 */,
+/* 182 */,
+/* 183 */,
+/* 184 */,
+/* 185 */,
+/* 186 */,
+/* 187 */,
+/* 188 */,
+/* 189 */,
+/* 190 */,
+/* 191 */,
+/* 192 */,
+/* 193 */,
+/* 194 */,
+/* 195 */,
+/* 196 */,
+/* 197 */,
+/* 198 */,
+/* 199 */,
+/* 200 */,
+/* 201 */,
+/* 202 */,
+/* 203 */,
+/* 204 */,
+/* 205 */
+/*!****************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/components/calendar-boke/calendar.js ***!
+  \****************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -13387,55 +13519,1050 @@ var _default = calendar;
 exports.default = _default;
 
 /***/ }),
-/* 136 */,
-/* 137 */,
-/* 138 */,
-/* 139 */,
-/* 140 */,
-/* 141 */,
-/* 142 */,
-/* 143 */
-/*!********************************************!*\
-  !*** D:/youa/heshangWX/utils/regions.json ***!
-  \********************************************/
+/* 206 */,
+/* 207 */,
+/* 208 */,
+/* 209 */,
+/* 210 */,
+/* 211 */,
+/* 212 */,
+/* 213 */
+/*!**********************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/utils/regions.json ***!
+  \**********************************************************/
 /*! exports provided: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, default */
 /***/ (function(module) {
 
 module.exports = JSON.parse("[{\"value\":\"11\",\"text\":\"北京市\",\"children\":[{\"value\":\"1101\",\"text\":\"市辖区\",\"children\":[{\"value\":\"110101\",\"text\":\"东城区\"},{\"value\":\"110102\",\"text\":\"西城区\"},{\"value\":\"110105\",\"text\":\"朝阳区\"},{\"value\":\"110106\",\"text\":\"丰台区\"},{\"value\":\"110107\",\"text\":\"石景山区\"},{\"value\":\"110108\",\"text\":\"海淀区\"},{\"value\":\"110109\",\"text\":\"门头沟区\"},{\"value\":\"110111\",\"text\":\"房山区\"},{\"value\":\"110112\",\"text\":\"通州区\"},{\"value\":\"110113\",\"text\":\"顺义区\"},{\"value\":\"110114\",\"text\":\"昌平区\"},{\"value\":\"110115\",\"text\":\"大兴区\"},{\"value\":\"110116\",\"text\":\"怀柔区\"},{\"value\":\"110117\",\"text\":\"平谷区\"},{\"value\":\"110118\",\"text\":\"密云区\"},{\"value\":\"110119\",\"text\":\"延庆区\"}]}]},{\"value\":\"12\",\"text\":\"天津市\",\"children\":[{\"value\":\"1201\",\"text\":\"市辖区\",\"children\":[{\"value\":\"120101\",\"text\":\"和平区\"},{\"value\":\"120102\",\"text\":\"河东区\"},{\"value\":\"120103\",\"text\":\"河西区\"},{\"value\":\"120104\",\"text\":\"南开区\"},{\"value\":\"120105\",\"text\":\"河北区\"},{\"value\":\"120106\",\"text\":\"红桥区\"},{\"value\":\"120110\",\"text\":\"东丽区\"},{\"value\":\"120111\",\"text\":\"西青区\"},{\"value\":\"120112\",\"text\":\"津南区\"},{\"value\":\"120113\",\"text\":\"北辰区\"},{\"value\":\"120114\",\"text\":\"武清区\"},{\"value\":\"120115\",\"text\":\"宝坻区\"},{\"value\":\"120116\",\"text\":\"滨海新区\"},{\"value\":\"120117\",\"text\":\"宁河区\"},{\"value\":\"120118\",\"text\":\"静海区\"},{\"value\":\"120119\",\"text\":\"蓟州区\"}]}]},{\"value\":\"13\",\"text\":\"河北省\",\"children\":[{\"value\":\"1301\",\"text\":\"石家庄市\",\"children\":[{\"value\":\"130102\",\"text\":\"长安区\"},{\"value\":\"130104\",\"text\":\"桥西区\"},{\"value\":\"130105\",\"text\":\"新华区\"},{\"value\":\"130107\",\"text\":\"井陉矿区\"},{\"value\":\"130108\",\"text\":\"裕华区\"},{\"value\":\"130109\",\"text\":\"藁城区\"},{\"value\":\"130110\",\"text\":\"鹿泉区\"},{\"value\":\"130111\",\"text\":\"栾城区\"},{\"value\":\"130121\",\"text\":\"井陉县\"},{\"value\":\"130123\",\"text\":\"正定县\"},{\"value\":\"130125\",\"text\":\"行唐县\"},{\"value\":\"130126\",\"text\":\"灵寿县\"},{\"value\":\"130127\",\"text\":\"高邑县\"},{\"value\":\"130128\",\"text\":\"深泽县\"},{\"value\":\"130129\",\"text\":\"赞皇县\"},{\"value\":\"130130\",\"text\":\"无极县\"},{\"value\":\"130131\",\"text\":\"平山县\"},{\"value\":\"130132\",\"text\":\"元氏县\"},{\"value\":\"130133\",\"text\":\"赵县\"},{\"value\":\"130183\",\"text\":\"晋州市\"},{\"value\":\"130184\",\"text\":\"新乐市\"}]},{\"value\":\"1302\",\"text\":\"唐山市\",\"children\":[{\"value\":\"130202\",\"text\":\"路南区\"},{\"value\":\"130203\",\"text\":\"路北区\"},{\"value\":\"130204\",\"text\":\"古冶区\"},{\"value\":\"130205\",\"text\":\"开平区\"},{\"value\":\"130207\",\"text\":\"丰南区\"},{\"value\":\"130208\",\"text\":\"丰润区\"},{\"value\":\"130209\",\"text\":\"曹妃甸区\"},{\"value\":\"130223\",\"text\":\"滦县\"},{\"value\":\"130224\",\"text\":\"滦南县\"},{\"value\":\"130225\",\"text\":\"乐亭县\"},{\"value\":\"130227\",\"text\":\"迁西县\"},{\"value\":\"130229\",\"text\":\"玉田县\"},{\"value\":\"130281\",\"text\":\"遵化市\"},{\"value\":\"130283\",\"text\":\"迁安市\"}]},{\"value\":\"1303\",\"text\":\"秦皇岛市\",\"children\":[{\"value\":\"130302\",\"text\":\"海港区\"},{\"value\":\"130303\",\"text\":\"山海关区\"},{\"value\":\"130304\",\"text\":\"北戴河区\"},{\"value\":\"130306\",\"text\":\"抚宁区\"},{\"value\":\"130321\",\"text\":\"青龙满族自治县\"},{\"value\":\"130322\",\"text\":\"昌黎县\"},{\"value\":\"130324\",\"text\":\"卢龙县\"}]},{\"value\":\"1304\",\"text\":\"邯郸市\",\"children\":[{\"value\":\"130402\",\"text\":\"邯山区\"},{\"value\":\"130403\",\"text\":\"丛台区\"},{\"value\":\"130404\",\"text\":\"复兴区\"},{\"value\":\"130406\",\"text\":\"峰峰矿区\"},{\"value\":\"130421\",\"text\":\"邯郸县\"},{\"value\":\"130423\",\"text\":\"临漳县\"},{\"value\":\"130424\",\"text\":\"成安县\"},{\"value\":\"130425\",\"text\":\"大名县\"},{\"value\":\"130426\",\"text\":\"涉县\"},{\"value\":\"130427\",\"text\":\"磁县\"},{\"value\":\"130428\",\"text\":\"肥乡县\"},{\"value\":\"130429\",\"text\":\"永年县\"},{\"value\":\"130430\",\"text\":\"邱县\"},{\"value\":\"130431\",\"text\":\"鸡泽县\"},{\"value\":\"130432\",\"text\":\"广平县\"},{\"value\":\"130433\",\"text\":\"馆陶县\"},{\"value\":\"130434\",\"text\":\"魏县\"},{\"value\":\"130435\",\"text\":\"曲周县\"},{\"value\":\"130481\",\"text\":\"武安市\"}]},{\"value\":\"1305\",\"text\":\"邢台市\",\"children\":[{\"value\":\"130502\",\"text\":\"桥东区\"},{\"value\":\"130503\",\"text\":\"桥西区\"},{\"value\":\"130521\",\"text\":\"邢台县\"},{\"value\":\"130522\",\"text\":\"临城县\"},{\"value\":\"130523\",\"text\":\"内丘县\"},{\"value\":\"130524\",\"text\":\"柏乡县\"},{\"value\":\"130525\",\"text\":\"隆尧县\"},{\"value\":\"130526\",\"text\":\"任县\"},{\"value\":\"130527\",\"text\":\"南和县\"},{\"value\":\"130528\",\"text\":\"宁晋县\"},{\"value\":\"130529\",\"text\":\"巨鹿县\"},{\"value\":\"130530\",\"text\":\"新河县\"},{\"value\":\"130531\",\"text\":\"广宗县\"},{\"value\":\"130532\",\"text\":\"平乡县\"},{\"value\":\"130533\",\"text\":\"威县\"},{\"value\":\"130534\",\"text\":\"清河县\"},{\"value\":\"130535\",\"text\":\"临西县\"},{\"value\":\"130581\",\"text\":\"南宫市\"},{\"value\":\"130582\",\"text\":\"沙河市\"}]},{\"value\":\"1306\",\"text\":\"保定市\",\"children\":[{\"value\":\"130602\",\"text\":\"竞秀区\"},{\"value\":\"130606\",\"text\":\"莲池区\"},{\"value\":\"130607\",\"text\":\"满城区\"},{\"value\":\"130608\",\"text\":\"清苑区\"},{\"value\":\"130609\",\"text\":\"徐水区\"},{\"value\":\"130623\",\"text\":\"涞水县\"},{\"value\":\"130624\",\"text\":\"阜平县\"},{\"value\":\"130626\",\"text\":\"定兴县\"},{\"value\":\"130627\",\"text\":\"唐县\"},{\"value\":\"130628\",\"text\":\"高阳县\"},{\"value\":\"130629\",\"text\":\"容城县\"},{\"value\":\"130630\",\"text\":\"涞源县\"},{\"value\":\"130631\",\"text\":\"望都县\"},{\"value\":\"130632\",\"text\":\"安新县\"},{\"value\":\"130633\",\"text\":\"易县\"},{\"value\":\"130634\",\"text\":\"曲阳县\"},{\"value\":\"130635\",\"text\":\"蠡县\"},{\"value\":\"130636\",\"text\":\"顺平县\"},{\"value\":\"130637\",\"text\":\"博野县\"},{\"value\":\"130638\",\"text\":\"雄县\"},{\"value\":\"130681\",\"text\":\"涿州市\"},{\"value\":\"130683\",\"text\":\"安国市\"},{\"value\":\"130684\",\"text\":\"高碑店市\"}]},{\"value\":\"1307\",\"text\":\"张家口市\",\"children\":[{\"value\":\"130702\",\"text\":\"桥东区\"},{\"value\":\"130703\",\"text\":\"桥西区\"},{\"value\":\"130705\",\"text\":\"宣化区\"},{\"value\":\"130706\",\"text\":\"下花园区\"},{\"value\":\"130708\",\"text\":\"万全区\"},{\"value\":\"130709\",\"text\":\"崇礼区\"},{\"value\":\"130722\",\"text\":\"张北县\"},{\"value\":\"130723\",\"text\":\"康保县\"},{\"value\":\"130724\",\"text\":\"沽源县\"},{\"value\":\"130725\",\"text\":\"尚义县\"},{\"value\":\"130726\",\"text\":\"蔚县\"},{\"value\":\"130727\",\"text\":\"阳原县\"},{\"value\":\"130728\",\"text\":\"怀安县\"},{\"value\":\"130730\",\"text\":\"怀来县\"},{\"value\":\"130731\",\"text\":\"涿鹿县\"},{\"value\":\"130732\",\"text\":\"赤城县\"}]},{\"value\":\"1308\",\"text\":\"承德市\",\"children\":[{\"value\":\"130802\",\"text\":\"双桥区\"},{\"value\":\"130803\",\"text\":\"双滦区\"},{\"value\":\"130804\",\"text\":\"鹰手营子矿区\"},{\"value\":\"130821\",\"text\":\"承德县\"},{\"value\":\"130822\",\"text\":\"兴隆县\"},{\"value\":\"130823\",\"text\":\"平泉县\"},{\"value\":\"130824\",\"text\":\"滦平县\"},{\"value\":\"130825\",\"text\":\"隆化县\"},{\"value\":\"130826\",\"text\":\"丰宁满族自治县\"},{\"value\":\"130827\",\"text\":\"宽城满族自治县\"},{\"value\":\"130828\",\"text\":\"围场满族蒙古族自治县\"}]},{\"value\":\"1309\",\"text\":\"沧州市\",\"children\":[{\"value\":\"130902\",\"text\":\"新华区\"},{\"value\":\"130903\",\"text\":\"运河区\"},{\"value\":\"130921\",\"text\":\"沧县\"},{\"value\":\"130922\",\"text\":\"青县\"},{\"value\":\"130923\",\"text\":\"东光县\"},{\"value\":\"130924\",\"text\":\"海兴县\"},{\"value\":\"130925\",\"text\":\"盐山县\"},{\"value\":\"130926\",\"text\":\"肃宁县\"},{\"value\":\"130927\",\"text\":\"南皮县\"},{\"value\":\"130928\",\"text\":\"吴桥县\"},{\"value\":\"130929\",\"text\":\"献县\"},{\"value\":\"130930\",\"text\":\"孟村回族自治县\"},{\"value\":\"130981\",\"text\":\"泊头市\"},{\"value\":\"130982\",\"text\":\"任丘市\"},{\"value\":\"130983\",\"text\":\"黄骅市\"},{\"value\":\"130984\",\"text\":\"河间市\"}]},{\"value\":\"1310\",\"text\":\"廊坊市\",\"children\":[{\"value\":\"131002\",\"text\":\"安次区\"},{\"value\":\"131003\",\"text\":\"广阳区\"},{\"value\":\"131022\",\"text\":\"固安县\"},{\"value\":\"131023\",\"text\":\"永清县\"},{\"value\":\"131024\",\"text\":\"香河县\"},{\"value\":\"131025\",\"text\":\"大城县\"},{\"value\":\"131026\",\"text\":\"文安县\"},{\"value\":\"131028\",\"text\":\"大厂回族自治县\"},{\"value\":\"131081\",\"text\":\"霸州市\"},{\"value\":\"131082\",\"text\":\"三河市\"}]},{\"value\":\"1311\",\"text\":\"衡水市\",\"children\":[{\"value\":\"131102\",\"text\":\"桃城区\"},{\"value\":\"131103\",\"text\":\"冀州区\"},{\"value\":\"131121\",\"text\":\"枣强县\"},{\"value\":\"131122\",\"text\":\"武邑县\"},{\"value\":\"131123\",\"text\":\"武强县\"},{\"value\":\"131124\",\"text\":\"饶阳县\"},{\"value\":\"131125\",\"text\":\"安平县\"},{\"value\":\"131126\",\"text\":\"故城县\"},{\"value\":\"131127\",\"text\":\"景县\"},{\"value\":\"131128\",\"text\":\"阜城县\"},{\"value\":\"131182\",\"text\":\"深州市\"}]},{\"value\":\"1390\",\"text\":\"省直辖县级行政区划\",\"children\":[{\"value\":\"139001\",\"text\":\"定州市\"},{\"value\":\"139002\",\"text\":\"辛集市\"}]}]},{\"value\":\"14\",\"text\":\"山西省\",\"children\":[{\"value\":\"1401\",\"text\":\"太原市\",\"children\":[{\"value\":\"140105\",\"text\":\"小店区\"},{\"value\":\"140106\",\"text\":\"迎泽区\"},{\"value\":\"140107\",\"text\":\"杏花岭区\"},{\"value\":\"140108\",\"text\":\"尖草坪区\"},{\"value\":\"140109\",\"text\":\"万柏林区\"},{\"value\":\"140110\",\"text\":\"晋源区\"},{\"value\":\"140121\",\"text\":\"清徐县\"},{\"value\":\"140122\",\"text\":\"阳曲县\"},{\"value\":\"140123\",\"text\":\"娄烦县\"},{\"value\":\"140181\",\"text\":\"古交市\"}]},{\"value\":\"1402\",\"text\":\"大同市\",\"children\":[{\"value\":\"140202\",\"text\":\"城区\"},{\"value\":\"140203\",\"text\":\"矿区\"},{\"value\":\"140211\",\"text\":\"南郊区\"},{\"value\":\"140212\",\"text\":\"新荣区\"},{\"value\":\"140221\",\"text\":\"阳高县\"},{\"value\":\"140222\",\"text\":\"天镇县\"},{\"value\":\"140223\",\"text\":\"广灵县\"},{\"value\":\"140224\",\"text\":\"灵丘县\"},{\"value\":\"140225\",\"text\":\"浑源县\"},{\"value\":\"140226\",\"text\":\"左云县\"},{\"value\":\"140227\",\"text\":\"大同县\"}]},{\"value\":\"1403\",\"text\":\"阳泉市\",\"children\":[{\"value\":\"140302\",\"text\":\"城区\"},{\"value\":\"140303\",\"text\":\"矿区\"},{\"value\":\"140311\",\"text\":\"郊区\"},{\"value\":\"140321\",\"text\":\"平定县\"},{\"value\":\"140322\",\"text\":\"盂县\"}]},{\"value\":\"1404\",\"text\":\"长治市\",\"children\":[{\"value\":\"140402\",\"text\":\"城区\"},{\"value\":\"140411\",\"text\":\"郊区\"},{\"value\":\"140421\",\"text\":\"长治县\"},{\"value\":\"140423\",\"text\":\"襄垣县\"},{\"value\":\"140424\",\"text\":\"屯留县\"},{\"value\":\"140425\",\"text\":\"平顺县\"},{\"value\":\"140426\",\"text\":\"黎城县\"},{\"value\":\"140427\",\"text\":\"壶关县\"},{\"value\":\"140428\",\"text\":\"长子县\"},{\"value\":\"140429\",\"text\":\"武乡县\"},{\"value\":\"140430\",\"text\":\"沁县\"},{\"value\":\"140431\",\"text\":\"沁源县\"},{\"value\":\"140481\",\"text\":\"潞城市\"}]},{\"value\":\"1405\",\"text\":\"晋城市\",\"children\":[{\"value\":\"140502\",\"text\":\"城区\"},{\"value\":\"140521\",\"text\":\"沁水县\"},{\"value\":\"140522\",\"text\":\"阳城县\"},{\"value\":\"140524\",\"text\":\"陵川县\"},{\"value\":\"140525\",\"text\":\"泽州县\"},{\"value\":\"140581\",\"text\":\"高平市\"}]},{\"value\":\"1406\",\"text\":\"朔州市\",\"children\":[{\"value\":\"140602\",\"text\":\"朔城区\"},{\"value\":\"140603\",\"text\":\"平鲁区\"},{\"value\":\"140621\",\"text\":\"山阴县\"},{\"value\":\"140622\",\"text\":\"应县\"},{\"value\":\"140623\",\"text\":\"右玉县\"},{\"value\":\"140624\",\"text\":\"怀仁县\"}]},{\"value\":\"1407\",\"text\":\"晋中市\",\"children\":[{\"value\":\"140702\",\"text\":\"榆次区\"},{\"value\":\"140721\",\"text\":\"榆社县\"},{\"value\":\"140722\",\"text\":\"左权县\"},{\"value\":\"140723\",\"text\":\"和顺县\"},{\"value\":\"140724\",\"text\":\"昔阳县\"},{\"value\":\"140725\",\"text\":\"寿阳县\"},{\"value\":\"140726\",\"text\":\"太谷县\"},{\"value\":\"140727\",\"text\":\"祁县\"},{\"value\":\"140728\",\"text\":\"平遥县\"},{\"value\":\"140729\",\"text\":\"灵石县\"},{\"value\":\"140781\",\"text\":\"介休市\"}]},{\"value\":\"1408\",\"text\":\"运城市\",\"children\":[{\"value\":\"140802\",\"text\":\"盐湖区\"},{\"value\":\"140821\",\"text\":\"临猗县\"},{\"value\":\"140822\",\"text\":\"万荣县\"},{\"value\":\"140823\",\"text\":\"闻喜县\"},{\"value\":\"140824\",\"text\":\"稷山县\"},{\"value\":\"140825\",\"text\":\"新绛县\"},{\"value\":\"140826\",\"text\":\"绛县\"},{\"value\":\"140827\",\"text\":\"垣曲县\"},{\"value\":\"140828\",\"text\":\"夏县\"},{\"value\":\"140829\",\"text\":\"平陆县\"},{\"value\":\"140830\",\"text\":\"芮城县\"},{\"value\":\"140881\",\"text\":\"永济市\"},{\"value\":\"140882\",\"text\":\"河津市\"}]},{\"value\":\"1409\",\"text\":\"忻州市\",\"children\":[{\"value\":\"140902\",\"text\":\"忻府区\"},{\"value\":\"140921\",\"text\":\"定襄县\"},{\"value\":\"140922\",\"text\":\"五台县\"},{\"value\":\"140923\",\"text\":\"代县\"},{\"value\":\"140924\",\"text\":\"繁峙县\"},{\"value\":\"140925\",\"text\":\"宁武县\"},{\"value\":\"140926\",\"text\":\"静乐县\"},{\"value\":\"140927\",\"text\":\"神池县\"},{\"value\":\"140928\",\"text\":\"五寨县\"},{\"value\":\"140929\",\"text\":\"岢岚县\"},{\"value\":\"140930\",\"text\":\"河曲县\"},{\"value\":\"140931\",\"text\":\"保德县\"},{\"value\":\"140932\",\"text\":\"偏关县\"},{\"value\":\"140981\",\"text\":\"原平市\"}]},{\"value\":\"1410\",\"text\":\"临汾市\",\"children\":[{\"value\":\"141002\",\"text\":\"尧都区\"},{\"value\":\"141021\",\"text\":\"曲沃县\"},{\"value\":\"141022\",\"text\":\"翼城县\"},{\"value\":\"141023\",\"text\":\"襄汾县\"},{\"value\":\"141024\",\"text\":\"洪洞县\"},{\"value\":\"141025\",\"text\":\"古县\"},{\"value\":\"141026\",\"text\":\"安泽县\"},{\"value\":\"141027\",\"text\":\"浮山县\"},{\"value\":\"141028\",\"text\":\"吉县\"},{\"value\":\"141029\",\"text\":\"乡宁县\"},{\"value\":\"141030\",\"text\":\"大宁县\"},{\"value\":\"141031\",\"text\":\"隰县\"},{\"value\":\"141032\",\"text\":\"永和县\"},{\"value\":\"141033\",\"text\":\"蒲县\"},{\"value\":\"141034\",\"text\":\"汾西县\"},{\"value\":\"141081\",\"text\":\"侯马市\"},{\"value\":\"141082\",\"text\":\"霍州市\"}]},{\"value\":\"1411\",\"text\":\"吕梁市\",\"children\":[{\"value\":\"141102\",\"text\":\"离石区\"},{\"value\":\"141121\",\"text\":\"文水县\"},{\"value\":\"141122\",\"text\":\"交城县\"},{\"value\":\"141123\",\"text\":\"兴县\"},{\"value\":\"141124\",\"text\":\"临县\"},{\"value\":\"141125\",\"text\":\"柳林县\"},{\"value\":\"141126\",\"text\":\"石楼县\"},{\"value\":\"141127\",\"text\":\"岚县\"},{\"value\":\"141128\",\"text\":\"方山县\"},{\"value\":\"141129\",\"text\":\"中阳县\"},{\"value\":\"141130\",\"text\":\"交口县\"},{\"value\":\"141181\",\"text\":\"孝义市\"},{\"value\":\"141182\",\"text\":\"汾阳市\"}]}]},{\"value\":\"15\",\"text\":\"内蒙古自治区\",\"children\":[{\"value\":\"1501\",\"text\":\"呼和浩特市\",\"children\":[{\"value\":\"150102\",\"text\":\"新城区\"},{\"value\":\"150103\",\"text\":\"回民区\"},{\"value\":\"150104\",\"text\":\"玉泉区\"},{\"value\":\"150105\",\"text\":\"赛罕区\"},{\"value\":\"150121\",\"text\":\"土默特左旗\"},{\"value\":\"150122\",\"text\":\"托克托县\"},{\"value\":\"150123\",\"text\":\"和林格尔县\"},{\"value\":\"150124\",\"text\":\"清水河县\"},{\"value\":\"150125\",\"text\":\"武川县\"}]},{\"value\":\"1502\",\"text\":\"包头市\",\"children\":[{\"value\":\"150202\",\"text\":\"东河区\"},{\"value\":\"150203\",\"text\":\"昆都仑区\"},{\"value\":\"150204\",\"text\":\"青山区\"},{\"value\":\"150205\",\"text\":\"石拐区\"},{\"value\":\"150206\",\"text\":\"白云鄂博矿区\"},{\"value\":\"150207\",\"text\":\"九原区\"},{\"value\":\"150221\",\"text\":\"土默特右旗\"},{\"value\":\"150222\",\"text\":\"固阳县\"},{\"value\":\"150223\",\"text\":\"达尔罕茂明安联合旗\"}]},{\"value\":\"1503\",\"text\":\"乌海市\",\"children\":[{\"value\":\"150302\",\"text\":\"海勃湾区\"},{\"value\":\"150303\",\"text\":\"海南区\"},{\"value\":\"150304\",\"text\":\"乌达区\"}]},{\"value\":\"1504\",\"text\":\"赤峰市\",\"children\":[{\"value\":\"150402\",\"text\":\"红山区\"},{\"value\":\"150403\",\"text\":\"元宝山区\"},{\"value\":\"150404\",\"text\":\"松山区\"},{\"value\":\"150421\",\"text\":\"阿鲁科尔沁旗\"},{\"value\":\"150422\",\"text\":\"巴林左旗\"},{\"value\":\"150423\",\"text\":\"巴林右旗\"},{\"value\":\"150424\",\"text\":\"林西县\"},{\"value\":\"150425\",\"text\":\"克什克腾旗\"},{\"value\":\"150426\",\"text\":\"翁牛特旗\"},{\"value\":\"150428\",\"text\":\"喀喇沁旗\"},{\"value\":\"150429\",\"text\":\"宁城县\"},{\"value\":\"150430\",\"text\":\"敖汉旗\"}]},{\"value\":\"1505\",\"text\":\"通辽市\",\"children\":[{\"value\":\"150502\",\"text\":\"科尔沁区\"},{\"value\":\"150521\",\"text\":\"科尔沁左翼中旗\"},{\"value\":\"150522\",\"text\":\"科尔沁左翼后旗\"},{\"value\":\"150523\",\"text\":\"开鲁县\"},{\"value\":\"150524\",\"text\":\"库伦旗\"},{\"value\":\"150525\",\"text\":\"奈曼旗\"},{\"value\":\"150526\",\"text\":\"扎鲁特旗\"},{\"value\":\"150581\",\"text\":\"霍林郭勒市\"}]},{\"value\":\"1506\",\"text\":\"鄂尔多斯市\",\"children\":[{\"value\":\"150602\",\"text\":\"东胜区\"},{\"value\":\"150603\",\"text\":\"康巴什区\"},{\"value\":\"150621\",\"text\":\"达拉特旗\"},{\"value\":\"150622\",\"text\":\"准格尔旗\"},{\"value\":\"150623\",\"text\":\"鄂托克前旗\"},{\"value\":\"150624\",\"text\":\"鄂托克旗\"},{\"value\":\"150625\",\"text\":\"杭锦旗\"},{\"value\":\"150626\",\"text\":\"乌审旗\"},{\"value\":\"150627\",\"text\":\"伊金霍洛旗\"}]},{\"value\":\"1507\",\"text\":\"呼伦贝尔市\",\"children\":[{\"value\":\"150702\",\"text\":\"海拉尔区\"},{\"value\":\"150703\",\"text\":\"扎赉诺尔区\"},{\"value\":\"150721\",\"text\":\"阿荣旗\"},{\"value\":\"150722\",\"text\":\"莫力达瓦达斡尔族自治旗\"},{\"value\":\"150723\",\"text\":\"鄂伦春自治旗\"},{\"value\":\"150724\",\"text\":\"鄂温克族自治旗\"},{\"value\":\"150725\",\"text\":\"陈巴尔虎旗\"},{\"value\":\"150726\",\"text\":\"新巴尔虎左旗\"},{\"value\":\"150727\",\"text\":\"新巴尔虎右旗\"},{\"value\":\"150781\",\"text\":\"满洲里市\"},{\"value\":\"150782\",\"text\":\"牙克石市\"},{\"value\":\"150783\",\"text\":\"扎兰屯市\"},{\"value\":\"150784\",\"text\":\"额尔古纳市\"},{\"value\":\"150785\",\"text\":\"根河市\"}]},{\"value\":\"1508\",\"text\":\"巴彦淖尔市\",\"children\":[{\"value\":\"150802\",\"text\":\"临河区\"},{\"value\":\"150821\",\"text\":\"五原县\"},{\"value\":\"150822\",\"text\":\"磴口县\"},{\"value\":\"150823\",\"text\":\"乌拉特前旗\"},{\"value\":\"150824\",\"text\":\"乌拉特中旗\"},{\"value\":\"150825\",\"text\":\"乌拉特后旗\"},{\"value\":\"150826\",\"text\":\"杭锦后旗\"}]},{\"value\":\"1509\",\"text\":\"乌兰察布市\",\"children\":[{\"value\":\"150902\",\"text\":\"集宁区\"},{\"value\":\"150921\",\"text\":\"卓资县\"},{\"value\":\"150922\",\"text\":\"化德县\"},{\"value\":\"150923\",\"text\":\"商都县\"},{\"value\":\"150924\",\"text\":\"兴和县\"},{\"value\":\"150925\",\"text\":\"凉城县\"},{\"value\":\"150926\",\"text\":\"察哈尔右翼前旗\"},{\"value\":\"150927\",\"text\":\"察哈尔右翼中旗\"},{\"value\":\"150928\",\"text\":\"察哈尔右翼后旗\"},{\"value\":\"150929\",\"text\":\"四子王旗\"},{\"value\":\"150981\",\"text\":\"丰镇市\"}]},{\"value\":\"1522\",\"text\":\"兴安盟\",\"children\":[{\"value\":\"152201\",\"text\":\"乌兰浩特市\"},{\"value\":\"152202\",\"text\":\"阿尔山市\"},{\"value\":\"152221\",\"text\":\"科尔沁右翼前旗\"},{\"value\":\"152222\",\"text\":\"科尔沁右翼中旗\"},{\"value\":\"152223\",\"text\":\"扎赉特旗\"},{\"value\":\"152224\",\"text\":\"突泉县\"}]},{\"value\":\"1525\",\"text\":\"锡林郭勒盟\",\"children\":[{\"value\":\"152501\",\"text\":\"二连浩特市\"},{\"value\":\"152502\",\"text\":\"锡林浩特市\"},{\"value\":\"152522\",\"text\":\"阿巴嘎旗\"},{\"value\":\"152523\",\"text\":\"苏尼特左旗\"},{\"value\":\"152524\",\"text\":\"苏尼特右旗\"},{\"value\":\"152525\",\"text\":\"东乌珠穆沁旗\"},{\"value\":\"152526\",\"text\":\"西乌珠穆沁旗\"},{\"value\":\"152527\",\"text\":\"太仆寺旗\"},{\"value\":\"152528\",\"text\":\"镶黄旗\"},{\"value\":\"152529\",\"text\":\"正镶白旗\"},{\"value\":\"152530\",\"text\":\"正蓝旗\"},{\"value\":\"152531\",\"text\":\"多伦县\"}]},{\"value\":\"1529\",\"text\":\"阿拉善盟\",\"children\":[{\"value\":\"152921\",\"text\":\"阿拉善左旗\"},{\"value\":\"152922\",\"text\":\"阿拉善右旗\"},{\"value\":\"152923\",\"text\":\"额济纳旗\"}]}]},{\"value\":\"21\",\"text\":\"辽宁省\",\"children\":[{\"value\":\"2101\",\"text\":\"沈阳市\",\"children\":[{\"value\":\"210102\",\"text\":\"和平区\"},{\"value\":\"210103\",\"text\":\"沈河区\"},{\"value\":\"210104\",\"text\":\"大东区\"},{\"value\":\"210105\",\"text\":\"皇姑区\"},{\"value\":\"210106\",\"text\":\"铁西区\"},{\"value\":\"210111\",\"text\":\"苏家屯区\"},{\"value\":\"210112\",\"text\":\"浑南区\"},{\"value\":\"210113\",\"text\":\"沈北新区\"},{\"value\":\"210114\",\"text\":\"于洪区\"},{\"value\":\"210115\",\"text\":\"辽中区\"},{\"value\":\"210123\",\"text\":\"康平县\"},{\"value\":\"210124\",\"text\":\"法库县\"},{\"value\":\"210181\",\"text\":\"新民市\"}]},{\"value\":\"2102\",\"text\":\"大连市\",\"children\":[{\"value\":\"210202\",\"text\":\"中山区\"},{\"value\":\"210203\",\"text\":\"西岗区\"},{\"value\":\"210204\",\"text\":\"沙河口区\"},{\"value\":\"210211\",\"text\":\"甘井子区\"},{\"value\":\"210212\",\"text\":\"旅顺口区\"},{\"value\":\"210213\",\"text\":\"金州区\"},{\"value\":\"210214\",\"text\":\"普兰店区\"},{\"value\":\"210224\",\"text\":\"长海县\"},{\"value\":\"210281\",\"text\":\"瓦房店市\"},{\"value\":\"210283\",\"text\":\"庄河市\"}]},{\"value\":\"2103\",\"text\":\"鞍山市\",\"children\":[{\"value\":\"210302\",\"text\":\"铁东区\"},{\"value\":\"210303\",\"text\":\"铁西区\"},{\"value\":\"210304\",\"text\":\"立山区\"},{\"value\":\"210311\",\"text\":\"千山区\"},{\"value\":\"210321\",\"text\":\"台安县\"},{\"value\":\"210323\",\"text\":\"岫岩满族自治县\"},{\"value\":\"210381\",\"text\":\"海城市\"}]},{\"value\":\"2104\",\"text\":\"抚顺市\",\"children\":[{\"value\":\"210402\",\"text\":\"新抚区\"},{\"value\":\"210403\",\"text\":\"东洲区\"},{\"value\":\"210404\",\"text\":\"望花区\"},{\"value\":\"210411\",\"text\":\"顺城区\"},{\"value\":\"210421\",\"text\":\"抚顺县\"},{\"value\":\"210422\",\"text\":\"新宾满族自治县\"},{\"value\":\"210423\",\"text\":\"清原满族自治县\"}]},{\"value\":\"2105\",\"text\":\"本溪市\",\"children\":[{\"value\":\"210502\",\"text\":\"平山区\"},{\"value\":\"210503\",\"text\":\"溪湖区\"},{\"value\":\"210504\",\"text\":\"明山区\"},{\"value\":\"210505\",\"text\":\"南芬区\"},{\"value\":\"210521\",\"text\":\"本溪满族自治县\"},{\"value\":\"210522\",\"text\":\"桓仁满族自治县\"}]},{\"value\":\"2106\",\"text\":\"丹东市\",\"children\":[{\"value\":\"210602\",\"text\":\"元宝区\"},{\"value\":\"210603\",\"text\":\"振兴区\"},{\"value\":\"210604\",\"text\":\"振安区\"},{\"value\":\"210624\",\"text\":\"宽甸满族自治县\"},{\"value\":\"210681\",\"text\":\"东港市\"},{\"value\":\"210682\",\"text\":\"凤城市\"}]},{\"value\":\"2107\",\"text\":\"锦州市\",\"children\":[{\"value\":\"210702\",\"text\":\"古塔区\"},{\"value\":\"210703\",\"text\":\"凌河区\"},{\"value\":\"210711\",\"text\":\"太和区\"},{\"value\":\"210726\",\"text\":\"黑山县\"},{\"value\":\"210727\",\"text\":\"义县\"},{\"value\":\"210781\",\"text\":\"凌海市\"},{\"value\":\"210782\",\"text\":\"北镇市\"}]},{\"value\":\"2108\",\"text\":\"营口市\",\"children\":[{\"value\":\"210802\",\"text\":\"站前区\"},{\"value\":\"210803\",\"text\":\"西市区\"},{\"value\":\"210804\",\"text\":\"鲅鱼圈区\"},{\"value\":\"210811\",\"text\":\"老边区\"},{\"value\":\"210881\",\"text\":\"盖州市\"},{\"value\":\"210882\",\"text\":\"大石桥市\"}]},{\"value\":\"2109\",\"text\":\"阜新市\",\"children\":[{\"value\":\"210902\",\"text\":\"海州区\"},{\"value\":\"210903\",\"text\":\"新邱区\"},{\"value\":\"210904\",\"text\":\"太平区\"},{\"value\":\"210905\",\"text\":\"清河门区\"},{\"value\":\"210911\",\"text\":\"细河区\"},{\"value\":\"210921\",\"text\":\"阜新蒙古族自治县\"},{\"value\":\"210922\",\"text\":\"彰武县\"}]},{\"value\":\"2110\",\"text\":\"辽阳市\",\"children\":[{\"value\":\"211002\",\"text\":\"白塔区\"},{\"value\":\"211003\",\"text\":\"文圣区\"},{\"value\":\"211004\",\"text\":\"宏伟区\"},{\"value\":\"211005\",\"text\":\"弓长岭区\"},{\"value\":\"211011\",\"text\":\"太子河区\"},{\"value\":\"211021\",\"text\":\"辽阳县\"},{\"value\":\"211081\",\"text\":\"灯塔市\"}]},{\"value\":\"2111\",\"text\":\"盘锦市\",\"children\":[{\"value\":\"211102\",\"text\":\"双台子区\"},{\"value\":\"211103\",\"text\":\"兴隆台区\"},{\"value\":\"211104\",\"text\":\"大洼区\"},{\"value\":\"211122\",\"text\":\"盘山县\"}]},{\"value\":\"2112\",\"text\":\"铁岭市\",\"children\":[{\"value\":\"211202\",\"text\":\"银州区\"},{\"value\":\"211204\",\"text\":\"清河区\"},{\"value\":\"211221\",\"text\":\"铁岭县\"},{\"value\":\"211223\",\"text\":\"西丰县\"},{\"value\":\"211224\",\"text\":\"昌图县\"},{\"value\":\"211281\",\"text\":\"调兵山市\"},{\"value\":\"211282\",\"text\":\"开原市\"}]},{\"value\":\"2113\",\"text\":\"朝阳市\",\"children\":[{\"value\":\"211302\",\"text\":\"双塔区\"},{\"value\":\"211303\",\"text\":\"龙城区\"},{\"value\":\"211321\",\"text\":\"朝阳县\"},{\"value\":\"211322\",\"text\":\"建平县\"},{\"value\":\"211324\",\"text\":\"喀喇沁左翼蒙古族自治县\"},{\"value\":\"211381\",\"text\":\"北票市\"},{\"value\":\"211382\",\"text\":\"凌源市\"}]},{\"value\":\"2114\",\"text\":\"葫芦岛市\",\"children\":[{\"value\":\"211402\",\"text\":\"连山区\"},{\"value\":\"211403\",\"text\":\"龙港区\"},{\"value\":\"211404\",\"text\":\"南票区\"},{\"value\":\"211421\",\"text\":\"绥中县\"},{\"value\":\"211422\",\"text\":\"建昌县\"},{\"value\":\"211481\",\"text\":\"兴城市\"}]}]},{\"value\":\"22\",\"text\":\"吉林省\",\"children\":[{\"value\":\"2201\",\"text\":\"长春市\",\"children\":[{\"value\":\"220102\",\"text\":\"南关区\"},{\"value\":\"220103\",\"text\":\"宽城区\"},{\"value\":\"220104\",\"text\":\"朝阳区\"},{\"value\":\"220105\",\"text\":\"二道区\"},{\"value\":\"220106\",\"text\":\"绿园区\"},{\"value\":\"220112\",\"text\":\"双阳区\"},{\"value\":\"220113\",\"text\":\"九台区\"},{\"value\":\"220122\",\"text\":\"农安县\"},{\"value\":\"220182\",\"text\":\"榆树市\"},{\"value\":\"220183\",\"text\":\"德惠市\"}]},{\"value\":\"2202\",\"text\":\"吉林市\",\"children\":[{\"value\":\"220202\",\"text\":\"昌邑区\"},{\"value\":\"220203\",\"text\":\"龙潭区\"},{\"value\":\"220204\",\"text\":\"船营区\"},{\"value\":\"220211\",\"text\":\"丰满区\"},{\"value\":\"220221\",\"text\":\"永吉县\"},{\"value\":\"220281\",\"text\":\"蛟河市\"},{\"value\":\"220282\",\"text\":\"桦甸市\"},{\"value\":\"220283\",\"text\":\"舒兰市\"},{\"value\":\"220284\",\"text\":\"磐石市\"}]},{\"value\":\"2203\",\"text\":\"四平市\",\"children\":[{\"value\":\"220302\",\"text\":\"铁西区\"},{\"value\":\"220303\",\"text\":\"铁东区\"},{\"value\":\"220322\",\"text\":\"梨树县\"},{\"value\":\"220323\",\"text\":\"伊通满族自治县\"},{\"value\":\"220381\",\"text\":\"公主岭市\"},{\"value\":\"220382\",\"text\":\"双辽市\"}]},{\"value\":\"2204\",\"text\":\"辽源市\",\"children\":[{\"value\":\"220402\",\"text\":\"龙山区\"},{\"value\":\"220403\",\"text\":\"西安区\"},{\"value\":\"220421\",\"text\":\"东丰县\"},{\"value\":\"220422\",\"text\":\"东辽县\"}]},{\"value\":\"2205\",\"text\":\"通化市\",\"children\":[{\"value\":\"220502\",\"text\":\"东昌区\"},{\"value\":\"220503\",\"text\":\"二道江区\"},{\"value\":\"220521\",\"text\":\"通化县\"},{\"value\":\"220523\",\"text\":\"辉南县\"},{\"value\":\"220524\",\"text\":\"柳河县\"},{\"value\":\"220581\",\"text\":\"梅河口市\"},{\"value\":\"220582\",\"text\":\"集安市\"}]},{\"value\":\"2206\",\"text\":\"白山市\",\"children\":[{\"value\":\"220602\",\"text\":\"浑江区\"},{\"value\":\"220605\",\"text\":\"江源区\"},{\"value\":\"220621\",\"text\":\"抚松县\"},{\"value\":\"220622\",\"text\":\"靖宇县\"},{\"value\":\"220623\",\"text\":\"长白朝鲜族自治县\"},{\"value\":\"220681\",\"text\":\"临江市\"}]},{\"value\":\"2207\",\"text\":\"松原市\",\"children\":[{\"value\":\"220702\",\"text\":\"宁江区\"},{\"value\":\"220721\",\"text\":\"前郭尔罗斯蒙古族自治县\"},{\"value\":\"220722\",\"text\":\"长岭县\"},{\"value\":\"220723\",\"text\":\"乾安县\"},{\"value\":\"220781\",\"text\":\"扶余市\"}]},{\"value\":\"2208\",\"text\":\"白城市\",\"children\":[{\"value\":\"220802\",\"text\":\"洮北区\"},{\"value\":\"220821\",\"text\":\"镇赉县\"},{\"value\":\"220822\",\"text\":\"通榆县\"},{\"value\":\"220881\",\"text\":\"洮南市\"},{\"value\":\"220882\",\"text\":\"大安市\"}]},{\"value\":\"2224\",\"text\":\"延边朝鲜族自治州\",\"children\":[{\"value\":\"222401\",\"text\":\"延吉市\"},{\"value\":\"222402\",\"text\":\"图们市\"},{\"value\":\"222403\",\"text\":\"敦化市\"},{\"value\":\"222404\",\"text\":\"珲春市\"},{\"value\":\"222405\",\"text\":\"龙井市\"},{\"value\":\"222406\",\"text\":\"和龙市\"},{\"value\":\"222424\",\"text\":\"汪清县\"},{\"value\":\"222426\",\"text\":\"安图县\"}]}]},{\"value\":\"23\",\"text\":\"黑龙江省\",\"children\":[{\"value\":\"2301\",\"text\":\"哈尔滨市\",\"children\":[{\"value\":\"230102\",\"text\":\"道里区\"},{\"value\":\"230103\",\"text\":\"南岗区\"},{\"value\":\"230104\",\"text\":\"道外区\"},{\"value\":\"230108\",\"text\":\"平房区\"},{\"value\":\"230109\",\"text\":\"松北区\"},{\"value\":\"230110\",\"text\":\"香坊区\"},{\"value\":\"230111\",\"text\":\"呼兰区\"},{\"value\":\"230112\",\"text\":\"阿城区\"},{\"value\":\"230113\",\"text\":\"双城区\"},{\"value\":\"230123\",\"text\":\"依兰县\"},{\"value\":\"230124\",\"text\":\"方正县\"},{\"value\":\"230125\",\"text\":\"宾县\"},{\"value\":\"230126\",\"text\":\"巴彦县\"},{\"value\":\"230127\",\"text\":\"木兰县\"},{\"value\":\"230128\",\"text\":\"通河县\"},{\"value\":\"230129\",\"text\":\"延寿县\"},{\"value\":\"230183\",\"text\":\"尚志市\"},{\"value\":\"230184\",\"text\":\"五常市\"}]},{\"value\":\"2302\",\"text\":\"齐齐哈尔市\",\"children\":[{\"value\":\"230202\",\"text\":\"龙沙区\"},{\"value\":\"230203\",\"text\":\"建华区\"},{\"value\":\"230204\",\"text\":\"铁锋区\"},{\"value\":\"230205\",\"text\":\"昂昂溪区\"},{\"value\":\"230206\",\"text\":\"富拉尔基区\"},{\"value\":\"230207\",\"text\":\"碾子山区\"},{\"value\":\"230208\",\"text\":\"梅里斯达斡尔族区\"},{\"value\":\"230221\",\"text\":\"龙江县\"},{\"value\":\"230223\",\"text\":\"依安县\"},{\"value\":\"230224\",\"text\":\"泰来县\"},{\"value\":\"230225\",\"text\":\"甘南县\"},{\"value\":\"230227\",\"text\":\"富裕县\"},{\"value\":\"230229\",\"text\":\"克山县\"},{\"value\":\"230230\",\"text\":\"克东县\"},{\"value\":\"230231\",\"text\":\"拜泉县\"},{\"value\":\"230281\",\"text\":\"讷河市\"}]},{\"value\":\"2303\",\"text\":\"鸡西市\",\"children\":[{\"value\":\"230302\",\"text\":\"鸡冠区\"},{\"value\":\"230303\",\"text\":\"恒山区\"},{\"value\":\"230304\",\"text\":\"滴道区\"},{\"value\":\"230305\",\"text\":\"梨树区\"},{\"value\":\"230306\",\"text\":\"城子河区\"},{\"value\":\"230307\",\"text\":\"麻山区\"},{\"value\":\"230321\",\"text\":\"鸡东县\"},{\"value\":\"230381\",\"text\":\"虎林市\"},{\"value\":\"230382\",\"text\":\"密山市\"}]},{\"value\":\"2304\",\"text\":\"鹤岗市\",\"children\":[{\"value\":\"230402\",\"text\":\"向阳区\"},{\"value\":\"230403\",\"text\":\"工农区\"},{\"value\":\"230404\",\"text\":\"南山区\"},{\"value\":\"230405\",\"text\":\"兴安区\"},{\"value\":\"230406\",\"text\":\"东山区\"},{\"value\":\"230407\",\"text\":\"兴山区\"},{\"value\":\"230421\",\"text\":\"萝北县\"},{\"value\":\"230422\",\"text\":\"绥滨县\"}]},{\"value\":\"2305\",\"text\":\"双鸭山市\",\"children\":[{\"value\":\"230502\",\"text\":\"尖山区\"},{\"value\":\"230503\",\"text\":\"岭东区\"},{\"value\":\"230505\",\"text\":\"四方台区\"},{\"value\":\"230506\",\"text\":\"宝山区\"},{\"value\":\"230521\",\"text\":\"集贤县\"},{\"value\":\"230522\",\"text\":\"友谊县\"},{\"value\":\"230523\",\"text\":\"宝清县\"},{\"value\":\"230524\",\"text\":\"饶河县\"}]},{\"value\":\"2306\",\"text\":\"大庆市\",\"children\":[{\"value\":\"230602\",\"text\":\"萨尔图区\"},{\"value\":\"230603\",\"text\":\"龙凤区\"},{\"value\":\"230604\",\"text\":\"让胡路区\"},{\"value\":\"230605\",\"text\":\"红岗区\"},{\"value\":\"230606\",\"text\":\"大同区\"},{\"value\":\"230621\",\"text\":\"肇州县\"},{\"value\":\"230622\",\"text\":\"肇源县\"},{\"value\":\"230623\",\"text\":\"林甸县\"},{\"value\":\"230624\",\"text\":\"杜尔伯特蒙古族自治县\"}]},{\"value\":\"2307\",\"text\":\"伊春市\",\"children\":[{\"value\":\"230702\",\"text\":\"伊春区\"},{\"value\":\"230703\",\"text\":\"南岔区\"},{\"value\":\"230704\",\"text\":\"友好区\"},{\"value\":\"230705\",\"text\":\"西林区\"},{\"value\":\"230706\",\"text\":\"翠峦区\"},{\"value\":\"230707\",\"text\":\"新青区\"},{\"value\":\"230708\",\"text\":\"美溪区\"},{\"value\":\"230709\",\"text\":\"金山屯区\"},{\"value\":\"230710\",\"text\":\"五营区\"},{\"value\":\"230711\",\"text\":\"乌马河区\"},{\"value\":\"230712\",\"text\":\"汤旺河区\"},{\"value\":\"230713\",\"text\":\"带岭区\"},{\"value\":\"230714\",\"text\":\"乌伊岭区\"},{\"value\":\"230715\",\"text\":\"红星区\"},{\"value\":\"230716\",\"text\":\"上甘岭区\"},{\"value\":\"230722\",\"text\":\"嘉荫县\"},{\"value\":\"230781\",\"text\":\"铁力市\"}]},{\"value\":\"2308\",\"text\":\"佳木斯市\",\"children\":[{\"value\":\"230803\",\"text\":\"向阳区\"},{\"value\":\"230804\",\"text\":\"前进区\"},{\"value\":\"230805\",\"text\":\"东风区\"},{\"value\":\"230811\",\"text\":\"郊区\"},{\"value\":\"230822\",\"text\":\"桦南县\"},{\"value\":\"230826\",\"text\":\"桦川县\"},{\"value\":\"230828\",\"text\":\"汤原县\"},{\"value\":\"230881\",\"text\":\"同江市\"},{\"value\":\"230882\",\"text\":\"富锦市\"},{\"value\":\"230883\",\"text\":\"抚远市\"}]},{\"value\":\"2309\",\"text\":\"七台河市\",\"children\":[{\"value\":\"230902\",\"text\":\"新兴区\"},{\"value\":\"230903\",\"text\":\"桃山区\"},{\"value\":\"230904\",\"text\":\"茄子河区\"},{\"value\":\"230921\",\"text\":\"勃利县\"}]},{\"value\":\"2310\",\"text\":\"牡丹江市\",\"children\":[{\"value\":\"231002\",\"text\":\"东安区\"},{\"value\":\"231003\",\"text\":\"阳明区\"},{\"value\":\"231004\",\"text\":\"爱民区\"},{\"value\":\"231005\",\"text\":\"西安区\"},{\"value\":\"231025\",\"text\":\"林口县\"},{\"value\":\"231081\",\"text\":\"绥芬河市\"},{\"value\":\"231083\",\"text\":\"海林市\"},{\"value\":\"231084\",\"text\":\"宁安市\"},{\"value\":\"231085\",\"text\":\"穆棱市\"},{\"value\":\"231086\",\"text\":\"东宁市\"}]},{\"value\":\"2311\",\"text\":\"黑河市\",\"children\":[{\"value\":\"231102\",\"text\":\"爱辉区\"},{\"value\":\"231121\",\"text\":\"嫩江县\"},{\"value\":\"231123\",\"text\":\"逊克县\"},{\"value\":\"231124\",\"text\":\"孙吴县\"},{\"value\":\"231181\",\"text\":\"北安市\"},{\"value\":\"231182\",\"text\":\"五大连池市\"}]},{\"value\":\"2312\",\"text\":\"绥化市\",\"children\":[{\"value\":\"231202\",\"text\":\"北林区\"},{\"value\":\"231221\",\"text\":\"望奎县\"},{\"value\":\"231222\",\"text\":\"兰西县\"},{\"value\":\"231223\",\"text\":\"青冈县\"},{\"value\":\"231224\",\"text\":\"庆安县\"},{\"value\":\"231225\",\"text\":\"明水县\"},{\"value\":\"231226\",\"text\":\"绥棱县\"},{\"value\":\"231281\",\"text\":\"安达市\"},{\"value\":\"231282\",\"text\":\"肇东市\"},{\"value\":\"231283\",\"text\":\"海伦市\"}]},{\"value\":\"2327\",\"text\":\"大兴安岭地区\",\"children\":[{\"value\":\"232721\",\"text\":\"呼玛县\"},{\"value\":\"232722\",\"text\":\"塔河县\"},{\"value\":\"232723\",\"text\":\"漠河县\"}]}]},{\"value\":\"31\",\"text\":\"上海市\",\"children\":[{\"value\":\"3101\",\"text\":\"市辖区\",\"children\":[{\"value\":\"310101\",\"text\":\"黄浦区\"},{\"value\":\"310104\",\"text\":\"徐汇区\"},{\"value\":\"310105\",\"text\":\"长宁区\"},{\"value\":\"310106\",\"text\":\"静安区\"},{\"value\":\"310107\",\"text\":\"普陀区\"},{\"value\":\"310109\",\"text\":\"虹口区\"},{\"value\":\"310110\",\"text\":\"杨浦区\"},{\"value\":\"310112\",\"text\":\"闵行区\"},{\"value\":\"310113\",\"text\":\"宝山区\"},{\"value\":\"310114\",\"text\":\"嘉定区\"},{\"value\":\"310115\",\"text\":\"浦东新区\"},{\"value\":\"310116\",\"text\":\"金山区\"},{\"value\":\"310117\",\"text\":\"松江区\"},{\"value\":\"310118\",\"text\":\"青浦区\"},{\"value\":\"310120\",\"text\":\"奉贤区\"},{\"value\":\"310151\",\"text\":\"崇明区\"}]}]},{\"value\":\"32\",\"text\":\"江苏省\",\"children\":[{\"value\":\"3201\",\"text\":\"南京市\",\"children\":[{\"value\":\"320102\",\"text\":\"玄武区\"},{\"value\":\"320104\",\"text\":\"秦淮区\"},{\"value\":\"320105\",\"text\":\"建邺区\"},{\"value\":\"320106\",\"text\":\"鼓楼区\"},{\"value\":\"320111\",\"text\":\"浦口区\"},{\"value\":\"320113\",\"text\":\"栖霞区\"},{\"value\":\"320114\",\"text\":\"雨花台区\"},{\"value\":\"320115\",\"text\":\"江宁区\"},{\"value\":\"320116\",\"text\":\"六合区\"},{\"value\":\"320117\",\"text\":\"溧水区\"},{\"value\":\"320118\",\"text\":\"高淳区\"}]},{\"value\":\"3202\",\"text\":\"无锡市\",\"children\":[{\"value\":\"320205\",\"text\":\"锡山区\"},{\"value\":\"320206\",\"text\":\"惠山区\"},{\"value\":\"320211\",\"text\":\"滨湖区\"},{\"value\":\"320213\",\"text\":\"梁溪区\"},{\"value\":\"320214\",\"text\":\"新吴区\"},{\"value\":\"320281\",\"text\":\"江阴市\"},{\"value\":\"320282\",\"text\":\"宜兴市\"}]},{\"value\":\"3203\",\"text\":\"徐州市\",\"children\":[{\"value\":\"320302\",\"text\":\"鼓楼区\"},{\"value\":\"320303\",\"text\":\"云龙区\"},{\"value\":\"320305\",\"text\":\"贾汪区\"},{\"value\":\"320311\",\"text\":\"泉山区\"},{\"value\":\"320312\",\"text\":\"铜山区\"},{\"value\":\"320321\",\"text\":\"丰县\"},{\"value\":\"320322\",\"text\":\"沛县\"},{\"value\":\"320324\",\"text\":\"睢宁县\"},{\"value\":\"320381\",\"text\":\"新沂市\"},{\"value\":\"320382\",\"text\":\"邳州市\"}]},{\"value\":\"3204\",\"text\":\"常州市\",\"children\":[{\"value\":\"320402\",\"text\":\"天宁区\"},{\"value\":\"320404\",\"text\":\"钟楼区\"},{\"value\":\"320411\",\"text\":\"新北区\"},{\"value\":\"320412\",\"text\":\"武进区\"},{\"value\":\"320413\",\"text\":\"金坛区\"},{\"value\":\"320481\",\"text\":\"溧阳市\"}]},{\"value\":\"3205\",\"text\":\"苏州市\",\"children\":[{\"value\":\"320505\",\"text\":\"虎丘区\"},{\"value\":\"320506\",\"text\":\"吴中区\"},{\"value\":\"320507\",\"text\":\"相城区\"},{\"value\":\"320508\",\"text\":\"姑苏区\"},{\"value\":\"320509\",\"text\":\"吴江区\"},{\"value\":\"320581\",\"text\":\"常熟市\"},{\"value\":\"320582\",\"text\":\"张家港市\"},{\"value\":\"320583\",\"text\":\"昆山市\"},{\"value\":\"320585\",\"text\":\"太仓市\"}]},{\"value\":\"3206\",\"text\":\"南通市\",\"children\":[{\"value\":\"320602\",\"text\":\"崇川区\"},{\"value\":\"320611\",\"text\":\"港闸区\"},{\"value\":\"320612\",\"text\":\"通州区\"},{\"value\":\"320621\",\"text\":\"海安县\"},{\"value\":\"320623\",\"text\":\"如东县\"},{\"value\":\"320681\",\"text\":\"启东市\"},{\"value\":\"320682\",\"text\":\"如皋市\"},{\"value\":\"320684\",\"text\":\"海门市\"}]},{\"value\":\"3207\",\"text\":\"连云港市\",\"children\":[{\"value\":\"320703\",\"text\":\"连云区\"},{\"value\":\"320706\",\"text\":\"海州区\"},{\"value\":\"320707\",\"text\":\"赣榆区\"},{\"value\":\"320722\",\"text\":\"东海县\"},{\"value\":\"320723\",\"text\":\"灌云县\"},{\"value\":\"320724\",\"text\":\"灌南县\"}]},{\"value\":\"3208\",\"text\":\"淮安市\",\"children\":[{\"value\":\"320803\",\"text\":\"淮安区\"},{\"value\":\"320804\",\"text\":\"淮阴区\"},{\"value\":\"320812\",\"text\":\"清江浦区\"},{\"value\":\"320813\",\"text\":\"洪泽区\"},{\"value\":\"320826\",\"text\":\"涟水县\"},{\"value\":\"320830\",\"text\":\"盱眙县\"},{\"value\":\"320831\",\"text\":\"金湖县\"}]},{\"value\":\"3209\",\"text\":\"盐城市\",\"children\":[{\"value\":\"320902\",\"text\":\"亭湖区\"},{\"value\":\"320903\",\"text\":\"盐都区\"},{\"value\":\"320904\",\"text\":\"大丰区\"},{\"value\":\"320921\",\"text\":\"响水县\"},{\"value\":\"320922\",\"text\":\"滨海县\"},{\"value\":\"320923\",\"text\":\"阜宁县\"},{\"value\":\"320924\",\"text\":\"射阳县\"},{\"value\":\"320925\",\"text\":\"建湖县\"},{\"value\":\"320981\",\"text\":\"东台市\"}]},{\"value\":\"3210\",\"text\":\"扬州市\",\"children\":[{\"value\":\"321002\",\"text\":\"广陵区\"},{\"value\":\"321003\",\"text\":\"邗江区\"},{\"value\":\"321012\",\"text\":\"江都区\"},{\"value\":\"321023\",\"text\":\"宝应县\"},{\"value\":\"321081\",\"text\":\"仪征市\"},{\"value\":\"321084\",\"text\":\"高邮市\"}]},{\"value\":\"3211\",\"text\":\"镇江市\",\"children\":[{\"value\":\"321102\",\"text\":\"京口区\"},{\"value\":\"321111\",\"text\":\"润州区\"},{\"value\":\"321112\",\"text\":\"丹徒区\"},{\"value\":\"321181\",\"text\":\"丹阳市\"},{\"value\":\"321182\",\"text\":\"扬中市\"},{\"value\":\"321183\",\"text\":\"句容市\"}]},{\"value\":\"3212\",\"text\":\"泰州市\",\"children\":[{\"value\":\"321202\",\"text\":\"海陵区\"},{\"value\":\"321203\",\"text\":\"高港区\"},{\"value\":\"321204\",\"text\":\"姜堰区\"},{\"value\":\"321281\",\"text\":\"兴化市\"},{\"value\":\"321282\",\"text\":\"靖江市\"},{\"value\":\"321283\",\"text\":\"泰兴市\"}]},{\"value\":\"3213\",\"text\":\"宿迁市\",\"children\":[{\"value\":\"321302\",\"text\":\"宿城区\"},{\"value\":\"321311\",\"text\":\"宿豫区\"},{\"value\":\"321322\",\"text\":\"沭阳县\"},{\"value\":\"321323\",\"text\":\"泗阳县\"},{\"value\":\"321324\",\"text\":\"泗洪县\"}]}]},{\"value\":\"33\",\"text\":\"浙江省\",\"children\":[{\"value\":\"3301\",\"text\":\"杭州市\",\"children\":[{\"value\":\"330102\",\"text\":\"上城区\"},{\"value\":\"330103\",\"text\":\"下城区\"},{\"value\":\"330104\",\"text\":\"江干区\"},{\"value\":\"330105\",\"text\":\"拱墅区\"},{\"value\":\"330106\",\"text\":\"西湖区\"},{\"value\":\"330108\",\"text\":\"滨江区\"},{\"value\":\"330109\",\"text\":\"萧山区\"},{\"value\":\"330110\",\"text\":\"余杭区\"},{\"value\":\"330111\",\"text\":\"富阳区\"},{\"value\":\"330122\",\"text\":\"桐庐县\"},{\"value\":\"330127\",\"text\":\"淳安县\"},{\"value\":\"330182\",\"text\":\"建德市\"},{\"value\":\"330185\",\"text\":\"临安市\"}]},{\"value\":\"3302\",\"text\":\"宁波市\",\"children\":[{\"value\":\"330203\",\"text\":\"海曙区\"},{\"value\":\"330204\",\"text\":\"江东区\"},{\"value\":\"330205\",\"text\":\"江北区\"},{\"value\":\"330206\",\"text\":\"北仑区\"},{\"value\":\"330211\",\"text\":\"镇海区\"},{\"value\":\"330212\",\"text\":\"鄞州区\"},{\"value\":\"330225\",\"text\":\"象山县\"},{\"value\":\"330226\",\"text\":\"宁海县\"},{\"value\":\"330281\",\"text\":\"余姚市\"},{\"value\":\"330282\",\"text\":\"慈溪市\"},{\"value\":\"330283\",\"text\":\"奉化市\"}]},{\"value\":\"3303\",\"text\":\"温州市\",\"children\":[{\"value\":\"330302\",\"text\":\"鹿城区\"},{\"value\":\"330303\",\"text\":\"龙湾区\"},{\"value\":\"330304\",\"text\":\"瓯海区\"},{\"value\":\"330305\",\"text\":\"洞头区\"},{\"value\":\"330324\",\"text\":\"永嘉县\"},{\"value\":\"330326\",\"text\":\"平阳县\"},{\"value\":\"330327\",\"text\":\"苍南县\"},{\"value\":\"330328\",\"text\":\"文成县\"},{\"value\":\"330329\",\"text\":\"泰顺县\"},{\"value\":\"330381\",\"text\":\"瑞安市\"},{\"value\":\"330382\",\"text\":\"乐清市\"}]},{\"value\":\"3304\",\"text\":\"嘉兴市\",\"children\":[{\"value\":\"330402\",\"text\":\"南湖区\"},{\"value\":\"330411\",\"text\":\"秀洲区\"},{\"value\":\"330421\",\"text\":\"嘉善县\"},{\"value\":\"330424\",\"text\":\"海盐县\"},{\"value\":\"330481\",\"text\":\"海宁市\"},{\"value\":\"330482\",\"text\":\"平湖市\"},{\"value\":\"330483\",\"text\":\"桐乡市\"}]},{\"value\":\"3305\",\"text\":\"湖州市\",\"children\":[{\"value\":\"330502\",\"text\":\"吴兴区\"},{\"value\":\"330503\",\"text\":\"南浔区\"},{\"value\":\"330521\",\"text\":\"德清县\"},{\"value\":\"330522\",\"text\":\"长兴县\"},{\"value\":\"330523\",\"text\":\"安吉县\"}]},{\"value\":\"3306\",\"text\":\"绍兴市\",\"children\":[{\"value\":\"330602\",\"text\":\"越城区\"},{\"value\":\"330603\",\"text\":\"柯桥区\"},{\"value\":\"330604\",\"text\":\"上虞区\"},{\"value\":\"330624\",\"text\":\"新昌县\"},{\"value\":\"330681\",\"text\":\"诸暨市\"},{\"value\":\"330683\",\"text\":\"嵊州市\"}]},{\"value\":\"3307\",\"text\":\"金华市\",\"children\":[{\"value\":\"330702\",\"text\":\"婺城区\"},{\"value\":\"330703\",\"text\":\"金东区\"},{\"value\":\"330723\",\"text\":\"武义县\"},{\"value\":\"330726\",\"text\":\"浦江县\"},{\"value\":\"330727\",\"text\":\"磐安县\"},{\"value\":\"330781\",\"text\":\"兰溪市\"},{\"value\":\"330782\",\"text\":\"义乌市\"},{\"value\":\"330783\",\"text\":\"东阳市\"},{\"value\":\"330784\",\"text\":\"永康市\"}]},{\"value\":\"3308\",\"text\":\"衢州市\",\"children\":[{\"value\":\"330802\",\"text\":\"柯城区\"},{\"value\":\"330803\",\"text\":\"衢江区\"},{\"value\":\"330822\",\"text\":\"常山县\"},{\"value\":\"330824\",\"text\":\"开化县\"},{\"value\":\"330825\",\"text\":\"龙游县\"},{\"value\":\"330881\",\"text\":\"江山市\"}]},{\"value\":\"3309\",\"text\":\"舟山市\",\"children\":[{\"value\":\"330902\",\"text\":\"定海区\"},{\"value\":\"330903\",\"text\":\"普陀区\"},{\"value\":\"330921\",\"text\":\"岱山县\"},{\"value\":\"330922\",\"text\":\"嵊泗县\"}]},{\"value\":\"3310\",\"text\":\"台州市\",\"children\":[{\"value\":\"331002\",\"text\":\"椒江区\"},{\"value\":\"331003\",\"text\":\"黄岩区\"},{\"value\":\"331004\",\"text\":\"路桥区\"},{\"value\":\"331021\",\"text\":\"玉环县\"},{\"value\":\"331022\",\"text\":\"三门县\"},{\"value\":\"331023\",\"text\":\"天台县\"},{\"value\":\"331024\",\"text\":\"仙居县\"},{\"value\":\"331081\",\"text\":\"温岭市\"},{\"value\":\"331082\",\"text\":\"临海市\"}]},{\"value\":\"3311\",\"text\":\"丽水市\",\"children\":[{\"value\":\"331102\",\"text\":\"莲都区\"},{\"value\":\"331121\",\"text\":\"青田县\"},{\"value\":\"331122\",\"text\":\"缙云县\"},{\"value\":\"331123\",\"text\":\"遂昌县\"},{\"value\":\"331124\",\"text\":\"松阳县\"},{\"value\":\"331125\",\"text\":\"云和县\"},{\"value\":\"331126\",\"text\":\"庆元县\"},{\"value\":\"331127\",\"text\":\"景宁畲族自治县\"},{\"value\":\"331181\",\"text\":\"龙泉市\"}]}]},{\"value\":\"34\",\"text\":\"安徽省\",\"children\":[{\"value\":\"3401\",\"text\":\"合肥市\",\"children\":[{\"value\":\"340102\",\"text\":\"瑶海区\"},{\"value\":\"340103\",\"text\":\"庐阳区\"},{\"value\":\"340104\",\"text\":\"蜀山区\"},{\"value\":\"340111\",\"text\":\"包河区\"},{\"value\":\"340121\",\"text\":\"长丰县\"},{\"value\":\"340122\",\"text\":\"肥东县\"},{\"value\":\"340123\",\"text\":\"肥西县\"},{\"value\":\"340124\",\"text\":\"庐江县\"},{\"value\":\"340181\",\"text\":\"巢湖市\"}]},{\"value\":\"3402\",\"text\":\"芜湖市\",\"children\":[{\"value\":\"340202\",\"text\":\"镜湖区\"},{\"value\":\"340203\",\"text\":\"弋江区\"},{\"value\":\"340207\",\"text\":\"鸠江区\"},{\"value\":\"340208\",\"text\":\"三山区\"},{\"value\":\"340221\",\"text\":\"芜湖县\"},{\"value\":\"340222\",\"text\":\"繁昌县\"},{\"value\":\"340223\",\"text\":\"南陵县\"},{\"value\":\"340225\",\"text\":\"无为县\"}]},{\"value\":\"3403\",\"text\":\"蚌埠市\",\"children\":[{\"value\":\"340302\",\"text\":\"龙子湖区\"},{\"value\":\"340303\",\"text\":\"蚌山区\"},{\"value\":\"340304\",\"text\":\"禹会区\"},{\"value\":\"340311\",\"text\":\"淮上区\"},{\"value\":\"340321\",\"text\":\"怀远县\"},{\"value\":\"340322\",\"text\":\"五河县\"},{\"value\":\"340323\",\"text\":\"固镇县\"}]},{\"value\":\"3404\",\"text\":\"淮南市\",\"children\":[{\"value\":\"340402\",\"text\":\"大通区\"},{\"value\":\"340403\",\"text\":\"田家庵区\"},{\"value\":\"340404\",\"text\":\"谢家集区\"},{\"value\":\"340405\",\"text\":\"八公山区\"},{\"value\":\"340406\",\"text\":\"潘集区\"},{\"value\":\"340421\",\"text\":\"凤台县\"},{\"value\":\"340422\",\"text\":\"寿县\"}]},{\"value\":\"3405\",\"text\":\"马鞍山市\",\"children\":[{\"value\":\"340503\",\"text\":\"花山区\"},{\"value\":\"340504\",\"text\":\"雨山区\"},{\"value\":\"340506\",\"text\":\"博望区\"},{\"value\":\"340521\",\"text\":\"当涂县\"},{\"value\":\"340522\",\"text\":\"含山县\"},{\"value\":\"340523\",\"text\":\"和县\"}]},{\"value\":\"3406\",\"text\":\"淮北市\",\"children\":[{\"value\":\"340602\",\"text\":\"杜集区\"},{\"value\":\"340603\",\"text\":\"相山区\"},{\"value\":\"340604\",\"text\":\"烈山区\"},{\"value\":\"340621\",\"text\":\"濉溪县\"}]},{\"value\":\"3407\",\"text\":\"铜陵市\",\"children\":[{\"value\":\"340705\",\"text\":\"铜官区\"},{\"value\":\"340706\",\"text\":\"义安区\"},{\"value\":\"340711\",\"text\":\"郊区\"},{\"value\":\"340722\",\"text\":\"枞阳县\"}]},{\"value\":\"3408\",\"text\":\"安庆市\",\"children\":[{\"value\":\"340802\",\"text\":\"迎江区\"},{\"value\":\"340803\",\"text\":\"大观区\"},{\"value\":\"340811\",\"text\":\"宜秀区\"},{\"value\":\"340822\",\"text\":\"怀宁县\"},{\"value\":\"340824\",\"text\":\"潜山县\"},{\"value\":\"340825\",\"text\":\"太湖县\"},{\"value\":\"340826\",\"text\":\"宿松县\"},{\"value\":\"340827\",\"text\":\"望江县\"},{\"value\":\"340828\",\"text\":\"岳西县\"},{\"value\":\"340881\",\"text\":\"桐城市\"}]},{\"value\":\"3410\",\"text\":\"黄山市\",\"children\":[{\"value\":\"341002\",\"text\":\"屯溪区\"},{\"value\":\"341003\",\"text\":\"黄山区\"},{\"value\":\"341004\",\"text\":\"徽州区\"},{\"value\":\"341021\",\"text\":\"歙县\"},{\"value\":\"341022\",\"text\":\"休宁县\"},{\"value\":\"341023\",\"text\":\"黟县\"},{\"value\":\"341024\",\"text\":\"祁门县\"}]},{\"value\":\"3411\",\"text\":\"滁州市\",\"children\":[{\"value\":\"341102\",\"text\":\"琅琊区\"},{\"value\":\"341103\",\"text\":\"南谯区\"},{\"value\":\"341122\",\"text\":\"来安县\"},{\"value\":\"341124\",\"text\":\"全椒县\"},{\"value\":\"341125\",\"text\":\"定远县\"},{\"value\":\"341126\",\"text\":\"凤阳县\"},{\"value\":\"341181\",\"text\":\"天长市\"},{\"value\":\"341182\",\"text\":\"明光市\"}]},{\"value\":\"3412\",\"text\":\"阜阳市\",\"children\":[{\"value\":\"341202\",\"text\":\"颍州区\"},{\"value\":\"341203\",\"text\":\"颍东区\"},{\"value\":\"341204\",\"text\":\"颍泉区\"},{\"value\":\"341221\",\"text\":\"临泉县\"},{\"value\":\"341222\",\"text\":\"太和县\"},{\"value\":\"341225\",\"text\":\"阜南县\"},{\"value\":\"341226\",\"text\":\"颍上县\"},{\"value\":\"341282\",\"text\":\"界首市\"}]},{\"value\":\"3413\",\"text\":\"宿州市\",\"children\":[{\"value\":\"341302\",\"text\":\"埇桥区\"},{\"value\":\"341321\",\"text\":\"砀山县\"},{\"value\":\"341322\",\"text\":\"萧县\"},{\"value\":\"341323\",\"text\":\"灵璧县\"},{\"value\":\"341324\",\"text\":\"泗县\"}]},{\"value\":\"3415\",\"text\":\"六安市\",\"children\":[{\"value\":\"341502\",\"text\":\"金安区\"},{\"value\":\"341503\",\"text\":\"裕安区\"},{\"value\":\"341504\",\"text\":\"叶集区\"},{\"value\":\"341522\",\"text\":\"霍邱县\"},{\"value\":\"341523\",\"text\":\"舒城县\"},{\"value\":\"341524\",\"text\":\"金寨县\"},{\"value\":\"341525\",\"text\":\"霍山县\"}]},{\"value\":\"3416\",\"text\":\"亳州市\",\"children\":[{\"value\":\"341602\",\"text\":\"谯城区\"},{\"value\":\"341621\",\"text\":\"涡阳县\"},{\"value\":\"341622\",\"text\":\"蒙城县\"},{\"value\":\"341623\",\"text\":\"利辛县\"}]},{\"value\":\"3417\",\"text\":\"池州市\",\"children\":[{\"value\":\"341702\",\"text\":\"贵池区\"},{\"value\":\"341721\",\"text\":\"东至县\"},{\"value\":\"341722\",\"text\":\"石台县\"},{\"value\":\"341723\",\"text\":\"青阳县\"}]},{\"value\":\"3418\",\"text\":\"宣城市\",\"children\":[{\"value\":\"341802\",\"text\":\"宣州区\"},{\"value\":\"341821\",\"text\":\"郎溪县\"},{\"value\":\"341822\",\"text\":\"广德县\"},{\"value\":\"341823\",\"text\":\"泾县\"},{\"value\":\"341824\",\"text\":\"绩溪县\"},{\"value\":\"341825\",\"text\":\"旌德县\"},{\"value\":\"341881\",\"text\":\"宁国市\"}]}]},{\"value\":\"35\",\"text\":\"福建省\",\"children\":[{\"value\":\"3501\",\"text\":\"福州市\",\"children\":[{\"value\":\"350102\",\"text\":\"鼓楼区\"},{\"value\":\"350103\",\"text\":\"台江区\"},{\"value\":\"350104\",\"text\":\"仓山区\"},{\"value\":\"350105\",\"text\":\"马尾区\"},{\"value\":\"350111\",\"text\":\"晋安区\"},{\"value\":\"350121\",\"text\":\"闽侯县\"},{\"value\":\"350122\",\"text\":\"连江县\"},{\"value\":\"350123\",\"text\":\"罗源县\"},{\"value\":\"350124\",\"text\":\"闽清县\"},{\"value\":\"350125\",\"text\":\"永泰县\"},{\"value\":\"350128\",\"text\":\"平潭县\"},{\"value\":\"350181\",\"text\":\"福清市\"},{\"value\":\"350182\",\"text\":\"长乐市\"}]},{\"value\":\"3502\",\"text\":\"厦门市\",\"children\":[{\"value\":\"350203\",\"text\":\"思明区\"},{\"value\":\"350205\",\"text\":\"海沧区\"},{\"value\":\"350206\",\"text\":\"湖里区\"},{\"value\":\"350211\",\"text\":\"集美区\"},{\"value\":\"350212\",\"text\":\"同安区\"},{\"value\":\"350213\",\"text\":\"翔安区\"}]},{\"value\":\"3503\",\"text\":\"莆田市\",\"children\":[{\"value\":\"350302\",\"text\":\"城厢区\"},{\"value\":\"350303\",\"text\":\"涵江区\"},{\"value\":\"350304\",\"text\":\"荔城区\"},{\"value\":\"350305\",\"text\":\"秀屿区\"},{\"value\":\"350322\",\"text\":\"仙游县\"}]},{\"value\":\"3504\",\"text\":\"三明市\",\"children\":[{\"value\":\"350402\",\"text\":\"梅列区\"},{\"value\":\"350403\",\"text\":\"三元区\"},{\"value\":\"350421\",\"text\":\"明溪县\"},{\"value\":\"350423\",\"text\":\"清流县\"},{\"value\":\"350424\",\"text\":\"宁化县\"},{\"value\":\"350425\",\"text\":\"大田县\"},{\"value\":\"350426\",\"text\":\"尤溪县\"},{\"value\":\"350427\",\"text\":\"沙县\"},{\"value\":\"350428\",\"text\":\"将乐县\"},{\"value\":\"350429\",\"text\":\"泰宁县\"},{\"value\":\"350430\",\"text\":\"建宁县\"},{\"value\":\"350481\",\"text\":\"永安市\"}]},{\"value\":\"3505\",\"text\":\"泉州市\",\"children\":[{\"value\":\"350502\",\"text\":\"鲤城区\"},{\"value\":\"350503\",\"text\":\"丰泽区\"},{\"value\":\"350504\",\"text\":\"洛江区\"},{\"value\":\"350505\",\"text\":\"泉港区\"},{\"value\":\"350521\",\"text\":\"惠安县\"},{\"value\":\"350524\",\"text\":\"安溪县\"},{\"value\":\"350525\",\"text\":\"永春县\"},{\"value\":\"350526\",\"text\":\"德化县\"},{\"value\":\"350527\",\"text\":\"金门县\"},{\"value\":\"350581\",\"text\":\"石狮市\"},{\"value\":\"350582\",\"text\":\"晋江市\"},{\"value\":\"350583\",\"text\":\"南安市\"}]},{\"value\":\"3506\",\"text\":\"漳州市\",\"children\":[{\"value\":\"350602\",\"text\":\"芗城区\"},{\"value\":\"350603\",\"text\":\"龙文区\"},{\"value\":\"350622\",\"text\":\"云霄县\"},{\"value\":\"350623\",\"text\":\"漳浦县\"},{\"value\":\"350624\",\"text\":\"诏安县\"},{\"value\":\"350625\",\"text\":\"长泰县\"},{\"value\":\"350626\",\"text\":\"东山县\"},{\"value\":\"350627\",\"text\":\"南靖县\"},{\"value\":\"350628\",\"text\":\"平和县\"},{\"value\":\"350629\",\"text\":\"华安县\"},{\"value\":\"350681\",\"text\":\"龙海市\"}]},{\"value\":\"3507\",\"text\":\"南平市\",\"children\":[{\"value\":\"350702\",\"text\":\"延平区\"},{\"value\":\"350703\",\"text\":\"建阳区\"},{\"value\":\"350721\",\"text\":\"顺昌县\"},{\"value\":\"350722\",\"text\":\"浦城县\"},{\"value\":\"350723\",\"text\":\"光泽县\"},{\"value\":\"350724\",\"text\":\"松溪县\"},{\"value\":\"350725\",\"text\":\"政和县\"},{\"value\":\"350781\",\"text\":\"邵武市\"},{\"value\":\"350782\",\"text\":\"武夷山市\"},{\"value\":\"350783\",\"text\":\"建瓯市\"}]},{\"value\":\"3508\",\"text\":\"龙岩市\",\"children\":[{\"value\":\"350802\",\"text\":\"新罗区\"},{\"value\":\"350803\",\"text\":\"永定区\"},{\"value\":\"350821\",\"text\":\"长汀县\"},{\"value\":\"350823\",\"text\":\"上杭县\"},{\"value\":\"350824\",\"text\":\"武平县\"},{\"value\":\"350825\",\"text\":\"连城县\"},{\"value\":\"350881\",\"text\":\"漳平市\"}]},{\"value\":\"3509\",\"text\":\"宁德市\",\"children\":[{\"value\":\"350902\",\"text\":\"蕉城区\"},{\"value\":\"350921\",\"text\":\"霞浦县\"},{\"value\":\"350922\",\"text\":\"古田县\"},{\"value\":\"350923\",\"text\":\"屏南县\"},{\"value\":\"350924\",\"text\":\"寿宁县\"},{\"value\":\"350925\",\"text\":\"周宁县\"},{\"value\":\"350926\",\"text\":\"柘荣县\"},{\"value\":\"350981\",\"text\":\"福安市\"},{\"value\":\"350982\",\"text\":\"福鼎市\"}]}]},{\"value\":\"36\",\"text\":\"江西省\",\"children\":[{\"value\":\"3601\",\"text\":\"南昌市\",\"children\":[{\"value\":\"360102\",\"text\":\"东湖区\"},{\"value\":\"360103\",\"text\":\"西湖区\"},{\"value\":\"360104\",\"text\":\"青云谱区\"},{\"value\":\"360105\",\"text\":\"湾里区\"},{\"value\":\"360111\",\"text\":\"青山湖区\"},{\"value\":\"360112\",\"text\":\"新建区\"},{\"value\":\"360121\",\"text\":\"南昌县\"},{\"value\":\"360123\",\"text\":\"安义县\"},{\"value\":\"360124\",\"text\":\"进贤县\"}]},{\"value\":\"3602\",\"text\":\"景德镇市\",\"children\":[{\"value\":\"360202\",\"text\":\"昌江区\"},{\"value\":\"360203\",\"text\":\"珠山区\"},{\"value\":\"360222\",\"text\":\"浮梁县\"},{\"value\":\"360281\",\"text\":\"乐平市\"}]},{\"value\":\"3603\",\"text\":\"萍乡市\",\"children\":[{\"value\":\"360302\",\"text\":\"安源区\"},{\"value\":\"360313\",\"text\":\"湘东区\"},{\"value\":\"360321\",\"text\":\"莲花县\"},{\"value\":\"360322\",\"text\":\"上栗县\"},{\"value\":\"360323\",\"text\":\"芦溪县\"}]},{\"value\":\"3604\",\"text\":\"九江市\",\"children\":[{\"value\":\"360402\",\"text\":\"濂溪区\"},{\"value\":\"360403\",\"text\":\"浔阳区\"},{\"value\":\"360421\",\"text\":\"九江县\"},{\"value\":\"360423\",\"text\":\"武宁县\"},{\"value\":\"360424\",\"text\":\"修水县\"},{\"value\":\"360425\",\"text\":\"永修县\"},{\"value\":\"360426\",\"text\":\"德安县\"},{\"value\":\"360428\",\"text\":\"都昌县\"},{\"value\":\"360429\",\"text\":\"湖口县\"},{\"value\":\"360430\",\"text\":\"彭泽县\"},{\"value\":\"360481\",\"text\":\"瑞昌市\"},{\"value\":\"360482\",\"text\":\"共青城市\"},{\"value\":\"360483\",\"text\":\"庐山市\"}]},{\"value\":\"3605\",\"text\":\"新余市\",\"children\":[{\"value\":\"360502\",\"text\":\"渝水区\"},{\"value\":\"360521\",\"text\":\"分宜县\"}]},{\"value\":\"3606\",\"text\":\"鹰潭市\",\"children\":[{\"value\":\"360602\",\"text\":\"月湖区\"},{\"value\":\"360622\",\"text\":\"余江县\"},{\"value\":\"360681\",\"text\":\"贵溪市\"}]},{\"value\":\"3607\",\"text\":\"赣州市\",\"children\":[{\"value\":\"360702\",\"text\":\"章贡区\"},{\"value\":\"360703\",\"text\":\"南康区\"},{\"value\":\"360721\",\"text\":\"赣县\"},{\"value\":\"360722\",\"text\":\"信丰县\"},{\"value\":\"360723\",\"text\":\"大余县\"},{\"value\":\"360724\",\"text\":\"上犹县\"},{\"value\":\"360725\",\"text\":\"崇义县\"},{\"value\":\"360726\",\"text\":\"安远县\"},{\"value\":\"360727\",\"text\":\"龙南县\"},{\"value\":\"360728\",\"text\":\"定南县\"},{\"value\":\"360729\",\"text\":\"全南县\"},{\"value\":\"360730\",\"text\":\"宁都县\"},{\"value\":\"360731\",\"text\":\"于都县\"},{\"value\":\"360732\",\"text\":\"兴国县\"},{\"value\":\"360733\",\"text\":\"会昌县\"},{\"value\":\"360734\",\"text\":\"寻乌县\"},{\"value\":\"360735\",\"text\":\"石城县\"},{\"value\":\"360781\",\"text\":\"瑞金市\"}]},{\"value\":\"3608\",\"text\":\"吉安市\",\"children\":[{\"value\":\"360802\",\"text\":\"吉州区\"},{\"value\":\"360803\",\"text\":\"青原区\"},{\"value\":\"360821\",\"text\":\"吉安县\"},{\"value\":\"360822\",\"text\":\"吉水县\"},{\"value\":\"360823\",\"text\":\"峡江县\"},{\"value\":\"360824\",\"text\":\"新干县\"},{\"value\":\"360825\",\"text\":\"永丰县\"},{\"value\":\"360826\",\"text\":\"泰和县\"},{\"value\":\"360827\",\"text\":\"遂川县\"},{\"value\":\"360828\",\"text\":\"万安县\"},{\"value\":\"360829\",\"text\":\"安福县\"},{\"value\":\"360830\",\"text\":\"永新县\"},{\"value\":\"360881\",\"text\":\"井冈山市\"}]},{\"value\":\"3609\",\"text\":\"宜春市\",\"children\":[{\"value\":\"360902\",\"text\":\"袁州区\"},{\"value\":\"360921\",\"text\":\"奉新县\"},{\"value\":\"360922\",\"text\":\"万载县\"},{\"value\":\"360923\",\"text\":\"上高县\"},{\"value\":\"360924\",\"text\":\"宜丰县\"},{\"value\":\"360925\",\"text\":\"靖安县\"},{\"value\":\"360926\",\"text\":\"铜鼓县\"},{\"value\":\"360981\",\"text\":\"丰城市\"},{\"value\":\"360982\",\"text\":\"樟树市\"},{\"value\":\"360983\",\"text\":\"高安市\"}]},{\"value\":\"3610\",\"text\":\"抚州市\",\"children\":[{\"value\":\"361002\",\"text\":\"临川区\"},{\"value\":\"361021\",\"text\":\"南城县\"},{\"value\":\"361022\",\"text\":\"黎川县\"},{\"value\":\"361023\",\"text\":\"南丰县\"},{\"value\":\"361024\",\"text\":\"崇仁县\"},{\"value\":\"361025\",\"text\":\"乐安县\"},{\"value\":\"361026\",\"text\":\"宜黄县\"},{\"value\":\"361027\",\"text\":\"金溪县\"},{\"value\":\"361028\",\"text\":\"资溪县\"},{\"value\":\"361029\",\"text\":\"东乡县\"},{\"value\":\"361030\",\"text\":\"广昌县\"}]},{\"value\":\"3611\",\"text\":\"上饶市\",\"children\":[{\"value\":\"361102\",\"text\":\"信州区\"},{\"value\":\"361103\",\"text\":\"广丰区\"},{\"value\":\"361121\",\"text\":\"上饶县\"},{\"value\":\"361123\",\"text\":\"玉山县\"},{\"value\":\"361124\",\"text\":\"铅山县\"},{\"value\":\"361125\",\"text\":\"横峰县\"},{\"value\":\"361126\",\"text\":\"弋阳县\"},{\"value\":\"361127\",\"text\":\"余干县\"},{\"value\":\"361128\",\"text\":\"鄱阳县\"},{\"value\":\"361129\",\"text\":\"万年县\"},{\"value\":\"361130\",\"text\":\"婺源县\"},{\"value\":\"361181\",\"text\":\"德兴市\"}]}]},{\"value\":\"37\",\"text\":\"山东省\",\"children\":[{\"value\":\"3701\",\"text\":\"济南市\",\"children\":[{\"value\":\"370102\",\"text\":\"历下区\"},{\"value\":\"370103\",\"text\":\"市中区\"},{\"value\":\"370104\",\"text\":\"槐荫区\"},{\"value\":\"370105\",\"text\":\"天桥区\"},{\"value\":\"370112\",\"text\":\"历城区\"},{\"value\":\"370113\",\"text\":\"长清区\"},{\"value\":\"370124\",\"text\":\"平阴县\"},{\"value\":\"370125\",\"text\":\"济阳县\"},{\"value\":\"370126\",\"text\":\"商河县\"},{\"value\":\"370181\",\"text\":\"章丘市\"}]},{\"value\":\"3702\",\"text\":\"青岛市\",\"children\":[{\"value\":\"370202\",\"text\":\"市南区\"},{\"value\":\"370203\",\"text\":\"市北区\"},{\"value\":\"370211\",\"text\":\"黄岛区\"},{\"value\":\"370212\",\"text\":\"崂山区\"},{\"value\":\"370213\",\"text\":\"李沧区\"},{\"value\":\"370214\",\"text\":\"城阳区\"},{\"value\":\"370281\",\"text\":\"胶州市\"},{\"value\":\"370282\",\"text\":\"即墨市\"},{\"value\":\"370283\",\"text\":\"平度市\"},{\"value\":\"370285\",\"text\":\"莱西市\"}]},{\"value\":\"3703\",\"text\":\"淄博市\",\"children\":[{\"value\":\"370302\",\"text\":\"淄川区\"},{\"value\":\"370303\",\"text\":\"张店区\"},{\"value\":\"370304\",\"text\":\"博山区\"},{\"value\":\"370305\",\"text\":\"临淄区\"},{\"value\":\"370306\",\"text\":\"周村区\"},{\"value\":\"370321\",\"text\":\"桓台县\"},{\"value\":\"370322\",\"text\":\"高青县\"},{\"value\":\"370323\",\"text\":\"沂源县\"}]},{\"value\":\"3704\",\"text\":\"枣庄市\",\"children\":[{\"value\":\"370402\",\"text\":\"市中区\"},{\"value\":\"370403\",\"text\":\"薛城区\"},{\"value\":\"370404\",\"text\":\"峄城区\"},{\"value\":\"370405\",\"text\":\"台儿庄区\"},{\"value\":\"370406\",\"text\":\"山亭区\"},{\"value\":\"370481\",\"text\":\"滕州市\"}]},{\"value\":\"3705\",\"text\":\"东营市\",\"children\":[{\"value\":\"370502\",\"text\":\"东营区\"},{\"value\":\"370503\",\"text\":\"河口区\"},{\"value\":\"370505\",\"text\":\"垦利区\"},{\"value\":\"370522\",\"text\":\"利津县\"},{\"value\":\"370523\",\"text\":\"广饶县\"}]},{\"value\":\"3706\",\"text\":\"烟台市\",\"children\":[{\"value\":\"370602\",\"text\":\"芝罘区\"},{\"value\":\"370611\",\"text\":\"福山区\"},{\"value\":\"370612\",\"text\":\"牟平区\"},{\"value\":\"370613\",\"text\":\"莱山区\"},{\"value\":\"370634\",\"text\":\"长岛县\"},{\"value\":\"370681\",\"text\":\"龙口市\"},{\"value\":\"370682\",\"text\":\"莱阳市\"},{\"value\":\"370683\",\"text\":\"莱州市\"},{\"value\":\"370684\",\"text\":\"蓬莱市\"},{\"value\":\"370685\",\"text\":\"招远市\"},{\"value\":\"370686\",\"text\":\"栖霞市\"},{\"value\":\"370687\",\"text\":\"海阳市\"}]},{\"value\":\"3707\",\"text\":\"潍坊市\",\"children\":[{\"value\":\"370702\",\"text\":\"潍城区\"},{\"value\":\"370703\",\"text\":\"寒亭区\"},{\"value\":\"370704\",\"text\":\"坊子区\"},{\"value\":\"370705\",\"text\":\"奎文区\"},{\"value\":\"370724\",\"text\":\"临朐县\"},{\"value\":\"370725\",\"text\":\"昌乐县\"},{\"value\":\"370781\",\"text\":\"青州市\"},{\"value\":\"370782\",\"text\":\"诸城市\"},{\"value\":\"370783\",\"text\":\"寿光市\"},{\"value\":\"370784\",\"text\":\"安丘市\"},{\"value\":\"370785\",\"text\":\"高密市\"},{\"value\":\"370786\",\"text\":\"昌邑市\"}]},{\"value\":\"3708\",\"text\":\"济宁市\",\"children\":[{\"value\":\"370811\",\"text\":\"任城区\"},{\"value\":\"370812\",\"text\":\"兖州区\"},{\"value\":\"370826\",\"text\":\"微山县\"},{\"value\":\"370827\",\"text\":\"鱼台县\"},{\"value\":\"370828\",\"text\":\"金乡县\"},{\"value\":\"370829\",\"text\":\"嘉祥县\"},{\"value\":\"370830\",\"text\":\"汶上县\"},{\"value\":\"370831\",\"text\":\"泗水县\"},{\"value\":\"370832\",\"text\":\"梁山县\"},{\"value\":\"370881\",\"text\":\"曲阜市\"},{\"value\":\"370883\",\"text\":\"邹城市\"}]},{\"value\":\"3709\",\"text\":\"泰安市\",\"children\":[{\"value\":\"370902\",\"text\":\"泰山区\"},{\"value\":\"370911\",\"text\":\"岱岳区\"},{\"value\":\"370921\",\"text\":\"宁阳县\"},{\"value\":\"370923\",\"text\":\"东平县\"},{\"value\":\"370982\",\"text\":\"新泰市\"},{\"value\":\"370983\",\"text\":\"肥城市\"}]},{\"value\":\"3710\",\"text\":\"威海市\",\"children\":[{\"value\":\"371002\",\"text\":\"环翠区\"},{\"value\":\"371003\",\"text\":\"文登区\"},{\"value\":\"371082\",\"text\":\"荣成市\"},{\"value\":\"371083\",\"text\":\"乳山市\"}]},{\"value\":\"3711\",\"text\":\"日照市\",\"children\":[{\"value\":\"371102\",\"text\":\"东港区\"},{\"value\":\"371103\",\"text\":\"岚山区\"},{\"value\":\"371121\",\"text\":\"五莲县\"},{\"value\":\"371122\",\"text\":\"莒县\"}]},{\"value\":\"3712\",\"text\":\"莱芜市\",\"children\":[{\"value\":\"371202\",\"text\":\"莱城区\"},{\"value\":\"371203\",\"text\":\"钢城区\"}]},{\"value\":\"3713\",\"text\":\"临沂市\",\"children\":[{\"value\":\"371302\",\"text\":\"兰山区\"},{\"value\":\"371311\",\"text\":\"罗庄区\"},{\"value\":\"371312\",\"text\":\"河东区\"},{\"value\":\"371321\",\"text\":\"沂南县\"},{\"value\":\"371322\",\"text\":\"郯城县\"},{\"value\":\"371323\",\"text\":\"沂水县\"},{\"value\":\"371324\",\"text\":\"兰陵县\"},{\"value\":\"371325\",\"text\":\"费县\"},{\"value\":\"371326\",\"text\":\"平邑县\"},{\"value\":\"371327\",\"text\":\"莒南县\"},{\"value\":\"371328\",\"text\":\"蒙阴县\"},{\"value\":\"371329\",\"text\":\"临沭县\"}]},{\"value\":\"3714\",\"text\":\"德州市\",\"children\":[{\"value\":\"371402\",\"text\":\"德城区\"},{\"value\":\"371403\",\"text\":\"陵城区\"},{\"value\":\"371422\",\"text\":\"宁津县\"},{\"value\":\"371423\",\"text\":\"庆云县\"},{\"value\":\"371424\",\"text\":\"临邑县\"},{\"value\":\"371425\",\"text\":\"齐河县\"},{\"value\":\"371426\",\"text\":\"平原县\"},{\"value\":\"371427\",\"text\":\"夏津县\"},{\"value\":\"371428\",\"text\":\"武城县\"},{\"value\":\"371481\",\"text\":\"乐陵市\"},{\"value\":\"371482\",\"text\":\"禹城市\"}]},{\"value\":\"3715\",\"text\":\"聊城市\",\"children\":[{\"value\":\"371502\",\"text\":\"东昌府区\"},{\"value\":\"371521\",\"text\":\"阳谷县\"},{\"value\":\"371522\",\"text\":\"莘县\"},{\"value\":\"371523\",\"text\":\"茌平县\"},{\"value\":\"371524\",\"text\":\"东阿县\"},{\"value\":\"371525\",\"text\":\"冠县\"},{\"value\":\"371526\",\"text\":\"高唐县\"},{\"value\":\"371581\",\"text\":\"临清市\"}]},{\"value\":\"3716\",\"text\":\"滨州市\",\"children\":[{\"value\":\"371602\",\"text\":\"滨城区\"},{\"value\":\"371603\",\"text\":\"沾化区\"},{\"value\":\"371621\",\"text\":\"惠民县\"},{\"value\":\"371622\",\"text\":\"阳信县\"},{\"value\":\"371623\",\"text\":\"无棣县\"},{\"value\":\"371625\",\"text\":\"博兴县\"},{\"value\":\"371626\",\"text\":\"邹平县\"}]},{\"value\":\"3717\",\"text\":\"菏泽市\",\"children\":[{\"value\":\"371702\",\"text\":\"牡丹区\"},{\"value\":\"371703\",\"text\":\"定陶区\"},{\"value\":\"371721\",\"text\":\"曹县\"},{\"value\":\"371722\",\"text\":\"单县\"},{\"value\":\"371723\",\"text\":\"成武县\"},{\"value\":\"371724\",\"text\":\"巨野县\"},{\"value\":\"371725\",\"text\":\"郓城县\"},{\"value\":\"371726\",\"text\":\"鄄城县\"},{\"value\":\"371728\",\"text\":\"东明县\"}]}]},{\"value\":\"41\",\"text\":\"河南省\",\"children\":[{\"value\":\"4101\",\"text\":\"郑州市\",\"children\":[{\"value\":\"410102\",\"text\":\"中原区\"},{\"value\":\"410103\",\"text\":\"二七区\"},{\"value\":\"410104\",\"text\":\"管城回族区\"},{\"value\":\"410105\",\"text\":\"金水区\"},{\"value\":\"410106\",\"text\":\"上街区\"},{\"value\":\"410108\",\"text\":\"惠济区\"},{\"value\":\"410122\",\"text\":\"中牟县\"},{\"value\":\"410181\",\"text\":\"巩义市\"},{\"value\":\"410182\",\"text\":\"荥阳市\"},{\"value\":\"410183\",\"text\":\"新密市\"},{\"value\":\"410184\",\"text\":\"新郑市\"},{\"value\":\"410185\",\"text\":\"登封市\"}]},{\"value\":\"4102\",\"text\":\"开封市\",\"children\":[{\"value\":\"410202\",\"text\":\"龙亭区\"},{\"value\":\"410203\",\"text\":\"顺河回族区\"},{\"value\":\"410204\",\"text\":\"鼓楼区\"},{\"value\":\"410205\",\"text\":\"禹王台区\"},{\"value\":\"410211\",\"text\":\"金明区\"},{\"value\":\"410212\",\"text\":\"祥符区\"},{\"value\":\"410221\",\"text\":\"杞县\"},{\"value\":\"410222\",\"text\":\"通许县\"},{\"value\":\"410223\",\"text\":\"尉氏县\"},{\"value\":\"410225\",\"text\":\"兰考县\"}]},{\"value\":\"4103\",\"text\":\"洛阳市\",\"children\":[{\"value\":\"410302\",\"text\":\"老城区\"},{\"value\":\"410303\",\"text\":\"西工区\"},{\"value\":\"410304\",\"text\":\"瀍河回族区\"},{\"value\":\"410305\",\"text\":\"涧西区\"},{\"value\":\"410306\",\"text\":\"吉利区\"},{\"value\":\"410311\",\"text\":\"洛龙区\"},{\"value\":\"410322\",\"text\":\"孟津县\"},{\"value\":\"410323\",\"text\":\"新安县\"},{\"value\":\"410324\",\"text\":\"栾川县\"},{\"value\":\"410325\",\"text\":\"嵩县\"},{\"value\":\"410326\",\"text\":\"汝阳县\"},{\"value\":\"410327\",\"text\":\"宜阳县\"},{\"value\":\"410328\",\"text\":\"洛宁县\"},{\"value\":\"410329\",\"text\":\"伊川县\"},{\"value\":\"410381\",\"text\":\"偃师市\"}]},{\"value\":\"4104\",\"text\":\"平顶山市\",\"children\":[{\"value\":\"410402\",\"text\":\"新华区\"},{\"value\":\"410403\",\"text\":\"卫东区\"},{\"value\":\"410404\",\"text\":\"石龙区\"},{\"value\":\"410411\",\"text\":\"湛河区\"},{\"value\":\"410421\",\"text\":\"宝丰县\"},{\"value\":\"410422\",\"text\":\"叶县\"},{\"value\":\"410423\",\"text\":\"鲁山县\"},{\"value\":\"410425\",\"text\":\"郏县\"},{\"value\":\"410481\",\"text\":\"舞钢市\"},{\"value\":\"410482\",\"text\":\"汝州市\"}]},{\"value\":\"4105\",\"text\":\"安阳市\",\"children\":[{\"value\":\"410502\",\"text\":\"文峰区\"},{\"value\":\"410503\",\"text\":\"北关区\"},{\"value\":\"410505\",\"text\":\"殷都区\"},{\"value\":\"410506\",\"text\":\"龙安区\"},{\"value\":\"410522\",\"text\":\"安阳县\"},{\"value\":\"410523\",\"text\":\"汤阴县\"},{\"value\":\"410526\",\"text\":\"滑县\"},{\"value\":\"410527\",\"text\":\"内黄县\"},{\"value\":\"410581\",\"text\":\"林州市\"}]},{\"value\":\"4106\",\"text\":\"鹤壁市\",\"children\":[{\"value\":\"410602\",\"text\":\"鹤山区\"},{\"value\":\"410603\",\"text\":\"山城区\"},{\"value\":\"410611\",\"text\":\"淇滨区\"},{\"value\":\"410621\",\"text\":\"浚县\"},{\"value\":\"410622\",\"text\":\"淇县\"}]},{\"value\":\"4107\",\"text\":\"新乡市\",\"children\":[{\"value\":\"410702\",\"text\":\"红旗区\"},{\"value\":\"410703\",\"text\":\"卫滨区\"},{\"value\":\"410704\",\"text\":\"凤泉区\"},{\"value\":\"410711\",\"text\":\"牧野区\"},{\"value\":\"410721\",\"text\":\"新乡县\"},{\"value\":\"410724\",\"text\":\"获嘉县\"},{\"value\":\"410725\",\"text\":\"原阳县\"},{\"value\":\"410726\",\"text\":\"延津县\"},{\"value\":\"410727\",\"text\":\"封丘县\"},{\"value\":\"410728\",\"text\":\"长垣县\"},{\"value\":\"410781\",\"text\":\"卫辉市\"},{\"value\":\"410782\",\"text\":\"辉县市\"}]},{\"value\":\"4108\",\"text\":\"焦作市\",\"children\":[{\"value\":\"410802\",\"text\":\"解放区\"},{\"value\":\"410803\",\"text\":\"中站区\"},{\"value\":\"410804\",\"text\":\"马村区\"},{\"value\":\"410811\",\"text\":\"山阳区\"},{\"value\":\"410821\",\"text\":\"修武县\"},{\"value\":\"410822\",\"text\":\"博爱县\"},{\"value\":\"410823\",\"text\":\"武陟县\"},{\"value\":\"410825\",\"text\":\"温县\"},{\"value\":\"410882\",\"text\":\"沁阳市\"},{\"value\":\"410883\",\"text\":\"孟州市\"}]},{\"value\":\"4109\",\"text\":\"濮阳市\",\"children\":[{\"value\":\"410902\",\"text\":\"华龙区\"},{\"value\":\"410922\",\"text\":\"清丰县\"},{\"value\":\"410923\",\"text\":\"南乐县\"},{\"value\":\"410926\",\"text\":\"范县\"},{\"value\":\"410927\",\"text\":\"台前县\"},{\"value\":\"410928\",\"text\":\"濮阳县\"}]},{\"value\":\"4110\",\"text\":\"许昌市\",\"children\":[{\"value\":\"411002\",\"text\":\"魏都区\"},{\"value\":\"411023\",\"text\":\"许昌县\"},{\"value\":\"411024\",\"text\":\"鄢陵县\"},{\"value\":\"411025\",\"text\":\"襄城县\"},{\"value\":\"411081\",\"text\":\"禹州市\"},{\"value\":\"411082\",\"text\":\"长葛市\"}]},{\"value\":\"4111\",\"text\":\"漯河市\",\"children\":[{\"value\":\"411102\",\"text\":\"源汇区\"},{\"value\":\"411103\",\"text\":\"郾城区\"},{\"value\":\"411104\",\"text\":\"召陵区\"},{\"value\":\"411121\",\"text\":\"舞阳县\"},{\"value\":\"411122\",\"text\":\"临颍县\"}]},{\"value\":\"4112\",\"text\":\"三门峡市\",\"children\":[{\"value\":\"411202\",\"text\":\"湖滨区\"},{\"value\":\"411203\",\"text\":\"陕州区\"},{\"value\":\"411221\",\"text\":\"渑池县\"},{\"value\":\"411224\",\"text\":\"卢氏县\"},{\"value\":\"411281\",\"text\":\"义马市\"},{\"value\":\"411282\",\"text\":\"灵宝市\"}]},{\"value\":\"4113\",\"text\":\"南阳市\",\"children\":[{\"value\":\"411302\",\"text\":\"宛城区\"},{\"value\":\"411303\",\"text\":\"卧龙区\"},{\"value\":\"411321\",\"text\":\"南召县\"},{\"value\":\"411322\",\"text\":\"方城县\"},{\"value\":\"411323\",\"text\":\"西峡县\"},{\"value\":\"411324\",\"text\":\"镇平县\"},{\"value\":\"411325\",\"text\":\"内乡县\"},{\"value\":\"411326\",\"text\":\"淅川县\"},{\"value\":\"411327\",\"text\":\"社旗县\"},{\"value\":\"411328\",\"text\":\"唐河县\"},{\"value\":\"411329\",\"text\":\"新野县\"},{\"value\":\"411330\",\"text\":\"桐柏县\"},{\"value\":\"411381\",\"text\":\"邓州市\"}]},{\"value\":\"4114\",\"text\":\"商丘市\",\"children\":[{\"value\":\"411402\",\"text\":\"梁园区\"},{\"value\":\"411403\",\"text\":\"睢阳区\"},{\"value\":\"411421\",\"text\":\"民权县\"},{\"value\":\"411422\",\"text\":\"睢县\"},{\"value\":\"411423\",\"text\":\"宁陵县\"},{\"value\":\"411424\",\"text\":\"柘城县\"},{\"value\":\"411425\",\"text\":\"虞城县\"},{\"value\":\"411426\",\"text\":\"夏邑县\"},{\"value\":\"411481\",\"text\":\"永城市\"}]},{\"value\":\"4115\",\"text\":\"信阳市\",\"children\":[{\"value\":\"411502\",\"text\":\"浉河区\"},{\"value\":\"411503\",\"text\":\"平桥区\"},{\"value\":\"411521\",\"text\":\"罗山县\"},{\"value\":\"411522\",\"text\":\"光山县\"},{\"value\":\"411523\",\"text\":\"新县\"},{\"value\":\"411524\",\"text\":\"商城县\"},{\"value\":\"411525\",\"text\":\"固始县\"},{\"value\":\"411526\",\"text\":\"潢川县\"},{\"value\":\"411527\",\"text\":\"淮滨县\"},{\"value\":\"411528\",\"text\":\"息县\"}]},{\"value\":\"4116\",\"text\":\"周口市\",\"children\":[{\"value\":\"411602\",\"text\":\"川汇区\"},{\"value\":\"411621\",\"text\":\"扶沟县\"},{\"value\":\"411622\",\"text\":\"西华县\"},{\"value\":\"411623\",\"text\":\"商水县\"},{\"value\":\"411624\",\"text\":\"沈丘县\"},{\"value\":\"411625\",\"text\":\"郸城县\"},{\"value\":\"411626\",\"text\":\"淮阳县\"},{\"value\":\"411627\",\"text\":\"太康县\"},{\"value\":\"411628\",\"text\":\"鹿邑县\"},{\"value\":\"411681\",\"text\":\"项城市\"}]},{\"value\":\"4117\",\"text\":\"驻马店市\",\"children\":[{\"value\":\"411702\",\"text\":\"驿城区\"},{\"value\":\"411721\",\"text\":\"西平县\"},{\"value\":\"411722\",\"text\":\"上蔡县\"},{\"value\":\"411723\",\"text\":\"平舆县\"},{\"value\":\"411724\",\"text\":\"正阳县\"},{\"value\":\"411725\",\"text\":\"确山县\"},{\"value\":\"411726\",\"text\":\"泌阳县\"},{\"value\":\"411727\",\"text\":\"汝南县\"},{\"value\":\"411728\",\"text\":\"遂平县\"},{\"value\":\"411729\",\"text\":\"新蔡县\"}]},{\"value\":\"4190\",\"text\":\"省直辖县级行政区划\",\"children\":[{\"value\":\"419001\",\"text\":\"济源市\"}]}]},{\"value\":\"42\",\"text\":\"湖北省\",\"children\":[{\"value\":\"4201\",\"text\":\"武汉市\",\"children\":[{\"value\":\"420102\",\"text\":\"江岸区\"},{\"value\":\"420103\",\"text\":\"江汉区\"},{\"value\":\"420104\",\"text\":\"硚口区\"},{\"value\":\"420105\",\"text\":\"汉阳区\"},{\"value\":\"420106\",\"text\":\"武昌区\"},{\"value\":\"420107\",\"text\":\"青山区\"},{\"value\":\"420111\",\"text\":\"洪山区\"},{\"value\":\"420112\",\"text\":\"东西湖区\"},{\"value\":\"420113\",\"text\":\"汉南区\"},{\"value\":\"420114\",\"text\":\"蔡甸区\"},{\"value\":\"420115\",\"text\":\"江夏区\"},{\"value\":\"420116\",\"text\":\"黄陂区\"},{\"value\":\"420117\",\"text\":\"新洲区\"}]},{\"value\":\"4202\",\"text\":\"黄石市\",\"children\":[{\"value\":\"420202\",\"text\":\"黄石港区\"},{\"value\":\"420203\",\"text\":\"西塞山区\"},{\"value\":\"420204\",\"text\":\"下陆区\"},{\"value\":\"420205\",\"text\":\"铁山区\"},{\"value\":\"420222\",\"text\":\"阳新县\"},{\"value\":\"420281\",\"text\":\"大冶市\"}]},{\"value\":\"4203\",\"text\":\"十堰市\",\"children\":[{\"value\":\"420302\",\"text\":\"茅箭区\"},{\"value\":\"420303\",\"text\":\"张湾区\"},{\"value\":\"420304\",\"text\":\"郧阳区\"},{\"value\":\"420322\",\"text\":\"郧西县\"},{\"value\":\"420323\",\"text\":\"竹山县\"},{\"value\":\"420324\",\"text\":\"竹溪县\"},{\"value\":\"420325\",\"text\":\"房县\"},{\"value\":\"420381\",\"text\":\"丹江口市\"}]},{\"value\":\"4205\",\"text\":\"宜昌市\",\"children\":[{\"value\":\"420502\",\"text\":\"西陵区\"},{\"value\":\"420503\",\"text\":\"伍家岗区\"},{\"value\":\"420504\",\"text\":\"点军区\"},{\"value\":\"420505\",\"text\":\"猇亭区\"},{\"value\":\"420506\",\"text\":\"夷陵区\"},{\"value\":\"420525\",\"text\":\"远安县\"},{\"value\":\"420526\",\"text\":\"兴山县\"},{\"value\":\"420527\",\"text\":\"秭归县\"},{\"value\":\"420528\",\"text\":\"长阳土家族自治县\"},{\"value\":\"420529\",\"text\":\"五峰土家族自治县\"},{\"value\":\"420581\",\"text\":\"宜都市\"},{\"value\":\"420582\",\"text\":\"当阳市\"},{\"value\":\"420583\",\"text\":\"枝江市\"}]},{\"value\":\"4206\",\"text\":\"襄阳市\",\"children\":[{\"value\":\"420602\",\"text\":\"襄城区\"},{\"value\":\"420606\",\"text\":\"樊城区\"},{\"value\":\"420607\",\"text\":\"襄州区\"},{\"value\":\"420624\",\"text\":\"南漳县\"},{\"value\":\"420625\",\"text\":\"谷城县\"},{\"value\":\"420626\",\"text\":\"保康县\"},{\"value\":\"420682\",\"text\":\"老河口市\"},{\"value\":\"420683\",\"text\":\"枣阳市\"},{\"value\":\"420684\",\"text\":\"宜城市\"}]},{\"value\":\"4207\",\"text\":\"鄂州市\",\"children\":[{\"value\":\"420702\",\"text\":\"梁子湖区\"},{\"value\":\"420703\",\"text\":\"华容区\"},{\"value\":\"420704\",\"text\":\"鄂城区\"}]},{\"value\":\"4208\",\"text\":\"荆门市\",\"children\":[{\"value\":\"420802\",\"text\":\"东宝区\"},{\"value\":\"420804\",\"text\":\"掇刀区\"},{\"value\":\"420821\",\"text\":\"京山县\"},{\"value\":\"420822\",\"text\":\"沙洋县\"},{\"value\":\"420881\",\"text\":\"钟祥市\"}]},{\"value\":\"4209\",\"text\":\"孝感市\",\"children\":[{\"value\":\"420902\",\"text\":\"孝南区\"},{\"value\":\"420921\",\"text\":\"孝昌县\"},{\"value\":\"420922\",\"text\":\"大悟县\"},{\"value\":\"420923\",\"text\":\"云梦县\"},{\"value\":\"420981\",\"text\":\"应城市\"},{\"value\":\"420982\",\"text\":\"安陆市\"},{\"value\":\"420984\",\"text\":\"汉川市\"}]},{\"value\":\"4210\",\"text\":\"荆州市\",\"children\":[{\"value\":\"421002\",\"text\":\"沙市区\"},{\"value\":\"421003\",\"text\":\"荆州区\"},{\"value\":\"421022\",\"text\":\"公安县\"},{\"value\":\"421023\",\"text\":\"监利县\"},{\"value\":\"421024\",\"text\":\"江陵县\"},{\"value\":\"421081\",\"text\":\"石首市\"},{\"value\":\"421083\",\"text\":\"洪湖市\"},{\"value\":\"421087\",\"text\":\"松滋市\"}]},{\"value\":\"4211\",\"text\":\"黄冈市\",\"children\":[{\"value\":\"421102\",\"text\":\"黄州区\"},{\"value\":\"421121\",\"text\":\"团风县\"},{\"value\":\"421122\",\"text\":\"红安县\"},{\"value\":\"421123\",\"text\":\"罗田县\"},{\"value\":\"421124\",\"text\":\"英山县\"},{\"value\":\"421125\",\"text\":\"浠水县\"},{\"value\":\"421126\",\"text\":\"蕲春县\"},{\"value\":\"421127\",\"text\":\"黄梅县\"},{\"value\":\"421181\",\"text\":\"麻城市\"},{\"value\":\"421182\",\"text\":\"武穴市\"}]},{\"value\":\"4212\",\"text\":\"咸宁市\",\"children\":[{\"value\":\"421202\",\"text\":\"咸安区\"},{\"value\":\"421221\",\"text\":\"嘉鱼县\"},{\"value\":\"421222\",\"text\":\"通城县\"},{\"value\":\"421223\",\"text\":\"崇阳县\"},{\"value\":\"421224\",\"text\":\"通山县\"},{\"value\":\"421281\",\"text\":\"赤壁市\"}]},{\"value\":\"4213\",\"text\":\"随州市\",\"children\":[{\"value\":\"421303\",\"text\":\"曾都区\"},{\"value\":\"421321\",\"text\":\"随县\"},{\"value\":\"421381\",\"text\":\"广水市\"}]},{\"value\":\"4228\",\"text\":\"恩施土家族苗族自治州\",\"children\":[{\"value\":\"422801\",\"text\":\"恩施市\"},{\"value\":\"422802\",\"text\":\"利川市\"},{\"value\":\"422822\",\"text\":\"建始县\"},{\"value\":\"422823\",\"text\":\"巴东县\"},{\"value\":\"422825\",\"text\":\"宣恩县\"},{\"value\":\"422826\",\"text\":\"咸丰县\"},{\"value\":\"422827\",\"text\":\"来凤县\"},{\"value\":\"422828\",\"text\":\"鹤峰县\"}]},{\"value\":\"4290\",\"text\":\"省直辖县级行政区划\",\"children\":[{\"value\":\"429004\",\"text\":\"仙桃市\"},{\"value\":\"429005\",\"text\":\"潜江市\"},{\"value\":\"429006\",\"text\":\"天门市\"},{\"value\":\"429021\",\"text\":\"神农架林区\"}]}]},{\"value\":\"43\",\"text\":\"湖南省\",\"children\":[{\"value\":\"4301\",\"text\":\"长沙市\",\"children\":[{\"value\":\"430102\",\"text\":\"芙蓉区\"},{\"value\":\"430103\",\"text\":\"天心区\"},{\"value\":\"430104\",\"text\":\"岳麓区\"},{\"value\":\"430105\",\"text\":\"开福区\"},{\"value\":\"430111\",\"text\":\"雨花区\"},{\"value\":\"430112\",\"text\":\"望城区\"},{\"value\":\"430121\",\"text\":\"长沙县\"},{\"value\":\"430124\",\"text\":\"宁乡县\"},{\"value\":\"430181\",\"text\":\"浏阳市\"}]},{\"value\":\"4302\",\"text\":\"株洲市\",\"children\":[{\"value\":\"430202\",\"text\":\"荷塘区\"},{\"value\":\"430203\",\"text\":\"芦淞区\"},{\"value\":\"430204\",\"text\":\"石峰区\"},{\"value\":\"430211\",\"text\":\"天元区\"},{\"value\":\"430221\",\"text\":\"株洲县\"},{\"value\":\"430223\",\"text\":\"攸县\"},{\"value\":\"430224\",\"text\":\"茶陵县\"},{\"value\":\"430225\",\"text\":\"炎陵县\"},{\"value\":\"430281\",\"text\":\"醴陵市\"}]},{\"value\":\"4303\",\"text\":\"湘潭市\",\"children\":[{\"value\":\"430302\",\"text\":\"雨湖区\"},{\"value\":\"430304\",\"text\":\"岳塘区\"},{\"value\":\"430321\",\"text\":\"湘潭县\"},{\"value\":\"430381\",\"text\":\"湘乡市\"},{\"value\":\"430382\",\"text\":\"韶山市\"}]},{\"value\":\"4304\",\"text\":\"衡阳市\",\"children\":[{\"value\":\"430405\",\"text\":\"珠晖区\"},{\"value\":\"430406\",\"text\":\"雁峰区\"},{\"value\":\"430407\",\"text\":\"石鼓区\"},{\"value\":\"430408\",\"text\":\"蒸湘区\"},{\"value\":\"430412\",\"text\":\"南岳区\"},{\"value\":\"430421\",\"text\":\"衡阳县\"},{\"value\":\"430422\",\"text\":\"衡南县\"},{\"value\":\"430423\",\"text\":\"衡山县\"},{\"value\":\"430424\",\"text\":\"衡东县\"},{\"value\":\"430426\",\"text\":\"祁东县\"},{\"value\":\"430481\",\"text\":\"耒阳市\"},{\"value\":\"430482\",\"text\":\"常宁市\"}]},{\"value\":\"4305\",\"text\":\"邵阳市\",\"children\":[{\"value\":\"430502\",\"text\":\"双清区\"},{\"value\":\"430503\",\"text\":\"大祥区\"},{\"value\":\"430511\",\"text\":\"北塔区\"},{\"value\":\"430521\",\"text\":\"邵东县\"},{\"value\":\"430522\",\"text\":\"新邵县\"},{\"value\":\"430523\",\"text\":\"邵阳县\"},{\"value\":\"430524\",\"text\":\"隆回县\"},{\"value\":\"430525\",\"text\":\"洞口县\"},{\"value\":\"430527\",\"text\":\"绥宁县\"},{\"value\":\"430528\",\"text\":\"新宁县\"},{\"value\":\"430529\",\"text\":\"城步苗族自治县\"},{\"value\":\"430581\",\"text\":\"武冈市\"}]},{\"value\":\"4306\",\"text\":\"岳阳市\",\"children\":[{\"value\":\"430602\",\"text\":\"岳阳楼区\"},{\"value\":\"430603\",\"text\":\"云溪区\"},{\"value\":\"430611\",\"text\":\"君山区\"},{\"value\":\"430621\",\"text\":\"岳阳县\"},{\"value\":\"430623\",\"text\":\"华容县\"},{\"value\":\"430624\",\"text\":\"湘阴县\"},{\"value\":\"430626\",\"text\":\"平江县\"},{\"value\":\"430681\",\"text\":\"汨罗市\"},{\"value\":\"430682\",\"text\":\"临湘市\"}]},{\"value\":\"4307\",\"text\":\"常德市\",\"children\":[{\"value\":\"430702\",\"text\":\"武陵区\"},{\"value\":\"430703\",\"text\":\"鼎城区\"},{\"value\":\"430721\",\"text\":\"安乡县\"},{\"value\":\"430722\",\"text\":\"汉寿县\"},{\"value\":\"430723\",\"text\":\"澧县\"},{\"value\":\"430724\",\"text\":\"临澧县\"},{\"value\":\"430725\",\"text\":\"桃源县\"},{\"value\":\"430726\",\"text\":\"石门县\"},{\"value\":\"430781\",\"text\":\"津市市\"}]},{\"value\":\"4308\",\"text\":\"张家界市\",\"children\":[{\"value\":\"430802\",\"text\":\"永定区\"},{\"value\":\"430811\",\"text\":\"武陵源区\"},{\"value\":\"430821\",\"text\":\"慈利县\"},{\"value\":\"430822\",\"text\":\"桑植县\"}]},{\"value\":\"4309\",\"text\":\"益阳市\",\"children\":[{\"value\":\"430902\",\"text\":\"资阳区\"},{\"value\":\"430903\",\"text\":\"赫山区\"},{\"value\":\"430921\",\"text\":\"南县\"},{\"value\":\"430922\",\"text\":\"桃江县\"},{\"value\":\"430923\",\"text\":\"安化县\"},{\"value\":\"430981\",\"text\":\"沅江市\"}]},{\"value\":\"4310\",\"text\":\"郴州市\",\"children\":[{\"value\":\"431002\",\"text\":\"北湖区\"},{\"value\":\"431003\",\"text\":\"苏仙区\"},{\"value\":\"431021\",\"text\":\"桂阳县\"},{\"value\":\"431022\",\"text\":\"宜章县\"},{\"value\":\"431023\",\"text\":\"永兴县\"},{\"value\":\"431024\",\"text\":\"嘉禾县\"},{\"value\":\"431025\",\"text\":\"临武县\"},{\"value\":\"431026\",\"text\":\"汝城县\"},{\"value\":\"431027\",\"text\":\"桂东县\"},{\"value\":\"431028\",\"text\":\"安仁县\"},{\"value\":\"431081\",\"text\":\"资兴市\"}]},{\"value\":\"4311\",\"text\":\"永州市\",\"children\":[{\"value\":\"431102\",\"text\":\"零陵区\"},{\"value\":\"431103\",\"text\":\"冷水滩区\"},{\"value\":\"431121\",\"text\":\"祁阳县\"},{\"value\":\"431122\",\"text\":\"东安县\"},{\"value\":\"431123\",\"text\":\"双牌县\"},{\"value\":\"431124\",\"text\":\"道县\"},{\"value\":\"431125\",\"text\":\"江永县\"},{\"value\":\"431126\",\"text\":\"宁远县\"},{\"value\":\"431127\",\"text\":\"蓝山县\"},{\"value\":\"431128\",\"text\":\"新田县\"},{\"value\":\"431129\",\"text\":\"江华瑶族自治县\"}]},{\"value\":\"4312\",\"text\":\"怀化市\",\"children\":[{\"value\":\"431202\",\"text\":\"鹤城区\"},{\"value\":\"431221\",\"text\":\"中方县\"},{\"value\":\"431222\",\"text\":\"沅陵县\"},{\"value\":\"431223\",\"text\":\"辰溪县\"},{\"value\":\"431224\",\"text\":\"溆浦县\"},{\"value\":\"431225\",\"text\":\"会同县\"},{\"value\":\"431226\",\"text\":\"麻阳苗族自治县\"},{\"value\":\"431227\",\"text\":\"新晃侗族自治县\"},{\"value\":\"431228\",\"text\":\"芷江侗族自治县\"},{\"value\":\"431229\",\"text\":\"靖州苗族侗族自治县\"},{\"value\":\"431230\",\"text\":\"通道侗族自治县\"},{\"value\":\"431281\",\"text\":\"洪江市\"}]},{\"value\":\"4313\",\"text\":\"娄底市\",\"children\":[{\"value\":\"431302\",\"text\":\"娄星区\"},{\"value\":\"431321\",\"text\":\"双峰县\"},{\"value\":\"431322\",\"text\":\"新化县\"},{\"value\":\"431381\",\"text\":\"冷水江市\"},{\"value\":\"431382\",\"text\":\"涟源市\"}]},{\"value\":\"4331\",\"text\":\"湘西土家族苗族自治州\",\"children\":[{\"value\":\"433101\",\"text\":\"吉首市\"},{\"value\":\"433122\",\"text\":\"泸溪县\"},{\"value\":\"433123\",\"text\":\"凤凰县\"},{\"value\":\"433124\",\"text\":\"花垣县\"},{\"value\":\"433125\",\"text\":\"保靖县\"},{\"value\":\"433126\",\"text\":\"古丈县\"},{\"value\":\"433127\",\"text\":\"永顺县\"},{\"value\":\"433130\",\"text\":\"龙山县\"}]}]},{\"value\":\"44\",\"text\":\"广东省\",\"children\":[{\"value\":\"4401\",\"text\":\"广州市\",\"children\":[{\"value\":\"440103\",\"text\":\"荔湾区\"},{\"value\":\"440104\",\"text\":\"越秀区\"},{\"value\":\"440105\",\"text\":\"海珠区\"},{\"value\":\"440106\",\"text\":\"天河区\"},{\"value\":\"440111\",\"text\":\"白云区\"},{\"value\":\"440112\",\"text\":\"黄埔区\"},{\"value\":\"440113\",\"text\":\"番禺区\"},{\"value\":\"440114\",\"text\":\"花都区\"},{\"value\":\"440115\",\"text\":\"南沙区\"},{\"value\":\"440117\",\"text\":\"从化区\"},{\"value\":\"440118\",\"text\":\"增城区\"}]},{\"value\":\"4402\",\"text\":\"韶关市\",\"children\":[{\"value\":\"440203\",\"text\":\"武江区\"},{\"value\":\"440204\",\"text\":\"浈江区\"},{\"value\":\"440205\",\"text\":\"曲江区\"},{\"value\":\"440222\",\"text\":\"始兴县\"},{\"value\":\"440224\",\"text\":\"仁化县\"},{\"value\":\"440229\",\"text\":\"翁源县\"},{\"value\":\"440232\",\"text\":\"乳源瑶族自治县\"},{\"value\":\"440233\",\"text\":\"新丰县\"},{\"value\":\"440281\",\"text\":\"乐昌市\"},{\"value\":\"440282\",\"text\":\"南雄市\"}]},{\"value\":\"4403\",\"text\":\"深圳市\",\"children\":[{\"value\":\"440303\",\"text\":\"罗湖区\"},{\"value\":\"440304\",\"text\":\"福田区\"},{\"value\":\"440305\",\"text\":\"南山区\"},{\"value\":\"440306\",\"text\":\"宝安区\"},{\"value\":\"440307\",\"text\":\"龙岗区\"},{\"value\":\"440308\",\"text\":\"盐田区\"}]},{\"value\":\"4404\",\"text\":\"珠海市\",\"children\":[{\"value\":\"440402\",\"text\":\"香洲区\"},{\"value\":\"440403\",\"text\":\"斗门区\"},{\"value\":\"440404\",\"text\":\"金湾区\"}]},{\"value\":\"4405\",\"text\":\"汕头市\",\"children\":[{\"value\":\"440507\",\"text\":\"龙湖区\"},{\"value\":\"440511\",\"text\":\"金平区\"},{\"value\":\"440512\",\"text\":\"濠江区\"},{\"value\":\"440513\",\"text\":\"潮阳区\"},{\"value\":\"440514\",\"text\":\"潮南区\"},{\"value\":\"440515\",\"text\":\"澄海区\"},{\"value\":\"440523\",\"text\":\"南澳县\"}]},{\"value\":\"4406\",\"text\":\"佛山市\",\"children\":[{\"value\":\"440604\",\"text\":\"禅城区\"},{\"value\":\"440605\",\"text\":\"南海区\"},{\"value\":\"440606\",\"text\":\"顺德区\"},{\"value\":\"440607\",\"text\":\"三水区\"},{\"value\":\"440608\",\"text\":\"高明区\"}]},{\"value\":\"4407\",\"text\":\"江门市\",\"children\":[{\"value\":\"440703\",\"text\":\"蓬江区\"},{\"value\":\"440704\",\"text\":\"江海区\"},{\"value\":\"440705\",\"text\":\"新会区\"},{\"value\":\"440781\",\"text\":\"台山市\"},{\"value\":\"440783\",\"text\":\"开平市\"},{\"value\":\"440784\",\"text\":\"鹤山市\"},{\"value\":\"440785\",\"text\":\"恩平市\"}]},{\"value\":\"4408\",\"text\":\"湛江市\",\"children\":[{\"value\":\"440802\",\"text\":\"赤坎区\"},{\"value\":\"440803\",\"text\":\"霞山区\"},{\"value\":\"440804\",\"text\":\"坡头区\"},{\"value\":\"440811\",\"text\":\"麻章区\"},{\"value\":\"440823\",\"text\":\"遂溪县\"},{\"value\":\"440825\",\"text\":\"徐闻县\"},{\"value\":\"440881\",\"text\":\"廉江市\"},{\"value\":\"440882\",\"text\":\"雷州市\"},{\"value\":\"440883\",\"text\":\"吴川市\"}]},{\"value\":\"4409\",\"text\":\"茂名市\",\"children\":[{\"value\":\"440902\",\"text\":\"茂南区\"},{\"value\":\"440904\",\"text\":\"电白区\"},{\"value\":\"440981\",\"text\":\"高州市\"},{\"value\":\"440982\",\"text\":\"化州市\"},{\"value\":\"440983\",\"text\":\"信宜市\"}]},{\"value\":\"4412\",\"text\":\"肇庆市\",\"children\":[{\"value\":\"441202\",\"text\":\"端州区\"},{\"value\":\"441203\",\"text\":\"鼎湖区\"},{\"value\":\"441204\",\"text\":\"高要区\"},{\"value\":\"441223\",\"text\":\"广宁县\"},{\"value\":\"441224\",\"text\":\"怀集县\"},{\"value\":\"441225\",\"text\":\"封开县\"},{\"value\":\"441226\",\"text\":\"德庆县\"},{\"value\":\"441284\",\"text\":\"四会市\"}]},{\"value\":\"4413\",\"text\":\"惠州市\",\"children\":[{\"value\":\"441302\",\"text\":\"惠城区\"},{\"value\":\"441303\",\"text\":\"惠阳区\"},{\"value\":\"441322\",\"text\":\"博罗县\"},{\"value\":\"441323\",\"text\":\"惠东县\"},{\"value\":\"441324\",\"text\":\"龙门县\"}]},{\"value\":\"4414\",\"text\":\"梅州市\",\"children\":[{\"value\":\"441402\",\"text\":\"梅江区\"},{\"value\":\"441403\",\"text\":\"梅县区\"},{\"value\":\"441422\",\"text\":\"大埔县\"},{\"value\":\"441423\",\"text\":\"丰顺县\"},{\"value\":\"441424\",\"text\":\"五华县\"},{\"value\":\"441426\",\"text\":\"平远县\"},{\"value\":\"441427\",\"text\":\"蕉岭县\"},{\"value\":\"441481\",\"text\":\"兴宁市\"}]},{\"value\":\"4415\",\"text\":\"汕尾市\",\"children\":[{\"value\":\"441502\",\"text\":\"城区\"},{\"value\":\"441521\",\"text\":\"海丰县\"},{\"value\":\"441523\",\"text\":\"陆河县\"},{\"value\":\"441581\",\"text\":\"陆丰市\"}]},{\"value\":\"4416\",\"text\":\"河源市\",\"children\":[{\"value\":\"441602\",\"text\":\"源城区\"},{\"value\":\"441621\",\"text\":\"紫金县\"},{\"value\":\"441622\",\"text\":\"龙川县\"},{\"value\":\"441623\",\"text\":\"连平县\"},{\"value\":\"441624\",\"text\":\"和平县\"},{\"value\":\"441625\",\"text\":\"东源县\"}]},{\"value\":\"4417\",\"text\":\"阳江市\",\"children\":[{\"value\":\"441702\",\"text\":\"江城区\"},{\"value\":\"441704\",\"text\":\"阳东区\"},{\"value\":\"441721\",\"text\":\"阳西县\"},{\"value\":\"441781\",\"text\":\"阳春市\"}]},{\"value\":\"4418\",\"text\":\"清远市\",\"children\":[{\"value\":\"441802\",\"text\":\"清城区\"},{\"value\":\"441803\",\"text\":\"清新区\"},{\"value\":\"441821\",\"text\":\"佛冈县\"},{\"value\":\"441823\",\"text\":\"阳山县\"},{\"value\":\"441825\",\"text\":\"连山壮族瑶族自治县\"},{\"value\":\"441826\",\"text\":\"连南瑶族自治县\"},{\"value\":\"441881\",\"text\":\"英德市\"},{\"value\":\"441882\",\"text\":\"连州市\"}]},{\"value\":\"441900\",\"text\":\"东莞市\",\"children\":[{\"value\":\"441900003\",\"text\":\"东城街道办事处\"},{\"value\":\"441900004\",\"text\":\"南城街道办事处\"},{\"value\":\"441900005\",\"text\":\"万江街道办事处\"},{\"value\":\"441900006\",\"text\":\"莞城街道办事处\"},{\"value\":\"441900101\",\"text\":\"石碣镇\"},{\"value\":\"441900102\",\"text\":\"石龙镇\"},{\"value\":\"441900103\",\"text\":\"茶山镇\"},{\"value\":\"441900104\",\"text\":\"石排镇\"},{\"value\":\"441900105\",\"text\":\"企石镇\"},{\"value\":\"441900106\",\"text\":\"横沥镇\"},{\"value\":\"441900107\",\"text\":\"桥头镇\"},{\"value\":\"441900108\",\"text\":\"谢岗镇\"},{\"value\":\"441900109\",\"text\":\"东坑镇\"},{\"value\":\"441900110\",\"text\":\"常平镇\"},{\"value\":\"441900111\",\"text\":\"寮步镇\"},{\"value\":\"441900112\",\"text\":\"樟木头镇\"},{\"value\":\"441900113\",\"text\":\"大朗镇\"},{\"value\":\"441900114\",\"text\":\"黄江镇\"},{\"value\":\"441900115\",\"text\":\"清溪镇\"},{\"value\":\"441900116\",\"text\":\"塘厦镇\"},{\"value\":\"441900117\",\"text\":\"凤岗镇\"},{\"value\":\"441900118\",\"text\":\"大岭山镇\"},{\"value\":\"441900119\",\"text\":\"长安镇\"},{\"value\":\"441900121\",\"text\":\"虎门镇\"},{\"value\":\"441900122\",\"text\":\"厚街镇\"},{\"value\":\"441900123\",\"text\":\"沙田镇\"},{\"value\":\"441900124\",\"text\":\"道滘镇\"},{\"value\":\"441900125\",\"text\":\"洪梅镇\"},{\"value\":\"441900126\",\"text\":\"麻涌镇\"},{\"value\":\"441900127\",\"text\":\"望牛墩镇\"},{\"value\":\"441900128\",\"text\":\"中堂镇\"},{\"value\":\"441900129\",\"text\":\"高埗镇\"},{\"value\":\"441900401\",\"text\":\"松山湖管委会\"},{\"value\":\"441900402\",\"text\":\"虎门港管委会\"},{\"value\":\"441900403\",\"text\":\"东莞生态园\"}]},{\"value\":\"442000\",\"text\":\"中山市\",\"children\":[{\"value\":\"442000001\",\"text\":\"石岐区街道办事处\"},{\"value\":\"442000002\",\"text\":\"东区街道办事处\"},{\"value\":\"442000003\",\"text\":\"火炬开发区街道办事处\"},{\"value\":\"442000004\",\"text\":\"西区街道办事处\"},{\"value\":\"442000005\",\"text\":\"南区街道办事处\"},{\"value\":\"442000006\",\"text\":\"五桂山街道办事处\"},{\"value\":\"442000100\",\"text\":\"小榄镇\"},{\"value\":\"442000101\",\"text\":\"黄圃镇\"},{\"value\":\"442000102\",\"text\":\"民众镇\"},{\"value\":\"442000103\",\"text\":\"东凤镇\"},{\"value\":\"442000104\",\"text\":\"东升镇\"},{\"value\":\"442000105\",\"text\":\"古镇镇\"},{\"value\":\"442000106\",\"text\":\"沙溪镇\"},{\"value\":\"442000107\",\"text\":\"坦洲镇\"},{\"value\":\"442000108\",\"text\":\"港口镇\"},{\"value\":\"442000109\",\"text\":\"三角镇\"},{\"value\":\"442000110\",\"text\":\"横栏镇\"},{\"value\":\"442000111\",\"text\":\"南头镇\"},{\"value\":\"442000112\",\"text\":\"阜沙镇\"},{\"value\":\"442000113\",\"text\":\"南朗镇\"},{\"value\":\"442000114\",\"text\":\"三乡镇\"},{\"value\":\"442000115\",\"text\":\"板芙镇\"},{\"value\":\"442000116\",\"text\":\"大涌镇\"},{\"value\":\"442000117\",\"text\":\"神湾镇\"}]},{\"value\":\"4451\",\"text\":\"潮州市\",\"children\":[{\"value\":\"445102\",\"text\":\"湘桥区\"},{\"value\":\"445103\",\"text\":\"潮安区\"},{\"value\":\"445122\",\"text\":\"饶平县\"}]},{\"value\":\"4452\",\"text\":\"揭阳市\",\"children\":[{\"value\":\"445202\",\"text\":\"榕城区\"},{\"value\":\"445203\",\"text\":\"揭东区\"},{\"value\":\"445222\",\"text\":\"揭西县\"},{\"value\":\"445224\",\"text\":\"惠来县\"},{\"value\":\"445281\",\"text\":\"普宁市\"}]},{\"value\":\"4453\",\"text\":\"云浮市\",\"children\":[{\"value\":\"445302\",\"text\":\"云城区\"},{\"value\":\"445303\",\"text\":\"云安区\"},{\"value\":\"445321\",\"text\":\"新兴县\"},{\"value\":\"445322\",\"text\":\"郁南县\"},{\"value\":\"445381\",\"text\":\"罗定市\"}]}]},{\"value\":\"45\",\"text\":\"广西壮族自治区\",\"children\":[{\"value\":\"4501\",\"text\":\"南宁市\",\"children\":[{\"value\":\"450102\",\"text\":\"兴宁区\"},{\"value\":\"450103\",\"text\":\"青秀区\"},{\"value\":\"450105\",\"text\":\"江南区\"},{\"value\":\"450107\",\"text\":\"西乡塘区\"},{\"value\":\"450108\",\"text\":\"良庆区\"},{\"value\":\"450109\",\"text\":\"邕宁区\"},{\"value\":\"450110\",\"text\":\"武鸣区\"},{\"value\":\"450123\",\"text\":\"隆安县\"},{\"value\":\"450124\",\"text\":\"马山县\"},{\"value\":\"450125\",\"text\":\"上林县\"},{\"value\":\"450126\",\"text\":\"宾阳县\"},{\"value\":\"450127\",\"text\":\"横县\"}]},{\"value\":\"4502\",\"text\":\"柳州市\",\"children\":[{\"value\":\"450202\",\"text\":\"城中区\"},{\"value\":\"450203\",\"text\":\"鱼峰区\"},{\"value\":\"450204\",\"text\":\"柳南区\"},{\"value\":\"450205\",\"text\":\"柳北区\"},{\"value\":\"450206\",\"text\":\"柳江区\"},{\"value\":\"450222\",\"text\":\"柳城县\"},{\"value\":\"450223\",\"text\":\"鹿寨县\"},{\"value\":\"450224\",\"text\":\"融安县\"},{\"value\":\"450225\",\"text\":\"融水苗族自治县\"},{\"value\":\"450226\",\"text\":\"三江侗族自治县\"}]},{\"value\":\"4503\",\"text\":\"桂林市\",\"children\":[{\"value\":\"450302\",\"text\":\"秀峰区\"},{\"value\":\"450303\",\"text\":\"叠彩区\"},{\"value\":\"450304\",\"text\":\"象山区\"},{\"value\":\"450305\",\"text\":\"七星区\"},{\"value\":\"450311\",\"text\":\"雁山区\"},{\"value\":\"450312\",\"text\":\"临桂区\"},{\"value\":\"450321\",\"text\":\"阳朔县\"},{\"value\":\"450323\",\"text\":\"灵川县\"},{\"value\":\"450324\",\"text\":\"全州县\"},{\"value\":\"450325\",\"text\":\"兴安县\"},{\"value\":\"450326\",\"text\":\"永福县\"},{\"value\":\"450327\",\"text\":\"灌阳县\"},{\"value\":\"450328\",\"text\":\"龙胜各族自治县\"},{\"value\":\"450329\",\"text\":\"资源县\"},{\"value\":\"450330\",\"text\":\"平乐县\"},{\"value\":\"450331\",\"text\":\"荔浦县\"},{\"value\":\"450332\",\"text\":\"恭城瑶族自治县\"}]},{\"value\":\"4504\",\"text\":\"梧州市\",\"children\":[{\"value\":\"450403\",\"text\":\"万秀区\"},{\"value\":\"450405\",\"text\":\"长洲区\"},{\"value\":\"450406\",\"text\":\"龙圩区\"},{\"value\":\"450421\",\"text\":\"苍梧县\"},{\"value\":\"450422\",\"text\":\"藤县\"},{\"value\":\"450423\",\"text\":\"蒙山县\"},{\"value\":\"450481\",\"text\":\"岑溪市\"}]},{\"value\":\"4505\",\"text\":\"北海市\",\"children\":[{\"value\":\"450502\",\"text\":\"海城区\"},{\"value\":\"450503\",\"text\":\"银海区\"},{\"value\":\"450512\",\"text\":\"铁山港区\"},{\"value\":\"450521\",\"text\":\"合浦县\"}]},{\"value\":\"4506\",\"text\":\"防城港市\",\"children\":[{\"value\":\"450602\",\"text\":\"港口区\"},{\"value\":\"450603\",\"text\":\"防城区\"},{\"value\":\"450621\",\"text\":\"上思县\"},{\"value\":\"450681\",\"text\":\"东兴市\"}]},{\"value\":\"4507\",\"text\":\"钦州市\",\"children\":[{\"value\":\"450702\",\"text\":\"钦南区\"},{\"value\":\"450703\",\"text\":\"钦北区\"},{\"value\":\"450721\",\"text\":\"灵山县\"},{\"value\":\"450722\",\"text\":\"浦北县\"}]},{\"value\":\"4508\",\"text\":\"贵港市\",\"children\":[{\"value\":\"450802\",\"text\":\"港北区\"},{\"value\":\"450803\",\"text\":\"港南区\"},{\"value\":\"450804\",\"text\":\"覃塘区\"},{\"value\":\"450821\",\"text\":\"平南县\"},{\"value\":\"450881\",\"text\":\"桂平市\"}]},{\"value\":\"4509\",\"text\":\"玉林市\",\"children\":[{\"value\":\"450902\",\"text\":\"玉州区\"},{\"value\":\"450903\",\"text\":\"福绵区\"},{\"value\":\"450921\",\"text\":\"容县\"},{\"value\":\"450922\",\"text\":\"陆川县\"},{\"value\":\"450923\",\"text\":\"博白县\"},{\"value\":\"450924\",\"text\":\"兴业县\"},{\"value\":\"450981\",\"text\":\"北流市\"}]},{\"value\":\"4510\",\"text\":\"百色市\",\"children\":[{\"value\":\"451002\",\"text\":\"右江区\"},{\"value\":\"451021\",\"text\":\"田阳县\"},{\"value\":\"451022\",\"text\":\"田东县\"},{\"value\":\"451023\",\"text\":\"平果县\"},{\"value\":\"451024\",\"text\":\"德保县\"},{\"value\":\"451026\",\"text\":\"那坡县\"},{\"value\":\"451027\",\"text\":\"凌云县\"},{\"value\":\"451028\",\"text\":\"乐业县\"},{\"value\":\"451029\",\"text\":\"田林县\"},{\"value\":\"451030\",\"text\":\"西林县\"},{\"value\":\"451031\",\"text\":\"隆林各族自治县\"},{\"value\":\"451081\",\"text\":\"靖西市\"}]},{\"value\":\"4511\",\"text\":\"贺州市\",\"children\":[{\"value\":\"451102\",\"text\":\"八步区\"},{\"value\":\"451103\",\"text\":\"平桂区\"},{\"value\":\"451121\",\"text\":\"昭平县\"},{\"value\":\"451122\",\"text\":\"钟山县\"},{\"value\":\"451123\",\"text\":\"富川瑶族自治县\"}]},{\"value\":\"4512\",\"text\":\"河池市\",\"children\":[{\"value\":\"451202\",\"text\":\"金城江区\"},{\"value\":\"451221\",\"text\":\"南丹县\"},{\"value\":\"451222\",\"text\":\"天峨县\"},{\"value\":\"451223\",\"text\":\"凤山县\"},{\"value\":\"451224\",\"text\":\"东兰县\"},{\"value\":\"451225\",\"text\":\"罗城仫佬族自治县\"},{\"value\":\"451226\",\"text\":\"环江毛南族自治县\"},{\"value\":\"451227\",\"text\":\"巴马瑶族自治县\"},{\"value\":\"451228\",\"text\":\"都安瑶族自治县\"},{\"value\":\"451229\",\"text\":\"大化瑶族自治县\"},{\"value\":\"451281\",\"text\":\"宜州市\"}]},{\"value\":\"4513\",\"text\":\"来宾市\",\"children\":[{\"value\":\"451302\",\"text\":\"兴宾区\"},{\"value\":\"451321\",\"text\":\"忻城县\"},{\"value\":\"451322\",\"text\":\"象州县\"},{\"value\":\"451323\",\"text\":\"武宣县\"},{\"value\":\"451324\",\"text\":\"金秀瑶族自治县\"},{\"value\":\"451381\",\"text\":\"合山市\"}]},{\"value\":\"4514\",\"text\":\"崇左市\",\"children\":[{\"value\":\"451402\",\"text\":\"江州区\"},{\"value\":\"451421\",\"text\":\"扶绥县\"},{\"value\":\"451422\",\"text\":\"宁明县\"},{\"value\":\"451423\",\"text\":\"龙州县\"},{\"value\":\"451424\",\"text\":\"大新县\"},{\"value\":\"451425\",\"text\":\"天等县\"},{\"value\":\"451481\",\"text\":\"凭祥市\"}]}]},{\"value\":\"46\",\"text\":\"海南省\",\"children\":[{\"value\":\"4601\",\"text\":\"海口市\",\"children\":[{\"value\":\"460105\",\"text\":\"秀英区\"},{\"value\":\"460106\",\"text\":\"龙华区\"},{\"value\":\"460107\",\"text\":\"琼山区\"},{\"value\":\"460108\",\"text\":\"美兰区\"}]},{\"value\":\"4602\",\"text\":\"三亚市\",\"children\":[{\"value\":\"460202\",\"text\":\"海棠区\"},{\"value\":\"460203\",\"text\":\"吉阳区\"},{\"value\":\"460204\",\"text\":\"天涯区\"},{\"value\":\"460205\",\"text\":\"崖州区\"}]},{\"value\":\"4603\",\"text\":\"三沙市\",\"children\":[{\"value\":\"460321\",\"text\":\"西沙群岛\"},{\"value\":\"460322\",\"text\":\"南沙群岛\"},{\"value\":\"460323\",\"text\":\"中沙群岛的岛礁及其海域\"}]},{\"value\":\"460400\",\"text\":\"儋州市\",\"children\":[{\"value\":\"460400100\",\"text\":\"那大镇\"},{\"value\":\"460400101\",\"text\":\"和庆镇\"},{\"value\":\"460400102\",\"text\":\"南丰镇\"},{\"value\":\"460400103\",\"text\":\"大成镇\"},{\"value\":\"460400104\",\"text\":\"雅星镇\"},{\"value\":\"460400105\",\"text\":\"兰洋镇\"},{\"value\":\"460400106\",\"text\":\"光村镇\"},{\"value\":\"460400107\",\"text\":\"木棠镇\"},{\"value\":\"460400108\",\"text\":\"海头镇\"},{\"value\":\"460400109\",\"text\":\"峨蔓镇\"},{\"value\":\"460400110\",\"text\":\"三都镇\"},{\"value\":\"460400111\",\"text\":\"王五镇\"},{\"value\":\"460400112\",\"text\":\"白马井镇\"},{\"value\":\"460400113\",\"text\":\"中和镇\"},{\"value\":\"460400114\",\"text\":\"排浦镇\"},{\"value\":\"460400115\",\"text\":\"东成镇\"},{\"value\":\"460400116\",\"text\":\"新州镇\"},{\"value\":\"460400400\",\"text\":\"国营西培农场\"},{\"value\":\"460400404\",\"text\":\"国营西联农场\"},{\"value\":\"460400405\",\"text\":\"国营蓝洋农场\"},{\"value\":\"460400407\",\"text\":\"国营八一农场\"},{\"value\":\"460400499\",\"text\":\"洋浦经济开发区\"},{\"value\":\"460400500\",\"text\":\"华南热作学院\"}]},{\"value\":\"4690\",\"text\":\"省直辖县级行政区划\",\"children\":[{\"value\":\"469001\",\"text\":\"五指山市\"},{\"value\":\"469002\",\"text\":\"琼海市\"},{\"value\":\"469005\",\"text\":\"文昌市\"},{\"value\":\"469006\",\"text\":\"万宁市\"},{\"value\":\"469007\",\"text\":\"东方市\"},{\"value\":\"469021\",\"text\":\"定安县\"},{\"value\":\"469022\",\"text\":\"屯昌县\"},{\"value\":\"469023\",\"text\":\"澄迈县\"},{\"value\":\"469024\",\"text\":\"临高县\"},{\"value\":\"469025\",\"text\":\"白沙黎族自治县\"},{\"value\":\"469026\",\"text\":\"昌江黎族自治县\"},{\"value\":\"469027\",\"text\":\"乐东黎族自治县\"},{\"value\":\"469028\",\"text\":\"陵水黎族自治县\"},{\"value\":\"469029\",\"text\":\"保亭黎族苗族自治县\"},{\"value\":\"469030\",\"text\":\"琼中黎族苗族自治县\"}]}]},{\"value\":\"50\",\"text\":\"重庆市\",\"children\":[{\"value\":\"5001\",\"text\":\"市辖区\",\"children\":[{\"value\":\"500101\",\"text\":\"万州区\"},{\"value\":\"500102\",\"text\":\"涪陵区\"},{\"value\":\"500103\",\"text\":\"渝中区\"},{\"value\":\"500104\",\"text\":\"大渡口区\"},{\"value\":\"500105\",\"text\":\"江北区\"},{\"value\":\"500106\",\"text\":\"沙坪坝区\"},{\"value\":\"500107\",\"text\":\"九龙坡区\"},{\"value\":\"500108\",\"text\":\"南岸区\"},{\"value\":\"500109\",\"text\":\"北碚区\"},{\"value\":\"500110\",\"text\":\"綦江区\"},{\"value\":\"500111\",\"text\":\"大足区\"},{\"value\":\"500112\",\"text\":\"渝北区\"},{\"value\":\"500113\",\"text\":\"巴南区\"},{\"value\":\"500114\",\"text\":\"黔江区\"},{\"value\":\"500115\",\"text\":\"长寿区\"},{\"value\":\"500116\",\"text\":\"江津区\"},{\"value\":\"500117\",\"text\":\"合川区\"},{\"value\":\"500118\",\"text\":\"永川区\"},{\"value\":\"500119\",\"text\":\"南川区\"},{\"value\":\"500120\",\"text\":\"璧山区\"},{\"value\":\"500151\",\"text\":\"铜梁区\"},{\"value\":\"500152\",\"text\":\"潼南区\"},{\"value\":\"500153\",\"text\":\"荣昌区\"},{\"value\":\"500154\",\"text\":\"开州区\"}]},{\"value\":\"5002\",\"text\":\"县\",\"children\":[{\"value\":\"500228\",\"text\":\"梁平县\"},{\"value\":\"500229\",\"text\":\"城口县\"},{\"value\":\"500230\",\"text\":\"丰都县\"},{\"value\":\"500231\",\"text\":\"垫江县\"},{\"value\":\"500232\",\"text\":\"武隆县\"},{\"value\":\"500233\",\"text\":\"忠县\"},{\"value\":\"500235\",\"text\":\"云阳县\"},{\"value\":\"500236\",\"text\":\"奉节县\"},{\"value\":\"500237\",\"text\":\"巫山县\"},{\"value\":\"500238\",\"text\":\"巫溪县\"},{\"value\":\"500240\",\"text\":\"石柱土家族自治县\"},{\"value\":\"500241\",\"text\":\"秀山土家族苗族自治县\"},{\"value\":\"500242\",\"text\":\"酉阳土家族苗族自治县\"},{\"value\":\"500243\",\"text\":\"彭水苗族土家族自治县\"}]}]},{\"value\":\"51\",\"text\":\"四川省\",\"children\":[{\"value\":\"5101\",\"text\":\"成都市\",\"children\":[{\"value\":\"510104\",\"text\":\"锦江区\"},{\"value\":\"510105\",\"text\":\"青羊区\"},{\"value\":\"510106\",\"text\":\"金牛区\"},{\"value\":\"510107\",\"text\":\"武侯区\"},{\"value\":\"510108\",\"text\":\"成华区\"},{\"value\":\"510112\",\"text\":\"龙泉驿区\"},{\"value\":\"510113\",\"text\":\"青白江区\"},{\"value\":\"510114\",\"text\":\"新都区\"},{\"value\":\"510115\",\"text\":\"温江区\"},{\"value\":\"510116\",\"text\":\"双流区\"},{\"value\":\"510121\",\"text\":\"金堂县\"},{\"value\":\"510124\",\"text\":\"郫县\"},{\"value\":\"510129\",\"text\":\"大邑县\"},{\"value\":\"510131\",\"text\":\"蒲江县\"},{\"value\":\"510132\",\"text\":\"新津县\"},{\"value\":\"510181\",\"text\":\"都江堰市\"},{\"value\":\"510182\",\"text\":\"彭州市\"},{\"value\":\"510183\",\"text\":\"邛崃市\"},{\"value\":\"510184\",\"text\":\"崇州市\"},{\"value\":\"510185\",\"text\":\"简阳市\"}]},{\"value\":\"5103\",\"text\":\"自贡市\",\"children\":[{\"value\":\"510302\",\"text\":\"自流井区\"},{\"value\":\"510303\",\"text\":\"贡井区\"},{\"value\":\"510304\",\"text\":\"大安区\"},{\"value\":\"510311\",\"text\":\"沿滩区\"},{\"value\":\"510321\",\"text\":\"荣县\"},{\"value\":\"510322\",\"text\":\"富顺县\"}]},{\"value\":\"5104\",\"text\":\"攀枝花市\",\"children\":[{\"value\":\"510402\",\"text\":\"东区\"},{\"value\":\"510403\",\"text\":\"西区\"},{\"value\":\"510411\",\"text\":\"仁和区\"},{\"value\":\"510421\",\"text\":\"米易县\"},{\"value\":\"510422\",\"text\":\"盐边县\"}]},{\"value\":\"5105\",\"text\":\"泸州市\",\"children\":[{\"value\":\"510502\",\"text\":\"江阳区\"},{\"value\":\"510503\",\"text\":\"纳溪区\"},{\"value\":\"510504\",\"text\":\"龙马潭区\"},{\"value\":\"510521\",\"text\":\"泸县\"},{\"value\":\"510522\",\"text\":\"合江县\"},{\"value\":\"510524\",\"text\":\"叙永县\"},{\"value\":\"510525\",\"text\":\"古蔺县\"}]},{\"value\":\"5106\",\"text\":\"德阳市\",\"children\":[{\"value\":\"510603\",\"text\":\"旌阳区\"},{\"value\":\"510623\",\"text\":\"中江县\"},{\"value\":\"510626\",\"text\":\"罗江县\"},{\"value\":\"510681\",\"text\":\"广汉市\"},{\"value\":\"510682\",\"text\":\"什邡市\"},{\"value\":\"510683\",\"text\":\"绵竹市\"}]},{\"value\":\"5107\",\"text\":\"绵阳市\",\"children\":[{\"value\":\"510703\",\"text\":\"涪城区\"},{\"value\":\"510704\",\"text\":\"游仙区\"},{\"value\":\"510705\",\"text\":\"安州区\"},{\"value\":\"510722\",\"text\":\"三台县\"},{\"value\":\"510723\",\"text\":\"盐亭县\"},{\"value\":\"510725\",\"text\":\"梓潼县\"},{\"value\":\"510726\",\"text\":\"北川羌族自治县\"},{\"value\":\"510727\",\"text\":\"平武县\"},{\"value\":\"510781\",\"text\":\"江油市\"}]},{\"value\":\"5108\",\"text\":\"广元市\",\"children\":[{\"value\":\"510802\",\"text\":\"利州区\"},{\"value\":\"510811\",\"text\":\"昭化区\"},{\"value\":\"510812\",\"text\":\"朝天区\"},{\"value\":\"510821\",\"text\":\"旺苍县\"},{\"value\":\"510822\",\"text\":\"青川县\"},{\"value\":\"510823\",\"text\":\"剑阁县\"},{\"value\":\"510824\",\"text\":\"苍溪县\"}]},{\"value\":\"5109\",\"text\":\"遂宁市\",\"children\":[{\"value\":\"510903\",\"text\":\"船山区\"},{\"value\":\"510904\",\"text\":\"安居区\"},{\"value\":\"510921\",\"text\":\"蓬溪县\"},{\"value\":\"510922\",\"text\":\"射洪县\"},{\"value\":\"510923\",\"text\":\"大英县\"}]},{\"value\":\"5110\",\"text\":\"内江市\",\"children\":[{\"value\":\"511002\",\"text\":\"市中区\"},{\"value\":\"511011\",\"text\":\"东兴区\"},{\"value\":\"511024\",\"text\":\"威远县\"},{\"value\":\"511025\",\"text\":\"资中县\"},{\"value\":\"511028\",\"text\":\"隆昌县\"}]},{\"value\":\"5111\",\"text\":\"乐山市\",\"children\":[{\"value\":\"511102\",\"text\":\"市中区\"},{\"value\":\"511111\",\"text\":\"沙湾区\"},{\"value\":\"511112\",\"text\":\"五通桥区\"},{\"value\":\"511113\",\"text\":\"金口河区\"},{\"value\":\"511123\",\"text\":\"犍为县\"},{\"value\":\"511124\",\"text\":\"井研县\"},{\"value\":\"511126\",\"text\":\"夹江县\"},{\"value\":\"511129\",\"text\":\"沐川县\"},{\"value\":\"511132\",\"text\":\"峨边彝族自治县\"},{\"value\":\"511133\",\"text\":\"马边彝族自治县\"},{\"value\":\"511181\",\"text\":\"峨眉山市\"}]},{\"value\":\"5113\",\"text\":\"南充市\",\"children\":[{\"value\":\"511302\",\"text\":\"顺庆区\"},{\"value\":\"511303\",\"text\":\"高坪区\"},{\"value\":\"511304\",\"text\":\"嘉陵区\"},{\"value\":\"511321\",\"text\":\"南部县\"},{\"value\":\"511322\",\"text\":\"营山县\"},{\"value\":\"511323\",\"text\":\"蓬安县\"},{\"value\":\"511324\",\"text\":\"仪陇县\"},{\"value\":\"511325\",\"text\":\"西充县\"},{\"value\":\"511381\",\"text\":\"阆中市\"}]},{\"value\":\"5114\",\"text\":\"眉山市\",\"children\":[{\"value\":\"511402\",\"text\":\"东坡区\"},{\"value\":\"511403\",\"text\":\"彭山区\"},{\"value\":\"511421\",\"text\":\"仁寿县\"},{\"value\":\"511423\",\"text\":\"洪雅县\"},{\"value\":\"511424\",\"text\":\"丹棱县\"},{\"value\":\"511425\",\"text\":\"青神县\"}]},{\"value\":\"5115\",\"text\":\"宜宾市\",\"children\":[{\"value\":\"511502\",\"text\":\"翠屏区\"},{\"value\":\"511503\",\"text\":\"南溪区\"},{\"value\":\"511521\",\"text\":\"宜宾县\"},{\"value\":\"511523\",\"text\":\"江安县\"},{\"value\":\"511524\",\"text\":\"长宁县\"},{\"value\":\"511525\",\"text\":\"高县\"},{\"value\":\"511526\",\"text\":\"珙县\"},{\"value\":\"511527\",\"text\":\"筠连县\"},{\"value\":\"511528\",\"text\":\"兴文县\"},{\"value\":\"511529\",\"text\":\"屏山县\"}]},{\"value\":\"5116\",\"text\":\"广安市\",\"children\":[{\"value\":\"511602\",\"text\":\"广安区\"},{\"value\":\"511603\",\"text\":\"前锋区\"},{\"value\":\"511621\",\"text\":\"岳池县\"},{\"value\":\"511622\",\"text\":\"武胜县\"},{\"value\":\"511623\",\"text\":\"邻水县\"},{\"value\":\"511681\",\"text\":\"华蓥市\"}]},{\"value\":\"5117\",\"text\":\"达州市\",\"children\":[{\"value\":\"511702\",\"text\":\"通川区\"},{\"value\":\"511703\",\"text\":\"达川区\"},{\"value\":\"511722\",\"text\":\"宣汉县\"},{\"value\":\"511723\",\"text\":\"开江县\"},{\"value\":\"511724\",\"text\":\"大竹县\"},{\"value\":\"511725\",\"text\":\"渠县\"},{\"value\":\"511781\",\"text\":\"万源市\"}]},{\"value\":\"5118\",\"text\":\"雅安市\",\"children\":[{\"value\":\"511802\",\"text\":\"雨城区\"},{\"value\":\"511803\",\"text\":\"名山区\"},{\"value\":\"511822\",\"text\":\"荥经县\"},{\"value\":\"511823\",\"text\":\"汉源县\"},{\"value\":\"511824\",\"text\":\"石棉县\"},{\"value\":\"511825\",\"text\":\"天全县\"},{\"value\":\"511826\",\"text\":\"芦山县\"},{\"value\":\"511827\",\"text\":\"宝兴县\"}]},{\"value\":\"5119\",\"text\":\"巴中市\",\"children\":[{\"value\":\"511902\",\"text\":\"巴州区\"},{\"value\":\"511903\",\"text\":\"恩阳区\"},{\"value\":\"511921\",\"text\":\"通江县\"},{\"value\":\"511922\",\"text\":\"南江县\"},{\"value\":\"511923\",\"text\":\"平昌县\"}]},{\"value\":\"5120\",\"text\":\"资阳市\",\"children\":[{\"value\":\"512002\",\"text\":\"雁江区\"},{\"value\":\"512021\",\"text\":\"安岳县\"},{\"value\":\"512022\",\"text\":\"乐至县\"}]},{\"value\":\"5132\",\"text\":\"阿坝藏族羌族自治州\",\"children\":[{\"value\":\"513201\",\"text\":\"马尔康市\"},{\"value\":\"513221\",\"text\":\"汶川县\"},{\"value\":\"513222\",\"text\":\"理县\"},{\"value\":\"513223\",\"text\":\"茂县\"},{\"value\":\"513224\",\"text\":\"松潘县\"},{\"value\":\"513225\",\"text\":\"九寨沟县\"},{\"value\":\"513226\",\"text\":\"金川县\"},{\"value\":\"513227\",\"text\":\"小金县\"},{\"value\":\"513228\",\"text\":\"黑水县\"},{\"value\":\"513230\",\"text\":\"壤塘县\"},{\"value\":\"513231\",\"text\":\"阿坝县\"},{\"value\":\"513232\",\"text\":\"若尔盖县\"},{\"value\":\"513233\",\"text\":\"红原县\"}]},{\"value\":\"5133\",\"text\":\"甘孜藏族自治州\",\"children\":[{\"value\":\"513301\",\"text\":\"康定市\"},{\"value\":\"513322\",\"text\":\"泸定县\"},{\"value\":\"513323\",\"text\":\"丹巴县\"},{\"value\":\"513324\",\"text\":\"九龙县\"},{\"value\":\"513325\",\"text\":\"雅江县\"},{\"value\":\"513326\",\"text\":\"道孚县\"},{\"value\":\"513327\",\"text\":\"炉霍县\"},{\"value\":\"513328\",\"text\":\"甘孜县\"},{\"value\":\"513329\",\"text\":\"新龙县\"},{\"value\":\"513330\",\"text\":\"德格县\"},{\"value\":\"513331\",\"text\":\"白玉县\"},{\"value\":\"513332\",\"text\":\"石渠县\"},{\"value\":\"513333\",\"text\":\"色达县\"},{\"value\":\"513334\",\"text\":\"理塘县\"},{\"value\":\"513335\",\"text\":\"巴塘县\"},{\"value\":\"513336\",\"text\":\"乡城县\"},{\"value\":\"513337\",\"text\":\"稻城县\"},{\"value\":\"513338\",\"text\":\"得荣县\"}]},{\"value\":\"5134\",\"text\":\"凉山彝族自治州\",\"children\":[{\"value\":\"513401\",\"text\":\"西昌市\"},{\"value\":\"513422\",\"text\":\"木里藏族自治县\"},{\"value\":\"513423\",\"text\":\"盐源县\"},{\"value\":\"513424\",\"text\":\"德昌县\"},{\"value\":\"513425\",\"text\":\"会理县\"},{\"value\":\"513426\",\"text\":\"会东县\"},{\"value\":\"513427\",\"text\":\"宁南县\"},{\"value\":\"513428\",\"text\":\"普格县\"},{\"value\":\"513429\",\"text\":\"布拖县\"},{\"value\":\"513430\",\"text\":\"金阳县\"},{\"value\":\"513431\",\"text\":\"昭觉县\"},{\"value\":\"513432\",\"text\":\"喜德县\"},{\"value\":\"513433\",\"text\":\"冕宁县\"},{\"value\":\"513434\",\"text\":\"越西县\"},{\"value\":\"513435\",\"text\":\"甘洛县\"},{\"value\":\"513436\",\"text\":\"美姑县\"},{\"value\":\"513437\",\"text\":\"雷波县\"}]}]},{\"value\":\"52\",\"text\":\"贵州省\",\"children\":[{\"value\":\"5201\",\"text\":\"贵阳市\",\"children\":[{\"value\":\"520102\",\"text\":\"南明区\"},{\"value\":\"520103\",\"text\":\"云岩区\"},{\"value\":\"520111\",\"text\":\"花溪区\"},{\"value\":\"520112\",\"text\":\"乌当区\"},{\"value\":\"520113\",\"text\":\"白云区\"},{\"value\":\"520115\",\"text\":\"观山湖区\"},{\"value\":\"520121\",\"text\":\"开阳县\"},{\"value\":\"520122\",\"text\":\"息烽县\"},{\"value\":\"520123\",\"text\":\"修文县\"},{\"value\":\"520181\",\"text\":\"清镇市\"}]},{\"value\":\"5202\",\"text\":\"六盘水市\",\"children\":[{\"value\":\"520201\",\"text\":\"钟山区\"},{\"value\":\"520203\",\"text\":\"六枝特区\"},{\"value\":\"520221\",\"text\":\"水城县\"},{\"value\":\"520222\",\"text\":\"盘县\"}]},{\"value\":\"5203\",\"text\":\"遵义市\",\"children\":[{\"value\":\"520302\",\"text\":\"红花岗区\"},{\"value\":\"520303\",\"text\":\"汇川区\"},{\"value\":\"520304\",\"text\":\"播州区\"},{\"value\":\"520322\",\"text\":\"桐梓县\"},{\"value\":\"520323\",\"text\":\"绥阳县\"},{\"value\":\"520324\",\"text\":\"正安县\"},{\"value\":\"520325\",\"text\":\"道真仡佬族苗族自治县\"},{\"value\":\"520326\",\"text\":\"务川仡佬族苗族自治县\"},{\"value\":\"520327\",\"text\":\"凤冈县\"},{\"value\":\"520328\",\"text\":\"湄潭县\"},{\"value\":\"520329\",\"text\":\"余庆县\"},{\"value\":\"520330\",\"text\":\"习水县\"},{\"value\":\"520381\",\"text\":\"赤水市\"},{\"value\":\"520382\",\"text\":\"仁怀市\"}]},{\"value\":\"5204\",\"text\":\"安顺市\",\"children\":[{\"value\":\"520402\",\"text\":\"西秀区\"},{\"value\":\"520403\",\"text\":\"平坝区\"},{\"value\":\"520422\",\"text\":\"普定县\"},{\"value\":\"520423\",\"text\":\"镇宁布依族苗族自治县\"},{\"value\":\"520424\",\"text\":\"关岭布依族苗族自治县\"},{\"value\":\"520425\",\"text\":\"紫云苗族布依族自治县\"}]},{\"value\":\"5205\",\"text\":\"毕节市\",\"children\":[{\"value\":\"520502\",\"text\":\"七星关区\"},{\"value\":\"520521\",\"text\":\"大方县\"},{\"value\":\"520522\",\"text\":\"黔西县\"},{\"value\":\"520523\",\"text\":\"金沙县\"},{\"value\":\"520524\",\"text\":\"织金县\"},{\"value\":\"520525\",\"text\":\"纳雍县\"},{\"value\":\"520526\",\"text\":\"威宁彝族回族苗族自治县\"},{\"value\":\"520527\",\"text\":\"赫章县\"}]},{\"value\":\"5206\",\"text\":\"铜仁市\",\"children\":[{\"value\":\"520602\",\"text\":\"碧江区\"},{\"value\":\"520603\",\"text\":\"万山区\"},{\"value\":\"520621\",\"text\":\"江口县\"},{\"value\":\"520622\",\"text\":\"玉屏侗族自治县\"},{\"value\":\"520623\",\"text\":\"石阡县\"},{\"value\":\"520624\",\"text\":\"思南县\"},{\"value\":\"520625\",\"text\":\"印江土家族苗族自治县\"},{\"value\":\"520626\",\"text\":\"德江县\"},{\"value\":\"520627\",\"text\":\"沿河土家族自治县\"},{\"value\":\"520628\",\"text\":\"松桃苗族自治县\"}]},{\"value\":\"5223\",\"text\":\"黔西南布依族苗族自治州\",\"children\":[{\"value\":\"522301\",\"text\":\"兴义市\"},{\"value\":\"522322\",\"text\":\"兴仁县\"},{\"value\":\"522323\",\"text\":\"普安县\"},{\"value\":\"522324\",\"text\":\"晴隆县\"},{\"value\":\"522325\",\"text\":\"贞丰县\"},{\"value\":\"522326\",\"text\":\"望谟县\"},{\"value\":\"522327\",\"text\":\"册亨县\"},{\"value\":\"522328\",\"text\":\"安龙县\"}]},{\"value\":\"5226\",\"text\":\"黔东南苗族侗族自治州\",\"children\":[{\"value\":\"522601\",\"text\":\"凯里市\"},{\"value\":\"522622\",\"text\":\"黄平县\"},{\"value\":\"522623\",\"text\":\"施秉县\"},{\"value\":\"522624\",\"text\":\"三穗县\"},{\"value\":\"522625\",\"text\":\"镇远县\"},{\"value\":\"522626\",\"text\":\"岑巩县\"},{\"value\":\"522627\",\"text\":\"天柱县\"},{\"value\":\"522628\",\"text\":\"锦屏县\"},{\"value\":\"522629\",\"text\":\"剑河县\"},{\"value\":\"522630\",\"text\":\"台江县\"},{\"value\":\"522631\",\"text\":\"黎平县\"},{\"value\":\"522632\",\"text\":\"榕江县\"},{\"value\":\"522633\",\"text\":\"从江县\"},{\"value\":\"522634\",\"text\":\"雷山县\"},{\"value\":\"522635\",\"text\":\"麻江县\"},{\"value\":\"522636\",\"text\":\"丹寨县\"}]},{\"value\":\"5227\",\"text\":\"黔南布依族苗族自治州\",\"children\":[{\"value\":\"522701\",\"text\":\"都匀市\"},{\"value\":\"522702\",\"text\":\"福泉市\"},{\"value\":\"522722\",\"text\":\"荔波县\"},{\"value\":\"522723\",\"text\":\"贵定县\"},{\"value\":\"522725\",\"text\":\"瓮安县\"},{\"value\":\"522726\",\"text\":\"独山县\"},{\"value\":\"522727\",\"text\":\"平塘县\"},{\"value\":\"522728\",\"text\":\"罗甸县\"},{\"value\":\"522729\",\"text\":\"长顺县\"},{\"value\":\"522730\",\"text\":\"龙里县\"},{\"value\":\"522731\",\"text\":\"惠水县\"},{\"value\":\"522732\",\"text\":\"三都水族自治县\"}]}]},{\"value\":\"53\",\"text\":\"云南省\",\"children\":[{\"value\":\"5301\",\"text\":\"昆明市\",\"children\":[{\"value\":\"530102\",\"text\":\"五华区\"},{\"value\":\"530103\",\"text\":\"盘龙区\"},{\"value\":\"530111\",\"text\":\"官渡区\"},{\"value\":\"530112\",\"text\":\"西山区\"},{\"value\":\"530113\",\"text\":\"东川区\"},{\"value\":\"530114\",\"text\":\"呈贡区\"},{\"value\":\"530122\",\"text\":\"晋宁县\"},{\"value\":\"530124\",\"text\":\"富民县\"},{\"value\":\"530125\",\"text\":\"宜良县\"},{\"value\":\"530126\",\"text\":\"石林彝族自治县\"},{\"value\":\"530127\",\"text\":\"嵩明县\"},{\"value\":\"530128\",\"text\":\"禄劝彝族苗族自治县\"},{\"value\":\"530129\",\"text\":\"寻甸回族彝族自治县\"},{\"value\":\"530181\",\"text\":\"安宁市\"}]},{\"value\":\"5303\",\"text\":\"曲靖市\",\"children\":[{\"value\":\"530302\",\"text\":\"麒麟区\"},{\"value\":\"530303\",\"text\":\"沾益区\"},{\"value\":\"530321\",\"text\":\"马龙县\"},{\"value\":\"530322\",\"text\":\"陆良县\"},{\"value\":\"530323\",\"text\":\"师宗县\"},{\"value\":\"530324\",\"text\":\"罗平县\"},{\"value\":\"530325\",\"text\":\"富源县\"},{\"value\":\"530326\",\"text\":\"会泽县\"},{\"value\":\"530381\",\"text\":\"宣威市\"}]},{\"value\":\"5304\",\"text\":\"玉溪市\",\"children\":[{\"value\":\"530402\",\"text\":\"红塔区\"},{\"value\":\"530403\",\"text\":\"江川区\"},{\"value\":\"530422\",\"text\":\"澄江县\"},{\"value\":\"530423\",\"text\":\"通海县\"},{\"value\":\"530424\",\"text\":\"华宁县\"},{\"value\":\"530425\",\"text\":\"易门县\"},{\"value\":\"530426\",\"text\":\"峨山彝族自治县\"},{\"value\":\"530427\",\"text\":\"新平彝族傣族自治县\"},{\"value\":\"530428\",\"text\":\"元江哈尼族彝族傣族自治县\"}]},{\"value\":\"5305\",\"text\":\"保山市\",\"children\":[{\"value\":\"530502\",\"text\":\"隆阳区\"},{\"value\":\"530521\",\"text\":\"施甸县\"},{\"value\":\"530523\",\"text\":\"龙陵县\"},{\"value\":\"530524\",\"text\":\"昌宁县\"},{\"value\":\"530581\",\"text\":\"腾冲市\"}]},{\"value\":\"5306\",\"text\":\"昭通市\",\"children\":[{\"value\":\"530602\",\"text\":\"昭阳区\"},{\"value\":\"530621\",\"text\":\"鲁甸县\"},{\"value\":\"530622\",\"text\":\"巧家县\"},{\"value\":\"530623\",\"text\":\"盐津县\"},{\"value\":\"530624\",\"text\":\"大关县\"},{\"value\":\"530625\",\"text\":\"永善县\"},{\"value\":\"530626\",\"text\":\"绥江县\"},{\"value\":\"530627\",\"text\":\"镇雄县\"},{\"value\":\"530628\",\"text\":\"彝良县\"},{\"value\":\"530629\",\"text\":\"威信县\"},{\"value\":\"530630\",\"text\":\"水富县\"}]},{\"value\":\"5307\",\"text\":\"丽江市\",\"children\":[{\"value\":\"530702\",\"text\":\"古城区\"},{\"value\":\"530721\",\"text\":\"玉龙纳西族自治县\"},{\"value\":\"530722\",\"text\":\"永胜县\"},{\"value\":\"530723\",\"text\":\"华坪县\"},{\"value\":\"530724\",\"text\":\"宁蒗彝族自治县\"}]},{\"value\":\"5308\",\"text\":\"普洱市\",\"children\":[{\"value\":\"530802\",\"text\":\"思茅区\"},{\"value\":\"530821\",\"text\":\"宁洱哈尼族彝族自治县\"},{\"value\":\"530822\",\"text\":\"墨江哈尼族自治县\"},{\"value\":\"530823\",\"text\":\"景东彝族自治县\"},{\"value\":\"530824\",\"text\":\"景谷傣族彝族自治县\"},{\"value\":\"530825\",\"text\":\"镇沅彝族哈尼族拉祜族自治县\"},{\"value\":\"530826\",\"text\":\"江城哈尼族彝族自治县\"},{\"value\":\"530827\",\"text\":\"孟连傣族拉祜族佤族自治县\"},{\"value\":\"530828\",\"text\":\"澜沧拉祜族自治县\"},{\"value\":\"530829\",\"text\":\"西盟佤族自治县\"}]},{\"value\":\"5309\",\"text\":\"临沧市\",\"children\":[{\"value\":\"530902\",\"text\":\"临翔区\"},{\"value\":\"530921\",\"text\":\"凤庆县\"},{\"value\":\"530922\",\"text\":\"云县\"},{\"value\":\"530923\",\"text\":\"永德县\"},{\"value\":\"530924\",\"text\":\"镇康县\"},{\"value\":\"530925\",\"text\":\"双江拉祜族佤族布朗族傣族自治县\"},{\"value\":\"530926\",\"text\":\"耿马傣族佤族自治县\"},{\"value\":\"530927\",\"text\":\"沧源佤族自治县\"}]},{\"value\":\"5323\",\"text\":\"楚雄彝族自治州\",\"children\":[{\"value\":\"532301\",\"text\":\"楚雄市\"},{\"value\":\"532322\",\"text\":\"双柏县\"},{\"value\":\"532323\",\"text\":\"牟定县\"},{\"value\":\"532324\",\"text\":\"南华县\"},{\"value\":\"532325\",\"text\":\"姚安县\"},{\"value\":\"532326\",\"text\":\"大姚县\"},{\"value\":\"532327\",\"text\":\"永仁县\"},{\"value\":\"532328\",\"text\":\"元谋县\"},{\"value\":\"532329\",\"text\":\"武定县\"},{\"value\":\"532331\",\"text\":\"禄丰县\"}]},{\"value\":\"5325\",\"text\":\"红河哈尼族彝族自治州\",\"children\":[{\"value\":\"532501\",\"text\":\"个旧市\"},{\"value\":\"532502\",\"text\":\"开远市\"},{\"value\":\"532503\",\"text\":\"蒙自市\"},{\"value\":\"532504\",\"text\":\"弥勒市\"},{\"value\":\"532523\",\"text\":\"屏边苗族自治县\"},{\"value\":\"532524\",\"text\":\"建水县\"},{\"value\":\"532525\",\"text\":\"石屏县\"},{\"value\":\"532527\",\"text\":\"泸西县\"},{\"value\":\"532528\",\"text\":\"元阳县\"},{\"value\":\"532529\",\"text\":\"红河县\"},{\"value\":\"532530\",\"text\":\"金平苗族瑶族傣族自治县\"},{\"value\":\"532531\",\"text\":\"绿春县\"},{\"value\":\"532532\",\"text\":\"河口瑶族自治县\"}]},{\"value\":\"5326\",\"text\":\"文山壮族苗族自治州\",\"children\":[{\"value\":\"532601\",\"text\":\"文山市\"},{\"value\":\"532622\",\"text\":\"砚山县\"},{\"value\":\"532623\",\"text\":\"西畴县\"},{\"value\":\"532624\",\"text\":\"麻栗坡县\"},{\"value\":\"532625\",\"text\":\"马关县\"},{\"value\":\"532626\",\"text\":\"丘北县\"},{\"value\":\"532627\",\"text\":\"广南县\"},{\"value\":\"532628\",\"text\":\"富宁县\"}]},{\"value\":\"5328\",\"text\":\"西双版纳傣族自治州\",\"children\":[{\"value\":\"532801\",\"text\":\"景洪市\"},{\"value\":\"532822\",\"text\":\"勐海县\"},{\"value\":\"532823\",\"text\":\"勐腊县\"}]},{\"value\":\"5329\",\"text\":\"大理白族自治州\",\"children\":[{\"value\":\"532901\",\"text\":\"大理市\"},{\"value\":\"532922\",\"text\":\"漾濞彝族自治县\"},{\"value\":\"532923\",\"text\":\"祥云县\"},{\"value\":\"532924\",\"text\":\"宾川县\"},{\"value\":\"532925\",\"text\":\"弥渡县\"},{\"value\":\"532926\",\"text\":\"南涧彝族自治县\"},{\"value\":\"532927\",\"text\":\"巍山彝族回族自治县\"},{\"value\":\"532928\",\"text\":\"永平县\"},{\"value\":\"532929\",\"text\":\"云龙县\"},{\"value\":\"532930\",\"text\":\"洱源县\"},{\"value\":\"532931\",\"text\":\"剑川县\"},{\"value\":\"532932\",\"text\":\"鹤庆县\"}]},{\"value\":\"5331\",\"text\":\"德宏傣族景颇族自治州\",\"children\":[{\"value\":\"533102\",\"text\":\"瑞丽市\"},{\"value\":\"533103\",\"text\":\"芒市\"},{\"value\":\"533122\",\"text\":\"梁河县\"},{\"value\":\"533123\",\"text\":\"盈江县\"},{\"value\":\"533124\",\"text\":\"陇川县\"}]},{\"value\":\"5333\",\"text\":\"怒江傈僳族自治州\",\"children\":[{\"value\":\"533301\",\"text\":\"泸水市\"},{\"value\":\"533323\",\"text\":\"福贡县\"},{\"value\":\"533324\",\"text\":\"贡山独龙族怒族自治县\"},{\"value\":\"533325\",\"text\":\"兰坪白族普米族自治县\"}]},{\"value\":\"5334\",\"text\":\"迪庆藏族自治州\",\"children\":[{\"value\":\"533401\",\"text\":\"香格里拉市\"},{\"value\":\"533422\",\"text\":\"德钦县\"},{\"value\":\"533423\",\"text\":\"维西傈僳族自治县\"}]}]},{\"value\":\"54\",\"text\":\"西藏自治区\",\"children\":[{\"value\":\"5401\",\"text\":\"拉萨市\",\"children\":[{\"value\":\"540102\",\"text\":\"城关区\"},{\"value\":\"540103\",\"text\":\"堆龙德庆区\"},{\"value\":\"540121\",\"text\":\"林周县\"},{\"value\":\"540122\",\"text\":\"当雄县\"},{\"value\":\"540123\",\"text\":\"尼木县\"},{\"value\":\"540124\",\"text\":\"曲水县\"},{\"value\":\"540126\",\"text\":\"达孜县\"},{\"value\":\"540127\",\"text\":\"墨竹工卡县\"}]},{\"value\":\"5402\",\"text\":\"日喀则市\",\"children\":[{\"value\":\"540202\",\"text\":\"桑珠孜区\"},{\"value\":\"540221\",\"text\":\"南木林县\"},{\"value\":\"540222\",\"text\":\"江孜县\"},{\"value\":\"540223\",\"text\":\"定日县\"},{\"value\":\"540224\",\"text\":\"萨迦县\"},{\"value\":\"540225\",\"text\":\"拉孜县\"},{\"value\":\"540226\",\"text\":\"昂仁县\"},{\"value\":\"540227\",\"text\":\"谢通门县\"},{\"value\":\"540228\",\"text\":\"白朗县\"},{\"value\":\"540229\",\"text\":\"仁布县\"},{\"value\":\"540230\",\"text\":\"康马县\"},{\"value\":\"540231\",\"text\":\"定结县\"},{\"value\":\"540232\",\"text\":\"仲巴县\"},{\"value\":\"540233\",\"text\":\"亚东县\"},{\"value\":\"540234\",\"text\":\"吉隆县\"},{\"value\":\"540235\",\"text\":\"聂拉木县\"},{\"value\":\"540236\",\"text\":\"萨嘎县\"},{\"value\":\"540237\",\"text\":\"岗巴县\"}]},{\"value\":\"5403\",\"text\":\"昌都市\",\"children\":[{\"value\":\"540302\",\"text\":\"卡若区\"},{\"value\":\"540321\",\"text\":\"江达县\"},{\"value\":\"540322\",\"text\":\"贡觉县\"},{\"value\":\"540323\",\"text\":\"类乌齐县\"},{\"value\":\"540324\",\"text\":\"丁青县\"},{\"value\":\"540325\",\"text\":\"察雅县\"},{\"value\":\"540326\",\"text\":\"八宿县\"},{\"value\":\"540327\",\"text\":\"左贡县\"},{\"value\":\"540328\",\"text\":\"芒康县\"},{\"value\":\"540329\",\"text\":\"洛隆县\"},{\"value\":\"540330\",\"text\":\"边坝县\"}]},{\"value\":\"5404\",\"text\":\"林芝市\",\"children\":[{\"value\":\"540402\",\"text\":\"巴宜区\"},{\"value\":\"540421\",\"text\":\"工布江达县\"},{\"value\":\"540422\",\"text\":\"米林县\"},{\"value\":\"540423\",\"text\":\"墨脱县\"},{\"value\":\"540424\",\"text\":\"波密县\"},{\"value\":\"540425\",\"text\":\"察隅县\"},{\"value\":\"540426\",\"text\":\"朗县\"}]},{\"value\":\"5405\",\"text\":\"山南市\",\"children\":[{\"value\":\"540502\",\"text\":\"乃东区\"},{\"value\":\"540521\",\"text\":\"扎囊县\"},{\"value\":\"540522\",\"text\":\"贡嘎县\"},{\"value\":\"540523\",\"text\":\"桑日县\"},{\"value\":\"540524\",\"text\":\"琼结县\"},{\"value\":\"540525\",\"text\":\"曲松县\"},{\"value\":\"540526\",\"text\":\"措美县\"},{\"value\":\"540527\",\"text\":\"洛扎县\"},{\"value\":\"540528\",\"text\":\"加查县\"},{\"value\":\"540529\",\"text\":\"隆子县\"},{\"value\":\"540530\",\"text\":\"错那县\"},{\"value\":\"540531\",\"text\":\"浪卡子县\"}]},{\"value\":\"5424\",\"text\":\"那曲地区\",\"children\":[{\"value\":\"542421\",\"text\":\"那曲县\"},{\"value\":\"542422\",\"text\":\"嘉黎县\"},{\"value\":\"542423\",\"text\":\"比如县\"},{\"value\":\"542424\",\"text\":\"聂荣县\"},{\"value\":\"542425\",\"text\":\"安多县\"},{\"value\":\"542426\",\"text\":\"申扎县\"},{\"value\":\"542427\",\"text\":\"索县\"},{\"value\":\"542428\",\"text\":\"班戈县\"},{\"value\":\"542429\",\"text\":\"巴青县\"},{\"value\":\"542430\",\"text\":\"尼玛县\"},{\"value\":\"542431\",\"text\":\"双湖县\"}]},{\"value\":\"5425\",\"text\":\"阿里地区\",\"children\":[{\"value\":\"542521\",\"text\":\"普兰县\"},{\"value\":\"542522\",\"text\":\"札达县\"},{\"value\":\"542523\",\"text\":\"噶尔县\"},{\"value\":\"542524\",\"text\":\"日土县\"},{\"value\":\"542525\",\"text\":\"革吉县\"},{\"value\":\"542526\",\"text\":\"改则县\"},{\"value\":\"542527\",\"text\":\"措勤县\"}]}]},{\"value\":\"61\",\"text\":\"陕西省\",\"children\":[{\"value\":\"6101\",\"text\":\"西安市\",\"children\":[{\"value\":\"610102\",\"text\":\"新城区\"},{\"value\":\"610103\",\"text\":\"碑林区\"},{\"value\":\"610104\",\"text\":\"莲湖区\"},{\"value\":\"610111\",\"text\":\"灞桥区\"},{\"value\":\"610112\",\"text\":\"未央区\"},{\"value\":\"610113\",\"text\":\"雁塔区\"},{\"value\":\"610114\",\"text\":\"阎良区\"},{\"value\":\"610115\",\"text\":\"临潼区\"},{\"value\":\"610116\",\"text\":\"长安区\"},{\"value\":\"610117\",\"text\":\"高陵区\"},{\"value\":\"610122\",\"text\":\"蓝田县\"},{\"value\":\"610124\",\"text\":\"周至县\"},{\"value\":\"610125\",\"text\":\"户县\"}]},{\"value\":\"6102\",\"text\":\"铜川市\",\"children\":[{\"value\":\"610202\",\"text\":\"王益区\"},{\"value\":\"610203\",\"text\":\"印台区\"},{\"value\":\"610204\",\"text\":\"耀州区\"},{\"value\":\"610222\",\"text\":\"宜君县\"}]},{\"value\":\"6103\",\"text\":\"宝鸡市\",\"children\":[{\"value\":\"610302\",\"text\":\"渭滨区\"},{\"value\":\"610303\",\"text\":\"金台区\"},{\"value\":\"610304\",\"text\":\"陈仓区\"},{\"value\":\"610322\",\"text\":\"凤翔县\"},{\"value\":\"610323\",\"text\":\"岐山县\"},{\"value\":\"610324\",\"text\":\"扶风县\"},{\"value\":\"610326\",\"text\":\"眉县\"},{\"value\":\"610327\",\"text\":\"陇县\"},{\"value\":\"610328\",\"text\":\"千阳县\"},{\"value\":\"610329\",\"text\":\"麟游县\"},{\"value\":\"610330\",\"text\":\"凤县\"},{\"value\":\"610331\",\"text\":\"太白县\"}]},{\"value\":\"6104\",\"text\":\"咸阳市\",\"children\":[{\"value\":\"610402\",\"text\":\"秦都区\"},{\"value\":\"610403\",\"text\":\"杨陵区\"},{\"value\":\"610404\",\"text\":\"渭城区\"},{\"value\":\"610422\",\"text\":\"三原县\"},{\"value\":\"610423\",\"text\":\"泾阳县\"},{\"value\":\"610424\",\"text\":\"乾县\"},{\"value\":\"610425\",\"text\":\"礼泉县\"},{\"value\":\"610426\",\"text\":\"永寿县\"},{\"value\":\"610427\",\"text\":\"彬县\"},{\"value\":\"610428\",\"text\":\"长武县\"},{\"value\":\"610429\",\"text\":\"旬邑县\"},{\"value\":\"610430\",\"text\":\"淳化县\"},{\"value\":\"610431\",\"text\":\"武功县\"},{\"value\":\"610481\",\"text\":\"兴平市\"}]},{\"value\":\"6105\",\"text\":\"渭南市\",\"children\":[{\"value\":\"610502\",\"text\":\"临渭区\"},{\"value\":\"610503\",\"text\":\"华州区\"},{\"value\":\"610522\",\"text\":\"潼关县\"},{\"value\":\"610523\",\"text\":\"大荔县\"},{\"value\":\"610524\",\"text\":\"合阳县\"},{\"value\":\"610525\",\"text\":\"澄城县\"},{\"value\":\"610526\",\"text\":\"蒲城县\"},{\"value\":\"610527\",\"text\":\"白水县\"},{\"value\":\"610528\",\"text\":\"富平县\"},{\"value\":\"610581\",\"text\":\"韩城市\"},{\"value\":\"610582\",\"text\":\"华阴市\"}]},{\"value\":\"6106\",\"text\":\"延安市\",\"children\":[{\"value\":\"610602\",\"text\":\"宝塔区\"},{\"value\":\"610603\",\"text\":\"安塞区\"},{\"value\":\"610621\",\"text\":\"延长县\"},{\"value\":\"610622\",\"text\":\"延川县\"},{\"value\":\"610623\",\"text\":\"子长县\"},{\"value\":\"610625\",\"text\":\"志丹县\"},{\"value\":\"610626\",\"text\":\"吴起县\"},{\"value\":\"610627\",\"text\":\"甘泉县\"},{\"value\":\"610628\",\"text\":\"富县\"},{\"value\":\"610629\",\"text\":\"洛川县\"},{\"value\":\"610630\",\"text\":\"宜川县\"},{\"value\":\"610631\",\"text\":\"黄龙县\"},{\"value\":\"610632\",\"text\":\"黄陵县\"}]},{\"value\":\"6107\",\"text\":\"汉中市\",\"children\":[{\"value\":\"610702\",\"text\":\"汉台区\"},{\"value\":\"610721\",\"text\":\"南郑县\"},{\"value\":\"610722\",\"text\":\"城固县\"},{\"value\":\"610723\",\"text\":\"洋县\"},{\"value\":\"610724\",\"text\":\"西乡县\"},{\"value\":\"610725\",\"text\":\"勉县\"},{\"value\":\"610726\",\"text\":\"宁强县\"},{\"value\":\"610727\",\"text\":\"略阳县\"},{\"value\":\"610728\",\"text\":\"镇巴县\"},{\"value\":\"610729\",\"text\":\"留坝县\"},{\"value\":\"610730\",\"text\":\"佛坪县\"}]},{\"value\":\"6108\",\"text\":\"榆林市\",\"children\":[{\"value\":\"610802\",\"text\":\"榆阳区\"},{\"value\":\"610803\",\"text\":\"横山区\"},{\"value\":\"610821\",\"text\":\"神木县\"},{\"value\":\"610822\",\"text\":\"府谷县\"},{\"value\":\"610824\",\"text\":\"靖边县\"},{\"value\":\"610825\",\"text\":\"定边县\"},{\"value\":\"610826\",\"text\":\"绥德县\"},{\"value\":\"610827\",\"text\":\"米脂县\"},{\"value\":\"610828\",\"text\":\"佳县\"},{\"value\":\"610829\",\"text\":\"吴堡县\"},{\"value\":\"610830\",\"text\":\"清涧县\"},{\"value\":\"610831\",\"text\":\"子洲县\"}]},{\"value\":\"6109\",\"text\":\"安康市\",\"children\":[{\"value\":\"610902\",\"text\":\"汉滨区\"},{\"value\":\"610921\",\"text\":\"汉阴县\"},{\"value\":\"610922\",\"text\":\"石泉县\"},{\"value\":\"610923\",\"text\":\"宁陕县\"},{\"value\":\"610924\",\"text\":\"紫阳县\"},{\"value\":\"610925\",\"text\":\"岚皋县\"},{\"value\":\"610926\",\"text\":\"平利县\"},{\"value\":\"610927\",\"text\":\"镇坪县\"},{\"value\":\"610928\",\"text\":\"旬阳县\"},{\"value\":\"610929\",\"text\":\"白河县\"}]},{\"value\":\"6110\",\"text\":\"商洛市\",\"children\":[{\"value\":\"611002\",\"text\":\"商州区\"},{\"value\":\"611021\",\"text\":\"洛南县\"},{\"value\":\"611022\",\"text\":\"丹凤县\"},{\"value\":\"611023\",\"text\":\"商南县\"},{\"value\":\"611024\",\"text\":\"山阳县\"},{\"value\":\"611025\",\"text\":\"镇安县\"},{\"value\":\"611026\",\"text\":\"柞水县\"}]}]},{\"value\":\"62\",\"text\":\"甘肃省\",\"children\":[{\"value\":\"6201\",\"text\":\"兰州市\",\"children\":[{\"value\":\"620102\",\"text\":\"城关区\"},{\"value\":\"620103\",\"text\":\"七里河区\"},{\"value\":\"620104\",\"text\":\"西固区\"},{\"value\":\"620105\",\"text\":\"安宁区\"},{\"value\":\"620111\",\"text\":\"红古区\"},{\"value\":\"620121\",\"text\":\"永登县\"},{\"value\":\"620122\",\"text\":\"皋兰县\"},{\"value\":\"620123\",\"text\":\"榆中县\"}]},{\"value\":\"620201\",\"text\":\"嘉峪关市\",\"children\":[{\"value\":\"620201100\",\"text\":\"新城镇\"},{\"value\":\"620201101\",\"text\":\"峪泉镇\"},{\"value\":\"620201102\",\"text\":\"文殊镇\"},{\"value\":\"620201401\",\"text\":\"雄关区\"},{\"value\":\"620201402\",\"text\":\"镜铁区\"},{\"value\":\"620201403\",\"text\":\"长城区\"}]},{\"value\":\"6203\",\"text\":\"金昌市\",\"children\":[{\"value\":\"620302\",\"text\":\"金川区\"},{\"value\":\"620321\",\"text\":\"永昌县\"}]},{\"value\":\"6204\",\"text\":\"白银市\",\"children\":[{\"value\":\"620402\",\"text\":\"白银区\"},{\"value\":\"620403\",\"text\":\"平川区\"},{\"value\":\"620421\",\"text\":\"靖远县\"},{\"value\":\"620422\",\"text\":\"会宁县\"},{\"value\":\"620423\",\"text\":\"景泰县\"}]},{\"value\":\"6205\",\"text\":\"天水市\",\"children\":[{\"value\":\"620502\",\"text\":\"秦州区\"},{\"value\":\"620503\",\"text\":\"麦积区\"},{\"value\":\"620521\",\"text\":\"清水县\"},{\"value\":\"620522\",\"text\":\"秦安县\"},{\"value\":\"620523\",\"text\":\"甘谷县\"},{\"value\":\"620524\",\"text\":\"武山县\"},{\"value\":\"620525\",\"text\":\"张家川回族自治县\"}]},{\"value\":\"6206\",\"text\":\"武威市\",\"children\":[{\"value\":\"620602\",\"text\":\"凉州区\"},{\"value\":\"620621\",\"text\":\"民勤县\"},{\"value\":\"620622\",\"text\":\"古浪县\"},{\"value\":\"620623\",\"text\":\"天祝藏族自治县\"}]},{\"value\":\"6207\",\"text\":\"张掖市\",\"children\":[{\"value\":\"620702\",\"text\":\"甘州区\"},{\"value\":\"620721\",\"text\":\"肃南裕固族自治县\"},{\"value\":\"620722\",\"text\":\"民乐县\"},{\"value\":\"620723\",\"text\":\"临泽县\"},{\"value\":\"620724\",\"text\":\"高台县\"},{\"value\":\"620725\",\"text\":\"山丹县\"}]},{\"value\":\"6208\",\"text\":\"平凉市\",\"children\":[{\"value\":\"620802\",\"text\":\"崆峒区\"},{\"value\":\"620821\",\"text\":\"泾川县\"},{\"value\":\"620822\",\"text\":\"灵台县\"},{\"value\":\"620823\",\"text\":\"崇信县\"},{\"value\":\"620824\",\"text\":\"华亭县\"},{\"value\":\"620825\",\"text\":\"庄浪县\"},{\"value\":\"620826\",\"text\":\"静宁县\"}]},{\"value\":\"6209\",\"text\":\"酒泉市\",\"children\":[{\"value\":\"620902\",\"text\":\"肃州区\"},{\"value\":\"620921\",\"text\":\"金塔县\"},{\"value\":\"620922\",\"text\":\"瓜州县\"},{\"value\":\"620923\",\"text\":\"肃北蒙古族自治县\"},{\"value\":\"620924\",\"text\":\"阿克塞哈萨克族自治县\"},{\"value\":\"620981\",\"text\":\"玉门市\"},{\"value\":\"620982\",\"text\":\"敦煌市\"}]},{\"value\":\"6210\",\"text\":\"庆阳市\",\"children\":[{\"value\":\"621002\",\"text\":\"西峰区\"},{\"value\":\"621021\",\"text\":\"庆城县\"},{\"value\":\"621022\",\"text\":\"环县\"},{\"value\":\"621023\",\"text\":\"华池县\"},{\"value\":\"621024\",\"text\":\"合水县\"},{\"value\":\"621025\",\"text\":\"正宁县\"},{\"value\":\"621026\",\"text\":\"宁县\"},{\"value\":\"621027\",\"text\":\"镇原县\"}]},{\"value\":\"6211\",\"text\":\"定西市\",\"children\":[{\"value\":\"621102\",\"text\":\"安定区\"},{\"value\":\"621121\",\"text\":\"通渭县\"},{\"value\":\"621122\",\"text\":\"陇西县\"},{\"value\":\"621123\",\"text\":\"渭源县\"},{\"value\":\"621124\",\"text\":\"临洮县\"},{\"value\":\"621125\",\"text\":\"漳县\"},{\"value\":\"621126\",\"text\":\"岷县\"}]},{\"value\":\"6212\",\"text\":\"陇南市\",\"children\":[{\"value\":\"621202\",\"text\":\"武都区\"},{\"value\":\"621221\",\"text\":\"成县\"},{\"value\":\"621222\",\"text\":\"文县\"},{\"value\":\"621223\",\"text\":\"宕昌县\"},{\"value\":\"621224\",\"text\":\"康县\"},{\"value\":\"621225\",\"text\":\"西和县\"},{\"value\":\"621226\",\"text\":\"礼县\"},{\"value\":\"621227\",\"text\":\"徽县\"},{\"value\":\"621228\",\"text\":\"两当县\"}]},{\"value\":\"6229\",\"text\":\"临夏回族自治州\",\"children\":[{\"value\":\"622901\",\"text\":\"临夏市\"},{\"value\":\"622921\",\"text\":\"临夏县\"},{\"value\":\"622922\",\"text\":\"康乐县\"},{\"value\":\"622923\",\"text\":\"永靖县\"},{\"value\":\"622924\",\"text\":\"广河县\"},{\"value\":\"622925\",\"text\":\"和政县\"},{\"value\":\"622926\",\"text\":\"东乡族自治县\"},{\"value\":\"622927\",\"text\":\"积石山保安族东乡族撒拉族自治县\"}]},{\"value\":\"6230\",\"text\":\"甘南藏族自治州\",\"children\":[{\"value\":\"623001\",\"text\":\"合作市\"},{\"value\":\"623021\",\"text\":\"临潭县\"},{\"value\":\"623022\",\"text\":\"卓尼县\"},{\"value\":\"623023\",\"text\":\"舟曲县\"},{\"value\":\"623024\",\"text\":\"迭部县\"},{\"value\":\"623025\",\"text\":\"玛曲县\"},{\"value\":\"623026\",\"text\":\"碌曲县\"},{\"value\":\"623027\",\"text\":\"夏河县\"}]}]},{\"value\":\"63\",\"text\":\"青海省\",\"children\":[{\"value\":\"6301\",\"text\":\"西宁市\",\"children\":[{\"value\":\"630102\",\"text\":\"城东区\"},{\"value\":\"630103\",\"text\":\"城中区\"},{\"value\":\"630104\",\"text\":\"城西区\"},{\"value\":\"630105\",\"text\":\"城北区\"},{\"value\":\"630121\",\"text\":\"大通回族土族自治县\"},{\"value\":\"630122\",\"text\":\"湟中县\"},{\"value\":\"630123\",\"text\":\"湟源县\"}]},{\"value\":\"6302\",\"text\":\"海东市\",\"children\":[{\"value\":\"630202\",\"text\":\"乐都区\"},{\"value\":\"630203\",\"text\":\"平安区\"},{\"value\":\"630222\",\"text\":\"民和回族土族自治县\"},{\"value\":\"630223\",\"text\":\"互助土族自治县\"},{\"value\":\"630224\",\"text\":\"化隆回族自治县\"},{\"value\":\"630225\",\"text\":\"循化撒拉族自治县\"}]},{\"value\":\"6322\",\"text\":\"海北藏族自治州\",\"children\":[{\"value\":\"632221\",\"text\":\"门源回族自治县\"},{\"value\":\"632222\",\"text\":\"祁连县\"},{\"value\":\"632223\",\"text\":\"海晏县\"},{\"value\":\"632224\",\"text\":\"刚察县\"}]},{\"value\":\"6323\",\"text\":\"黄南藏族自治州\",\"children\":[{\"value\":\"632321\",\"text\":\"同仁县\"},{\"value\":\"632322\",\"text\":\"尖扎县\"},{\"value\":\"632323\",\"text\":\"泽库县\"},{\"value\":\"632324\",\"text\":\"河南蒙古族自治县\"}]},{\"value\":\"6325\",\"text\":\"海南藏族自治州\",\"children\":[{\"value\":\"632521\",\"text\":\"共和县\"},{\"value\":\"632522\",\"text\":\"同德县\"},{\"value\":\"632523\",\"text\":\"贵德县\"},{\"value\":\"632524\",\"text\":\"兴海县\"},{\"value\":\"632525\",\"text\":\"贵南县\"}]},{\"value\":\"6326\",\"text\":\"果洛藏族自治州\",\"children\":[{\"value\":\"632621\",\"text\":\"玛沁县\"},{\"value\":\"632622\",\"text\":\"班玛县\"},{\"value\":\"632623\",\"text\":\"甘德县\"},{\"value\":\"632624\",\"text\":\"达日县\"},{\"value\":\"632625\",\"text\":\"久治县\"},{\"value\":\"632626\",\"text\":\"玛多县\"}]},{\"value\":\"6327\",\"text\":\"玉树藏族自治州\",\"children\":[{\"value\":\"632701\",\"text\":\"玉树市\"},{\"value\":\"632722\",\"text\":\"杂多县\"},{\"value\":\"632723\",\"text\":\"称多县\"},{\"value\":\"632724\",\"text\":\"治多县\"},{\"value\":\"632725\",\"text\":\"囊谦县\"},{\"value\":\"632726\",\"text\":\"曲麻莱县\"}]},{\"value\":\"6328\",\"text\":\"海西蒙古族藏族自治州\",\"children\":[{\"value\":\"632801\",\"text\":\"格尔木市\"},{\"value\":\"632802\",\"text\":\"德令哈市\"},{\"value\":\"632821\",\"text\":\"乌兰县\"},{\"value\":\"632822\",\"text\":\"都兰县\"},{\"value\":\"632823\",\"text\":\"天峻县\"}]}]},{\"value\":\"64\",\"text\":\"宁夏回族自治区\",\"children\":[{\"value\":\"6401\",\"text\":\"银川市\",\"children\":[{\"value\":\"640104\",\"text\":\"兴庆区\"},{\"value\":\"640105\",\"text\":\"西夏区\"},{\"value\":\"640106\",\"text\":\"金凤区\"},{\"value\":\"640121\",\"text\":\"永宁县\"},{\"value\":\"640122\",\"text\":\"贺兰县\"},{\"value\":\"640181\",\"text\":\"灵武市\"}]},{\"value\":\"6402\",\"text\":\"石嘴山市\",\"children\":[{\"value\":\"640202\",\"text\":\"大武口区\"},{\"value\":\"640205\",\"text\":\"惠农区\"},{\"value\":\"640221\",\"text\":\"平罗县\"}]},{\"value\":\"6403\",\"text\":\"吴忠市\",\"children\":[{\"value\":\"640302\",\"text\":\"利通区\"},{\"value\":\"640303\",\"text\":\"红寺堡区\"},{\"value\":\"640323\",\"text\":\"盐池县\"},{\"value\":\"640324\",\"text\":\"同心县\"},{\"value\":\"640381\",\"text\":\"青铜峡市\"}]},{\"value\":\"6404\",\"text\":\"固原市\",\"children\":[{\"value\":\"640402\",\"text\":\"原州区\"},{\"value\":\"640422\",\"text\":\"西吉县\"},{\"value\":\"640423\",\"text\":\"隆德县\"},{\"value\":\"640424\",\"text\":\"泾源县\"},{\"value\":\"640425\",\"text\":\"彭阳县\"}]},{\"value\":\"6405\",\"text\":\"中卫市\",\"children\":[{\"value\":\"640502\",\"text\":\"沙坡头区\"},{\"value\":\"640521\",\"text\":\"中宁县\"},{\"value\":\"640522\",\"text\":\"海原县\"}]}]},{\"value\":\"65\",\"text\":\"新疆维吾尔自治区\",\"children\":[{\"value\":\"6501\",\"text\":\"乌鲁木齐市\",\"children\":[{\"value\":\"650102\",\"text\":\"天山区\"},{\"value\":\"650103\",\"text\":\"沙依巴克区\"},{\"value\":\"650104\",\"text\":\"新市区\"},{\"value\":\"650105\",\"text\":\"水磨沟区\"},{\"value\":\"650106\",\"text\":\"头屯河区\"},{\"value\":\"650107\",\"text\":\"达坂城区\"},{\"value\":\"650109\",\"text\":\"米东区\"},{\"value\":\"650121\",\"text\":\"乌鲁木齐县\"}]},{\"value\":\"6502\",\"text\":\"克拉玛依市\",\"children\":[{\"value\":\"650202\",\"text\":\"独山子区\"},{\"value\":\"650203\",\"text\":\"克拉玛依区\"},{\"value\":\"650204\",\"text\":\"白碱滩区\"},{\"value\":\"650205\",\"text\":\"乌尔禾区\"}]},{\"value\":\"6504\",\"text\":\"吐鲁番市\",\"children\":[{\"value\":\"650402\",\"text\":\"高昌区\"},{\"value\":\"650421\",\"text\":\"鄯善县\"},{\"value\":\"650422\",\"text\":\"托克逊县\"}]},{\"value\":\"6505\",\"text\":\"哈密市\",\"children\":[{\"value\":\"650502\",\"text\":\"伊州区\"},{\"value\":\"650521\",\"text\":\"巴里坤哈萨克自治县\"},{\"value\":\"650522\",\"text\":\"伊吾县\"}]},{\"value\":\"6523\",\"text\":\"昌吉回族自治州\",\"children\":[{\"value\":\"652301\",\"text\":\"昌吉市\"},{\"value\":\"652302\",\"text\":\"阜康市\"},{\"value\":\"652323\",\"text\":\"呼图壁县\"},{\"value\":\"652324\",\"text\":\"玛纳斯县\"},{\"value\":\"652325\",\"text\":\"奇台县\"},{\"value\":\"652327\",\"text\":\"吉木萨尔县\"},{\"value\":\"652328\",\"text\":\"木垒哈萨克自治县\"}]},{\"value\":\"6527\",\"text\":\"博尔塔拉蒙古自治州\",\"children\":[{\"value\":\"652701\",\"text\":\"博乐市\"},{\"value\":\"652702\",\"text\":\"阿拉山口市\"},{\"value\":\"652722\",\"text\":\"精河县\"},{\"value\":\"652723\",\"text\":\"温泉县\"}]},{\"value\":\"6528\",\"text\":\"巴音郭楞蒙古自治州\",\"children\":[{\"value\":\"652801\",\"text\":\"库尔勒市\"},{\"value\":\"652822\",\"text\":\"轮台县\"},{\"value\":\"652823\",\"text\":\"尉犁县\"},{\"value\":\"652824\",\"text\":\"若羌县\"},{\"value\":\"652825\",\"text\":\"且末县\"},{\"value\":\"652826\",\"text\":\"焉耆回族自治县\"},{\"value\":\"652827\",\"text\":\"和静县\"},{\"value\":\"652828\",\"text\":\"和硕县\"},{\"value\":\"652829\",\"text\":\"博湖县\"}]},{\"value\":\"6529\",\"text\":\"阿克苏地区\",\"children\":[{\"value\":\"652901\",\"text\":\"阿克苏市\"},{\"value\":\"652922\",\"text\":\"温宿县\"},{\"value\":\"652923\",\"text\":\"库车县\"},{\"value\":\"652924\",\"text\":\"沙雅县\"},{\"value\":\"652925\",\"text\":\"新和县\"},{\"value\":\"652926\",\"text\":\"拜城县\"},{\"value\":\"652927\",\"text\":\"乌什县\"},{\"value\":\"652928\",\"text\":\"阿瓦提县\"},{\"value\":\"652929\",\"text\":\"柯坪县\"}]},{\"value\":\"6530\",\"text\":\"克孜勒苏柯尔克孜自治州\",\"children\":[{\"value\":\"653001\",\"text\":\"阿图什市\"},{\"value\":\"653022\",\"text\":\"阿克陶县\"},{\"value\":\"653023\",\"text\":\"阿合奇县\"},{\"value\":\"653024\",\"text\":\"乌恰县\"}]},{\"value\":\"6531\",\"text\":\"喀什地区\",\"children\":[{\"value\":\"653101\",\"text\":\"喀什市\"},{\"value\":\"653121\",\"text\":\"疏附县\"},{\"value\":\"653122\",\"text\":\"疏勒县\"},{\"value\":\"653123\",\"text\":\"英吉沙县\"},{\"value\":\"653124\",\"text\":\"泽普县\"},{\"value\":\"653125\",\"text\":\"莎车县\"},{\"value\":\"653126\",\"text\":\"叶城县\"},{\"value\":\"653127\",\"text\":\"麦盖提县\"},{\"value\":\"653128\",\"text\":\"岳普湖县\"},{\"value\":\"653129\",\"text\":\"伽师县\"},{\"value\":\"653130\",\"text\":\"巴楚县\"},{\"value\":\"653131\",\"text\":\"塔什库尔干塔吉克自治县\"}]},{\"value\":\"6532\",\"text\":\"和田地区\",\"children\":[{\"value\":\"653201\",\"text\":\"和田市\"},{\"value\":\"653221\",\"text\":\"和田县\"},{\"value\":\"653222\",\"text\":\"墨玉县\"},{\"value\":\"653223\",\"text\":\"皮山县\"},{\"value\":\"653224\",\"text\":\"洛浦县\"},{\"value\":\"653225\",\"text\":\"策勒县\"},{\"value\":\"653226\",\"text\":\"于田县\"},{\"value\":\"653227\",\"text\":\"民丰县\"}]},{\"value\":\"6540\",\"text\":\"伊犁哈萨克自治州\",\"children\":[{\"value\":\"654002\",\"text\":\"伊宁市\"},{\"value\":\"654003\",\"text\":\"奎屯市\"},{\"value\":\"654004\",\"text\":\"霍尔果斯市\"},{\"value\":\"654021\",\"text\":\"伊宁县\"},{\"value\":\"654022\",\"text\":\"察布查尔锡伯自治县\"},{\"value\":\"654023\",\"text\":\"霍城县\"},{\"value\":\"654024\",\"text\":\"巩留县\"},{\"value\":\"654025\",\"text\":\"新源县\"},{\"value\":\"654026\",\"text\":\"昭苏县\"},{\"value\":\"654027\",\"text\":\"特克斯县\"},{\"value\":\"654028\",\"text\":\"尼勒克县\"}]},{\"value\":\"6542\",\"text\":\"塔城地区\",\"children\":[{\"value\":\"654201\",\"text\":\"塔城市\"},{\"value\":\"654202\",\"text\":\"乌苏市\"},{\"value\":\"654221\",\"text\":\"额敏县\"},{\"value\":\"654223\",\"text\":\"沙湾县\"},{\"value\":\"654224\",\"text\":\"托里县\"},{\"value\":\"654225\",\"text\":\"裕民县\"},{\"value\":\"654226\",\"text\":\"和布克赛尔蒙古自治县\"}]},{\"value\":\"6543\",\"text\":\"阿勒泰地区\",\"children\":[{\"value\":\"654301\",\"text\":\"阿勒泰市\"},{\"value\":\"654321\",\"text\":\"布尔津县\"},{\"value\":\"654322\",\"text\":\"富蕴县\"},{\"value\":\"654323\",\"text\":\"福海县\"},{\"value\":\"654324\",\"text\":\"哈巴河县\"},{\"value\":\"654325\",\"text\":\"青河县\"},{\"value\":\"654326\",\"text\":\"吉木乃县\"}]},{\"value\":\"6590\",\"text\":\"自治区直辖县级行政区划\",\"children\":[{\"value\":\"659001\",\"text\":\"石河子市\"},{\"value\":\"659002\",\"text\":\"阿拉尔市\"},{\"value\":\"659003\",\"text\":\"图木舒克市\"},{\"value\":\"659004\",\"text\":\"五家渠市\"},{\"value\":\"659006\",\"text\":\"铁门关市\"}]}]},{\"value\":\"71\",\"text\":\"台湾省\",\"children\":[]},{\"value\":\"81\",\"text\":\"香港特别行政区\",\"children\":[]},{\"value\":\"82\",\"text\":\"澳门特别行政区\",\"children\":[]}]");
 
 /***/ }),
-/* 144 */,
-/* 145 */,
-/* 146 */,
-/* 147 */,
-/* 148 */,
-/* 149 */,
-/* 150 */,
-/* 151 */,
-/* 152 */,
-/* 153 */,
-/* 154 */,
-/* 155 */,
-/* 156 */,
-/* 157 */,
-/* 158 */,
-/* 159 */,
-/* 160 */,
-/* 161 */,
-/* 162 */,
-/* 163 */,
-/* 164 */,
-/* 165 */,
-/* 166 */,
-/* 167 */,
-/* 168 */,
-/* 169 */,
-/* 170 */,
-/* 171 */,
-/* 172 */
-/*!*******************************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-data-picker/components/uni-data-pickerview/uni-data-picker.js ***!
-  \*******************************************************************************************************/
+/* 214 */,
+/* 215 */,
+/* 216 */,
+/* 217 */,
+/* 218 */,
+/* 219 */,
+/* 220 */,
+/* 221 */,
+/* 222 */,
+/* 223 */,
+/* 224 */,
+/* 225 */,
+/* 226 */,
+/* 227 */,
+/* 228 */,
+/* 229 */,
+/* 230 */,
+/* 231 */,
+/* 232 */,
+/* 233 */,
+/* 234 */,
+/* 235 */,
+/* 236 */,
+/* 237 */,
+/* 238 */,
+/* 239 */,
+/* 240 */,
+/* 241 */,
+/* 242 */
+/*!************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-calendar/components/uni-calendar/util.js ***!
+  \************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
+var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
+var _calendar = _interopRequireDefault(__webpack_require__(/*! ./calendar.js */ 243));
+var Calendar = /*#__PURE__*/function () {
+  function Calendar() {
+    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+      date = _ref.date,
+      selected = _ref.selected,
+      startDate = _ref.startDate,
+      endDate = _ref.endDate,
+      range = _ref.range;
+    (0, _classCallCheck2.default)(this, Calendar);
+    // 当前日期
+    this.date = this.getDate(new Date()); // 当前初入日期
+    // 打点信息
+    this.selected = selected || [];
+    // 范围开始
+    this.startDate = startDate;
+    // 范围结束
+    this.endDate = endDate;
+    this.range = range;
+    // 多选状态
+    this.cleanMultipleStatus();
+    // 每周日期
+    this.weeks = {};
+    // this._getWeek(this.date.fullDate)
+  }
+  /**
+   * 设置日期
+   * @param {Object} date
+   */
+  (0, _createClass2.default)(Calendar, [{
+    key: "setDate",
+    value: function setDate(date) {
+      this.selectDate = this.getDate(date);
+      this._getWeek(this.selectDate.fullDate);
+    }
+
+    /**
+     * 清理多选状态
+     */
+  }, {
+    key: "cleanMultipleStatus",
+    value: function cleanMultipleStatus() {
+      this.multipleStatus = {
+        before: '',
+        after: '',
+        data: []
+      };
+    }
+
+    /**
+     * 重置开始日期
+     */
+  }, {
+    key: "resetSatrtDate",
+    value: function resetSatrtDate(startDate) {
+      // 范围开始
+      this.startDate = startDate;
+    }
+
+    /**
+     * 重置结束日期
+     */
+  }, {
+    key: "resetEndDate",
+    value: function resetEndDate(endDate) {
+      // 范围结束
+      this.endDate = endDate;
+    }
+
+    /**
+     * 获取任意时间
+     */
+  }, {
+    key: "getDate",
+    value: function getDate(date) {
+      var AddDayCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+      var str = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'day';
+      if (!date) {
+        date = new Date();
+      }
+      if ((0, _typeof2.default)(date) !== 'object') {
+        date = date.replace(/-/g, '/');
+      }
+      var dd = new Date(date);
+      switch (str) {
+        case 'day':
+          dd.setDate(dd.getDate() + AddDayCount); // 获取AddDayCount天后的日期
+          break;
+        case 'month':
+          if (dd.getDate() === 31 && AddDayCount > 0) {
+            dd.setDate(dd.getDate() + AddDayCount);
+          } else {
+            var preMonth = dd.getMonth();
+            dd.setMonth(preMonth + AddDayCount); // 获取AddDayCount天后的日期
+            var nextMonth = dd.getMonth();
+            // 处理 pre 切换月份目标月份为2月没有当前日(30 31) 切换错误问题
+            if (AddDayCount < 0 && preMonth !== 0 && nextMonth - preMonth > AddDayCount) {
+              dd.setMonth(nextMonth + (nextMonth - preMonth + AddDayCount));
+            }
+            // 处理 next 切换月份目标月份为2月没有当前日(30 31) 切换错误问题
+            if (AddDayCount > 0 && nextMonth - preMonth > AddDayCount) {
+              dd.setMonth(nextMonth - (nextMonth - preMonth - AddDayCount));
+            }
+          }
+          break;
+        case 'year':
+          dd.setFullYear(dd.getFullYear() + AddDayCount); // 获取AddDayCount天后的日期
+          break;
+      }
+      var y = dd.getFullYear();
+      var m = dd.getMonth() + 1 < 10 ? '0' + (dd.getMonth() + 1) : dd.getMonth() + 1; // 获取当前月份的日期，不足10补0
+      var d = dd.getDate() < 10 ? '0' + dd.getDate() : dd.getDate(); // 获取当前几号，不足10补0
+      return {
+        fullDate: y + '-' + m + '-' + d,
+        year: y,
+        month: m,
+        date: d,
+        day: dd.getDay()
+      };
+    }
+
+    /**
+     * 获取上月剩余天数
+     */
+  }, {
+    key: "_getLastMonthDays",
+    value: function _getLastMonthDays(firstDay, full) {
+      var dateArr = [];
+      for (var i = firstDay; i > 0; i--) {
+        var beforeDate = new Date(full.year, full.month - 1, -i + 1).getDate();
+        dateArr.push({
+          date: beforeDate,
+          month: full.month - 1,
+          lunar: this.getlunar(full.year, full.month - 1, beforeDate),
+          disable: true
+        });
+      }
+      return dateArr;
+    }
+    /**
+     * 获取本月天数
+     */
+  }, {
+    key: "_currentMonthDys",
+    value: function _currentMonthDys(dateData, full) {
+      var _this = this;
+      var dateArr = [];
+      var fullDate = this.date.fullDate;
+      var _loop = function _loop(i) {
+        var nowDate = full.year + '-' + (full.month < 10 ? full.month : full.month) + '-' + (i < 10 ? '0' + i : i);
+        // 是否今天
+        var isDay = fullDate === nowDate;
+        // 获取打点信息
+        var info = _this.selected && _this.selected.find(function (item) {
+          if (_this.dateEqual(nowDate, item.date)) {
+            return item;
+          }
+        });
+
+        // 日期禁用
+        var disableBefore = true;
+        var disableAfter = true;
+        if (_this.startDate) {
+          // let dateCompBefore = this.dateCompare(this.startDate, fullDate)
+          // disableBefore = this.dateCompare(dateCompBefore ? this.startDate : fullDate, nowDate)
+          disableBefore = _this.dateCompare(_this.startDate, nowDate);
+        }
+        if (_this.endDate) {
+          // let dateCompAfter = this.dateCompare(fullDate, this.endDate)
+          // disableAfter = this.dateCompare(nowDate, dateCompAfter ? this.endDate : fullDate)
+          disableAfter = _this.dateCompare(nowDate, _this.endDate);
+        }
+        var multiples = _this.multipleStatus.data;
+        var checked = false;
+        var multiplesStatus = -1;
+        if (_this.range) {
+          if (multiples) {
+            multiplesStatus = multiples.findIndex(function (item) {
+              return _this.dateEqual(item, nowDate);
+            });
+          }
+          if (multiplesStatus !== -1) {
+            checked = true;
+          }
+        }
+        var data = {
+          fullDate: nowDate,
+          year: full.year,
+          date: i,
+          multiple: _this.range ? checked : false,
+          beforeMultiple: _this.dateEqual(_this.multipleStatus.before, nowDate),
+          afterMultiple: _this.dateEqual(_this.multipleStatus.after, nowDate),
+          month: full.month,
+          lunar: _this.getlunar(full.year, full.month, i),
+          disable: !(disableBefore && disableAfter),
+          isDay: isDay
+        };
+        if (info) {
+          data.extraInfo = info;
+        }
+        dateArr.push(data);
+      };
+      for (var i = 1; i <= dateData; i++) {
+        _loop(i);
+      }
+      return dateArr;
+    }
+    /**
+     * 获取下月天数
+     */
+  }, {
+    key: "_getNextMonthDays",
+    value: function _getNextMonthDays(surplus, full) {
+      var dateArr = [];
+      for (var i = 1; i < surplus + 1; i++) {
+        dateArr.push({
+          date: i,
+          month: Number(full.month) + 1,
+          lunar: this.getlunar(full.year, Number(full.month) + 1, i),
+          disable: true
+        });
+      }
+      return dateArr;
+    }
+
+    /**
+     * 获取当前日期详情
+     * @param {Object} date
+     */
+  }, {
+    key: "getInfo",
+    value: function getInfo(date) {
+      var _this2 = this;
+      if (!date) {
+        date = new Date();
+      }
+      var dateInfo = this.canlender.find(function (item) {
+        return item.fullDate === _this2.getDate(date).fullDate;
+      });
+      return dateInfo;
+    }
+
+    /**
+     * 比较时间大小
+     */
+  }, {
+    key: "dateCompare",
+    value: function dateCompare(startDate, endDate) {
+      // 计算截止时间
+      startDate = new Date(startDate.replace('-', '/').replace('-', '/'));
+      // 计算详细项的截止时间
+      endDate = new Date(endDate.replace('-', '/').replace('-', '/'));
+      if (startDate <= endDate) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    /**
+     * 比较时间是否相等
+     */
+  }, {
+    key: "dateEqual",
+    value: function dateEqual(before, after) {
+      // 计算截止时间
+      before = new Date(before.replace('-', '/').replace('-', '/'));
+      // 计算详细项的截止时间
+      after = new Date(after.replace('-', '/').replace('-', '/'));
+      if (before.getTime() - after.getTime() === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    /**
+     * 获取日期范围内所有日期
+     * @param {Object} begin
+     * @param {Object} end
+     */
+  }, {
+    key: "geDateAll",
+    value: function geDateAll(begin, end) {
+      var arr = [];
+      var ab = begin.split('-');
+      var ae = end.split('-');
+      var db = new Date();
+      db.setFullYear(ab[0], ab[1] - 1, ab[2]);
+      var de = new Date();
+      de.setFullYear(ae[0], ae[1] - 1, ae[2]);
+      var unixDb = db.getTime() - 24 * 60 * 60 * 1000;
+      var unixDe = de.getTime() - 24 * 60 * 60 * 1000;
+      for (var k = unixDb; k <= unixDe;) {
+        k = k + 24 * 60 * 60 * 1000;
+        arr.push(this.getDate(new Date(parseInt(k))).fullDate);
+      }
+      return arr;
+    }
+    /**
+     * 计算阴历日期显示
+     */
+  }, {
+    key: "getlunar",
+    value: function getlunar(year, month, date) {
+      return _calendar.default.solar2lunar(year, month, date);
+    }
+    /**
+     * 设置打点
+     */
+  }, {
+    key: "setSelectInfo",
+    value: function setSelectInfo(data, value) {
+      this.selected = value;
+      this._getWeek(data);
+    }
+
+    /**
+     *  获取多选状态
+     */
+  }, {
+    key: "setMultiple",
+    value: function setMultiple(fullDate) {
+      var _this$multipleStatus = this.multipleStatus,
+        before = _this$multipleStatus.before,
+        after = _this$multipleStatus.after;
+      if (!this.range) return;
+      if (before && after) {
+        this.multipleStatus.before = '';
+        this.multipleStatus.after = '';
+        this.multipleStatus.data = [];
+      } else {
+        if (!before) {
+          this.multipleStatus.before = fullDate;
+        } else {
+          this.multipleStatus.after = fullDate;
+          if (this.dateCompare(this.multipleStatus.before, this.multipleStatus.after)) {
+            this.multipleStatus.data = this.geDateAll(this.multipleStatus.before, this.multipleStatus.after);
+          } else {
+            this.multipleStatus.data = this.geDateAll(this.multipleStatus.after, this.multipleStatus.before);
+          }
+        }
+      }
+      this._getWeek(fullDate);
+    }
+
+    /**
+     * 获取每周数据
+     * @param {Object} dateData
+     */
+  }, {
+    key: "_getWeek",
+    value: function _getWeek(dateData) {
+      var _this$getDate = this.getDate(dateData),
+        year = _this$getDate.year,
+        month = _this$getDate.month;
+      var firstDay = new Date(year, month - 1, 1).getDay();
+      var currentDay = new Date(year, month, 0).getDate();
+      var dates = {
+        lastMonthDays: this._getLastMonthDays(firstDay, this.getDate(dateData)),
+        // 上个月末尾几天
+        currentMonthDys: this._currentMonthDys(currentDay, this.getDate(dateData)),
+        // 本月天数
+        nextMonthDays: [],
+        // 下个月开始几天
+        weeks: []
+      };
+      var canlender = [];
+      var surplus = 42 - (dates.lastMonthDays.length + dates.currentMonthDys.length);
+      dates.nextMonthDays = this._getNextMonthDays(surplus, this.getDate(dateData));
+      canlender = canlender.concat(dates.lastMonthDays, dates.currentMonthDys, dates.nextMonthDays);
+      var weeks = {};
+      // 拼接数组  上个月开始几天 + 本月天数+ 下个月开始几天
+      for (var i = 0; i < canlender.length; i++) {
+        if (i % 7 === 0) {
+          weeks[parseInt(i / 7)] = new Array(7);
+        }
+        weeks[parseInt(i / 7)][i % 7] = canlender[i];
+      }
+      this.canlender = canlender;
+      this.weeks = weeks;
+    }
+
+    //静态方法
+    // static init(date) {
+    // 	if (!this.instance) {
+    // 		this.instance = new Calendar(date);
+    // 	}
+    // 	return this.instance;
+    // }
+  }]);
+  return Calendar;
+}();
+var _default = Calendar;
+exports.default = _default;
+
+/***/ }),
+/* 243 */
+/*!****************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-calendar/components/uni-calendar/calendar.js ***!
+  \****************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+/**
+* @1900-2100区间内的公历、农历互转
+* @charset UTF-8
+* @github  https://github.com/jjonline/calendar.js
+* @Author  Jea杨(JJonline@JJonline.Cn)
+* @Time    2014-7-21
+* @Time    2016-8-13 Fixed 2033hex、Attribution Annals
+* @Time    2016-9-25 Fixed lunar LeapMonth Param Bug
+* @Time    2017-7-24 Fixed use getTerm Func Param Error.use solar year,NOT lunar year
+* @Version 1.0.3
+* @公历转农历：calendar.solar2lunar(1987,11,01); //[you can ignore params of prefix 0]
+* @农历转公历：calendar.lunar2solar(1987,09,10); //[you can ignore params of prefix 0]
+*/
+/* eslint-disable */
+var calendar = {
+  /**
+      * 农历1900-2100的润大小信息表
+      * @Array Of Property
+      * @return Hex
+      */
+  lunarInfo: [0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
+  // 1900-1909
+  0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
+  // 1910-1919
+  0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,
+  // 1920-1929
+  0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,
+  // 1930-1939
+  0x0d4a0, 0x1d8a6, 0x0b550, 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557,
+  // 1940-1949
+  0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5b0, 0x14573, 0x052b0, 0x0a9a8, 0x0e950, 0x06aa0,
+  // 1950-1959
+  0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263, 0x0d950, 0x05b57, 0x056a0,
+  // 1960-1969
+  0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b6a0, 0x195a6,
+  // 1970-1979
+  0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570,
+  // 1980-1989
+  0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x05ac0, 0x0ab60, 0x096d5, 0x092e0,
+  // 1990-1999
+  0x0c960, 0x0d954, 0x0d4a0, 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5,
+  // 2000-2009
+  0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9, 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930,
+  // 2010-2019
+  0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0, 0x0d260, 0x0ea65, 0x0d530,
+  // 2020-2029
+  0x05aa0, 0x076a3, 0x096d0, 0x04afb, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520, 0x0dd45,
+  // 2030-2039
+  0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0,
+  // 2040-2049
+  /** Add By JJonline@JJonline.Cn**/
+  0x14b63, 0x09370, 0x049f8, 0x04970, 0x064b0, 0x168a6, 0x0ea50, 0x06b20, 0x1a6c4, 0x0aae0,
+  // 2050-2059
+  0x0a2e0, 0x0d2e3, 0x0c960, 0x0d557, 0x0d4a0, 0x0da50, 0x05d55, 0x056a0, 0x0a6d0, 0x055d4,
+  // 2060-2069
+  0x052d0, 0x0a9b8, 0x0a950, 0x0b4a0, 0x0b6a6, 0x0ad50, 0x055a0, 0x0aba4, 0x0a5b0, 0x052b0,
+  // 2070-2079
+  0x0b273, 0x06930, 0x07337, 0x06aa0, 0x0ad50, 0x14b55, 0x04b60, 0x0a570, 0x054e4, 0x0d160,
+  // 2080-2089
+  0x0e968, 0x0d520, 0x0daa0, 0x16aa6, 0x056d0, 0x04ae0, 0x0a9d4, 0x0a2d0, 0x0d150, 0x0f252,
+  // 2090-2099
+  0x0d520],
+  // 2100
+
+  /**
+      * 公历每个月份的天数普通表
+      * @Array Of Property
+      * @return Number
+      */
+  solarMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+  /**
+      * 天干地支之天干速查表
+      * @Array Of Property trans["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"]
+      * @return Cn string
+      */
+  Gan: ["\u7532", "\u4E59", "\u4E19", "\u4E01", "\u620A", "\u5DF1", "\u5E9A", "\u8F9B", "\u58EC", "\u7678"],
+  /**
+      * 天干地支之地支速查表
+      * @Array Of Property
+      * @trans["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"]
+      * @return Cn string
+      */
+  Zhi: ["\u5B50", "\u4E11", "\u5BC5", "\u536F", "\u8FB0", "\u5DF3", "\u5348", "\u672A", "\u7533", "\u9149", "\u620C", "\u4EA5"],
+  /**
+      * 天干地支之地支速查表<=>生肖
+      * @Array Of Property
+      * @trans["鼠","牛","虎","兔","龙","蛇","马","羊","猴","鸡","狗","猪"]
+      * @return Cn string
+      */
+  Animals: ["\u9F20", "\u725B", "\u864E", "\u5154", "\u9F99", "\u86C7", "\u9A6C", "\u7F8A", "\u7334", "\u9E21", "\u72D7", "\u732A"],
+  /**
+      * 24节气速查表
+      * @Array Of Property
+      * @trans["小寒","大寒","立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至"]
+      * @return Cn string
+      */
+  solarTerm: ["\u5C0F\u5BD2", "\u5927\u5BD2", "\u7ACB\u6625", "\u96E8\u6C34", "\u60CA\u86F0", "\u6625\u5206", "\u6E05\u660E", "\u8C37\u96E8", "\u7ACB\u590F", "\u5C0F\u6EE1", "\u8292\u79CD", "\u590F\u81F3", "\u5C0F\u6691", "\u5927\u6691", "\u7ACB\u79CB", "\u5904\u6691", "\u767D\u9732", "\u79CB\u5206", "\u5BD2\u9732", "\u971C\u964D", "\u7ACB\u51AC", "\u5C0F\u96EA", "\u5927\u96EA", "\u51AC\u81F3"],
+  /**
+      * 1900-2100各年的24节气日期速查表
+      * @Array Of Property
+      * @return 0x string For splice
+      */
+  sTermInfo: ['9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c3598082c95f8c965cc920f', '97bd0b06bdb0722c965ce1cfcc920f', 'b027097bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd0b06bdb0722c965ce1cfcc920f', 'b027097bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd0b06bdb0722c965ce1cfcc920f', 'b027097bd097c36b0b6fc9274c91aa', '9778397bd19801ec9210c965cc920e', '97b6b97bd19801ec95f8c965cc920f', '97bd09801d98082c95f8e1cfcc920f', '97bd097bd097c36b0b6fc9210c8dc2', '9778397bd197c36c9210c9274c91aa', '97b6b97bd19801ec95f8c965cc920e', '97bd09801d98082c95f8e1cfcc920f', '97bd097bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c91aa', '97b6b97bd19801ec95f8c965cc920e', '97bcf97c3598082c95f8e1cfcc920f', '97bd097bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c3598082c95f8c965cc920f', '97bd097bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c3598082c95f8c965cc920f', '97bd097bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd097bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd097bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd097bd07f595b0b6fc920fb0722', '9778397bd097c36b0b6fc9210c8dc2', '9778397bd19801ec9210c9274c920e', '97b6b97bd19801ec95f8c965cc920f', '97bd07f5307f595b0b0bc920fb0722', '7f0e397bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c920e', '97b6b97bd19801ec95f8c965cc920f', '97bd07f5307f595b0b0bc920fb0722', '7f0e397bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bd07f1487f595b0b0bc920fb0722', '7f0e397bd097c36b0b6fc9210c8dc2', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf7f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf7f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf7f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf7f1487f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c9274c920e', '97bcf7f0e47f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9210c91aa', '97b6b97bd197c36c9210c9274c920e', '97bcf7f0e47f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c920e', '97b6b7f0e47f531b0723b0b6fb0722', '7f0e37f5307f595b0b0bc920fb0722', '7f0e397bd097c36b0b6fc9210c8dc2', '9778397bd097c36b0b70c9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e37f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc9210c8dc2', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e27f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0787b0721', '7f0e27f0e47f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9210c91aa', '97b6b7f0e47f149b0723b0787b0721', '7f0e27f0e47f531b0723b0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9210c8dc2', '977837f0e37f149b0723b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e37f5307f595b0b0bc920fb0722', '7f0e397bd097c35b0b6fc9210c8dc2', '977837f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e37f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc9210c8dc2', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f149b0723b0787b0721', '7f0e27f0e47f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '977837f0e37f14998082b0723b06bd', '7f07e7f0e37f149b0723b0787b0721', '7f0e27f0e47f531b0723b0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '977837f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e37f1487f595b0b0bb0b6fb0722', '7f0e37f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e37f1487f531b0b0bb0b6fb0722', '7f0e37f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e37f1487f531b0b0bb0b6fb0722', '7f0e37f0e37f14898082b072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e37f0e37f14898082b072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e37f0e366aa89801eb072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f149b0723b0787b0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e37f0e366aa89801eb072297c35', '7ec967f0e37f14998082b0723b06bd', '7f07e7f0e47f149b0723b0787b0721', '7f0e27f0e47f531b0723b0b6fb0722', '7f0e37f0e366aa89801eb072297c35', '7ec967f0e37f14998082b0723b06bd', '7f07e7f0e37f14998083b0787b0721', '7f0e27f0e47f531b0723b0b6fb0722', '7f0e37f0e366aa89801eb072297c35', '7ec967f0e37f14898082b0723b02d5', '7f07e7f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e36665b66aa89801e9808297c35', '665f67f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e36665b66a449801e9808297c35', '665f67f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e36665b66a449801e9808297c35', '665f67f0e37f14898082b072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e26665b66a449801e9808297c35', '665f67f0e37f1489801eb072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722'],
+  /**
+      * 数字转中文速查表
+      * @Array Of Property
+      * @trans ['日','一','二','三','四','五','六','七','八','九','十']
+      * @return Cn string
+      */
+  nStr1: ["\u65E5", "\u4E00", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341"],
+  /**
+      * 日期转农历称呼速查表
+      * @Array Of Property
+      * @trans ['初','十','廿','卅']
+      * @return Cn string
+      */
+  nStr2: ["\u521D", "\u5341", "\u5EFF", "\u5345"],
+  /**
+      * 月份转农历称呼速查表
+      * @Array Of Property
+      * @trans ['正','一','二','三','四','五','六','七','八','九','十','冬','腊']
+      * @return Cn string
+      */
+  nStr3: ["\u6B63", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341", "\u51AC", "\u814A"],
+  /**
+      * 返回农历y年一整年的总天数
+      * @param lunar Year
+      * @return Number
+      * @eg:var count = calendar.lYearDays(1987) ;//count=387
+      */
+  lYearDays: function lYearDays(y) {
+    var i;
+    var sum = 348;
+    for (i = 0x8000; i > 0x8; i >>= 1) {
+      sum += this.lunarInfo[y - 1900] & i ? 1 : 0;
+    }
+    return sum + this.leapDays(y);
+  },
+  /**
+      * 返回农历y年闰月是哪个月；若y年没有闰月 则返回0
+      * @param lunar Year
+      * @return Number (0-12)
+      * @eg:var leapMonth = calendar.leapMonth(1987) ;//leapMonth=6
+      */
+  leapMonth: function leapMonth(y) {
+    // 闰字编码 \u95f0
+    return this.lunarInfo[y - 1900] & 0xf;
+  },
+  /**
+      * 返回农历y年闰月的天数 若该年没有闰月则返回0
+      * @param lunar Year
+      * @return Number (0、29、30)
+      * @eg:var leapMonthDay = calendar.leapDays(1987) ;//leapMonthDay=29
+      */
+  leapDays: function leapDays(y) {
+    if (this.leapMonth(y)) {
+      return this.lunarInfo[y - 1900] & 0x10000 ? 30 : 29;
+    }
+    return 0;
+  },
+  /**
+      * 返回农历y年m月（非闰月）的总天数，计算m为闰月时的天数请使用leapDays方法
+      * @param lunar Year
+      * @return Number (-1、29、30)
+      * @eg:var MonthDay = calendar.monthDays(1987,9) ;//MonthDay=29
+      */
+  monthDays: function monthDays(y, m) {
+    if (m > 12 || m < 1) {
+      return -1;
+    } // 月份参数从1至12，参数错误返回-1
+    return this.lunarInfo[y - 1900] & 0x10000 >> m ? 30 : 29;
+  },
+  /**
+      * 返回公历(!)y年m月的天数
+      * @param solar Year
+      * @return Number (-1、28、29、30、31)
+      * @eg:var solarMonthDay = calendar.leapDays(1987) ;//solarMonthDay=30
+      */
+  solarDays: function solarDays(y, m) {
+    if (m > 12 || m < 1) {
+      return -1;
+    } // 若参数错误 返回-1
+    var ms = m - 1;
+    if (ms == 1) {
+      // 2月份的闰平规律测算后确认返回28或29
+      return y % 4 == 0 && y % 100 != 0 || y % 400 == 0 ? 29 : 28;
+    } else {
+      return this.solarMonth[ms];
+    }
+  },
+  /**
+     * 农历年份转换为干支纪年
+     * @param  lYear 农历年的年份数
+     * @return Cn string
+     */
+  toGanZhiYear: function toGanZhiYear(lYear) {
+    var ganKey = (lYear - 3) % 10;
+    var zhiKey = (lYear - 3) % 12;
+    if (ganKey == 0) ganKey = 10; // 如果余数为0则为最后一个天干
+    if (zhiKey == 0) zhiKey = 12; // 如果余数为0则为最后一个地支
+    return this.Gan[ganKey - 1] + this.Zhi[zhiKey - 1];
+  },
+  /**
+     * 公历月、日判断所属星座
+     * @param  cMonth [description]
+     * @param  cDay [description]
+     * @return Cn string
+     */
+  toAstro: function toAstro(cMonth, cDay) {
+    var s = "\u9B54\u7FAF\u6C34\u74F6\u53CC\u9C7C\u767D\u7F8A\u91D1\u725B\u53CC\u5B50\u5DE8\u87F9\u72EE\u5B50\u5904\u5973\u5929\u79E4\u5929\u874E\u5C04\u624B\u9B54\u7FAF";
+    var arr = [20, 19, 21, 21, 21, 22, 23, 23, 23, 23, 22, 22];
+    return s.substr(cMonth * 2 - (cDay < arr[cMonth - 1] ? 2 : 0), 2) + "\u5EA7"; // 座
+  },
+
+  /**
+      * 传入offset偏移量返回干支
+      * @param offset 相对甲子的偏移量
+      * @return Cn string
+      */
+  toGanZhi: function toGanZhi(offset) {
+    return this.Gan[offset % 10] + this.Zhi[offset % 12];
+  },
+  /**
+      * 传入公历(!)y年获得该年第n个节气的公历日期
+      * @param y公历年(1900-2100)；n二十四节气中的第几个节气(1~24)；从n=1(小寒)算起
+      * @return day Number
+      * @eg:var _24 = calendar.getTerm(1987,3) ;//_24=4;意即1987年2月4日立春
+      */
+  getTerm: function getTerm(y, n) {
+    if (y < 1900 || y > 2100) {
+      return -1;
+    }
+    if (n < 1 || n > 24) {
+      return -1;
+    }
+    var _table = this.sTermInfo[y - 1900];
+    var _info = [parseInt('0x' + _table.substr(0, 5)).toString(), parseInt('0x' + _table.substr(5, 5)).toString(), parseInt('0x' + _table.substr(10, 5)).toString(), parseInt('0x' + _table.substr(15, 5)).toString(), parseInt('0x' + _table.substr(20, 5)).toString(), parseInt('0x' + _table.substr(25, 5)).toString()];
+    var _calday = [_info[0].substr(0, 1), _info[0].substr(1, 2), _info[0].substr(3, 1), _info[0].substr(4, 2), _info[1].substr(0, 1), _info[1].substr(1, 2), _info[1].substr(3, 1), _info[1].substr(4, 2), _info[2].substr(0, 1), _info[2].substr(1, 2), _info[2].substr(3, 1), _info[2].substr(4, 2), _info[3].substr(0, 1), _info[3].substr(1, 2), _info[3].substr(3, 1), _info[3].substr(4, 2), _info[4].substr(0, 1), _info[4].substr(1, 2), _info[4].substr(3, 1), _info[4].substr(4, 2), _info[5].substr(0, 1), _info[5].substr(1, 2), _info[5].substr(3, 1), _info[5].substr(4, 2)];
+    return parseInt(_calday[n - 1]);
+  },
+  /**
+      * 传入农历数字月份返回汉语通俗表示法
+      * @param lunar month
+      * @return Cn string
+      * @eg:var cnMonth = calendar.toChinaMonth(12) ;//cnMonth='腊月'
+      */
+  toChinaMonth: function toChinaMonth(m) {
+    // 月 => \u6708
+    if (m > 12 || m < 1) {
+      return -1;
+    } // 若参数错误 返回-1
+    var s = this.nStr3[m - 1];
+    s += "\u6708"; // 加上月字
+    return s;
+  },
+  /**
+      * 传入农历日期数字返回汉字表示法
+      * @param lunar day
+      * @return Cn string
+      * @eg:var cnDay = calendar.toChinaDay(21) ;//cnMonth='廿一'
+      */
+  toChinaDay: function toChinaDay(d) {
+    // 日 => \u65e5
+    var s;
+    switch (d) {
+      case 10:
+        s = "\u521D\u5341";
+        break;
+      case 20:
+        s = "\u4E8C\u5341";
+        break;
+        break;
+      case 30:
+        s = "\u4E09\u5341";
+        break;
+        break;
+      default:
+        s = this.nStr2[Math.floor(d / 10)];
+        s += this.nStr1[d % 10];
+    }
+    return s;
+  },
+  /**
+      * 年份转生肖[!仅能大致转换] => 精确划分生肖分界线是“立春”
+      * @param y year
+      * @return Cn string
+      * @eg:var animal = calendar.getAnimal(1987) ;//animal='兔'
+      */
+  getAnimal: function getAnimal(y) {
+    return this.Animals[(y - 4) % 12];
+  },
+  /**
+      * 传入阳历年月日获得详细的公历、农历object信息 <=>JSON
+      * @param y  solar year
+      * @param m  solar month
+      * @param d  solar day
+      * @return JSON object
+      * @eg:console.log(calendar.solar2lunar(1987,11,01));
+      */
+  solar2lunar: function solar2lunar(y, m, d) {
+    // 参数区间1900.1.31~2100.12.31
+    // 年份限定、上限
+    if (y < 1900 || y > 2100) {
+      return -1; // undefined转换为数字变为NaN
+    }
+    // 公历传参最下限
+    if (y == 1900 && m == 1 && d < 31) {
+      return -1;
+    }
+    // 未传参  获得当天
+    if (!y) {
+      var objDate = new Date();
+    } else {
+      var objDate = new Date(y, parseInt(m) - 1, d);
+    }
+    var i;
+    var leap = 0;
+    var temp = 0;
+    // 修正ymd参数
+    var y = objDate.getFullYear();
+    var m = objDate.getMonth() + 1;
+    var d = objDate.getDate();
+    var offset = (Date.UTC(objDate.getFullYear(), objDate.getMonth(), objDate.getDate()) - Date.UTC(1900, 0, 31)) / 86400000;
+    for (i = 1900; i < 2101 && offset > 0; i++) {
+      temp = this.lYearDays(i);
+      offset -= temp;
+    }
+    if (offset < 0) {
+      offset += temp;
+      i--;
+    }
+
+    // 是否今天
+    var isTodayObj = new Date();
+    var isToday = false;
+    if (isTodayObj.getFullYear() == y && isTodayObj.getMonth() + 1 == m && isTodayObj.getDate() == d) {
+      isToday = true;
+    }
+    // 星期几
+    var nWeek = objDate.getDay();
+    var cWeek = this.nStr1[nWeek];
+    // 数字表示周几顺应天朝周一开始的惯例
+    if (nWeek == 0) {
+      nWeek = 7;
+    }
+    // 农历年
+    var year = i;
+    var leap = this.leapMonth(i); // 闰哪个月
+    var isLeap = false;
+
+    // 效验闰月
+    for (i = 1; i < 13 && offset > 0; i++) {
+      // 闰月
+      if (leap > 0 && i == leap + 1 && isLeap == false) {
+        --i;
+        isLeap = true;
+        temp = this.leapDays(year); // 计算农历闰月天数
+      } else {
+        temp = this.monthDays(year, i); // 计算农历普通月天数
+      }
+      // 解除闰月
+      if (isLeap == true && i == leap + 1) {
+        isLeap = false;
+      }
+      offset -= temp;
+    }
+    // 闰月导致数组下标重叠取反
+    if (offset == 0 && leap > 0 && i == leap + 1) {
+      if (isLeap) {
+        isLeap = false;
+      } else {
+        isLeap = true;
+        --i;
+      }
+    }
+    if (offset < 0) {
+      offset += temp;
+      --i;
+    }
+    // 农历月
+    var month = i;
+    // 农历日
+    var day = offset + 1;
+    // 天干地支处理
+    var sm = m - 1;
+    var gzY = this.toGanZhiYear(year);
+
+    // 当月的两个节气
+    // bugfix-2017-7-24 11:03:38 use lunar Year Param `y` Not `year`
+    var firstNode = this.getTerm(y, m * 2 - 1); // 返回当月「节」为几日开始
+    var secondNode = this.getTerm(y, m * 2); // 返回当月「节」为几日开始
+
+    // 依据12节气修正干支月
+    var gzM = this.toGanZhi((y - 1900) * 12 + m + 11);
+    if (d >= firstNode) {
+      gzM = this.toGanZhi((y - 1900) * 12 + m + 12);
+    }
+
+    // 传入的日期的节气与否
+    var isTerm = false;
+    var Term = null;
+    if (firstNode == d) {
+      isTerm = true;
+      Term = this.solarTerm[m * 2 - 2];
+    }
+    if (secondNode == d) {
+      isTerm = true;
+      Term = this.solarTerm[m * 2 - 1];
+    }
+    // 日柱 当月一日与 1900/1/1 相差天数
+    var dayCyclical = Date.UTC(y, sm, 1, 0, 0, 0, 0) / 86400000 + 25567 + 10;
+    var gzD = this.toGanZhi(dayCyclical + d - 1);
+    // 该日期所属的星座
+    var astro = this.toAstro(m, d);
+    return {
+      'lYear': year,
+      'lMonth': month,
+      'lDay': day,
+      'Animal': this.getAnimal(year),
+      'IMonthCn': (isLeap ? "\u95F0" : '') + this.toChinaMonth(month),
+      'IDayCn': this.toChinaDay(day),
+      'cYear': y,
+      'cMonth': m,
+      'cDay': d,
+      'gzYear': gzY,
+      'gzMonth': gzM,
+      'gzDay': gzD,
+      'isToday': isToday,
+      'isLeap': isLeap,
+      'nWeek': nWeek,
+      'ncWeek': "\u661F\u671F" + cWeek,
+      'isTerm': isTerm,
+      'Term': Term,
+      'astro': astro
+    };
+  },
+  /**
+      * 传入农历年月日以及传入的月份是否闰月获得详细的公历、农历object信息 <=>JSON
+      * @param y  lunar year
+      * @param m  lunar month
+      * @param d  lunar day
+      * @param isLeapMonth  lunar month is leap or not.[如果是农历闰月第四个参数赋值true即可]
+      * @return JSON object
+      * @eg:console.log(calendar.lunar2solar(1987,9,10));
+      */
+  lunar2solar: function lunar2solar(y, m, d, isLeapMonth) {
+    // 参数区间1900.1.31~2100.12.1
+    var isLeapMonth = !!isLeapMonth;
+    var leapOffset = 0;
+    var leapMonth = this.leapMonth(y);
+    var leapDay = this.leapDays(y);
+    if (isLeapMonth && leapMonth != m) {
+      return -1;
+    } // 传参要求计算该闰月公历 但该年得出的闰月与传参的月份并不同
+    if (y == 2100 && m == 12 && d > 1 || y == 1900 && m == 1 && d < 31) {
+      return -1;
+    } // 超出了最大极限值
+    var day = this.monthDays(y, m);
+    var _day = day;
+    // bugFix 2016-9-25
+    // if month is leap, _day use leapDays method
+    if (isLeapMonth) {
+      _day = this.leapDays(y, m);
+    }
+    if (y < 1900 || y > 2100 || d > _day) {
+      return -1;
+    } // 参数合法性效验
+
+    // 计算农历的时间差
+    var offset = 0;
+    for (var i = 1900; i < y; i++) {
+      offset += this.lYearDays(i);
+    }
+    var leap = 0;
+    var isAdd = false;
+    for (var i = 1; i < m; i++) {
+      leap = this.leapMonth(y);
+      if (!isAdd) {
+        // 处理闰月
+        if (leap <= i && leap > 0) {
+          offset += this.leapDays(y);
+          isAdd = true;
+        }
+      }
+      offset += this.monthDays(y, i);
+    }
+    // 转换闰月农历 需补充该年闰月的前一个月的时差
+    if (isLeapMonth) {
+      offset += day;
+    }
+    // 1900年农历正月一日的公历时间为1900年1月30日0时0分0秒(该时间也是本农历的最开始起始点)
+    var stmap = Date.UTC(1900, 1, 30, 0, 0, 0);
+    var calObj = new Date((offset + d - 31) * 86400000 + stmap);
+    var cY = calObj.getUTCFullYear();
+    var cM = calObj.getUTCMonth() + 1;
+    var cD = calObj.getUTCDate();
+    return this.solar2lunar(cY, cM, cD);
+  }
+};
+var _default = calendar;
+exports.default = _default;
+
+/***/ }),
+/* 244 */
+/*!******************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-calendar/components/uni-calendar/i18n/index.js ***!
+  \******************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 245));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 246));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 247));
+var _default = {
+  en: _en.default,
+  'zh-Hans': _zhHans.default,
+  'zh-Hant': _zhHant.default
+};
+exports.default = _default;
+
+/***/ }),
+/* 245 */
+/*!*****************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-calendar/components/uni-calendar/i18n/en.json ***!
+  \*****************************************************************************************************/
+/*! exports provided: uni-calender.ok, uni-calender.cancel, uni-calender.today, uni-calender.MON, uni-calender.TUE, uni-calender.WED, uni-calender.THU, uni-calender.FRI, uni-calender.SAT, uni-calender.SUN, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni-calender.ok\":\"ok\",\"uni-calender.cancel\":\"cancel\",\"uni-calender.today\":\"today\",\"uni-calender.MON\":\"MON\",\"uni-calender.TUE\":\"TUE\",\"uni-calender.WED\":\"WED\",\"uni-calender.THU\":\"THU\",\"uni-calender.FRI\":\"FRI\",\"uni-calender.SAT\":\"SAT\",\"uni-calender.SUN\":\"SUN\"}");
+
+/***/ }),
+/* 246 */
+/*!**********************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-calendar/components/uni-calendar/i18n/zh-Hans.json ***!
+  \**********************************************************************************************************/
+/*! exports provided: uni-calender.ok, uni-calender.cancel, uni-calender.today, uni-calender.SUN, uni-calender.MON, uni-calender.TUE, uni-calender.WED, uni-calender.THU, uni-calender.FRI, uni-calender.SAT, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni-calender.ok\":\"确定\",\"uni-calender.cancel\":\"取消\",\"uni-calender.today\":\"今日\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\"}");
+
+/***/ }),
+/* 247 */
+/*!**********************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-calendar/components/uni-calendar/i18n/zh-Hant.json ***!
+  \**********************************************************************************************************/
+/*! exports provided: uni-calender.ok, uni-calender.cancel, uni-calender.today, uni-calender.SUN, uni-calender.MON, uni-calender.TUE, uni-calender.WED, uni-calender.THU, uni-calender.FRI, uni-calender.SAT, default */
+/***/ (function(module) {
+
+module.exports = JSON.parse("{\"uni-calender.ok\":\"確定\",\"uni-calender.cancel\":\"取消\",\"uni-calender.today\":\"今日\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\"}");
+
+/***/ }),
+/* 248 */,
+/* 249 */,
+/* 250 */,
+/* 251 */,
+/* 252 */,
+/* 253 */,
+/* 254 */,
+/* 255 */
+/*!*********************************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-data-picker/components/uni-data-pickerview/uni-data-picker.js ***!
+  \*********************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14098,10 +15225,10 @@ var _default2 = {
   }
 };
 exports.default = _default2;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 173)["default"]))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 256)["default"]))
 
 /***/ }),
-/* 173 */
+/* 256 */
 /*!************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js ***!
   \************************************************************************************/
@@ -14117,27 +15244,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 43));
-var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/assertThisInitialized */ 174));
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/assertThisInitialized */ 257));
 var _slicedToArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ 5));
 var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ 18));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 45));
-var _inherits2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/inherits */ 175));
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ 176));
-var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ 177));
-var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/wrapNativeSuper */ 178));
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _inherits2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/inherits */ 258));
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ 259));
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ 260));
+var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/wrapNativeSuper */ 261));
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
 var _uniI18n = __webpack_require__(/*! @dcloudio/uni-i18n */ 22);
-var _pages = _interopRequireDefault(__webpack_require__(/*! @/pages.json */ 180));
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e34) { throw _e34; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e35) { didErr = true; err = _e35; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+var _pages = _interopRequireDefault(__webpack_require__(/*! @/pages.json */ 263));
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e35) { throw _e35; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e36) { didErr = true; err = _e36; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = (0, _getPrototypeOf2.default)(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = (0, _getPrototypeOf2.default)(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return (0, _possibleConstructorReturn2.default)(this, result); }; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 "undefined" != typeof globalThis ? globalThis : "undefined" != typeof window ? window : "undefined" != typeof global ? global : "undefined" != typeof self && self;
 function n(e) {
   return e && e.__esModule && Object.prototype.hasOwnProperty.call(e, "default") ? e.default : e;
@@ -14371,17 +15498,17 @@ var r = s(function (e, t) {
             _ = e[t + 7],
             w = e[t + 8],
             v = e[t + 9],
-            S = e[t + 10],
-            I = e[t + 11],
+            I = e[t + 10],
+            S = e[t + 11],
             b = e[t + 12],
             k = e[t + 13],
-            T = e[t + 14],
-            C = e[t + 15],
+            C = e[t + 14],
+            T = e[t + 15],
             P = i[0],
             A = i[1],
             E = i[2],
             O = i[3];
-          P = u(P, A, E, O, o, 7, a[0]), O = u(O, P, A, E, c, 12, a[1]), E = u(E, O, P, A, p, 17, a[2]), A = u(A, E, O, P, f, 22, a[3]), P = u(P, A, E, O, g, 7, a[4]), O = u(O, P, A, E, m, 12, a[5]), E = u(E, O, P, A, y, 17, a[6]), A = u(A, E, O, P, _, 22, a[7]), P = u(P, A, E, O, w, 7, a[8]), O = u(O, P, A, E, v, 12, a[9]), E = u(E, O, P, A, S, 17, a[10]), A = u(A, E, O, P, I, 22, a[11]), P = u(P, A, E, O, b, 7, a[12]), O = u(O, P, A, E, k, 12, a[13]), E = u(E, O, P, A, T, 17, a[14]), P = h(P, A = u(A, E, O, P, C, 22, a[15]), E, O, c, 5, a[16]), O = h(O, P, A, E, y, 9, a[17]), E = h(E, O, P, A, I, 14, a[18]), A = h(A, E, O, P, o, 20, a[19]), P = h(P, A, E, O, m, 5, a[20]), O = h(O, P, A, E, S, 9, a[21]), E = h(E, O, P, A, C, 14, a[22]), A = h(A, E, O, P, g, 20, a[23]), P = h(P, A, E, O, v, 5, a[24]), O = h(O, P, A, E, T, 9, a[25]), E = h(E, O, P, A, f, 14, a[26]), A = h(A, E, O, P, w, 20, a[27]), P = h(P, A, E, O, k, 5, a[28]), O = h(O, P, A, E, p, 9, a[29]), E = h(E, O, P, A, _, 14, a[30]), P = l(P, A = h(A, E, O, P, b, 20, a[31]), E, O, m, 4, a[32]), O = l(O, P, A, E, w, 11, a[33]), E = l(E, O, P, A, I, 16, a[34]), A = l(A, E, O, P, T, 23, a[35]), P = l(P, A, E, O, c, 4, a[36]), O = l(O, P, A, E, g, 11, a[37]), E = l(E, O, P, A, _, 16, a[38]), A = l(A, E, O, P, S, 23, a[39]), P = l(P, A, E, O, k, 4, a[40]), O = l(O, P, A, E, o, 11, a[41]), E = l(E, O, P, A, f, 16, a[42]), A = l(A, E, O, P, y, 23, a[43]), P = l(P, A, E, O, v, 4, a[44]), O = l(O, P, A, E, b, 11, a[45]), E = l(E, O, P, A, C, 16, a[46]), P = d(P, A = l(A, E, O, P, p, 23, a[47]), E, O, o, 6, a[48]), O = d(O, P, A, E, _, 10, a[49]), E = d(E, O, P, A, T, 15, a[50]), A = d(A, E, O, P, m, 21, a[51]), P = d(P, A, E, O, b, 6, a[52]), O = d(O, P, A, E, f, 10, a[53]), E = d(E, O, P, A, S, 15, a[54]), A = d(A, E, O, P, c, 21, a[55]), P = d(P, A, E, O, w, 6, a[56]), O = d(O, P, A, E, C, 10, a[57]), E = d(E, O, P, A, y, 15, a[58]), A = d(A, E, O, P, k, 21, a[59]), P = d(P, A, E, O, g, 6, a[60]), O = d(O, P, A, E, I, 10, a[61]), E = d(E, O, P, A, p, 15, a[62]), A = d(A, E, O, P, v, 21, a[63]), i[0] = i[0] + P | 0, i[1] = i[1] + A | 0, i[2] = i[2] + E | 0, i[3] = i[3] + O | 0;
+          P = u(P, A, E, O, o, 7, a[0]), O = u(O, P, A, E, c, 12, a[1]), E = u(E, O, P, A, p, 17, a[2]), A = u(A, E, O, P, f, 22, a[3]), P = u(P, A, E, O, g, 7, a[4]), O = u(O, P, A, E, m, 12, a[5]), E = u(E, O, P, A, y, 17, a[6]), A = u(A, E, O, P, _, 22, a[7]), P = u(P, A, E, O, w, 7, a[8]), O = u(O, P, A, E, v, 12, a[9]), E = u(E, O, P, A, I, 17, a[10]), A = u(A, E, O, P, S, 22, a[11]), P = u(P, A, E, O, b, 7, a[12]), O = u(O, P, A, E, k, 12, a[13]), E = u(E, O, P, A, C, 17, a[14]), P = h(P, A = u(A, E, O, P, T, 22, a[15]), E, O, c, 5, a[16]), O = h(O, P, A, E, y, 9, a[17]), E = h(E, O, P, A, S, 14, a[18]), A = h(A, E, O, P, o, 20, a[19]), P = h(P, A, E, O, m, 5, a[20]), O = h(O, P, A, E, I, 9, a[21]), E = h(E, O, P, A, T, 14, a[22]), A = h(A, E, O, P, g, 20, a[23]), P = h(P, A, E, O, v, 5, a[24]), O = h(O, P, A, E, C, 9, a[25]), E = h(E, O, P, A, f, 14, a[26]), A = h(A, E, O, P, w, 20, a[27]), P = h(P, A, E, O, k, 5, a[28]), O = h(O, P, A, E, p, 9, a[29]), E = h(E, O, P, A, _, 14, a[30]), P = l(P, A = h(A, E, O, P, b, 20, a[31]), E, O, m, 4, a[32]), O = l(O, P, A, E, w, 11, a[33]), E = l(E, O, P, A, S, 16, a[34]), A = l(A, E, O, P, C, 23, a[35]), P = l(P, A, E, O, c, 4, a[36]), O = l(O, P, A, E, g, 11, a[37]), E = l(E, O, P, A, _, 16, a[38]), A = l(A, E, O, P, I, 23, a[39]), P = l(P, A, E, O, k, 4, a[40]), O = l(O, P, A, E, o, 11, a[41]), E = l(E, O, P, A, f, 16, a[42]), A = l(A, E, O, P, y, 23, a[43]), P = l(P, A, E, O, v, 4, a[44]), O = l(O, P, A, E, b, 11, a[45]), E = l(E, O, P, A, T, 16, a[46]), P = d(P, A = l(A, E, O, P, p, 23, a[47]), E, O, o, 6, a[48]), O = d(O, P, A, E, _, 10, a[49]), E = d(E, O, P, A, C, 15, a[50]), A = d(A, E, O, P, m, 21, a[51]), P = d(P, A, E, O, b, 6, a[52]), O = d(O, P, A, E, f, 10, a[53]), E = d(E, O, P, A, I, 15, a[54]), A = d(A, E, O, P, c, 21, a[55]), P = d(P, A, E, O, w, 6, a[56]), O = d(O, P, A, E, T, 10, a[57]), E = d(E, O, P, A, y, 15, a[58]), A = d(A, E, O, P, k, 21, a[59]), P = d(P, A, E, O, g, 6, a[60]), O = d(O, P, A, E, S, 10, a[61]), E = d(E, O, P, A, p, 15, a[62]), A = d(A, E, O, P, v, 21, a[63]), i[0] = i[0] + P | 0, i[1] = i[1] + A | 0, i[2] = i[2] + E | 0, i[3] = i[3] + O | 0;
         },
         _doFinalize: function _doFinalize() {
           var t = this._data,
@@ -14537,16 +15664,16 @@ function _(e) {
 }
 var w = "REJECTED",
   v = "NOT_PENDING";
-var S = /*#__PURE__*/function () {
-  function S() {
+var I = /*#__PURE__*/function () {
+  function I() {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       e = _ref.createPromise,
       _ref$retryRule = _ref.retryRule,
       t = _ref$retryRule === void 0 ? w : _ref$retryRule;
-    (0, _classCallCheck2.default)(this, S);
+    (0, _classCallCheck2.default)(this, I);
     this.createPromise = e, this.status = null, this.promise = null, this.retryRule = t;
   }
-  (0, _createClass2.default)(S, [{
+  (0, _createClass2.default)(I, [{
     key: "needRetry",
     get: function get() {
       if (!this.status) return !0;
@@ -14568,118 +15695,104 @@ var S = /*#__PURE__*/function () {
       }), this.promise) : this.promise;
     }
   }]);
-  return S;
+  return I;
 }();
-function I(e) {
-  return function (t) {
-    return new Promise(function (n, s) {
-      uni[e](_objectSpread(_objectSpread({}, t), {}, {
-        success: function success(e) {
-          n(e);
-        },
-        fail: function fail(e) {
-          s(e);
-        }
-      }));
-    });
-  };
-}
-function b(e) {
+function S(e) {
   return e && "string" == typeof e ? JSON.parse(e) : e;
 }
-var k = "development" === "development",
-  T = "mp-weixin",
+var b = "development" === "development",
+  k = "mp-weixin",
   C = "true" === undefined || !0 === undefined,
-  P = b([]),
-  A = "h5" === T ? "web" : "app-plus" === T ? "app" : T,
-  E = b(undefined),
-  O = b([]) || [],
-  x = true;
-var R = "";
+  T = S([]),
+  P = "h5" === k ? "web" : "app-plus" === k ? "app" : k,
+  A = S(undefined),
+  E = S([]) || [],
+  O = true;
+var x = "";
 try {
-  R = (__webpack_require__(/*! uni-stat-config */ 181).default || __webpack_require__(/*! uni-stat-config */ 181)).appid;
+  x = (__webpack_require__(/*! uni-stat-config */ 264).default || __webpack_require__(/*! uni-stat-config */ 264)).appid;
 } catch (e) {}
-var U = {};
-function L(e) {
+var R = {};
+function U(e) {
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var n, s;
-  return n = U, s = e, Object.prototype.hasOwnProperty.call(n, s) || (U[e] = t), U[e];
+  return n = R, s = e, Object.prototype.hasOwnProperty.call(n, s) || (R[e] = t), R[e];
 }
-"app" === A && (U = uni._globalUniCloudObj ? uni._globalUniCloudObj : uni._globalUniCloudObj = {});
-var N = ["invoke", "success", "fail", "complete"],
-  D = L("_globalUniCloudInterceptor");
-function F(e, t) {
-  D[e] || (D[e] = {}), m(t) && Object.keys(t).forEach(function (n) {
-    N.indexOf(n) > -1 && function (e, t, n) {
-      var s = D[e][t];
-      s || (s = D[e][t] = []), -1 === s.indexOf(n) && y(n) && s.push(n);
+"app" === P && (R = uni._globalUniCloudObj ? uni._globalUniCloudObj : uni._globalUniCloudObj = {});
+var L = ["invoke", "success", "fail", "complete"],
+  N = U("_globalUniCloudInterceptor");
+function D(e, t) {
+  N[e] || (N[e] = {}), m(t) && Object.keys(t).forEach(function (n) {
+    L.indexOf(n) > -1 && function (e, t, n) {
+      var s = N[e][t];
+      s || (s = N[e][t] = []), -1 === s.indexOf(n) && y(n) && s.push(n);
     }(e, n, t[n]);
   });
 }
-function q(e, t) {
-  D[e] || (D[e] = {}), m(t) ? Object.keys(t).forEach(function (n) {
-    N.indexOf(n) > -1 && function (e, t, n) {
-      var s = D[e][t];
+function F(e, t) {
+  N[e] || (N[e] = {}), m(t) ? Object.keys(t).forEach(function (n) {
+    L.indexOf(n) > -1 && function (e, t, n) {
+      var s = N[e][t];
       if (!s) return;
       var r = s.indexOf(n);
       r > -1 && s.splice(r, 1);
     }(e, n, t[n]);
-  }) : delete D[e];
+  }) : delete N[e];
 }
-function M(e, t) {
+function q(e, t) {
   return e && 0 !== e.length ? e.reduce(function (e, n) {
     return e.then(function () {
       return n(t);
     });
   }, Promise.resolve()) : Promise.resolve();
 }
-function K(e, t) {
-  return D[e] && D[e][t] || [];
+function M(e, t) {
+  return N[e] && N[e][t] || [];
 }
-function j(e) {
-  F("callObject", e);
+function K(e) {
+  D("callObject", e);
 }
-var B = L("_globalUniCloudListener"),
-  $ = "response",
-  W = "needLogin",
-  z = "refreshToken",
-  J = "clientdb",
-  H = "cloudfunction",
-  G = "cloudobject";
-function V(e) {
-  return B[e] || (B[e] = []), B[e];
+var j = U("_globalUniCloudListener"),
+  B = "response",
+  $ = "needLogin",
+  W = "refreshToken",
+  z = "clientdb",
+  J = "cloudfunction",
+  H = "cloudobject";
+function G(e) {
+  return j[e] || (j[e] = []), j[e];
 }
-function Q(e, t) {
-  var n = V(e);
+function V(e, t) {
+  var n = G(e);
   n.includes(t) || n.push(t);
 }
 function Y(e, t) {
-  var n = V(e),
+  var n = G(e),
     s = n.indexOf(t);
   -1 !== s && n.splice(s, 1);
 }
-function X(e, t) {
-  var n = V(e);
+function Q(e, t) {
+  var n = G(e);
   for (var _e2 = 0; _e2 < n.length; _e2++) {
     (0, n[_e2])(t);
   }
 }
-var Z,
-  ee = !1;
-function te() {
-  return Z || (Z = new Promise(function (e) {
-    ee && e(), function t() {
+var X,
+  Z = !1;
+function ee() {
+  return X || (X = new Promise(function (e) {
+    Z && e(), function t() {
       if ("function" == typeof getCurrentPages) {
         var _t2 = getCurrentPages();
-        _t2 && _t2[0] && (ee = !0, e());
+        _t2 && _t2[0] && (Z = !0, e());
       }
-      ee || setTimeout(function () {
+      Z || setTimeout(function () {
         t();
       }, 30);
     }();
-  }), Z);
+  }), X);
 }
-function ne(e) {
+function te(e) {
   var t = {};
   for (var _n2 in e) {
     var _s2 = e[_n2];
@@ -14687,16 +15800,16 @@ function ne(e) {
   }
   return t;
 }
-var se = /*#__PURE__*/function (_Error) {
-  (0, _inherits2.default)(se, _Error);
-  var _super = _createSuper(se);
-  function se(e) {
+var ne = /*#__PURE__*/function (_Error) {
+  (0, _inherits2.default)(ne, _Error);
+  var _super = _createSuper(ne);
+  function ne(e) {
     var _this2;
-    (0, _classCallCheck2.default)(this, se);
+    (0, _classCallCheck2.default)(this, ne);
     _this2 = _super.call(this, e.message), _this2.errMsg = e.message || e.errMsg || "unknown system error", _this2.code = _this2.errCode = e.code || e.errCode || "SYSTEM_ERROR", _this2.errSubject = _this2.subject = e.subject || e.errSubject, _this2.cause = e.cause, _this2.requestId = e.requestId;
     return _this2;
   }
-  (0, _createClass2.default)(se, [{
+  (0, _createClass2.default)(ne, [{
     key: "toJson",
     value: function toJson() {
       var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
@@ -14708,9 +15821,9 @@ var se = /*#__PURE__*/function (_Error) {
       };
     }
   }]);
-  return se;
+  return ne;
 }( /*#__PURE__*/(0, _wrapNativeSuper2.default)(Error));
-var re = {
+var se = {
   request: function request(e) {
     return uni.request(e);
   },
@@ -14730,23 +15843,23 @@ var re = {
     return uni.clearStorageSync();
   }
 };
-function ie() {
+function re() {
   return {
-    token: re.getStorageSync("uni_id_token") || re.getStorageSync("uniIdToken"),
-    tokenExpired: re.getStorageSync("uni_id_token_expired")
+    token: se.getStorageSync("uni_id_token") || se.getStorageSync("uniIdToken"),
+    tokenExpired: se.getStorageSync("uni_id_token_expired")
   };
 }
-function oe() {
+function ie() {
   var _ref2 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref2.token,
     t = _ref2.tokenExpired;
-  e && re.setStorageSync("uni_id_token", e), t && re.setStorageSync("uni_id_token_expired", t);
+  e && se.setStorageSync("uni_id_token", e), t && se.setStorageSync("uni_id_token_expired", t);
 }
-var ae, ce;
+var oe, ae;
+function ce() {
+  return oe || (oe = uni.getSystemInfoSync()), oe;
+}
 function ue() {
-  return ae || (ae = uni.getSystemInfoSync()), ae;
-}
-function he() {
   var e, t;
   try {
     if (uni.getLaunchOptionsSync) {
@@ -14762,13 +15875,13 @@ function he() {
     scene: t
   };
 }
-function le() {
+function he() {
   var e = uni.getLocale && uni.getLocale() || "en";
-  if (ce) return _objectSpread(_objectSpread({}, ce), {}, {
+  if (ae) return _objectSpread(_objectSpread({}, ae), {}, {
     locale: e,
     LOCALE: e
   });
-  var t = ue(),
+  var t = ce(),
     n = t.deviceId,
     s = t.osName,
     r = t.uniPlatform,
@@ -14777,17 +15890,17 @@ function le() {
   for (var _e3 = 0; _e3 < o.length; _e3++) {
     delete t[o[_e3]];
   }
-  return ce = _objectSpread(_objectSpread({
+  return ae = _objectSpread(_objectSpread({
     PLATFORM: r,
     OS: s,
     APPID: i,
     DEVICEID: n
-  }, he()), t), _objectSpread(_objectSpread({}, ce), {}, {
+  }, ue()), t), _objectSpread(_objectSpread({}, ae), {}, {
     locale: e,
     LOCALE: e
   });
 }
-var de = {
+var le = {
     sign: function sign(e, t) {
       var n = "";
       return Object.keys(e).sort().forEach(function (t) {
@@ -14798,15 +15911,15 @@ var de = {
       return new Promise(function (n, s) {
         t(Object.assign(e, {
           complete: function complete(e) {
-            e || (e = {}), k && "web" === A && e.errMsg && 0 === e.errMsg.indexOf("request:fail") && console.warn("发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5");
+            e || (e = {}), b && "web" === P && e.errMsg && 0 === e.errMsg.indexOf("request:fail") && console.warn("发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5");
             var t = e.data && e.data.header && e.data.header["x-serverless-request-id"] || e.header && e.header["request-id"];
-            if (!e.statusCode || e.statusCode >= 400) return s(new se({
+            if (!e.statusCode || e.statusCode >= 400) return s(new ne({
               code: "SYS_ERR",
               message: e.errMsg || "request:fail",
               requestId: t
             }));
             var r = e.data;
-            if (r.error) return s(new se({
+            if (r.error) return s(new ne({
               code: r.error.code,
               message: r.error.message,
               requestId: t
@@ -14820,7 +15933,7 @@ var de = {
       return c.stringify(a.parse(e));
     }
   },
-  pe = {
+  de = {
     "uniCloud.init.paramRequired": "{param} required",
     "uniCloud.uploadFile.fileError": "filePath should be instance of File"
   };
@@ -14833,7 +15946,7 @@ var _e4 = (0, _uniI18n.initVueI18n)({
       "uniCloud.init.paramRequired": "缺少参数：{param}",
       "uniCloud.uploadFile.fileError": "filePath应为File对象"
     },
-    en: pe,
+    en: de,
     fr: {
       "uniCloud.init.paramRequired": "{param} required",
       "uniCloud.uploadFile.fileError": "filePath should be instance of File"
@@ -14842,26 +15955,26 @@ var _e4 = (0, _uniI18n.initVueI18n)({
       "uniCloud.init.paramRequired": "{param} required",
       "uniCloud.uploadFile.fileError": "filePath should be instance of File"
     },
-    ja: pe
+    ja: de
   }, "zh-Hans"),
-  fe = _e4.t;
-var ge = /*#__PURE__*/function () {
-  function ge(e) {
+  pe = _e4.t;
+var fe = /*#__PURE__*/function () {
+  function fe(e) {
     var _this3 = this;
-    (0, _classCallCheck2.default)(this, ge);
+    (0, _classCallCheck2.default)(this, fe);
     ["spaceId", "clientSecret"].forEach(function (t) {
-      if (!Object.prototype.hasOwnProperty.call(e, t)) throw new Error(fe("uniCloud.init.paramRequired", {
+      if (!Object.prototype.hasOwnProperty.call(e, t)) throw new Error(pe("uniCloud.init.paramRequired", {
         param: t
       }));
     }), this.config = Object.assign({}, {
       endpoint: 0 === e.spaceId.indexOf("mp-") ? "https://api.next.bspapp.com" : "https://api.bspapp.com"
-    }, e), this.config.provider = "aliyun", this.config.requestUrl = this.config.endpoint + "/client", this.config.envType = this.config.envType || "public", this.config.accessTokenKey = "access_token_" + this.config.spaceId, this.adapter = re, this._getAccessTokenPromiseHub = new S({
+    }, e), this.config.provider = "aliyun", this.config.requestUrl = this.config.endpoint + "/client", this.config.envType = this.config.envType || "public", this.config.accessTokenKey = "access_token_" + this.config.spaceId, this.adapter = se, this._getAccessTokenPromiseHub = new I({
       createPromise: function createPromise() {
         return _this3.requestAuth(_this3.setupRequest({
           method: "serverless.auth.user.anonymousAuthorize",
           params: "{}"
         }, "auth")).then(function (e) {
-          if (!e.result || !e.result.accessToken) throw new se({
+          if (!e.result || !e.result.accessToken) throw new ne({
             code: "AUTH_FAILED",
             message: "获取accessToken失败"
           });
@@ -14871,7 +15984,7 @@ var ge = /*#__PURE__*/function () {
       retryRule: v
     });
   }
-  (0, _createClass2.default)(ge, [{
+  (0, _createClass2.default)(fe, [{
     key: "hasAccessToken",
     get: function get() {
       return !!this.accessToken;
@@ -14884,7 +15997,7 @@ var ge = /*#__PURE__*/function () {
   }, {
     key: "requestWrapped",
     value: function requestWrapped(e) {
-      return de.wrappedRequest(e, this.adapter.request);
+      return le.wrappedRequest(e, this.adapter.request);
     }
   }, {
     key: "requestAuth",
@@ -14915,7 +16028,7 @@ var ge = /*#__PURE__*/function () {
     key: "rebuildRequest",
     value: function rebuildRequest(e) {
       var t = Object.assign({}, e);
-      return t.data.token = this.accessToken, t.header["x-basement-token"] = this.accessToken, t.header["x-serverless-sign"] = de.sign(t.data, this.config.clientSecret), t;
+      return t.data.token = this.accessToken, t.header["x-basement-token"] = this.accessToken, t.header["x-serverless-sign"] = le.sign(t.data, this.config.clientSecret), t;
     }
   }, {
     key: "setupRequest",
@@ -14927,7 +16040,7 @@ var ge = /*#__PURE__*/function () {
         s = {
           "Content-Type": "application/json"
         };
-      return "auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = de.sign(n, this.config.clientSecret), {
+      return "auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = le.sign(n, this.config.clientSecret), {
         url: this.config.requestUrl,
         method: "POST",
         data: n,
@@ -15004,13 +16117,13 @@ var ge = /*#__PURE__*/function () {
             "X-OSS-server-side-encrpytion": "AES256"
           },
           success: function success(e) {
-            e && e.statusCode < 400 ? o(e) : a(new se({
+            e && e.statusCode < 400 ? o(e) : a(new ne({
               code: "UPLOAD_FAILED",
               message: "文件上传失败"
             }));
           },
           fail: function fail(e) {
-            a(new se({
+            a(new ne({
               code: e.code || "UPLOAD_FAILED",
               message: e.message || e.errMsg || "文件上传失败"
             }));
@@ -15037,17 +16150,17 @@ var ge = /*#__PURE__*/function () {
     key: "uploadFile",
     value: function () {
       var _uploadFile = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2(_ref4) {
-        var e, t, _ref4$fileType, n, s, r, i, o, a, c, u, h, l, d, p, f, m, y, _e5, _;
+        var e, t, _ref4$fileType, n, _ref4$cloudPathAsReal, s, r, i, o, a, c, u, h, l, d, p, f, m, y, _, _e5, w;
         return _regenerator.default.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                e = _ref4.filePath, t = _ref4.cloudPath, _ref4$fileType = _ref4.fileType, n = _ref4$fileType === void 0 ? "image" : _ref4$fileType, s = _ref4.onUploadProgress, r = _ref4.config;
+                e = _ref4.filePath, t = _ref4.cloudPath, _ref4$fileType = _ref4.fileType, n = _ref4$fileType === void 0 ? "image" : _ref4$fileType, _ref4$cloudPathAsReal = _ref4.cloudPathAsRealPath, s = _ref4$cloudPathAsReal === void 0 ? !1 : _ref4$cloudPathAsReal, r = _ref4.onUploadProgress, i = _ref4.config;
                 if (!("string" !== g(t))) {
                   _context2.next = 3;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: "INVALID_PARAM",
                   message: "cloudPath必须为字符串类型"
                 });
@@ -15056,8 +16169,8 @@ var ge = /*#__PURE__*/function () {
                   _context2.next = 5;
                   break;
                 }
-                throw new se({
-                  code: "CLOUDPATH_REQUIRED",
+                throw new ne({
+                  code: "INVALID_PARAM",
                   message: "cloudPath不可为空"
                 });
               case 5:
@@ -15065,93 +16178,103 @@ var ge = /*#__PURE__*/function () {
                   _context2.next = 7;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: "INVALID_PARAM",
                   message: "cloudPath不合法"
                 });
               case 7:
-                i = r && r.envType || this.config.envType;
-                _context2.next = 10;
-                return this.getOSSUploadOptionsFromPath({
-                  env: i,
-                  filename: t
+                o = i && i.envType || this.config.envType;
+                if (!(s && ("/" !== t[0] && (t = "/" + t), t.indexOf("\\") > -1))) {
+                  _context2.next = 10;
+                  break;
+                }
+                throw new ne({
+                  code: "INVALID_PARAM",
+                  message: "使用cloudPath作为路径时，cloudPath不可包含“\\”"
                 });
               case 10:
-                o = _context2.sent.result;
-                a = "https://" + o.cdnDomain + "/" + o.ossPath;
-                c = o.securityToken;
-                u = o.accessKeyId;
-                h = o.signature;
-                l = o.host;
-                d = o.ossPath;
-                p = o.id;
-                f = o.policy;
-                m = o.ossCallbackUrl;
-                y = {
+                _context2.next = 12;
+                return this.getOSSUploadOptionsFromPath({
+                  env: o,
+                  filename: s ? t.split("/").pop() : t,
+                  fileId: s ? t : void 0
+                });
+              case 12:
+                a = _context2.sent.result;
+                c = "https://" + a.cdnDomain + "/" + a.ossPath;
+                u = a.securityToken;
+                h = a.accessKeyId;
+                l = a.signature;
+                d = a.host;
+                p = a.ossPath;
+                f = a.id;
+                m = a.policy;
+                y = a.ossCallbackUrl;
+                _ = {
                   "Cache-Control": "max-age=2592000",
                   "Content-Disposition": "attachment",
-                  OSSAccessKeyId: u,
-                  Signature: h,
-                  host: l,
-                  id: p,
-                  key: d,
-                  policy: f,
+                  OSSAccessKeyId: h,
+                  Signature: l,
+                  host: d,
+                  id: f,
+                  key: p,
+                  policy: m,
                   success_action_status: 200
                 };
-                if (c && (y["x-oss-security-token"] = c), m) {
+                if (u && (_["x-oss-security-token"] = u), y) {
                   _e5 = JSON.stringify({
-                    callbackUrl: m,
+                    callbackUrl: y,
                     callbackBody: JSON.stringify({
-                      fileId: p,
+                      fileId: f,
                       spaceId: this.config.spaceId
                     }),
                     callbackBodyType: "application/json"
                   });
-                  y.callback = de.toBase64(_e5);
+                  _.callback = le.toBase64(_e5);
                 }
-                _ = {
-                  url: "https://" + o.host,
-                  formData: y,
+                w = {
+                  url: "https://" + a.host,
+                  formData: _,
                   fileName: "file",
                   name: "file",
                   filePath: e,
                   fileType: n
                 };
-                _context2.next = 25;
-                return this.uploadFileToOSS(Object.assign({}, _, {
-                  onUploadProgress: s
+                _context2.next = 27;
+                return this.uploadFileToOSS(Object.assign({}, w, {
+                  onUploadProgress: r
                 }));
-              case 25:
-                if (!m) {
-                  _context2.next = 27;
+              case 27:
+                if (!y) {
+                  _context2.next = 29;
                   break;
                 }
                 return _context2.abrupt("return", {
                   success: !0,
                   filePath: e,
-                  fileID: a
-                });
-              case 27:
-                _context2.next = 29;
-                return this.reportOSSUpload({
-                  id: p
+                  fileID: c
                 });
               case 29:
+                _context2.next = 31;
+                return this.reportOSSUpload({
+                  id: f
+                });
+              case 31:
                 if (!_context2.sent.success) {
-                  _context2.next = 31;
+                  _context2.next = 33;
                   break;
                 }
                 return _context2.abrupt("return", {
                   success: !0,
                   filePath: e,
-                  fileID: a
+                  fileID: c
                 });
-              case 31:
-                throw new se({
+              case 33:
+                throw new ne({
                   code: "UPLOAD_FAILED",
                   message: "文件上传失败"
                 });
-              case 32:
+              case 34:
               case "end":
                 return _context2.stop();
             }
@@ -15169,7 +16292,7 @@ var ge = /*#__PURE__*/function () {
       var _ref5 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
         e = _ref5.fileList;
       return new Promise(function (t, n) {
-        Array.isArray(e) && 0 !== e.length || n(new se({
+        Array.isArray(e) && 0 !== e.length || n(new ne({
           code: "INVALID_PARAM",
           message: "fileList的元素必须是非空的字符串"
         })), t({
@@ -15199,7 +16322,7 @@ var ge = /*#__PURE__*/function () {
                   _context3.next = 3;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: "INVALID_PARAM",
                   message: "fileList的元素必须是非空的字符串"
                 });
@@ -15232,11 +16355,11 @@ var ge = /*#__PURE__*/function () {
       return getFileInfo;
     }()
   }]);
-  return ge;
+  return fe;
 }();
-var me = {
+var ge = {
   init: function init(e) {
-    var t = new ge(e),
+    var t = new fe(e),
       n = {
         signInAnonymously: function signInAnonymously() {
           return t.authorize();
@@ -15250,18 +16373,18 @@ var me = {
     }, t.customAuth = t.auth, t;
   }
 };
-var ye = "undefined" != typeof location && "http:" === location.protocol ? "http:" : "https:";
-var _e;
+var me = "undefined" != typeof location && "http:" === location.protocol ? "http:" : "https:";
+var ye;
 !function (e) {
   e.local = "local", e.none = "none", e.session = "session";
-}(_e || (_e = {}));
-var we = function we() {};
-var ve = function ve() {
+}(ye || (ye = {}));
+var _e = function _e() {};
+var we = function we() {
   var e;
   if (!Promise) {
     e = function e() {}, e.promise = {};
     var _t3 = function _t3() {
-      throw new se({
+      throw new ne({
         message: 'Your Node runtime does support ES6 Promises. Set "global.Promise" to your preferred implementation of promises.'
       });
     };
@@ -15278,14 +16401,14 @@ var ve = function ve() {
   });
   return e.promise = t, e;
 };
-function Se(e) {
+function ve(e) {
   return void 0 === e;
 }
 function Ie(e) {
   return "[object Null]" === Object.prototype.toString.call(e);
 }
-var be;
-function ke(e) {
+var Se;
+function be(e) {
   var t = (n = e, "[object Array]" === Object.prototype.toString.call(n) ? e : [e]);
   var n;
   var _iterator = _createForOfIteratorHelper(t),
@@ -15309,59 +16432,59 @@ function ke(e) {
 }
 !function (e) {
   e.WEB = "web", e.WX_MP = "wx_mp";
-}(be || (be = {}));
-var Te = {
+}(Se || (Se = {}));
+var ke = {
     adapter: null,
     runtime: void 0
   },
   Ce = ["anonymousUuidKey"];
-var Pe = /*#__PURE__*/function (_we) {
-  (0, _inherits2.default)(Pe, _we);
-  var _super2 = _createSuper(Pe);
-  function Pe() {
+var Te = /*#__PURE__*/function (_e8) {
+  (0, _inherits2.default)(Te, _e8);
+  var _super2 = _createSuper(Te);
+  function Te() {
     var _this6;
-    (0, _classCallCheck2.default)(this, Pe);
-    _this6 = _super2.call(this), Te.adapter.root.tcbObject || (Te.adapter.root.tcbObject = {});
+    (0, _classCallCheck2.default)(this, Te);
+    _this6 = _super2.call(this), ke.adapter.root.tcbObject || (ke.adapter.root.tcbObject = {});
     return _this6;
   }
-  (0, _createClass2.default)(Pe, [{
+  (0, _createClass2.default)(Te, [{
     key: "setItem",
     value: function setItem(e, t) {
-      Te.adapter.root.tcbObject[e] = t;
+      ke.adapter.root.tcbObject[e] = t;
     }
   }, {
     key: "getItem",
     value: function getItem(e) {
-      return Te.adapter.root.tcbObject[e];
+      return ke.adapter.root.tcbObject[e];
     }
   }, {
     key: "removeItem",
     value: function removeItem(e) {
-      delete Te.adapter.root.tcbObject[e];
+      delete ke.adapter.root.tcbObject[e];
     }
   }, {
     key: "clear",
     value: function clear() {
-      delete Te.adapter.root.tcbObject;
+      delete ke.adapter.root.tcbObject;
     }
   }]);
-  return Pe;
-}(we);
-function Ae(e, t) {
+  return Te;
+}(_e);
+function Pe(e, t) {
   switch (e) {
     case "local":
-      return t.localStorage || new Pe();
+      return t.localStorage || new Te();
     case "none":
-      return new Pe();
+      return new Te();
     default:
-      return t.sessionStorage || new Pe();
+      return t.sessionStorage || new Te();
   }
 }
-var Ee = /*#__PURE__*/function () {
-  function Ee(e) {
-    (0, _classCallCheck2.default)(this, Ee);
+var Ae = /*#__PURE__*/function () {
+  function Ae(e) {
+    (0, _classCallCheck2.default)(this, Ae);
     if (!this._storage) {
-      this._persistence = Te.adapter.primaryStorage || e.persistence, this._storage = Ae(this._persistence, Te.adapter);
+      this._persistence = ke.adapter.primaryStorage || e.persistence, this._storage = Pe(this._persistence, ke.adapter);
       var _t5 = "access_token_".concat(e.env),
         _n5 = "access_token_expire_".concat(e.env),
         _s5 = "refresh_token_".concat(e.env),
@@ -15378,18 +16501,18 @@ var Ee = /*#__PURE__*/function () {
       };
     }
   }
-  (0, _createClass2.default)(Ee, [{
+  (0, _createClass2.default)(Ae, [{
     key: "updatePersistence",
     value: function updatePersistence(e) {
       if (e === this._persistence) return;
       var t = "local" === this._persistence;
       this._persistence = e;
-      var n = Ae(e, Te.adapter);
-      for (var _e8 in this.keys) {
-        var _s6 = this.keys[_e8];
-        if (t && Ce.includes(_e8)) continue;
+      var n = Pe(e, ke.adapter);
+      for (var _e9 in this.keys) {
+        var _s6 = this.keys[_e9];
+        if (t && Ce.includes(_e9)) continue;
         var _r2 = this._storage.getItem(_s6);
-        Se(_r2) || Ie(_r2) || (n.setItem(_s6, _r2), this._storage.removeItem(_s6));
+        ve(_r2) || Ie(_r2) || (n.setItem(_s6, _r2), this._storage.removeItem(_s6));
       }
       this._storage = n;
     }
@@ -15430,32 +16553,32 @@ var Ee = /*#__PURE__*/function () {
       this._storage.removeItem(e);
     }
   }]);
-  return Ee;
+  return Ae;
 }();
-var Oe = {},
-  xe = {};
-function Re(e) {
-  return Oe[e];
+var Ee = {},
+  Oe = {};
+function xe(e) {
+  return Ee[e];
 }
-var Ue = /*#__PURE__*/(0, _createClass2.default)(function Ue(e, t) {
-  (0, _classCallCheck2.default)(this, Ue);
+var Re = /*#__PURE__*/(0, _createClass2.default)(function Re(e, t) {
+  (0, _classCallCheck2.default)(this, Re);
   this.data = t || null, this.name = e;
 });
-var Le = /*#__PURE__*/function (_Ue) {
-  (0, _inherits2.default)(Le, _Ue);
-  var _super3 = _createSuper(Le);
-  function Le(e, t) {
+var Ue = /*#__PURE__*/function (_Re) {
+  (0, _inherits2.default)(Ue, _Re);
+  var _super3 = _createSuper(Ue);
+  function Ue(e, t) {
     var _this7;
-    (0, _classCallCheck2.default)(this, Le);
+    (0, _classCallCheck2.default)(this, Ue);
     _this7 = _super3.call(this, "error", {
       error: e,
       data: t
     }), _this7.error = e;
     return _this7;
   }
-  return (0, _createClass2.default)(Le);
-}(Ue);
-var Ne = new ( /*#__PURE__*/function () {
+  return (0, _createClass2.default)(Ue);
+}(Re);
+var Le = new ( /*#__PURE__*/function () {
   function _class() {
     (0, _classCallCheck2.default)(this, _class);
     this._listeners = {};
@@ -15480,13 +16603,13 @@ var Ne = new ( /*#__PURE__*/function () {
   }, {
     key: "fire",
     value: function fire(e, t) {
-      if (e instanceof Le) return console.error(e.error), this;
-      var n = "string" == typeof e ? new Ue(e, t || {}) : e;
+      if (e instanceof Ue) return console.error(e.error), this;
+      var n = "string" == typeof e ? new Re(e, t || {}) : e;
       var s = n.name;
       if (this._listens(s)) {
         n.target = this;
-        var _e9 = this._listeners[s] ? (0, _toConsumableArray2.default)(this._listeners[s]) : [];
-        var _iterator2 = _createForOfIteratorHelper(_e9),
+        var _e10 = this._listeners[s] ? (0, _toConsumableArray2.default)(this._listeners[s]) : [];
+        var _iterator2 = _createForOfIteratorHelper(_e10),
           _step2;
         try {
           for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
@@ -15509,30 +16632,30 @@ var Ne = new ( /*#__PURE__*/function () {
   }]);
   return _class;
 }())();
-function De(e, t) {
-  Ne.on(e, t);
+function Ne(e, t) {
+  Le.on(e, t);
 }
-function Fe(e) {
+function De(e) {
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  Ne.fire(e, t);
+  Le.fire(e, t);
 }
-function qe(e, t) {
-  Ne.off(e, t);
+function Fe(e, t) {
+  Le.off(e, t);
 }
-var Me = "loginStateChanged",
-  Ke = "loginStateExpire",
-  je = "loginTypeChanged",
-  Be = "anonymousConverted",
-  $e = "refreshAccessToken";
-var We;
+var qe = "loginStateChanged",
+  Me = "loginStateExpire",
+  Ke = "loginTypeChanged",
+  je = "anonymousConverted",
+  Be = "refreshAccessToken";
+var $e;
 !function (e) {
   e.ANONYMOUS = "ANONYMOUS", e.WECHAT = "WECHAT", e.WECHAT_PUBLIC = "WECHAT-PUBLIC", e.WECHAT_OPEN = "WECHAT-OPEN", e.CUSTOM = "CUSTOM", e.EMAIL = "EMAIL", e.USERNAME = "USERNAME", e.NULL = "NULL";
-}(We || (We = {}));
-var ze = ["auth.getJwt", "auth.logout", "auth.signInWithTicket", "auth.signInAnonymously", "auth.signIn", "auth.fetchAccessTokenWithRefreshToken", "auth.signUpWithEmailAndPassword", "auth.activateEndUserMail", "auth.sendPasswordResetEmail", "auth.resetPasswordWithToken", "auth.isUsernameRegistered"],
-  Je = {
+}($e || ($e = {}));
+var We = ["auth.getJwt", "auth.logout", "auth.signInWithTicket", "auth.signInAnonymously", "auth.signIn", "auth.fetchAccessTokenWithRefreshToken", "auth.signUpWithEmailAndPassword", "auth.activateEndUserMail", "auth.sendPasswordResetEmail", "auth.resetPasswordWithToken", "auth.isUsernameRegistered"],
+  ze = {
     "X-SDK-Version": "1.3.5"
   };
-function He(e, t, n) {
+function Je(e, t, n) {
   var s = e[t];
   e[t] = function (t) {
     var r = {},
@@ -15546,35 +16669,35 @@ function He(e, t, n) {
     var o = t.data;
     return o && function () {
       var e;
-      if (e = o, "[object FormData]" !== Object.prototype.toString.call(e)) t.data = _objectSpread(_objectSpread({}, o), r);else for (var _e10 in r) {
-        o.append(_e10, r[_e10]);
+      if (e = o, "[object FormData]" !== Object.prototype.toString.call(e)) t.data = _objectSpread(_objectSpread({}, o), r);else for (var _e11 in r) {
+        o.append(_e11, r[_e11]);
       }
     }(), t.headers = _objectSpread(_objectSpread({}, t.headers || {}), i), s.call(e, t);
   };
 }
-function Ge() {
+function He() {
   var e = Math.random().toString(16).slice(2);
   return {
     data: {
       seqId: e
     },
-    headers: _objectSpread(_objectSpread({}, Je), {}, {
+    headers: _objectSpread(_objectSpread({}, ze), {}, {
       "x-seqid": e
     })
   };
 }
-var Ve = /*#__PURE__*/function () {
-  function Ve() {
+var Ge = /*#__PURE__*/function () {
+  function Ge() {
     var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-    (0, _classCallCheck2.default)(this, Ve);
+    (0, _classCallCheck2.default)(this, Ge);
     var t;
-    this.config = e, this._reqClass = new Te.adapter.reqClass({
+    this.config = e, this._reqClass = new ke.adapter.reqClass({
       timeout: this.config.timeout,
       timeoutMsg: "\u8BF7\u6C42\u5728".concat(this.config.timeout / 1e3, "s\u5185\u672A\u5B8C\u6210\uFF0C\u5DF2\u4E2D\u65AD"),
       restrictedMethods: ["post"]
-    }), this._cache = Re(this.config.env), this._localCache = (t = this.config.env, xe[t]), He(this._reqClass, "post", [Ge]), He(this._reqClass, "upload", [Ge]), He(this._reqClass, "download", [Ge]);
+    }), this._cache = xe(this.config.env), this._localCache = (t = this.config.env, Oe[t]), Je(this._reqClass, "post", [He]), Je(this._reqClass, "upload", [He]), Je(this._reqClass, "download", [He]);
   }
-  (0, _createClass2.default)(Ve, [{
+  (0, _createClass2.default)(Ge, [{
     key: "post",
     value: function () {
       var _post = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4(e) {
@@ -15691,7 +16814,7 @@ var Ve = /*#__PURE__*/function () {
     key: "_refreshAccessToken",
     value: function () {
       var _refreshAccessToken3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8() {
-        var _this$_cache$keys, e, t, n, s, r, i, o, a, _e11, _e12, _t7, _s8;
+        var _this$_cache$keys, e, t, n, s, r, i, o, a, _e12, _e13, _t7, _s8;
         return _regenerator.default.wrap(function _callee8$(_context8) {
           while (1) {
             switch (_context8.prev = _context8.next) {
@@ -15703,7 +16826,7 @@ var Ve = /*#__PURE__*/function () {
                   _context8.next = 5;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   message: "未登录CloudBase"
                 });
               case 5:
@@ -15718,29 +16841,29 @@ var Ve = /*#__PURE__*/function () {
                   _context8.next = 21;
                   break;
                 }
-                _e11 = a.data.code;
-                if (!("SIGN_PARAM_INVALID" === _e11 || "REFRESH_TOKEN_EXPIRED" === _e11 || "INVALID_REFRESH_TOKEN" === _e11)) {
+                _e12 = a.data.code;
+                if (!("SIGN_PARAM_INVALID" === _e12 || "REFRESH_TOKEN_EXPIRED" === _e12 || "INVALID_REFRESH_TOKEN" === _e12)) {
                   _context8.next = 20;
                   break;
                 }
-                if (!(this._cache.getStore(s) === We.ANONYMOUS && "INVALID_REFRESH_TOKEN" === _e11)) {
+                if (!(this._cache.getStore(s) === $e.ANONYMOUS && "INVALID_REFRESH_TOKEN" === _e12)) {
                   _context8.next = 19;
                   break;
                 }
-                _e12 = this._cache.getStore(r);
+                _e13 = this._cache.getStore(r);
                 _t7 = this._cache.getStore(n);
                 _context8.next = 17;
                 return this.send("auth.signInAnonymously", {
-                  anonymous_uuid: _e12,
+                  anonymous_uuid: _e13,
                   refresh_token: _t7
                 });
               case 17:
                 _s8 = _context8.sent;
                 return _context8.abrupt("return", (this.setRefreshToken(_s8.refresh_token), this._refreshAccessToken()));
               case 19:
-                Fe(Ke), this._cache.removeStore(n);
+                De(Me), this._cache.removeStore(n);
               case 20:
-                throw new se({
+                throw new ne({
                   code: a.data.code,
                   message: "\u5237\u65B0access token\u5931\u8D25\uFF1A".concat(a.data.code)
                 });
@@ -15749,7 +16872,7 @@ var Ve = /*#__PURE__*/function () {
                   _context8.next = 23;
                   break;
                 }
-                return _context8.abrupt("return", (Fe($e), this._cache.setStore(e, a.data.access_token), this._cache.setStore(t, a.data.access_token_expire + Date.now()), {
+                return _context8.abrupt("return", (De(Be), this._cache.setStore(e, a.data.access_token), this._cache.setStore(t, a.data.access_token_expire + Date.now()), {
                   accessToken: a.data.access_token,
                   accessTokenExpire: a.data.access_token_expire
                 }));
@@ -15781,7 +16904,7 @@ var Ve = /*#__PURE__*/function () {
                   _context9.next = 3;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   message: "refresh token不存在，登录状态异常"
                 });
               case 3:
@@ -15823,7 +16946,7 @@ var Ve = /*#__PURE__*/function () {
     key: "request",
     value: function () {
       var _request = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee10(e, t, n) {
-        var s, r, i, _e13, o, _e14, _e15, a, c, u, h, l, d, p, f, g;
+        var s, r, i, _e14, o, _e15, _e16, a, c, u, h, l, d, p, f, g;
         return _regenerator.default.wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
@@ -15835,12 +16958,12 @@ var Ve = /*#__PURE__*/function () {
                   env: this.config.env,
                   dataVersion: "2019-08-16"
                 }, t);
-                if (!(-1 === ze.indexOf(e))) {
+                if (!(-1 === We.indexOf(e))) {
                   _context10.next = 10;
                   break;
                 }
-                _e13 = this._cache.keys.refreshTokenKey;
-                _context10.t0 = this._cache.getStore(_e13);
+                _e14 = this._cache.keys.refreshTokenKey;
+                _context10.t0 = this._cache.getStore(_e14);
                 if (!_context10.t0) {
                   _context10.next = 10;
                   break;
@@ -15852,14 +16975,14 @@ var Ve = /*#__PURE__*/function () {
               case 10:
                 if ("storage.uploadFile" === e) {
                   o = new FormData();
-                  for (_e14 in o) {
-                    o.hasOwnProperty(_e14) && void 0 !== o[_e14] && o.append(_e14, i[_e14]);
+                  for (_e15 in o) {
+                    o.hasOwnProperty(_e15) && void 0 !== o[_e15] && o.append(_e15, i[_e15]);
                   }
                   r = "multipart/form-data";
                 } else {
                   r = "application/json", o = {};
-                  for (_e15 in i) {
-                    void 0 !== i[_e15] && (o[_e15] = i[_e15]);
+                  for (_e16 in i) {
+                    void 0 !== i[_e16] && (o[_e16] = i[_e16]);
                   }
                 }
                 a = {
@@ -15879,11 +17002,11 @@ var Ve = /*#__PURE__*/function () {
                   var n = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
                   var s = /\?/.test(t);
                   var r = "";
-                  for (var _e16 in n) {
-                    "" === r ? !s && (t += "?") : r += "&", r += "".concat(_e16, "=").concat(encodeURIComponent(n[_e16]));
+                  for (var _e17 in n) {
+                    "" === r ? !s && (t += "?") : r += "&", r += "".concat(_e17, "=").concat(encodeURIComponent(n[_e17]));
                   }
                   return /^http(s)?\:\/\//.test(t += r) ? t : "".concat(e).concat(t);
-                }(ye, "//tcb-api.tencentcloudapi.com/web", d);
+                }(me, "//tcb-api.tencentcloudapi.com/web", d);
                 l && (p += l);
                 _context10.next = 22;
                 return this.post(_objectSpread({
@@ -15897,7 +17020,7 @@ var Ve = /*#__PURE__*/function () {
                   _context10.next = 26;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: "NETWORK_ERROR",
                   message: "network request error"
                 });
@@ -15934,7 +17057,7 @@ var Ve = /*#__PURE__*/function () {
                 });
               case 3:
                 n = _context11.sent;
-                if (!("ACCESS_TOKEN_EXPIRED" === n.data.code && -1 === ze.indexOf(e))) {
+                if (!("ACCESS_TOKEN_EXPIRED" === n.data.code && -1 === We.indexOf(e))) {
                   _context11.next = 13;
                   break;
                 }
@@ -15951,7 +17074,7 @@ var Ve = /*#__PURE__*/function () {
                   _context11.next = 12;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: _n6.data.code,
                   message: _n6.data.message
                 });
@@ -15962,7 +17085,7 @@ var Ve = /*#__PURE__*/function () {
                   _context11.next = 15;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: n.data.code,
                   message: n.data.message
                 });
@@ -15990,18 +17113,18 @@ var Ve = /*#__PURE__*/function () {
       this._cache.removeStore(t), this._cache.removeStore(n), this._cache.setStore(s, e);
     }
   }]);
-  return Ve;
+  return Ge;
 }();
-var Qe = {};
+var Ve = {};
 function Ye(e) {
-  return Qe[e];
+  return Ve[e];
 }
-var Xe = /*#__PURE__*/function () {
-  function Xe(e) {
-    (0, _classCallCheck2.default)(this, Xe);
-    this.config = e, this._cache = Re(e.env), this._request = Ye(e.env);
+var Qe = /*#__PURE__*/function () {
+  function Qe(e) {
+    (0, _classCallCheck2.default)(this, Qe);
+    this.config = e, this._cache = xe(e.env), this._request = Ye(e.env);
   }
-  (0, _createClass2.default)(Xe, [{
+  (0, _createClass2.default)(Qe, [{
     key: "setRefreshToken",
     value: function setRefreshToken(e) {
       var _this$_cache$keys4 = this._cache.keys,
@@ -16052,21 +17175,21 @@ var Xe = /*#__PURE__*/function () {
       this._cache.setStore(t, e);
     }
   }]);
-  return Xe;
+  return Qe;
 }();
-var Ze = /*#__PURE__*/function () {
-  function Ze(e) {
-    (0, _classCallCheck2.default)(this, Ze);
-    if (!e) throw new se({
+var Xe = /*#__PURE__*/function () {
+  function Xe(e) {
+    (0, _classCallCheck2.default)(this, Xe);
+    if (!e) throw new ne({
       code: "PARAM_ERROR",
       message: "envId is not defined"
     });
-    this._envId = e, this._cache = Re(this._envId), this._request = Ye(this._envId), this.setUserInfo();
+    this._envId = e, this._cache = xe(this._envId), this._request = Ye(this._envId), this.setUserInfo();
   }
-  (0, _createClass2.default)(Ze, [{
+  (0, _createClass2.default)(Xe, [{
     key: "linkWithTicket",
     value: function linkWithTicket(e) {
-      if ("string" != typeof e) throw new se({
+      if ("string" != typeof e) throw new ne({
         code: "PARAM_ERROR",
         message: "ticket must be string"
       });
@@ -16097,7 +17220,7 @@ var Ze = /*#__PURE__*/function () {
   }, {
     key: "updateUsername",
     value: function updateUsername(e) {
-      if ("string" != typeof e) throw new se({
+      if ("string" != typeof e) throw new ne({
         code: "PARAM_ERROR",
         message: "username must be a string"
       });
@@ -16241,16 +17364,16 @@ var Ze = /*#__PURE__*/function () {
       this._cache.setStore(t, e), this.setUserInfo();
     }
   }]);
-  return Ze;
+  return Xe;
 }();
-var et = /*#__PURE__*/function () {
-  function et(e) {
-    (0, _classCallCheck2.default)(this, et);
-    if (!e) throw new se({
+var Ze = /*#__PURE__*/function () {
+  function Ze(e) {
+    (0, _classCallCheck2.default)(this, Ze);
+    if (!e) throw new ne({
       code: "PARAM_ERROR",
       message: "envId is not defined"
     });
-    this._cache = Re(e);
+    this._cache = xe(e);
     var _this$_cache$keys6 = this._cache.keys,
       t = _this$_cache$keys6.refreshTokenKey,
       n = _this$_cache$keys6.accessTokenKey,
@@ -16262,22 +17385,22 @@ var et = /*#__PURE__*/function () {
       refreshToken: r,
       accessToken: i,
       accessTokenExpire: o
-    }, this.user = new Ze(e);
+    }, this.user = new Xe(e);
   }
-  (0, _createClass2.default)(et, [{
+  (0, _createClass2.default)(Ze, [{
     key: "isAnonymousAuth",
     get: function get() {
-      return this.loginType === We.ANONYMOUS;
+      return this.loginType === $e.ANONYMOUS;
     }
   }, {
     key: "isCustomAuth",
     get: function get() {
-      return this.loginType === We.CUSTOM;
+      return this.loginType === $e.CUSTOM;
     }
   }, {
     key: "isWeixinAuth",
     get: function get() {
-      return this.loginType === We.WECHAT || this.loginType === We.WECHAT_OPEN || this.loginType === We.WECHAT_PUBLIC;
+      return this.loginType === $e.WECHAT || this.loginType === $e.WECHAT_OPEN || this.loginType === $e.WECHAT_PUBLIC;
     }
   }, {
     key: "loginType",
@@ -16285,20 +17408,20 @@ var et = /*#__PURE__*/function () {
       return this._cache.getStore(this._cache.keys.loginTypeKey);
     }
   }]);
-  return et;
+  return Ze;
 }();
-var tt = /*#__PURE__*/function (_Xe) {
-  (0, _inherits2.default)(tt, _Xe);
-  var _super4 = _createSuper(tt);
-  function tt() {
-    (0, _classCallCheck2.default)(this, tt);
+var et = /*#__PURE__*/function (_Qe) {
+  (0, _inherits2.default)(et, _Qe);
+  var _super4 = _createSuper(et);
+  function et() {
+    (0, _classCallCheck2.default)(this, et);
     return _super4.apply(this, arguments);
   }
-  (0, _createClass2.default)(tt, [{
+  (0, _createClass2.default)(et, [{
     key: "signIn",
     value: function () {
       var _signIn = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee16() {
-        var _this$_cache$keys7, e, t, n, s, r, _e17;
+        var _this$_cache$keys7, e, t, n, s, r, _e18;
         return _regenerator.default.wrap(function _callee16$(_context16) {
           while (1) {
             switch (_context16.prev = _context16.next) {
@@ -16325,19 +17448,19 @@ var tt = /*#__PURE__*/function (_Xe) {
                 _context16.next = 14;
                 return this._request.refreshAccessToken();
               case 14:
-                Fe(Me);
-                Fe(je, {
+                De(qe);
+                De(Ke, {
                   env: this.config.env,
-                  loginType: We.ANONYMOUS,
+                  loginType: $e.ANONYMOUS,
                   persistence: "local"
                 });
-                _e17 = new et(this.config.env);
+                _e18 = new Ze(this.config.env);
                 _context16.next = 19;
-                return _e17.user.refresh();
+                return _e18.user.refresh();
               case 19:
-                return _context16.abrupt("return", _e17);
+                return _context16.abrupt("return", _e18);
               case 20:
-                throw new se({
+                throw new ne({
                   message: "匿名登录失败"
                 });
               case 21:
@@ -16383,11 +17506,11 @@ var tt = /*#__PURE__*/function (_Xe) {
                 _context17.next = 13;
                 return this._request.refreshAccessToken();
               case 13:
-                Fe(Be, {
+                De(je, {
                   env: this.config.env
                 });
-                Fe(je, {
-                  loginType: We.CUSTOM,
+                De(Ke, {
+                  loginType: $e.CUSTOM,
                   persistence: "local"
                 });
                 return _context17.abrupt("return", {
@@ -16396,7 +17519,7 @@ var tt = /*#__PURE__*/function (_Xe) {
                   }
                 });
               case 16:
-                throw new se({
+                throw new ne({
                   message: "匿名转化失败"
                 });
               case 17:
@@ -16417,7 +17540,7 @@ var tt = /*#__PURE__*/function (_Xe) {
       var _this$_cache$keys9 = this._cache.keys,
         t = _this$_cache$keys9.anonymousUuidKey,
         n = _this$_cache$keys9.loginTypeKey;
-      this._cache.removeStore(t), this._cache.setStore(t, e), this._cache.setStore(n, We.ANONYMOUS);
+      this._cache.removeStore(t), this._cache.setStore(t, e), this._cache.setStore(n, $e.ANONYMOUS);
     }
   }, {
     key: "_clearAnonymousUUID",
@@ -16425,16 +17548,16 @@ var tt = /*#__PURE__*/function (_Xe) {
       this._cache.removeStore(this._cache.keys.anonymousUuidKey);
     }
   }]);
-  return tt;
-}(Xe);
-var nt = /*#__PURE__*/function (_Xe2) {
-  (0, _inherits2.default)(nt, _Xe2);
-  var _super5 = _createSuper(nt);
-  function nt() {
-    (0, _classCallCheck2.default)(this, nt);
+  return et;
+}(Qe);
+var tt = /*#__PURE__*/function (_Qe2) {
+  (0, _inherits2.default)(tt, _Qe2);
+  var _super5 = _createSuper(tt);
+  function tt() {
+    (0, _classCallCheck2.default)(this, tt);
     return _super5.apply(this, arguments);
   }
-  (0, _createClass2.default)(nt, [{
+  (0, _createClass2.default)(tt, [{
     key: "signIn",
     value: function () {
       var _signIn2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee18(e) {
@@ -16447,7 +17570,7 @@ var nt = /*#__PURE__*/function (_Xe2) {
                   _context18.next = 2;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: "PARAM_ERROR",
                   message: "ticket must be a string"
                 });
@@ -16468,18 +17591,18 @@ var nt = /*#__PURE__*/function (_Xe2) {
                 _context18.next = 10;
                 return this._request.refreshAccessToken();
               case 10:
-                Fe(Me);
-                Fe(je, {
+                De(qe);
+                De(Ke, {
                   env: this.config.env,
-                  loginType: We.CUSTOM,
+                  loginType: $e.CUSTOM,
                   persistence: this.config.persistence
                 });
                 _context18.next = 14;
                 return this.refreshUserInfo();
               case 14:
-                return _context18.abrupt("return", new et(this.config.env));
+                return _context18.abrupt("return", new Ze(this.config.env));
               case 15:
-                throw new se({
+                throw new ne({
                   message: "自定义登录失败"
                 });
               case 16:
@@ -16495,16 +17618,16 @@ var nt = /*#__PURE__*/function (_Xe2) {
       return signIn;
     }()
   }]);
-  return nt;
-}(Xe);
-var st = /*#__PURE__*/function (_Xe3) {
-  (0, _inherits2.default)(st, _Xe3);
-  var _super6 = _createSuper(st);
-  function st() {
-    (0, _classCallCheck2.default)(this, st);
+  return tt;
+}(Qe);
+var nt = /*#__PURE__*/function (_Qe3) {
+  (0, _inherits2.default)(nt, _Qe3);
+  var _super6 = _createSuper(nt);
+  function nt() {
+    (0, _classCallCheck2.default)(this, nt);
     return _super6.apply(this, arguments);
   }
-  (0, _createClass2.default)(st, [{
+  (0, _createClass2.default)(nt, [{
     key: "signIn",
     value: function () {
       var _signIn3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee19(e, t) {
@@ -16517,7 +17640,7 @@ var st = /*#__PURE__*/function (_Xe3) {
                   _context19.next = 2;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: "PARAM_ERROR",
                   message: "email must be a string"
                 });
@@ -16554,18 +17677,18 @@ var st = /*#__PURE__*/function (_Xe3) {
                 _context19.next = 19;
                 return this.refreshUserInfo();
               case 19:
-                Fe(Me);
-                Fe(je, {
+                De(qe);
+                De(Ke, {
                   env: this.config.env,
-                  loginType: We.EMAIL,
+                  loginType: $e.EMAIL,
                   persistence: this.config.persistence
                 });
-                return _context19.abrupt("return", new et(this.config.env));
+                return _context19.abrupt("return", new Ze(this.config.env));
               case 22:
-                throw s.code ? new se({
+                throw s.code ? new ne({
                   code: s.code,
                   message: "\u90AE\u7BB1\u767B\u5F55\u5931\u8D25: ".concat(s.message)
-                }) : new se({
+                }) : new ne({
                   message: "邮箱登录失败"
                 });
               case 23:
@@ -16628,16 +17751,16 @@ var st = /*#__PURE__*/function (_Xe3) {
       return resetPasswordWithToken;
     }()
   }]);
-  return st;
-}(Xe);
-var rt = /*#__PURE__*/function (_Xe4) {
-  (0, _inherits2.default)(rt, _Xe4);
-  var _super7 = _createSuper(rt);
-  function rt() {
-    (0, _classCallCheck2.default)(this, rt);
+  return nt;
+}(Qe);
+var st = /*#__PURE__*/function (_Qe4) {
+  (0, _inherits2.default)(st, _Qe4);
+  var _super7 = _createSuper(st);
+  function st() {
+    (0, _classCallCheck2.default)(this, st);
     return _super7.apply(this, arguments);
   }
-  (0, _createClass2.default)(rt, [{
+  (0, _createClass2.default)(st, [{
     key: "signIn",
     value: function () {
       var _signIn4 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee22(e, t) {
@@ -16650,7 +17773,7 @@ var rt = /*#__PURE__*/function (_Xe4) {
                   _context22.next = 2;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: "PARAM_ERROR",
                   message: "username must be a string"
                 });
@@ -16659,7 +17782,7 @@ var rt = /*#__PURE__*/function (_Xe4) {
                 n = this._cache.keys.refreshTokenKey;
                 _context22.next = 6;
                 return this._request.send("auth.signIn", {
-                  loginType: We.USERNAME,
+                  loginType: $e.USERNAME,
                   username: e,
                   password: t,
                   refresh_token: this._cache.getStore(n) || ""
@@ -16688,18 +17811,18 @@ var rt = /*#__PURE__*/function (_Xe4) {
                 _context22.next = 20;
                 return this.refreshUserInfo();
               case 20:
-                Fe(Me);
-                Fe(je, {
+                De(qe);
+                De(Ke, {
                   env: this.config.env,
-                  loginType: We.USERNAME,
+                  loginType: $e.USERNAME,
                   persistence: this.config.persistence
                 });
-                return _context22.abrupt("return", new et(this.config.env));
+                return _context22.abrupt("return", new Ze(this.config.env));
               case 23:
-                throw s.code ? new se({
+                throw s.code ? new ne({
                   code: s.code,
                   message: "\u7528\u6237\u540D\u5BC6\u7801\u767B\u5F55\u5931\u8D25: ".concat(s.message)
-                }) : new se({
+                }) : new ne({
                   message: "用户名密码登录失败"
                 });
               case 24:
@@ -16715,14 +17838,14 @@ var rt = /*#__PURE__*/function (_Xe4) {
       return signIn;
     }()
   }]);
-  return rt;
-}(Xe);
-var it = /*#__PURE__*/function () {
-  function it(e) {
-    (0, _classCallCheck2.default)(this, it);
-    this.config = e, this._cache = Re(e.env), this._request = Ye(e.env), this._onAnonymousConverted = this._onAnonymousConverted.bind(this), this._onLoginTypeChanged = this._onLoginTypeChanged.bind(this), De(je, this._onLoginTypeChanged);
+  return st;
+}(Qe);
+var rt = /*#__PURE__*/function () {
+  function rt(e) {
+    (0, _classCallCheck2.default)(this, rt);
+    this.config = e, this._cache = xe(e.env), this._request = Ye(e.env), this._onAnonymousConverted = this._onAnonymousConverted.bind(this), this._onLoginTypeChanged = this._onLoginTypeChanged.bind(this), Ne(Ke, this._onLoginTypeChanged);
   }
-  (0, _createClass2.default)(it, [{
+  (0, _createClass2.default)(rt, [{
     key: "currentUser",
     get: function get() {
       var e = this.hasLoginState();
@@ -16736,22 +17859,22 @@ var it = /*#__PURE__*/function () {
   }, {
     key: "anonymousAuthProvider",
     value: function anonymousAuthProvider() {
-      return new tt(this.config);
+      return new et(this.config);
     }
   }, {
     key: "customAuthProvider",
     value: function customAuthProvider() {
-      return new nt(this.config);
+      return new tt(this.config);
     }
   }, {
     key: "emailAuthProvider",
     value: function emailAuthProvider() {
-      return new st(this.config);
+      return new nt(this.config);
     }
   }, {
     key: "usernameAuthProvider",
     value: function usernameAuthProvider() {
-      return new rt(this.config);
+      return new st(this.config);
     }
   }, {
     key: "signInAnonymously",
@@ -16761,7 +17884,7 @@ var it = /*#__PURE__*/function () {
           while (1) {
             switch (_context23.prev = _context23.next) {
               case 0:
-                return _context23.abrupt("return", new tt(this.config).signIn());
+                return _context23.abrupt("return", new et(this.config).signIn());
               case 1:
               case "end":
                 return _context23.stop();
@@ -16782,7 +17905,7 @@ var it = /*#__PURE__*/function () {
           while (1) {
             switch (_context24.prev = _context24.next) {
               case 0:
-                return _context24.abrupt("return", new st(this.config).signIn(e, t));
+                return _context24.abrupt("return", new nt(this.config).signIn(e, t));
               case 1:
               case "end":
                 return _context24.stop();
@@ -16798,7 +17921,7 @@ var it = /*#__PURE__*/function () {
   }, {
     key: "signInWithUsernameAndPassword",
     value: function signInWithUsernameAndPassword(e, t) {
-      return new rt(this.config).signIn(e, t);
+      return new st(this.config).signIn(e, t);
     }
   }, {
     key: "linkAndRetrieveDataWithTicket",
@@ -16808,7 +17931,7 @@ var it = /*#__PURE__*/function () {
           while (1) {
             switch (_context25.prev = _context25.next) {
               case 0:
-                this._anonymousAuthProvider || (this._anonymousAuthProvider = new tt(this.config)), De(Be, this._onAnonymousConverted);
+                this._anonymousAuthProvider || (this._anonymousAuthProvider = new et(this.config)), Ne(je, this._onAnonymousConverted);
                 _context25.next = 3;
                 return this._anonymousAuthProvider.linkAndRetrieveDataWithTicket(e);
               case 3:
@@ -16834,11 +17957,11 @@ var it = /*#__PURE__*/function () {
           while (1) {
             switch (_context26.prev = _context26.next) {
               case 0:
-                if (!(this.loginType === We.ANONYMOUS)) {
+                if (!(this.loginType === $e.ANONYMOUS)) {
                   _context26.next = 2;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   message: "匿名用户不支持登出操作"
                 });
               case 2:
@@ -16855,9 +17978,9 @@ var it = /*#__PURE__*/function () {
                 });
               case 7:
                 r = _context26.sent;
-                return _context26.abrupt("return", (this._cache.removeStore(e), this._cache.removeStore(t), this._cache.removeStore(n), Fe(Me), Fe(je, {
+                return _context26.abrupt("return", (this._cache.removeStore(e), this._cache.removeStore(t), this._cache.removeStore(n), De(qe), De(Ke, {
                   env: this.config.env,
-                  loginType: We.NULL,
+                  loginType: $e.NULL,
                   persistence: this.config.persistence
                 }), r));
               case 9:
@@ -16923,7 +18046,7 @@ var it = /*#__PURE__*/function () {
     key: "onLoginStateChanged",
     value: function onLoginStateChanged(e) {
       var _this9 = this;
-      De(Me, function () {
+      Ne(qe, function () {
         var t = _this9.hasLoginState();
         e.call(_this9, t);
       });
@@ -16933,23 +18056,23 @@ var it = /*#__PURE__*/function () {
   }, {
     key: "onLoginStateExpired",
     value: function onLoginStateExpired(e) {
-      De(Ke, e.bind(this));
+      Ne(Me, e.bind(this));
     }
   }, {
     key: "onAccessTokenRefreshed",
     value: function onAccessTokenRefreshed(e) {
-      De($e, e.bind(this));
+      Ne(Be, e.bind(this));
     }
   }, {
     key: "onAnonymousConverted",
     value: function onAnonymousConverted(e) {
-      De(Be, e.bind(this));
+      Ne(je, e.bind(this));
     }
   }, {
     key: "onLoginTypeChanged",
     value: function onLoginTypeChanged(e) {
       var _this10 = this;
-      De(je, function () {
+      Ne(Ke, function () {
         var t = _this10.hasLoginState();
         e.call(_this10, t);
       });
@@ -16987,7 +18110,7 @@ var it = /*#__PURE__*/function () {
     key: "hasLoginState",
     value: function hasLoginState() {
       var e = this._cache.keys.refreshTokenKey;
-      return this._cache.getStore(e) ? new et(this.config.env) : null;
+      return this._cache.getStore(e) ? new Ze(this.config.env) : null;
     }
   }, {
     key: "isUsernameRegistered",
@@ -17002,7 +18125,7 @@ var it = /*#__PURE__*/function () {
                   _context30.next = 2;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   code: "PARAM_ERROR",
                   message: "username must be a string"
                 });
@@ -17040,7 +18163,7 @@ var it = /*#__PURE__*/function () {
           while (1) {
             switch (_context31.prev = _context31.next) {
               case 0:
-                return _context31.abrupt("return", new nt(this.config).signIn(e));
+                return _context31.abrupt("return", new tt(this.config).signIn(e));
               case 1:
               case "end":
                 return _context31.stop();
@@ -17094,10 +18217,10 @@ var it = /*#__PURE__*/function () {
       s === this.config.env && (this._cache.updatePersistence(n), this._cache.setStore(this._cache.keys.loginTypeKey, t));
     }
   }]);
-  return it;
+  return rt;
 }();
-var ot = function ot(e, t) {
-    t = t || ve();
+var it = function it(e, t) {
+    t = t || we();
     var n = Ye(this.config.env),
       s = e.cloudPath,
       r = e.filePath,
@@ -17132,7 +18255,7 @@ var ot = function ot(e, t) {
         201 === e.statusCode ? t(null, {
           fileID: h,
           requestId: d
-        }) : t(new se({
+        }) : t(new ne({
           code: "STORAGE_REQUEST_FAIL",
           message: "STORAGE_REQUEST_FAIL: ".concat(e.data)
         }));
@@ -17143,8 +18266,8 @@ var ot = function ot(e, t) {
       t(e);
     }), t.promise;
   },
-  at = function at(e, t) {
-    t = t || ve();
+  ot = function ot(e, t) {
+    t = t || we();
     var n = Ye(this.config.env),
       s = e.cloudPath;
     return n.send("storage.getUploadMetadata", {
@@ -17155,9 +18278,9 @@ var ot = function ot(e, t) {
       t(e);
     }), t.promise;
   },
-  ct = function ct(_ref7, t) {
+  at = function at(_ref7, t) {
     var e = _ref7.fileList;
-    if (t = t || ve(), !e || !Array.isArray(e)) return {
+    if (t = t || we(), !e || !Array.isArray(e)) return {
       code: "INVALID_PARAM",
       message: "fileList必须是非空的数组"
     };
@@ -17188,9 +18311,9 @@ var ot = function ot(e, t) {
       t(e);
     }), t.promise;
   },
-  ut = function ut(_ref8, t) {
+  ct = function ct(_ref8, t) {
     var e = _ref8.fileList;
-    t = t || ve(), e && Array.isArray(e) || t(null, {
+    t = t || we(), e && Array.isArray(e) || t(null, {
       code: "INVALID_PARAM",
       message: "fileList必须是非空的数组"
     });
@@ -17230,7 +18353,7 @@ var ot = function ot(e, t) {
       t(e);
     }), t.promise;
   },
-  ht = /*#__PURE__*/function () {
+  ut = /*#__PURE__*/function () {
     var _ref10 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee32(_ref9, t) {
       var e, n, s, r;
       return _regenerator.default.wrap(function _callee32$(_context32) {
@@ -17239,7 +18362,7 @@ var ot = function ot(e, t) {
             case 0:
               e = _ref9.fileID;
               _context32.next = 3;
-              return ut.call(this, {
+              return ct.call(this, {
                 fileList: [{
                   fileID: e,
                   maxAge: 600
@@ -17280,24 +18403,24 @@ var ot = function ot(e, t) {
         }
       }, _callee32, this);
     }));
-    return function ht(_x27, _x28) {
+    return function ut(_x27, _x28) {
       return _ref10.apply(this, arguments);
     };
   }(),
-  lt = function lt(_ref11, i) {
+  ht = function ht(_ref11, i) {
     var e = _ref11.name,
       t = _ref11.data,
       n = _ref11.query,
       s = _ref11.parse,
       r = _ref11.search;
-    var o = i || ve();
+    var o = i || we();
     var a;
     try {
       a = t ? JSON.stringify(t) : "";
     } catch (e) {
       return Promise.reject(e);
     }
-    if (!e) return Promise.reject(new se({
+    if (!e) return Promise.reject(new ne({
       code: "PARAM_ERROR",
       message: "函数名不能为空"
     }));
@@ -17320,7 +18443,7 @@ var ot = function ot(e, t) {
             requestId: e.requestId
           });
         } catch (e) {
-          o(new se({
+          o(new ne({
             message: "response data must be json"
           }));
         }
@@ -17330,30 +18453,30 @@ var ot = function ot(e, t) {
       o(e);
     }), o.promise;
   },
-  dt = {
+  lt = {
     timeout: 15e3,
     persistence: "session"
   },
-  pt = {};
-var ft = /*#__PURE__*/function () {
-  function ft(e) {
-    (0, _classCallCheck2.default)(this, ft);
+  dt = {};
+var pt = /*#__PURE__*/function () {
+  function pt(e) {
+    (0, _classCallCheck2.default)(this, pt);
     this.config = e || this.config, this.authObj = void 0;
   }
-  (0, _createClass2.default)(ft, [{
+  (0, _createClass2.default)(pt, [{
     key: "init",
     value: function init(e) {
-      switch (Te.adapter || (this.requestClient = new Te.adapter.reqClass({
+      switch (ke.adapter || (this.requestClient = new ke.adapter.reqClass({
         timeout: e.timeout || 5e3,
         timeoutMsg: "\u8BF7\u6C42\u5728".concat((e.timeout || 5e3) / 1e3, "s\u5185\u672A\u5B8C\u6210\uFF0C\u5DF2\u4E2D\u65AD")
-      })), this.config = _objectSpread(_objectSpread({}, dt), e), !0) {
+      })), this.config = _objectSpread(_objectSpread({}, lt), e), !0) {
         case this.config.timeout > 6e5:
           console.warn("timeout大于可配置上限[10分钟]，已重置为上限数值"), this.config.timeout = 6e5;
           break;
         case this.config.timeout < 100:
           console.warn("timeout小于可配置下限[100ms]，已重置为下限数值"), this.config.timeout = 100;
       }
-      return new ft(this.config);
+      return new pt(this.config);
     }
   }, {
     key: "auth",
@@ -17361,59 +18484,59 @@ var ft = /*#__PURE__*/function () {
       var _ref12 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
         e = _ref12.persistence;
       if (this.authObj) return this.authObj;
-      var t = e || Te.adapter.primaryStorage || dt.persistence;
+      var t = e || ke.adapter.primaryStorage || lt.persistence;
       var n;
       return t !== this.config.persistence && (this.config.persistence = t), function (e) {
         var t = e.env;
-        Oe[t] = new Ee(e), xe[t] = new Ee(_objectSpread(_objectSpread({}, e), {}, {
+        Ee[t] = new Ae(e), Oe[t] = new Ae(_objectSpread(_objectSpread({}, e), {}, {
           persistence: "local"
         }));
-      }(this.config), n = this.config, Qe[n.env] = new Ve(n), this.authObj = new it(this.config), this.authObj;
+      }(this.config), n = this.config, Ve[n.env] = new Ge(n), this.authObj = new rt(this.config), this.authObj;
     }
   }, {
     key: "on",
     value: function on(e, t) {
-      return De.apply(this, [e, t]);
+      return Ne.apply(this, [e, t]);
     }
   }, {
     key: "off",
     value: function off(e, t) {
-      return qe.apply(this, [e, t]);
+      return Fe.apply(this, [e, t]);
     }
   }, {
     key: "callFunction",
     value: function callFunction(e, t) {
-      return lt.apply(this, [e, t]);
+      return ht.apply(this, [e, t]);
     }
   }, {
     key: "deleteFile",
     value: function deleteFile(e, t) {
-      return ct.apply(this, [e, t]);
+      return at.apply(this, [e, t]);
     }
   }, {
     key: "getTempFileURL",
     value: function getTempFileURL(e, t) {
-      return ut.apply(this, [e, t]);
+      return ct.apply(this, [e, t]);
     }
   }, {
     key: "downloadFile",
     value: function downloadFile(e, t) {
-      return ht.apply(this, [e, t]);
+      return ut.apply(this, [e, t]);
     }
   }, {
     key: "uploadFile",
     value: function uploadFile(e, t) {
-      return ot.apply(this, [e, t]);
+      return it.apply(this, [e, t]);
     }
   }, {
     key: "getUploadMetadata",
     value: function getUploadMetadata(e, t) {
-      return at.apply(this, [e, t]);
+      return ot.apply(this, [e, t]);
     }
   }, {
     key: "registerExtension",
     value: function registerExtension(e) {
-      pt[e.name] = e;
+      dt[e.name] = e;
     }
   }, {
     key: "invokeExtension",
@@ -17424,12 +18547,12 @@ var ft = /*#__PURE__*/function () {
           while (1) {
             switch (_context33.prev = _context33.next) {
               case 0:
-                n = pt[e];
+                n = dt[e];
                 if (n) {
                   _context33.next = 3;
                   break;
                 }
-                throw new se({
+                throw new ne({
                   message: "\u6269\u5C55".concat(e, " \u5FC5\u987B\u5148\u6CE8\u518C")
                 });
               case 3:
@@ -17452,16 +18575,16 @@ var ft = /*#__PURE__*/function () {
   }, {
     key: "useAdapters",
     value: function useAdapters(e) {
-      var _ref13 = ke(e) || {},
+      var _ref13 = be(e) || {},
         t = _ref13.adapter,
         n = _ref13.runtime;
-      t && (Te.adapter = t), n && (Te.runtime = n);
+      t && (ke.adapter = t), n && (ke.runtime = n);
     }
   }]);
-  return ft;
+  return pt;
 }();
-var gt = new ft();
-function mt(e, t, n) {
+var ft = new pt();
+function gt(e, t, n) {
   void 0 === n && (n = {});
   var s = /\?/.test(t),
     r = "";
@@ -17470,19 +18593,19 @@ function mt(e, t, n) {
   }
   return /^http(s)?:\/\//.test(t += r) ? t : "" + e + t;
 }
-var yt = /*#__PURE__*/function () {
-  function yt() {
-    (0, _classCallCheck2.default)(this, yt);
+var mt = /*#__PURE__*/function () {
+  function mt() {
+    (0, _classCallCheck2.default)(this, mt);
   }
-  (0, _createClass2.default)(yt, [{
+  (0, _createClass2.default)(mt, [{
     key: "post",
     value: function post(e) {
       var t = e.url,
         n = e.data,
         s = e.headers;
       return new Promise(function (e, r) {
-        re.request({
-          url: mt("https:", t),
+        se.request({
+          url: gt("https:", t),
           data: n,
           method: "POST",
           header: s,
@@ -17504,8 +18627,8 @@ var yt = /*#__PURE__*/function () {
           i = e.data,
           o = e.headers,
           a = e.fileType,
-          c = re.uploadFile({
-            url: mt("https:", s),
+          c = se.uploadFile({
+            url: gt("https:", s),
             name: "file",
             formData: Object.assign({}, i),
             filePath: r,
@@ -17531,28 +18654,28 @@ var yt = /*#__PURE__*/function () {
       });
     }
   }]);
-  return yt;
+  return mt;
 }();
-var _t = {
+var yt = {
   setItem: function setItem(e, t) {
-    re.setStorageSync(e, t);
+    se.setStorageSync(e, t);
   },
   getItem: function getItem(e) {
-    return re.getStorageSync(e);
+    return se.getStorageSync(e);
   },
   removeItem: function removeItem(e) {
-    re.removeStorageSync(e);
+    se.removeStorageSync(e);
   },
   clear: function clear() {
-    re.clearStorageSync();
+    se.clearStorageSync();
   }
 };
-var wt = {
+var _t = {
   genAdapter: function genAdapter() {
     return {
       root: {},
-      reqClass: yt,
-      localStorage: _t,
+      reqClass: mt,
+      localStorage: yt,
       primaryStorage: "local"
     };
   },
@@ -17561,12 +18684,12 @@ var wt = {
   },
   runtime: "uni_app"
 };
-gt.useAdapters(wt);
-var vt = gt,
-  St = vt.init;
-vt.init = function (e) {
+ft.useAdapters(_t);
+var wt = ft,
+  vt = wt.init;
+wt.init = function (e) {
   e.env = e.spaceId;
-  var t = St.call(this, e);
+  var t = vt.call(this, e);
   t.config.provider = "tencent", t.config.spaceId = e.spaceId;
   var n = t.auth;
   return t.auth = function (e) {
@@ -17575,10 +18698,10 @@ vt.init = function (e) {
       var n;
       t[e] = (n = t[e], function (e) {
         e = e || {};
-        var _ne = ne(e),
-          t = _ne.success,
-          s = _ne.fail,
-          r = _ne.complete;
+        var _te = te(e),
+          t = _te.success,
+          s = _te.fail,
+          r = _te.complete;
         if (!(t || s || r)) return n.call(this, e);
         n.call(this, e).then(function (e) {
           t && t(e), r && r(e);
@@ -17589,15 +18712,15 @@ vt.init = function (e) {
     }), t;
   }, t.customAuth = t.auth, t;
 };
-var It = vt;
-var bt = /*#__PURE__*/function (_ge) {
-  (0, _inherits2.default)(bt, _ge);
-  var _super8 = _createSuper(bt);
-  function bt() {
-    (0, _classCallCheck2.default)(this, bt);
+var It = wt;
+var St = /*#__PURE__*/function (_fe) {
+  (0, _inherits2.default)(St, _fe);
+  var _super8 = _createSuper(St);
+  function St() {
+    (0, _classCallCheck2.default)(this, St);
     return _super8.apply(this, arguments);
   }
-  (0, _createClass2.default)(bt, [{
+  (0, _createClass2.default)(St, [{
     key: "getAccessToken",
     value: function getAccessToken() {
       var _this11 = this;
@@ -17616,11 +18739,11 @@ var bt = /*#__PURE__*/function (_ge) {
         s = {
           "Content-Type": "application/json"
         };
-      "auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = de.sign(n, this.config.clientSecret);
-      var r = le();
+      "auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = le.sign(n, this.config.clientSecret);
+      var r = he();
       s["x-client-info"] = encodeURIComponent(JSON.stringify(r));
-      var _ie = ie(),
-        i = _ie.token;
+      var _re = re(),
+        i = _re.token;
       return s["x-client-token"] = i, {
         url: this.config.requestUrl,
         method: "POST",
@@ -17647,13 +18770,13 @@ var bt = /*#__PURE__*/function (_ge) {
           filePath: s,
           fileType: r,
           success: function success(e) {
-            e && e.statusCode < 400 ? o(e) : a(new se({
+            e && e.statusCode < 400 ? o(e) : a(new ne({
               code: "UPLOAD_FAILED",
               message: "文件上传失败"
             }));
           },
           fail: function fail(e) {
-            a(new se({
+            a(new ne({
               code: e.code || "UPLOAD_FAILED",
               message: e.message || e.errMsg || "文件上传失败"
             }));
@@ -17676,7 +18799,7 @@ var bt = /*#__PURE__*/function (_ge) {
         _ref15$fileType = _ref15.fileType,
         n = _ref15$fileType === void 0 ? "image" : _ref15$fileType,
         s = _ref15.onUploadProgress;
-      if (!t) throw new se({
+      if (!t) throw new ne({
         code: "CLOUDPATH_REQUIRED",
         message: "cloudPath不可为空"
       });
@@ -17709,7 +18832,7 @@ var bt = /*#__PURE__*/function (_ge) {
             success: !0,
             filePath: e,
             fileID: r
-          }) : s(new se({
+          }) : s(new ne({
             code: "UPLOAD_FAILED",
             message: "文件上传失败"
           }));
@@ -17728,7 +18851,7 @@ var bt = /*#__PURE__*/function (_ge) {
       };
       return this.request(this.setupRequest(t)).then(function (e) {
         if (e.success) return e.result;
-        throw new se({
+        throw new ne({
           code: "DELETE_FILE_FAILED",
           message: "删除文件失败"
         });
@@ -17739,7 +18862,7 @@ var bt = /*#__PURE__*/function (_ge) {
     value: function getTempFileURL() {
       var _ref17 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
         e = _ref17.fileList;
-      if (!Array.isArray(e) || 0 === e.length) throw new se({
+      if (!Array.isArray(e) || 0 === e.length) throw new ne({
         code: "INVALID_PARAM",
         message: "fileList的元素必须是非空的字符串"
       });
@@ -17758,18 +18881,18 @@ var bt = /*#__PURE__*/function (_ge) {
             };
           })
         };
-        throw new se({
+        throw new ne({
           code: "GET_TEMP_FILE_URL_FAILED",
           message: "获取临时文件链接失败"
         });
       });
     }
   }]);
-  return bt;
-}(ge);
-var kt = {
+  return St;
+}(fe);
+var bt = {
   init: function init(e) {
-    var t = new bt(e),
+    var t = new St(e),
       n = {
         signInAnonymously: function signInAnonymously() {
           return t.authorize();
@@ -17783,17 +18906,17 @@ var kt = {
     }, t.customAuth = t.auth, t;
   }
 };
-function Tt(_ref18) {
+function kt(_ref18) {
   var e = _ref18.data;
   var t;
-  t = le();
+  t = he();
   var n = JSON.parse(JSON.stringify(e || {}));
   if (Object.assign(n, {
     clientInfo: t
   }), !n.uniIdToken) {
-    var _ie2 = ie(),
-      _e18 = _ie2.token;
-    _e18 && (n.uniIdToken = _e18);
+    var _re2 = re(),
+      _e19 = _re2.token;
+    _e19 && (n.uniIdToken = _e19);
   }
   return n;
 }
@@ -17827,12 +18950,12 @@ function _Ct() {
               tencent: "tcb"
             }[this.config.provider], i = this.config.spaceId, o = "http://".concat(n, ":").concat(s, "/system/check-function"), a = "http://".concat(n, ":").concat(s, "/cloudfunctions/").concat(e);
             return _context54.abrupt("return", new Promise(function (t, n) {
-              re.request({
+              se.request({
                 method: "POST",
                 url: o,
                 data: {
                   name: e,
-                  platform: A,
+                  platform: P,
                   provider: r,
                   spaceId: i
                 },
@@ -17875,15 +18998,15 @@ function _Ct() {
                     break;
                   case "NETWORK_ERROR":
                     {
-                      var _e30 = "连接本地调试服务失败，请检查客户端是否和主机在同一局域网下";
-                      throw console.error(_e30), new Error(_e30);
+                      var _e31 = "连接本地调试服务失败，请检查客户端是否和主机在同一局域网下";
+                      throw console.error(_e31), new Error(_e31);
                     }
                   case "SWITCH_TO_CLOUD":
                     break;
                   default:
                     {
-                      var _e31 = "\u68C0\u6D4B\u672C\u5730\u8C03\u8BD5\u670D\u52A1\u51FA\u73B0\u9519\u8BEF\uFF1A".concat(s, "\uFF0C\u8BF7\u68C0\u67E5\u7F51\u7EDC\u73AF\u5883\u6216\u91CD\u542F\u5BA2\u6237\u7AEF\u518D\u8BD5");
-                      throw console.error(_e31), new Error(_e31);
+                      var _e32 = "\u68C0\u6D4B\u672C\u5730\u8C03\u8BD5\u670D\u52A1\u51FA\u73B0\u9519\u8BEF\uFF1A".concat(s, "\uFF0C\u8BF7\u68C0\u67E5\u7F51\u7EDC\u73AF\u5883\u6216\u91CD\u542F\u5BA2\u6237\u7AEF\u518D\u8BD5");
+                      throw console.error(_e32), new Error(_e32);
                     }
                 }
                 return _this26._callCloudFunction({
@@ -17892,22 +19015,22 @@ function _Ct() {
                 });
               }
               return new Promise(function (e, n) {
-                var s = Tt.call(_this26, {
+                var s = kt.call(_this26, {
                   data: t
                 });
-                re.request({
+                se.request({
                   method: "POST",
                   url: a,
                   data: {
                     provider: r,
-                    platform: A,
+                    platform: P,
                     param: s
                   },
                   success: function success() {
                     var _ref64 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
                       t = _ref64.statusCode,
                       s = _ref64.data;
-                    return !t || t >= 400 ? n(new se({
+                    return !t || t >= 400 ? n(new ne({
                       code: s.code || "SYS_ERR",
                       message: s.message || "request:fail"
                     })) : e({
@@ -17915,7 +19038,7 @@ function _Ct() {
                     });
                   },
                   fail: function fail(e) {
-                    n(new se({
+                    n(new ne({
                       code: e.code || e.errCode || "SYS_ERR",
                       message: e.message || e.errMsg || "request:fail"
                     }));
@@ -17932,38 +19055,38 @@ function _Ct() {
   }));
   return _Ct.apply(this, arguments);
 }
-var Pt = [{
+var Tt = [{
   rule: /fc_function_not_found|FUNCTION_NOT_FOUND/,
   content: "，云函数[{functionName}]在云端不存在，请检查此云函数名称是否正确以及该云函数是否已上传到服务空间",
   mode: "append"
 }];
-var At = /[\\^$.*+?()[\]{}|]/g,
-  Et = RegExp(At.source);
-function Ot(e, t, n) {
-  return e.replace(new RegExp((s = t) && Et.test(s) ? s.replace(At, "\\$&") : s, "g"), n);
+var Pt = /[\\^$.*+?()[\]{}|]/g,
+  At = RegExp(Pt.source);
+function Et(e, t, n) {
+  return e.replace(new RegExp((s = t) && At.test(s) ? s.replace(Pt, "\\$&") : s, "g"), n);
   var s;
 }
-var xt = "none",
-  Rt = "request",
-  Ut = "response",
-  Lt = "both";
-var Nt = /*#__PURE__*/function () {
-  function Nt() {
+var Ot = "none",
+  xt = "request",
+  Rt = "response",
+  Ut = "both";
+var Lt = /*#__PURE__*/function () {
+  function Lt() {
     var _ref19 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       e = _ref19.secretType,
       t = _ref19.uniCloudIns;
-    (0, _classCallCheck2.default)(this, Nt);
-    this.clientType = "", this.secretType = e || xt, this.uniCloudIns = t;
+    (0, _classCallCheck2.default)(this, Lt);
+    this.clientType = "", this.secretType = e || Ot, this.uniCloudIns = t;
     var _this$uniCloudIns$con = this.uniCloudIns.config,
       n = _this$uniCloudIns$con.provider,
       s = _this$uniCloudIns$con.spaceId;
     var r;
-    this.provider = n, this.spaceId = s, this.scopedGlobalCache = (r = this.uniCloudIns, L("_globalUniCloudSecureNetworkCache__{spaceId}".replace("{spaceId}", r.config.spaceId)));
+    this.provider = n, this.spaceId = s, this.scopedGlobalCache = (r = this.uniCloudIns, U("_globalUniCloudSecureNetworkCache__{spaceId}".replace("{spaceId}", r.config.spaceId)));
   }
-  (0, _createClass2.default)(Nt, [{
+  (0, _createClass2.default)(Lt, [{
     key: "getSystemInfo",
     value: function getSystemInfo() {
-      return this._systemInfo || (this._systemInfo = ue()), this._systemInfo;
+      return this._systemInfo || (this._systemInfo = ce()), this._systemInfo;
     }
   }, {
     key: "appId",
@@ -17983,7 +19106,7 @@ var Nt = /*#__PURE__*/function () {
           while (1) {
             switch (_context34.prev = _context34.next) {
               case 0:
-                return _context34.abrupt("return", this.secretType === xt ? e : this.platformEncryptData(e));
+                return _context34.abrupt("return", this.secretType === Ot ? e : this.platformEncryptData(e));
               case 1:
               case "end":
                 return _context34.stop();
@@ -18005,14 +19128,14 @@ var Nt = /*#__PURE__*/function () {
           while (1) {
             switch (_context35.prev = _context35.next) {
               case 0:
-                if (!(this.secretType === xt)) {
+                if (!(this.secretType === Ot)) {
                   _context35.next = 2;
                   break;
                 }
                 return _context35.abrupt("return", e);
               case 2:
                 _ref20 = e || {}, t = _ref20.errCode, n = _ref20.content;
-                return _context35.abrupt("return", t || !n ? e : this.secretType === Rt ? n : this.platformDecryptResult(e));
+                return _context35.abrupt("return", t || !n ? e : this.secretType === xt ? n : this.platformDecryptResult(e));
               case 4:
               case "end":
                 return _context35.stop();
@@ -18157,36 +19280,36 @@ var Nt = /*#__PURE__*/function () {
       }));
     }
   }]);
-  return Nt;
+  return Lt;
 }();
 /*! MIT License. Copyright 2015-2018 Richard Moore <me@ricmoo.com>. See LICENSE.txt. */
-function Dt(e) {
+function Nt(e) {
   return parseInt(e) === e;
 }
-function Ft(e) {
-  if (!Dt(e.length)) return !1;
+function Dt(e) {
+  if (!Nt(e.length)) return !1;
   for (var t = 0; t < e.length; t++) {
-    if (!Dt(e[t]) || e[t] < 0 || e[t] > 255) return !1;
+    if (!Nt(e[t]) || e[t] < 0 || e[t] > 255) return !1;
   }
   return !0;
 }
-function qt(e, t) {
+function Ft(e, t) {
   if (e.buffer && "Uint8Array" === e.name) return t && (e = e.slice ? e.slice() : Array.prototype.slice.call(e)), e;
   if (Array.isArray(e)) {
-    if (!Ft(e)) throw new Error("Array contains invalid value: " + e);
+    if (!Dt(e)) throw new Error("Array contains invalid value: " + e);
     return new Uint8Array(e);
   }
-  if (Dt(e.length) && Ft(e)) return new Uint8Array(e);
+  if (Nt(e.length) && Dt(e)) return new Uint8Array(e);
   throw new Error("unsupported array-like object");
 }
-function Mt(e) {
+function qt(e) {
   return new Uint8Array(e);
 }
-function Kt(e, t, n, s, r) {
+function Mt(e, t, n, s, r) {
   null == s && null == r || (e = e.slice ? e.slice(s, r) : Array.prototype.slice.call(e, s, r)), t.set(e, n);
 }
-var jt,
-  Bt = {
+var Kt,
+  jt = {
     toBytes: function toBytes(e) {
       var t = [],
         n = 0;
@@ -18194,7 +19317,7 @@ var jt,
         var s = e.charCodeAt(n++);
         37 === s ? (t.push(parseInt(e.substr(n, 2), 16)), n += 2) : t.push(s);
       }
-      return qt(t);
+      return Ft(t);
     },
     fromBytes: function fromBytes(e) {
       for (var t = [], n = 0; n < e.length;) {
@@ -18204,7 +19327,7 @@ var jt,
       return t.join("");
     }
   },
-  $t = (jt = "0123456789abcdef", {
+  Bt = (Kt = "0123456789abcdef", {
     toBytes: function toBytes(e) {
       for (var t = [], n = 0; n < e.length; n += 2) {
         t.push(parseInt(e.substr(n, 2), 16));
@@ -18214,49 +19337,49 @@ var jt,
     fromBytes: function fromBytes(e) {
       for (var t = [], n = 0; n < e.length; n++) {
         var s = e[n];
-        t.push(jt[(240 & s) >> 4] + jt[15 & s]);
+        t.push(Kt[(240 & s) >> 4] + Kt[15 & s]);
       }
       return t.join("");
     }
   }),
-  Wt = {
+  $t = {
     16: 10,
     24: 12,
     32: 14
   },
-  zt = [1, 2, 4, 8, 16, 32, 64, 128, 27, 54, 108, 216, 171, 77, 154, 47, 94, 188, 99, 198, 151, 53, 106, 212, 179, 125, 250, 239, 197, 145],
-  Jt = [99, 124, 119, 123, 242, 107, 111, 197, 48, 1, 103, 43, 254, 215, 171, 118, 202, 130, 201, 125, 250, 89, 71, 240, 173, 212, 162, 175, 156, 164, 114, 192, 183, 253, 147, 38, 54, 63, 247, 204, 52, 165, 229, 241, 113, 216, 49, 21, 4, 199, 35, 195, 24, 150, 5, 154, 7, 18, 128, 226, 235, 39, 178, 117, 9, 131, 44, 26, 27, 110, 90, 160, 82, 59, 214, 179, 41, 227, 47, 132, 83, 209, 0, 237, 32, 252, 177, 91, 106, 203, 190, 57, 74, 76, 88, 207, 208, 239, 170, 251, 67, 77, 51, 133, 69, 249, 2, 127, 80, 60, 159, 168, 81, 163, 64, 143, 146, 157, 56, 245, 188, 182, 218, 33, 16, 255, 243, 210, 205, 12, 19, 236, 95, 151, 68, 23, 196, 167, 126, 61, 100, 93, 25, 115, 96, 129, 79, 220, 34, 42, 144, 136, 70, 238, 184, 20, 222, 94, 11, 219, 224, 50, 58, 10, 73, 6, 36, 92, 194, 211, 172, 98, 145, 149, 228, 121, 231, 200, 55, 109, 141, 213, 78, 169, 108, 86, 244, 234, 101, 122, 174, 8, 186, 120, 37, 46, 28, 166, 180, 198, 232, 221, 116, 31, 75, 189, 139, 138, 112, 62, 181, 102, 72, 3, 246, 14, 97, 53, 87, 185, 134, 193, 29, 158, 225, 248, 152, 17, 105, 217, 142, 148, 155, 30, 135, 233, 206, 85, 40, 223, 140, 161, 137, 13, 191, 230, 66, 104, 65, 153, 45, 15, 176, 84, 187, 22],
-  Ht = [82, 9, 106, 213, 48, 54, 165, 56, 191, 64, 163, 158, 129, 243, 215, 251, 124, 227, 57, 130, 155, 47, 255, 135, 52, 142, 67, 68, 196, 222, 233, 203, 84, 123, 148, 50, 166, 194, 35, 61, 238, 76, 149, 11, 66, 250, 195, 78, 8, 46, 161, 102, 40, 217, 36, 178, 118, 91, 162, 73, 109, 139, 209, 37, 114, 248, 246, 100, 134, 104, 152, 22, 212, 164, 92, 204, 93, 101, 182, 146, 108, 112, 72, 80, 253, 237, 185, 218, 94, 21, 70, 87, 167, 141, 157, 132, 144, 216, 171, 0, 140, 188, 211, 10, 247, 228, 88, 5, 184, 179, 69, 6, 208, 44, 30, 143, 202, 63, 15, 2, 193, 175, 189, 3, 1, 19, 138, 107, 58, 145, 17, 65, 79, 103, 220, 234, 151, 242, 207, 206, 240, 180, 230, 115, 150, 172, 116, 34, 231, 173, 53, 133, 226, 249, 55, 232, 28, 117, 223, 110, 71, 241, 26, 113, 29, 41, 197, 137, 111, 183, 98, 14, 170, 24, 190, 27, 252, 86, 62, 75, 198, 210, 121, 32, 154, 219, 192, 254, 120, 205, 90, 244, 31, 221, 168, 51, 136, 7, 199, 49, 177, 18, 16, 89, 39, 128, 236, 95, 96, 81, 127, 169, 25, 181, 74, 13, 45, 229, 122, 159, 147, 201, 156, 239, 160, 224, 59, 77, 174, 42, 245, 176, 200, 235, 187, 60, 131, 83, 153, 97, 23, 43, 4, 126, 186, 119, 214, 38, 225, 105, 20, 99, 85, 33, 12, 125],
-  Gt = [3328402341, 4168907908, 4000806809, 4135287693, 4294111757, 3597364157, 3731845041, 2445657428, 1613770832, 33620227, 3462883241, 1445669757, 3892248089, 3050821474, 1303096294, 3967186586, 2412431941, 528646813, 2311702848, 4202528135, 4026202645, 2992200171, 2387036105, 4226871307, 1101901292, 3017069671, 1604494077, 1169141738, 597466303, 1403299063, 3832705686, 2613100635, 1974974402, 3791519004, 1033081774, 1277568618, 1815492186, 2118074177, 4126668546, 2211236943, 1748251740, 1369810420, 3521504564, 4193382664, 3799085459, 2883115123, 1647391059, 706024767, 134480908, 2512897874, 1176707941, 2646852446, 806885416, 932615841, 168101135, 798661301, 235341577, 605164086, 461406363, 3756188221, 3454790438, 1311188841, 2142417613, 3933566367, 302582043, 495158174, 1479289972, 874125870, 907746093, 3698224818, 3025820398, 1537253627, 2756858614, 1983593293, 3084310113, 2108928974, 1378429307, 3722699582, 1580150641, 327451799, 2790478837, 3117535592, 0, 3253595436, 1075847264, 3825007647, 2041688520, 3059440621, 3563743934, 2378943302, 1740553945, 1916352843, 2487896798, 2555137236, 2958579944, 2244988746, 3151024235, 3320835882, 1336584933, 3992714006, 2252555205, 2588757463, 1714631509, 293963156, 2319795663, 3925473552, 67240454, 4269768577, 2689618160, 2017213508, 631218106, 1269344483, 2723238387, 1571005438, 2151694528, 93294474, 1066570413, 563977660, 1882732616, 4059428100, 1673313503, 2008463041, 2950355573, 1109467491, 537923632, 3858759450, 4260623118, 3218264685, 2177748300, 403442708, 638784309, 3287084079, 3193921505, 899127202, 2286175436, 773265209, 2479146071, 1437050866, 4236148354, 2050833735, 3362022572, 3126681063, 840505643, 3866325909, 3227541664, 427917720, 2655997905, 2749160575, 1143087718, 1412049534, 999329963, 193497219, 2353415882, 3354324521, 1807268051, 672404540, 2816401017, 3160301282, 369822493, 2916866934, 3688947771, 1681011286, 1949973070, 336202270, 2454276571, 201721354, 1210328172, 3093060836, 2680341085, 3184776046, 1135389935, 3294782118, 965841320, 831886756, 3554993207, 4068047243, 3588745010, 2345191491, 1849112409, 3664604599, 26054028, 2983581028, 2622377682, 1235855840, 3630984372, 2891339514, 4092916743, 3488279077, 3395642799, 4101667470, 1202630377, 268961816, 1874508501, 4034427016, 1243948399, 1546530418, 941366308, 1470539505, 1941222599, 2546386513, 3421038627, 2715671932, 3899946140, 1042226977, 2521517021, 1639824860, 227249030, 260737669, 3765465232, 2084453954, 1907733956, 3429263018, 2420656344, 100860677, 4160157185, 470683154, 3261161891, 1781871967, 2924959737, 1773779408, 394692241, 2579611992, 974986535, 664706745, 3655459128, 3958962195, 731420851, 571543859, 3530123707, 2849626480, 126783113, 865375399, 765172662, 1008606754, 361203602, 3387549984, 2278477385, 2857719295, 1344809080, 2782912378, 59542671, 1503764984, 160008576, 437062935, 1707065306, 3622233649, 2218934982, 3496503480, 2185314755, 697932208, 1512910199, 504303377, 2075177163, 2824099068, 1841019862, 739644986],
-  Vt = [2781242211, 2230877308, 2582542199, 2381740923, 234877682, 3184946027, 2984144751, 1418839493, 1348481072, 50462977, 2848876391, 2102799147, 434634494, 1656084439, 3863849899, 2599188086, 1167051466, 2636087938, 1082771913, 2281340285, 368048890, 3954334041, 3381544775, 201060592, 3963727277, 1739838676, 4250903202, 3930435503, 3206782108, 4149453988, 2531553906, 1536934080, 3262494647, 484572669, 2923271059, 1783375398, 1517041206, 1098792767, 49674231, 1334037708, 1550332980, 4098991525, 886171109, 150598129, 2481090929, 1940642008, 1398944049, 1059722517, 201851908, 1385547719, 1699095331, 1587397571, 674240536, 2704774806, 252314885, 3039795866, 151914247, 908333586, 2602270848, 1038082786, 651029483, 1766729511, 3447698098, 2682942837, 454166793, 2652734339, 1951935532, 775166490, 758520603, 3000790638, 4004797018, 4217086112, 4137964114, 1299594043, 1639438038, 3464344499, 2068982057, 1054729187, 1901997871, 2534638724, 4121318227, 1757008337, 0, 750906861, 1614815264, 535035132, 3363418545, 3988151131, 3201591914, 1183697867, 3647454910, 1265776953, 3734260298, 3566750796, 3903871064, 1250283471, 1807470800, 717615087, 3847203498, 384695291, 3313910595, 3617213773, 1432761139, 2484176261, 3481945413, 283769337, 100925954, 2180939647, 4037038160, 1148730428, 3123027871, 3813386408, 4087501137, 4267549603, 3229630528, 2315620239, 2906624658, 3156319645, 1215313976, 82966005, 3747855548, 3245848246, 1974459098, 1665278241, 807407632, 451280895, 251524083, 1841287890, 1283575245, 337120268, 891687699, 801369324, 3787349855, 2721421207, 3431482436, 959321879, 1469301956, 4065699751, 2197585534, 1199193405, 2898814052, 3887750493, 724703513, 2514908019, 2696962144, 2551808385, 3516813135, 2141445340, 1715741218, 2119445034, 2872807568, 2198571144, 3398190662, 700968686, 3547052216, 1009259540, 2041044702, 3803995742, 487983883, 1991105499, 1004265696, 1449407026, 1316239930, 504629770, 3683797321, 168560134, 1816667172, 3837287516, 1570751170, 1857934291, 4014189740, 2797888098, 2822345105, 2754712981, 936633572, 2347923833, 852879335, 1133234376, 1500395319, 3084545389, 2348912013, 1689376213, 3533459022, 3762923945, 3034082412, 4205598294, 133428468, 634383082, 2949277029, 2398386810, 3913789102, 403703816, 3580869306, 2297460856, 1867130149, 1918643758, 607656988, 4049053350, 3346248884, 1368901318, 600565992, 2090982877, 2632479860, 557719327, 3717614411, 3697393085, 2249034635, 2232388234, 2430627952, 1115438654, 3295786421, 2865522278, 3633334344, 84280067, 33027830, 303828494, 2747425121, 1600795957, 4188952407, 3496589753, 2434238086, 1486471617, 658119965, 3106381470, 953803233, 334231800, 3005978776, 857870609, 3151128937, 1890179545, 2298973838, 2805175444, 3056442267, 574365214, 2450884487, 550103529, 1233637070, 4289353045, 2018519080, 2057691103, 2399374476, 4166623649, 2148108681, 387583245, 3664101311, 836232934, 3330556482, 3100665960, 3280093505, 2955516313, 2002398509, 287182607, 3413881008, 4238890068, 3597515707, 975967766],
-  Qt = [1671808611, 2089089148, 2006576759, 2072901243, 4061003762, 1807603307, 1873927791, 3310653893, 810573872, 16974337, 1739181671, 729634347, 4263110654, 3613570519, 2883997099, 1989864566, 3393556426, 2191335298, 3376449993, 2106063485, 4195741690, 1508618841, 1204391495, 4027317232, 2917941677, 3563566036, 2734514082, 2951366063, 2629772188, 2767672228, 1922491506, 3227229120, 3082974647, 4246528509, 2477669779, 644500518, 911895606, 1061256767, 4144166391, 3427763148, 878471220, 2784252325, 3845444069, 4043897329, 1905517169, 3631459288, 827548209, 356461077, 67897348, 3344078279, 593839651, 3277757891, 405286936, 2527147926, 84871685, 2595565466, 118033927, 305538066, 2157648768, 3795705826, 3945188843, 661212711, 2999812018, 1973414517, 152769033, 2208177539, 745822252, 439235610, 455947803, 1857215598, 1525593178, 2700827552, 1391895634, 994932283, 3596728278, 3016654259, 695947817, 3812548067, 795958831, 2224493444, 1408607827, 3513301457, 0, 3979133421, 543178784, 4229948412, 2982705585, 1542305371, 1790891114, 3410398667, 3201918910, 961245753, 1256100938, 1289001036, 1491644504, 3477767631, 3496721360, 4012557807, 2867154858, 4212583931, 1137018435, 1305975373, 861234739, 2241073541, 1171229253, 4178635257, 33948674, 2139225727, 1357946960, 1011120188, 2679776671, 2833468328, 1374921297, 2751356323, 1086357568, 2408187279, 2460827538, 2646352285, 944271416, 4110742005, 3168756668, 3066132406, 3665145818, 560153121, 271589392, 4279952895, 4077846003, 3530407890, 3444343245, 202643468, 322250259, 3962553324, 1608629855, 2543990167, 1154254916, 389623319, 3294073796, 2817676711, 2122513534, 1028094525, 1689045092, 1575467613, 422261273, 1939203699, 1621147744, 2174228865, 1339137615, 3699352540, 577127458, 712922154, 2427141008, 2290289544, 1187679302, 3995715566, 3100863416, 339486740, 3732514782, 1591917662, 186455563, 3681988059, 3762019296, 844522546, 978220090, 169743370, 1239126601, 101321734, 611076132, 1558493276, 3260915650, 3547250131, 2901361580, 1655096418, 2443721105, 2510565781, 3828863972, 2039214713, 3878868455, 3359869896, 928607799, 1840765549, 2374762893, 3580146133, 1322425422, 2850048425, 1823791212, 1459268694, 4094161908, 3928346602, 1706019429, 2056189050, 2934523822, 135794696, 3134549946, 2022240376, 628050469, 779246638, 472135708, 2800834470, 3032970164, 3327236038, 3894660072, 3715932637, 1956440180, 522272287, 1272813131, 3185336765, 2340818315, 2323976074, 1888542832, 1044544574, 3049550261, 1722469478, 1222152264, 50660867, 4127324150, 236067854, 1638122081, 895445557, 1475980887, 3117443513, 2257655686, 3243809217, 489110045, 2662934430, 3778599393, 4162055160, 2561878936, 288563729, 1773916777, 3648039385, 2391345038, 2493985684, 2612407707, 505560094, 2274497927, 3911240169, 3460925390, 1442818645, 678973480, 3749357023, 2358182796, 2717407649, 2306869641, 219617805, 3218761151, 3862026214, 1120306242, 1756942440, 1103331905, 2578459033, 762796589, 252780047, 2966125488, 1425844308, 3151392187, 372911126],
+  Wt = [1, 2, 4, 8, 16, 32, 64, 128, 27, 54, 108, 216, 171, 77, 154, 47, 94, 188, 99, 198, 151, 53, 106, 212, 179, 125, 250, 239, 197, 145],
+  zt = [99, 124, 119, 123, 242, 107, 111, 197, 48, 1, 103, 43, 254, 215, 171, 118, 202, 130, 201, 125, 250, 89, 71, 240, 173, 212, 162, 175, 156, 164, 114, 192, 183, 253, 147, 38, 54, 63, 247, 204, 52, 165, 229, 241, 113, 216, 49, 21, 4, 199, 35, 195, 24, 150, 5, 154, 7, 18, 128, 226, 235, 39, 178, 117, 9, 131, 44, 26, 27, 110, 90, 160, 82, 59, 214, 179, 41, 227, 47, 132, 83, 209, 0, 237, 32, 252, 177, 91, 106, 203, 190, 57, 74, 76, 88, 207, 208, 239, 170, 251, 67, 77, 51, 133, 69, 249, 2, 127, 80, 60, 159, 168, 81, 163, 64, 143, 146, 157, 56, 245, 188, 182, 218, 33, 16, 255, 243, 210, 205, 12, 19, 236, 95, 151, 68, 23, 196, 167, 126, 61, 100, 93, 25, 115, 96, 129, 79, 220, 34, 42, 144, 136, 70, 238, 184, 20, 222, 94, 11, 219, 224, 50, 58, 10, 73, 6, 36, 92, 194, 211, 172, 98, 145, 149, 228, 121, 231, 200, 55, 109, 141, 213, 78, 169, 108, 86, 244, 234, 101, 122, 174, 8, 186, 120, 37, 46, 28, 166, 180, 198, 232, 221, 116, 31, 75, 189, 139, 138, 112, 62, 181, 102, 72, 3, 246, 14, 97, 53, 87, 185, 134, 193, 29, 158, 225, 248, 152, 17, 105, 217, 142, 148, 155, 30, 135, 233, 206, 85, 40, 223, 140, 161, 137, 13, 191, 230, 66, 104, 65, 153, 45, 15, 176, 84, 187, 22],
+  Jt = [82, 9, 106, 213, 48, 54, 165, 56, 191, 64, 163, 158, 129, 243, 215, 251, 124, 227, 57, 130, 155, 47, 255, 135, 52, 142, 67, 68, 196, 222, 233, 203, 84, 123, 148, 50, 166, 194, 35, 61, 238, 76, 149, 11, 66, 250, 195, 78, 8, 46, 161, 102, 40, 217, 36, 178, 118, 91, 162, 73, 109, 139, 209, 37, 114, 248, 246, 100, 134, 104, 152, 22, 212, 164, 92, 204, 93, 101, 182, 146, 108, 112, 72, 80, 253, 237, 185, 218, 94, 21, 70, 87, 167, 141, 157, 132, 144, 216, 171, 0, 140, 188, 211, 10, 247, 228, 88, 5, 184, 179, 69, 6, 208, 44, 30, 143, 202, 63, 15, 2, 193, 175, 189, 3, 1, 19, 138, 107, 58, 145, 17, 65, 79, 103, 220, 234, 151, 242, 207, 206, 240, 180, 230, 115, 150, 172, 116, 34, 231, 173, 53, 133, 226, 249, 55, 232, 28, 117, 223, 110, 71, 241, 26, 113, 29, 41, 197, 137, 111, 183, 98, 14, 170, 24, 190, 27, 252, 86, 62, 75, 198, 210, 121, 32, 154, 219, 192, 254, 120, 205, 90, 244, 31, 221, 168, 51, 136, 7, 199, 49, 177, 18, 16, 89, 39, 128, 236, 95, 96, 81, 127, 169, 25, 181, 74, 13, 45, 229, 122, 159, 147, 201, 156, 239, 160, 224, 59, 77, 174, 42, 245, 176, 200, 235, 187, 60, 131, 83, 153, 97, 23, 43, 4, 126, 186, 119, 214, 38, 225, 105, 20, 99, 85, 33, 12, 125],
+  Ht = [3328402341, 4168907908, 4000806809, 4135287693, 4294111757, 3597364157, 3731845041, 2445657428, 1613770832, 33620227, 3462883241, 1445669757, 3892248089, 3050821474, 1303096294, 3967186586, 2412431941, 528646813, 2311702848, 4202528135, 4026202645, 2992200171, 2387036105, 4226871307, 1101901292, 3017069671, 1604494077, 1169141738, 597466303, 1403299063, 3832705686, 2613100635, 1974974402, 3791519004, 1033081774, 1277568618, 1815492186, 2118074177, 4126668546, 2211236943, 1748251740, 1369810420, 3521504564, 4193382664, 3799085459, 2883115123, 1647391059, 706024767, 134480908, 2512897874, 1176707941, 2646852446, 806885416, 932615841, 168101135, 798661301, 235341577, 605164086, 461406363, 3756188221, 3454790438, 1311188841, 2142417613, 3933566367, 302582043, 495158174, 1479289972, 874125870, 907746093, 3698224818, 3025820398, 1537253627, 2756858614, 1983593293, 3084310113, 2108928974, 1378429307, 3722699582, 1580150641, 327451799, 2790478837, 3117535592, 0, 3253595436, 1075847264, 3825007647, 2041688520, 3059440621, 3563743934, 2378943302, 1740553945, 1916352843, 2487896798, 2555137236, 2958579944, 2244988746, 3151024235, 3320835882, 1336584933, 3992714006, 2252555205, 2588757463, 1714631509, 293963156, 2319795663, 3925473552, 67240454, 4269768577, 2689618160, 2017213508, 631218106, 1269344483, 2723238387, 1571005438, 2151694528, 93294474, 1066570413, 563977660, 1882732616, 4059428100, 1673313503, 2008463041, 2950355573, 1109467491, 537923632, 3858759450, 4260623118, 3218264685, 2177748300, 403442708, 638784309, 3287084079, 3193921505, 899127202, 2286175436, 773265209, 2479146071, 1437050866, 4236148354, 2050833735, 3362022572, 3126681063, 840505643, 3866325909, 3227541664, 427917720, 2655997905, 2749160575, 1143087718, 1412049534, 999329963, 193497219, 2353415882, 3354324521, 1807268051, 672404540, 2816401017, 3160301282, 369822493, 2916866934, 3688947771, 1681011286, 1949973070, 336202270, 2454276571, 201721354, 1210328172, 3093060836, 2680341085, 3184776046, 1135389935, 3294782118, 965841320, 831886756, 3554993207, 4068047243, 3588745010, 2345191491, 1849112409, 3664604599, 26054028, 2983581028, 2622377682, 1235855840, 3630984372, 2891339514, 4092916743, 3488279077, 3395642799, 4101667470, 1202630377, 268961816, 1874508501, 4034427016, 1243948399, 1546530418, 941366308, 1470539505, 1941222599, 2546386513, 3421038627, 2715671932, 3899946140, 1042226977, 2521517021, 1639824860, 227249030, 260737669, 3765465232, 2084453954, 1907733956, 3429263018, 2420656344, 100860677, 4160157185, 470683154, 3261161891, 1781871967, 2924959737, 1773779408, 394692241, 2579611992, 974986535, 664706745, 3655459128, 3958962195, 731420851, 571543859, 3530123707, 2849626480, 126783113, 865375399, 765172662, 1008606754, 361203602, 3387549984, 2278477385, 2857719295, 1344809080, 2782912378, 59542671, 1503764984, 160008576, 437062935, 1707065306, 3622233649, 2218934982, 3496503480, 2185314755, 697932208, 1512910199, 504303377, 2075177163, 2824099068, 1841019862, 739644986],
+  Gt = [2781242211, 2230877308, 2582542199, 2381740923, 234877682, 3184946027, 2984144751, 1418839493, 1348481072, 50462977, 2848876391, 2102799147, 434634494, 1656084439, 3863849899, 2599188086, 1167051466, 2636087938, 1082771913, 2281340285, 368048890, 3954334041, 3381544775, 201060592, 3963727277, 1739838676, 4250903202, 3930435503, 3206782108, 4149453988, 2531553906, 1536934080, 3262494647, 484572669, 2923271059, 1783375398, 1517041206, 1098792767, 49674231, 1334037708, 1550332980, 4098991525, 886171109, 150598129, 2481090929, 1940642008, 1398944049, 1059722517, 201851908, 1385547719, 1699095331, 1587397571, 674240536, 2704774806, 252314885, 3039795866, 151914247, 908333586, 2602270848, 1038082786, 651029483, 1766729511, 3447698098, 2682942837, 454166793, 2652734339, 1951935532, 775166490, 758520603, 3000790638, 4004797018, 4217086112, 4137964114, 1299594043, 1639438038, 3464344499, 2068982057, 1054729187, 1901997871, 2534638724, 4121318227, 1757008337, 0, 750906861, 1614815264, 535035132, 3363418545, 3988151131, 3201591914, 1183697867, 3647454910, 1265776953, 3734260298, 3566750796, 3903871064, 1250283471, 1807470800, 717615087, 3847203498, 384695291, 3313910595, 3617213773, 1432761139, 2484176261, 3481945413, 283769337, 100925954, 2180939647, 4037038160, 1148730428, 3123027871, 3813386408, 4087501137, 4267549603, 3229630528, 2315620239, 2906624658, 3156319645, 1215313976, 82966005, 3747855548, 3245848246, 1974459098, 1665278241, 807407632, 451280895, 251524083, 1841287890, 1283575245, 337120268, 891687699, 801369324, 3787349855, 2721421207, 3431482436, 959321879, 1469301956, 4065699751, 2197585534, 1199193405, 2898814052, 3887750493, 724703513, 2514908019, 2696962144, 2551808385, 3516813135, 2141445340, 1715741218, 2119445034, 2872807568, 2198571144, 3398190662, 700968686, 3547052216, 1009259540, 2041044702, 3803995742, 487983883, 1991105499, 1004265696, 1449407026, 1316239930, 504629770, 3683797321, 168560134, 1816667172, 3837287516, 1570751170, 1857934291, 4014189740, 2797888098, 2822345105, 2754712981, 936633572, 2347923833, 852879335, 1133234376, 1500395319, 3084545389, 2348912013, 1689376213, 3533459022, 3762923945, 3034082412, 4205598294, 133428468, 634383082, 2949277029, 2398386810, 3913789102, 403703816, 3580869306, 2297460856, 1867130149, 1918643758, 607656988, 4049053350, 3346248884, 1368901318, 600565992, 2090982877, 2632479860, 557719327, 3717614411, 3697393085, 2249034635, 2232388234, 2430627952, 1115438654, 3295786421, 2865522278, 3633334344, 84280067, 33027830, 303828494, 2747425121, 1600795957, 4188952407, 3496589753, 2434238086, 1486471617, 658119965, 3106381470, 953803233, 334231800, 3005978776, 857870609, 3151128937, 1890179545, 2298973838, 2805175444, 3056442267, 574365214, 2450884487, 550103529, 1233637070, 4289353045, 2018519080, 2057691103, 2399374476, 4166623649, 2148108681, 387583245, 3664101311, 836232934, 3330556482, 3100665960, 3280093505, 2955516313, 2002398509, 287182607, 3413881008, 4238890068, 3597515707, 975967766],
+  Vt = [1671808611, 2089089148, 2006576759, 2072901243, 4061003762, 1807603307, 1873927791, 3310653893, 810573872, 16974337, 1739181671, 729634347, 4263110654, 3613570519, 2883997099, 1989864566, 3393556426, 2191335298, 3376449993, 2106063485, 4195741690, 1508618841, 1204391495, 4027317232, 2917941677, 3563566036, 2734514082, 2951366063, 2629772188, 2767672228, 1922491506, 3227229120, 3082974647, 4246528509, 2477669779, 644500518, 911895606, 1061256767, 4144166391, 3427763148, 878471220, 2784252325, 3845444069, 4043897329, 1905517169, 3631459288, 827548209, 356461077, 67897348, 3344078279, 593839651, 3277757891, 405286936, 2527147926, 84871685, 2595565466, 118033927, 305538066, 2157648768, 3795705826, 3945188843, 661212711, 2999812018, 1973414517, 152769033, 2208177539, 745822252, 439235610, 455947803, 1857215598, 1525593178, 2700827552, 1391895634, 994932283, 3596728278, 3016654259, 695947817, 3812548067, 795958831, 2224493444, 1408607827, 3513301457, 0, 3979133421, 543178784, 4229948412, 2982705585, 1542305371, 1790891114, 3410398667, 3201918910, 961245753, 1256100938, 1289001036, 1491644504, 3477767631, 3496721360, 4012557807, 2867154858, 4212583931, 1137018435, 1305975373, 861234739, 2241073541, 1171229253, 4178635257, 33948674, 2139225727, 1357946960, 1011120188, 2679776671, 2833468328, 1374921297, 2751356323, 1086357568, 2408187279, 2460827538, 2646352285, 944271416, 4110742005, 3168756668, 3066132406, 3665145818, 560153121, 271589392, 4279952895, 4077846003, 3530407890, 3444343245, 202643468, 322250259, 3962553324, 1608629855, 2543990167, 1154254916, 389623319, 3294073796, 2817676711, 2122513534, 1028094525, 1689045092, 1575467613, 422261273, 1939203699, 1621147744, 2174228865, 1339137615, 3699352540, 577127458, 712922154, 2427141008, 2290289544, 1187679302, 3995715566, 3100863416, 339486740, 3732514782, 1591917662, 186455563, 3681988059, 3762019296, 844522546, 978220090, 169743370, 1239126601, 101321734, 611076132, 1558493276, 3260915650, 3547250131, 2901361580, 1655096418, 2443721105, 2510565781, 3828863972, 2039214713, 3878868455, 3359869896, 928607799, 1840765549, 2374762893, 3580146133, 1322425422, 2850048425, 1823791212, 1459268694, 4094161908, 3928346602, 1706019429, 2056189050, 2934523822, 135794696, 3134549946, 2022240376, 628050469, 779246638, 472135708, 2800834470, 3032970164, 3327236038, 3894660072, 3715932637, 1956440180, 522272287, 1272813131, 3185336765, 2340818315, 2323976074, 1888542832, 1044544574, 3049550261, 1722469478, 1222152264, 50660867, 4127324150, 236067854, 1638122081, 895445557, 1475980887, 3117443513, 2257655686, 3243809217, 489110045, 2662934430, 3778599393, 4162055160, 2561878936, 288563729, 1773916777, 3648039385, 2391345038, 2493985684, 2612407707, 505560094, 2274497927, 3911240169, 3460925390, 1442818645, 678973480, 3749357023, 2358182796, 2717407649, 2306869641, 219617805, 3218761151, 3862026214, 1120306242, 1756942440, 1103331905, 2578459033, 762796589, 252780047, 2966125488, 1425844308, 3151392187, 372911126],
   Yt = [1667474886, 2088535288, 2004326894, 2071694838, 4075949567, 1802223062, 1869591006, 3318043793, 808472672, 16843522, 1734846926, 724270422, 4278065639, 3621216949, 2880169549, 1987484396, 3402253711, 2189597983, 3385409673, 2105378810, 4210693615, 1499065266, 1195886990, 4042263547, 2913856577, 3570689971, 2728590687, 2947541573, 2627518243, 2762274643, 1920112356, 3233831835, 3082273397, 4261223649, 2475929149, 640051788, 909531756, 1061110142, 4160160501, 3435941763, 875846760, 2779116625, 3857003729, 4059105529, 1903268834, 3638064043, 825316194, 353713962, 67374088, 3351728789, 589522246, 3284360861, 404236336, 2526454071, 84217610, 2593830191, 117901582, 303183396, 2155911963, 3806477791, 3958056653, 656894286, 2998062463, 1970642922, 151591698, 2206440989, 741110872, 437923380, 454765878, 1852748508, 1515908788, 2694904667, 1381168804, 993742198, 3604373943, 3014905469, 690584402, 3823320797, 791638366, 2223281939, 1398011302, 3520161977, 0, 3991743681, 538992704, 4244381667, 2981218425, 1532751286, 1785380564, 3419096717, 3200178535, 960056178, 1246420628, 1280103576, 1482221744, 3486468741, 3503319995, 4025428677, 2863326543, 4227536621, 1128514950, 1296947098, 859002214, 2240123921, 1162203018, 4193849577, 33687044, 2139062782, 1347481760, 1010582648, 2678045221, 2829640523, 1364325282, 2745433693, 1077985408, 2408548869, 2459086143, 2644360225, 943212656, 4126475505, 3166494563, 3065430391, 3671750063, 555836226, 269496352, 4294908645, 4092792573, 3537006015, 3452783745, 202118168, 320025894, 3974901699, 1600119230, 2543297077, 1145359496, 387397934, 3301201811, 2812801621, 2122220284, 1027426170, 1684319432, 1566435258, 421079858, 1936954854, 1616945344, 2172753945, 1330631070, 3705438115, 572679748, 707427924, 2425400123, 2290647819, 1179044492, 4008585671, 3099120491, 336870440, 3739122087, 1583276732, 185277718, 3688593069, 3772791771, 842159716, 976899700, 168435220, 1229577106, 101059084, 606366792, 1549591736, 3267517855, 3553849021, 2897014595, 1650632388, 2442242105, 2509612081, 3840161747, 2038008818, 3890688725, 3368567691, 926374254, 1835907034, 2374863873, 3587531953, 1313788572, 2846482505, 1819063512, 1448540844, 4109633523, 3941213647, 1701162954, 2054852340, 2930698567, 134748176, 3132806511, 2021165296, 623210314, 774795868, 471606328, 2795958615, 3031746419, 3334885783, 3907527627, 3722280097, 1953799400, 522133822, 1263263126, 3183336545, 2341176845, 2324333839, 1886425312, 1044267644, 3048588401, 1718004428, 1212733584, 50529542, 4143317495, 235803164, 1633788866, 892690282, 1465383342, 3115962473, 2256965911, 3250673817, 488449850, 2661202215, 3789633753, 4177007595, 2560144171, 286339874, 1768537042, 3654906025, 2391705863, 2492770099, 2610673197, 505291324, 2273808917, 3924369609, 3469625735, 1431699370, 673740880, 3755965093, 2358021891, 2711746649, 2307489801, 218961690, 3217021541, 3873845719, 1111672452, 1751693520, 1094828930, 2576986153, 757954394, 252645662, 2964376443, 1414855848, 3149649517, 370555436],
-  Xt = [1374988112, 2118214995, 437757123, 975658646, 1001089995, 530400753, 2902087851, 1273168787, 540080725, 2910219766, 2295101073, 4110568485, 1340463100, 3307916247, 641025152, 3043140495, 3736164937, 632953703, 1172967064, 1576976609, 3274667266, 2169303058, 2370213795, 1809054150, 59727847, 361929877, 3211623147, 2505202138, 3569255213, 1484005843, 1239443753, 2395588676, 1975683434, 4102977912, 2572697195, 666464733, 3202437046, 4035489047, 3374361702, 2110667444, 1675577880, 3843699074, 2538681184, 1649639237, 2976151520, 3144396420, 4269907996, 4178062228, 1883793496, 2403728665, 2497604743, 1383856311, 2876494627, 1917518562, 3810496343, 1716890410, 3001755655, 800440835, 2261089178, 3543599269, 807962610, 599762354, 33778362, 3977675356, 2328828971, 2809771154, 4077384432, 1315562145, 1708848333, 101039829, 3509871135, 3299278474, 875451293, 2733856160, 92987698, 2767645557, 193195065, 1080094634, 1584504582, 3178106961, 1042385657, 2531067453, 3711829422, 1306967366, 2438237621, 1908694277, 67556463, 1615861247, 429456164, 3602770327, 2302690252, 1742315127, 2968011453, 126454664, 3877198648, 2043211483, 2709260871, 2084704233, 4169408201, 0, 159417987, 841739592, 504459436, 1817866830, 4245618683, 260388950, 1034867998, 908933415, 168810852, 1750902305, 2606453969, 607530554, 202008497, 2472011535, 3035535058, 463180190, 2160117071, 1641816226, 1517767529, 470948374, 3801332234, 3231722213, 1008918595, 303765277, 235474187, 4069246893, 766945465, 337553864, 1475418501, 2943682380, 4003061179, 2743034109, 4144047775, 1551037884, 1147550661, 1543208500, 2336434550, 3408119516, 3069049960, 3102011747, 3610369226, 1113818384, 328671808, 2227573024, 2236228733, 3535486456, 2935566865, 3341394285, 496906059, 3702665459, 226906860, 2009195472, 733156972, 2842737049, 294930682, 1206477858, 2835123396, 2700099354, 1451044056, 573804783, 2269728455, 3644379585, 2362090238, 2564033334, 2801107407, 2776292904, 3669462566, 1068351396, 742039012, 1350078989, 1784663195, 1417561698, 4136440770, 2430122216, 775550814, 2193862645, 2673705150, 1775276924, 1876241833, 3475313331, 3366754619, 270040487, 3902563182, 3678124923, 3441850377, 1851332852, 3969562369, 2203032232, 3868552805, 2868897406, 566021896, 4011190502, 3135740889, 1248802510, 3936291284, 699432150, 832877231, 708780849, 3332740144, 899835584, 1951317047, 4236429990, 3767586992, 866637845, 4043610186, 1106041591, 2144161806, 395441711, 1984812685, 1139781709, 3433712980, 3835036895, 2664543715, 1282050075, 3240894392, 1181045119, 2640243204, 25965917, 4203181171, 4211818798, 3009879386, 2463879762, 3910161971, 1842759443, 2597806476, 933301370, 1509430414, 3943906441, 3467192302, 3076639029, 3776767469, 2051518780, 2631065433, 1441952575, 404016761, 1942435775, 1408749034, 1610459739, 3745345300, 2017778566, 3400528769, 3110650942, 941896748, 3265478751, 371049330, 3168937228, 675039627, 4279080257, 967311729, 135050206, 3635733660, 1683407248, 2076935265, 3576870512, 1215061108, 3501741890],
-  Zt = [1347548327, 1400783205, 3273267108, 2520393566, 3409685355, 4045380933, 2880240216, 2471224067, 1428173050, 4138563181, 2441661558, 636813900, 4233094615, 3620022987, 2149987652, 2411029155, 1239331162, 1730525723, 2554718734, 3781033664, 46346101, 310463728, 2743944855, 3328955385, 3875770207, 2501218972, 3955191162, 3667219033, 768917123, 3545789473, 692707433, 1150208456, 1786102409, 2029293177, 1805211710, 3710368113, 3065962831, 401639597, 1724457132, 3028143674, 409198410, 2196052529, 1620529459, 1164071807, 3769721975, 2226875310, 486441376, 2499348523, 1483753576, 428819965, 2274680428, 3075636216, 598438867, 3799141122, 1474502543, 711349675, 129166120, 53458370, 2592523643, 2782082824, 4063242375, 2988687269, 3120694122, 1559041666, 730517276, 2460449204, 4042459122, 2706270690, 3446004468, 3573941694, 533804130, 2328143614, 2637442643, 2695033685, 839224033, 1973745387, 957055980, 2856345839, 106852767, 1371368976, 4181598602, 1033297158, 2933734917, 1179510461, 3046200461, 91341917, 1862534868, 4284502037, 605657339, 2547432937, 3431546947, 2003294622, 3182487618, 2282195339, 954669403, 3682191598, 1201765386, 3917234703, 3388507166, 0, 2198438022, 1211247597, 2887651696, 1315723890, 4227665663, 1443857720, 507358933, 657861945, 1678381017, 560487590, 3516619604, 975451694, 2970356327, 261314535, 3535072918, 2652609425, 1333838021, 2724322336, 1767536459, 370938394, 182621114, 3854606378, 1128014560, 487725847, 185469197, 2918353863, 3106780840, 3356761769, 2237133081, 1286567175, 3152976349, 4255350624, 2683765030, 3160175349, 3309594171, 878443390, 1988838185, 3704300486, 1756818940, 1673061617, 3403100636, 272786309, 1075025698, 545572369, 2105887268, 4174560061, 296679730, 1841768865, 1260232239, 4091327024, 3960309330, 3497509347, 1814803222, 2578018489, 4195456072, 575138148, 3299409036, 446754879, 3629546796, 4011996048, 3347532110, 3252238545, 4270639778, 915985419, 3483825537, 681933534, 651868046, 2755636671, 3828103837, 223377554, 2607439820, 1649704518, 3270937875, 3901806776, 1580087799, 4118987695, 3198115200, 2087309459, 2842678573, 3016697106, 1003007129, 2802849917, 1860738147, 2077965243, 164439672, 4100872472, 32283319, 2827177882, 1709610350, 2125135846, 136428751, 3874428392, 3652904859, 3460984630, 3572145929, 3593056380, 2939266226, 824852259, 818324884, 3224740454, 930369212, 2801566410, 2967507152, 355706840, 1257309336, 4148292826, 243256656, 790073846, 2373340630, 1296297904, 1422699085, 3756299780, 3818836405, 457992840, 3099667487, 2135319889, 77422314, 1560382517, 1945798516, 788204353, 1521706781, 1385356242, 870912086, 325965383, 2358957921, 2050466060, 2388260884, 2313884476, 4006521127, 901210569, 3990953189, 1014646705, 1503449823, 1062597235, 2031621326, 3212035895, 3931371469, 1533017514, 350174575, 2256028891, 2177544179, 1052338372, 741876788, 1606591296, 1914052035, 213705253, 2334669897, 1107234197, 1899603969, 3725069491, 2631447780, 2422494913, 1635502980, 1893020342, 1950903388, 1120974935],
-  en = [2807058932, 1699970625, 2764249623, 1586903591, 1808481195, 1173430173, 1487645946, 59984867, 4199882800, 1844882806, 1989249228, 1277555970, 3623636965, 3419915562, 1149249077, 2744104290, 1514790577, 459744698, 244860394, 3235995134, 1963115311, 4027744588, 2544078150, 4190530515, 1608975247, 2627016082, 2062270317, 1507497298, 2200818878, 567498868, 1764313568, 3359936201, 2305455554, 2037970062, 1047239e3, 1910319033, 1337376481, 2904027272, 2892417312, 984907214, 1243112415, 830661914, 861968209, 2135253587, 2011214180, 2927934315, 2686254721, 731183368, 1750626376, 4246310725, 1820824798, 4172763771, 3542330227, 48394827, 2404901663, 2871682645, 671593195, 3254988725, 2073724613, 145085239, 2280796200, 2779915199, 1790575107, 2187128086, 472615631, 3029510009, 4075877127, 3802222185, 4107101658, 3201631749, 1646252340, 4270507174, 1402811438, 1436590835, 3778151818, 3950355702, 3963161475, 4020912224, 2667994737, 273792366, 2331590177, 104699613, 95345982, 3175501286, 2377486676, 1560637892, 3564045318, 369057872, 4213447064, 3919042237, 1137477952, 2658625497, 1119727848, 2340947849, 1530455833, 4007360968, 172466556, 266959938, 516552836, 0, 2256734592, 3980931627, 1890328081, 1917742170, 4294704398, 945164165, 3575528878, 958871085, 3647212047, 2787207260, 1423022939, 775562294, 1739656202, 3876557655, 2530391278, 2443058075, 3310321856, 547512796, 1265195639, 437656594, 3121275539, 719700128, 3762502690, 387781147, 218828297, 3350065803, 2830708150, 2848461854, 428169201, 122466165, 3720081049, 1627235199, 648017665, 4122762354, 1002783846, 2117360635, 695634755, 3336358691, 4234721005, 4049844452, 3704280881, 2232435299, 574624663, 287343814, 612205898, 1039717051, 840019705, 2708326185, 793451934, 821288114, 1391201670, 3822090177, 376187827, 3113855344, 1224348052, 1679968233, 2361698556, 1058709744, 752375421, 2431590963, 1321699145, 3519142200, 2734591178, 188127444, 2177869557, 3727205754, 2384911031, 3215212461, 2648976442, 2450346104, 3432737375, 1180849278, 331544205, 3102249176, 4150144569, 2952102595, 2159976285, 2474404304, 766078933, 313773861, 2570832044, 2108100632, 1668212892, 3145456443, 2013908262, 418672217, 3070356634, 2594734927, 1852171925, 3867060991, 3473416636, 3907448597, 2614737639, 919489135, 164948639, 2094410160, 2997825956, 590424639, 2486224549, 1723872674, 3157750862, 3399941250, 3501252752, 3625268135, 2555048196, 3673637356, 1343127501, 4130281361, 3599595085, 2957853679, 1297403050, 81781910, 3051593425, 2283490410, 532201772, 1367295589, 3926170974, 895287692, 1953757831, 1093597963, 492483431, 3528626907, 1446242576, 1192455638, 1636604631, 209336225, 344873464, 1015671571, 669961897, 3375740769, 3857572124, 2973530695, 3747192018, 1933530610, 3464042516, 935293895, 3454686199, 2858115069, 1863638845, 3683022916, 4085369519, 3292445032, 875313188, 1080017571, 3279033885, 621591778, 1233856572, 2504130317, 24197544, 3017672716, 3835484340, 3247465558, 2220981195, 3060847922, 1551124588, 1463996600],
-  tn = [4104605777, 1097159550, 396673818, 660510266, 2875968315, 2638606623, 4200115116, 3808662347, 821712160, 1986918061, 3430322568, 38544885, 3856137295, 718002117, 893681702, 1654886325, 2975484382, 3122358053, 3926825029, 4274053469, 796197571, 1290801793, 1184342925, 3556361835, 2405426947, 2459735317, 1836772287, 1381620373, 3196267988, 1948373848, 3764988233, 3385345166, 3263785589, 2390325492, 1480485785, 3111247143, 3780097726, 2293045232, 548169417, 3459953789, 3746175075, 439452389, 1362321559, 1400849762, 1685577905, 1806599355, 2174754046, 137073913, 1214797936, 1174215055, 3731654548, 2079897426, 1943217067, 1258480242, 529487843, 1437280870, 3945269170, 3049390895, 3313212038, 923313619, 679998e3, 3215307299, 57326082, 377642221, 3474729866, 2041877159, 133361907, 1776460110, 3673476453, 96392454, 878845905, 2801699524, 777231668, 4082475170, 2330014213, 4142626212, 2213296395, 1626319424, 1906247262, 1846563261, 562755902, 3708173718, 1040559837, 3871163981, 1418573201, 3294430577, 114585348, 1343618912, 2566595609, 3186202582, 1078185097, 3651041127, 3896688048, 2307622919, 425408743, 3371096953, 2081048481, 1108339068, 2216610296, 0, 2156299017, 736970802, 292596766, 1517440620, 251657213, 2235061775, 2933202493, 758720310, 265905162, 1554391400, 1532285339, 908999204, 174567692, 1474760595, 4002861748, 2610011675, 3234156416, 3693126241, 2001430874, 303699484, 2478443234, 2687165888, 585122620, 454499602, 151849742, 2345119218, 3064510765, 514443284, 4044981591, 1963412655, 2581445614, 2137062819, 19308535, 1928707164, 1715193156, 4219352155, 1126790795, 600235211, 3992742070, 3841024952, 836553431, 1669664834, 2535604243, 3323011204, 1243905413, 3141400786, 4180808110, 698445255, 2653899549, 2989552604, 2253581325, 3252932727, 3004591147, 1891211689, 2487810577, 3915653703, 4237083816, 4030667424, 2100090966, 865136418, 1229899655, 953270745, 3399679628, 3557504664, 4118925222, 2061379749, 3079546586, 2915017791, 983426092, 2022837584, 1607244650, 2118541908, 2366882550, 3635996816, 972512814, 3283088770, 1568718495, 3499326569, 3576539503, 621982671, 2895723464, 410887952, 2623762152, 1002142683, 645401037, 1494807662, 2595684844, 1335535747, 2507040230, 4293295786, 3167684641, 367585007, 3885750714, 1865862730, 2668221674, 2960971305, 2763173681, 1059270954, 2777952454, 2724642869, 1320957812, 2194319100, 2429595872, 2815956275, 77089521, 3973773121, 3444575871, 2448830231, 1305906550, 4021308739, 2857194700, 2516901860, 3518358430, 1787304780, 740276417, 1699839814, 1592394909, 2352307457, 2272556026, 188821243, 1729977011, 3687994002, 274084841, 3594982253, 3613494426, 2701949495, 4162096729, 322734571, 2837966542, 1640576439, 484830689, 1202797690, 3537852828, 4067639125, 349075736, 3342319475, 4157467219, 4255800159, 1030690015, 1155237496, 2951971274, 1757691577, 607398968, 2738905026, 499347990, 3794078908, 1011452712, 227885567, 2818666809, 213114376, 3034881240, 1455525988, 3414450555, 850817237, 1817998408, 3092726480],
-  nn = [0, 235474187, 470948374, 303765277, 941896748, 908933415, 607530554, 708780849, 1883793496, 2118214995, 1817866830, 1649639237, 1215061108, 1181045119, 1417561698, 1517767529, 3767586992, 4003061179, 4236429990, 4069246893, 3635733660, 3602770327, 3299278474, 3400528769, 2430122216, 2664543715, 2362090238, 2193862645, 2835123396, 2801107407, 3035535058, 3135740889, 3678124923, 3576870512, 3341394285, 3374361702, 3810496343, 3977675356, 4279080257, 4043610186, 2876494627, 2776292904, 3076639029, 3110650942, 2472011535, 2640243204, 2403728665, 2169303058, 1001089995, 899835584, 666464733, 699432150, 59727847, 226906860, 530400753, 294930682, 1273168787, 1172967064, 1475418501, 1509430414, 1942435775, 2110667444, 1876241833, 1641816226, 2910219766, 2743034109, 2976151520, 3211623147, 2505202138, 2606453969, 2302690252, 2269728455, 3711829422, 3543599269, 3240894392, 3475313331, 3843699074, 3943906441, 4178062228, 4144047775, 1306967366, 1139781709, 1374988112, 1610459739, 1975683434, 2076935265, 1775276924, 1742315127, 1034867998, 866637845, 566021896, 800440835, 92987698, 193195065, 429456164, 395441711, 1984812685, 2017778566, 1784663195, 1683407248, 1315562145, 1080094634, 1383856311, 1551037884, 101039829, 135050206, 437757123, 337553864, 1042385657, 807962610, 573804783, 742039012, 2531067453, 2564033334, 2328828971, 2227573024, 2935566865, 2700099354, 3001755655, 3168937228, 3868552805, 3902563182, 4203181171, 4102977912, 3736164937, 3501741890, 3265478751, 3433712980, 1106041591, 1340463100, 1576976609, 1408749034, 2043211483, 2009195472, 1708848333, 1809054150, 832877231, 1068351396, 766945465, 599762354, 159417987, 126454664, 361929877, 463180190, 2709260871, 2943682380, 3178106961, 3009879386, 2572697195, 2538681184, 2236228733, 2336434550, 3509871135, 3745345300, 3441850377, 3274667266, 3910161971, 3877198648, 4110568485, 4211818798, 2597806476, 2497604743, 2261089178, 2295101073, 2733856160, 2902087851, 3202437046, 2968011453, 3936291284, 3835036895, 4136440770, 4169408201, 3535486456, 3702665459, 3467192302, 3231722213, 2051518780, 1951317047, 1716890410, 1750902305, 1113818384, 1282050075, 1584504582, 1350078989, 168810852, 67556463, 371049330, 404016761, 841739592, 1008918595, 775550814, 540080725, 3969562369, 3801332234, 4035489047, 4269907996, 3569255213, 3669462566, 3366754619, 3332740144, 2631065433, 2463879762, 2160117071, 2395588676, 2767645557, 2868897406, 3102011747, 3069049960, 202008497, 33778362, 270040487, 504459436, 875451293, 975658646, 675039627, 641025152, 2084704233, 1917518562, 1615861247, 1851332852, 1147550661, 1248802510, 1484005843, 1451044056, 933301370, 967311729, 733156972, 632953703, 260388950, 25965917, 328671808, 496906059, 1206477858, 1239443753, 1543208500, 1441952575, 2144161806, 1908694277, 1675577880, 1842759443, 3610369226, 3644379585, 3408119516, 3307916247, 4011190502, 3776767469, 4077384432, 4245618683, 2809771154, 2842737049, 3144396420, 3043140495, 2673705150, 2438237621, 2203032232, 2370213795],
-  sn = [0, 185469197, 370938394, 487725847, 741876788, 657861945, 975451694, 824852259, 1483753576, 1400783205, 1315723890, 1164071807, 1950903388, 2135319889, 1649704518, 1767536459, 2967507152, 3152976349, 2801566410, 2918353863, 2631447780, 2547432937, 2328143614, 2177544179, 3901806776, 3818836405, 4270639778, 4118987695, 3299409036, 3483825537, 3535072918, 3652904859, 2077965243, 1893020342, 1841768865, 1724457132, 1474502543, 1559041666, 1107234197, 1257309336, 598438867, 681933534, 901210569, 1052338372, 261314535, 77422314, 428819965, 310463728, 3409685355, 3224740454, 3710368113, 3593056380, 3875770207, 3960309330, 4045380933, 4195456072, 2471224067, 2554718734, 2237133081, 2388260884, 3212035895, 3028143674, 2842678573, 2724322336, 4138563181, 4255350624, 3769721975, 3955191162, 3667219033, 3516619604, 3431546947, 3347532110, 2933734917, 2782082824, 3099667487, 3016697106, 2196052529, 2313884476, 2499348523, 2683765030, 1179510461, 1296297904, 1347548327, 1533017514, 1786102409, 1635502980, 2087309459, 2003294622, 507358933, 355706840, 136428751, 53458370, 839224033, 957055980, 605657339, 790073846, 2373340630, 2256028891, 2607439820, 2422494913, 2706270690, 2856345839, 3075636216, 3160175349, 3573941694, 3725069491, 3273267108, 3356761769, 4181598602, 4063242375, 4011996048, 3828103837, 1033297158, 915985419, 730517276, 545572369, 296679730, 446754879, 129166120, 213705253, 1709610350, 1860738147, 1945798516, 2029293177, 1239331162, 1120974935, 1606591296, 1422699085, 4148292826, 4233094615, 3781033664, 3931371469, 3682191598, 3497509347, 3446004468, 3328955385, 2939266226, 2755636671, 3106780840, 2988687269, 2198438022, 2282195339, 2501218972, 2652609425, 1201765386, 1286567175, 1371368976, 1521706781, 1805211710, 1620529459, 2105887268, 1988838185, 533804130, 350174575, 164439672, 46346101, 870912086, 954669403, 636813900, 788204353, 2358957921, 2274680428, 2592523643, 2441661558, 2695033685, 2880240216, 3065962831, 3182487618, 3572145929, 3756299780, 3270937875, 3388507166, 4174560061, 4091327024, 4006521127, 3854606378, 1014646705, 930369212, 711349675, 560487590, 272786309, 457992840, 106852767, 223377554, 1678381017, 1862534868, 1914052035, 2031621326, 1211247597, 1128014560, 1580087799, 1428173050, 32283319, 182621114, 401639597, 486441376, 768917123, 651868046, 1003007129, 818324884, 1503449823, 1385356242, 1333838021, 1150208456, 1973745387, 2125135846, 1673061617, 1756818940, 2970356327, 3120694122, 2802849917, 2887651696, 2637442643, 2520393566, 2334669897, 2149987652, 3917234703, 3799141122, 4284502037, 4100872472, 3309594171, 3460984630, 3545789473, 3629546796, 2050466060, 1899603969, 1814803222, 1730525723, 1443857720, 1560382517, 1075025698, 1260232239, 575138148, 692707433, 878443390, 1062597235, 243256656, 91341917, 409198410, 325965383, 3403100636, 3252238545, 3704300486, 3620022987, 3874428392, 3990953189, 4042459122, 4227665663, 2460449204, 2578018489, 2226875310, 2411029155, 3198115200, 3046200461, 2827177882, 2743944855],
-  rn = [0, 218828297, 437656594, 387781147, 875313188, 958871085, 775562294, 590424639, 1750626376, 1699970625, 1917742170, 2135253587, 1551124588, 1367295589, 1180849278, 1265195639, 3501252752, 3720081049, 3399941250, 3350065803, 3835484340, 3919042237, 4270507174, 4085369519, 3102249176, 3051593425, 2734591178, 2952102595, 2361698556, 2177869557, 2530391278, 2614737639, 3145456443, 3060847922, 2708326185, 2892417312, 2404901663, 2187128086, 2504130317, 2555048196, 3542330227, 3727205754, 3375740769, 3292445032, 3876557655, 3926170974, 4246310725, 4027744588, 1808481195, 1723872674, 1910319033, 2094410160, 1608975247, 1391201670, 1173430173, 1224348052, 59984867, 244860394, 428169201, 344873464, 935293895, 984907214, 766078933, 547512796, 1844882806, 1627235199, 2011214180, 2062270317, 1507497298, 1423022939, 1137477952, 1321699145, 95345982, 145085239, 532201772, 313773861, 830661914, 1015671571, 731183368, 648017665, 3175501286, 2957853679, 2807058932, 2858115069, 2305455554, 2220981195, 2474404304, 2658625497, 3575528878, 3625268135, 3473416636, 3254988725, 3778151818, 3963161475, 4213447064, 4130281361, 3599595085, 3683022916, 3432737375, 3247465558, 3802222185, 4020912224, 4172763771, 4122762354, 3201631749, 3017672716, 2764249623, 2848461854, 2331590177, 2280796200, 2431590963, 2648976442, 104699613, 188127444, 472615631, 287343814, 840019705, 1058709744, 671593195, 621591778, 1852171925, 1668212892, 1953757831, 2037970062, 1514790577, 1463996600, 1080017571, 1297403050, 3673637356, 3623636965, 3235995134, 3454686199, 4007360968, 3822090177, 4107101658, 4190530515, 2997825956, 3215212461, 2830708150, 2779915199, 2256734592, 2340947849, 2627016082, 2443058075, 172466556, 122466165, 273792366, 492483431, 1047239e3, 861968209, 612205898, 695634755, 1646252340, 1863638845, 2013908262, 1963115311, 1446242576, 1530455833, 1277555970, 1093597963, 1636604631, 1820824798, 2073724613, 1989249228, 1436590835, 1487645946, 1337376481, 1119727848, 164948639, 81781910, 331544205, 516552836, 1039717051, 821288114, 669961897, 719700128, 2973530695, 3157750862, 2871682645, 2787207260, 2232435299, 2283490410, 2667994737, 2450346104, 3647212047, 3564045318, 3279033885, 3464042516, 3980931627, 3762502690, 4150144569, 4199882800, 3070356634, 3121275539, 2904027272, 2686254721, 2200818878, 2384911031, 2570832044, 2486224549, 3747192018, 3528626907, 3310321856, 3359936201, 3950355702, 3867060991, 4049844452, 4234721005, 1739656202, 1790575107, 2108100632, 1890328081, 1402811438, 1586903591, 1233856572, 1149249077, 266959938, 48394827, 369057872, 418672217, 1002783846, 919489135, 567498868, 752375421, 209336225, 24197544, 376187827, 459744698, 945164165, 895287692, 574624663, 793451934, 1679968233, 1764313568, 2117360635, 1933530610, 1343127501, 1560637892, 1243112415, 1192455638, 3704280881, 3519142200, 3336358691, 3419915562, 3907448597, 3857572124, 4075877127, 4294704398, 3029510009, 3113855344, 2927934315, 2744104290, 2159976285, 2377486676, 2594734927, 2544078150],
-  on = [0, 151849742, 303699484, 454499602, 607398968, 758720310, 908999204, 1059270954, 1214797936, 1097159550, 1517440620, 1400849762, 1817998408, 1699839814, 2118541908, 2001430874, 2429595872, 2581445614, 2194319100, 2345119218, 3034881240, 3186202582, 2801699524, 2951971274, 3635996816, 3518358430, 3399679628, 3283088770, 4237083816, 4118925222, 4002861748, 3885750714, 1002142683, 850817237, 698445255, 548169417, 529487843, 377642221, 227885567, 77089521, 1943217067, 2061379749, 1640576439, 1757691577, 1474760595, 1592394909, 1174215055, 1290801793, 2875968315, 2724642869, 3111247143, 2960971305, 2405426947, 2253581325, 2638606623, 2487810577, 3808662347, 3926825029, 4044981591, 4162096729, 3342319475, 3459953789, 3576539503, 3693126241, 1986918061, 2137062819, 1685577905, 1836772287, 1381620373, 1532285339, 1078185097, 1229899655, 1040559837, 923313619, 740276417, 621982671, 439452389, 322734571, 137073913, 19308535, 3871163981, 4021308739, 4104605777, 4255800159, 3263785589, 3414450555, 3499326569, 3651041127, 2933202493, 2815956275, 3167684641, 3049390895, 2330014213, 2213296395, 2566595609, 2448830231, 1305906550, 1155237496, 1607244650, 1455525988, 1776460110, 1626319424, 2079897426, 1928707164, 96392454, 213114376, 396673818, 514443284, 562755902, 679998e3, 865136418, 983426092, 3708173718, 3557504664, 3474729866, 3323011204, 4180808110, 4030667424, 3945269170, 3794078908, 2507040230, 2623762152, 2272556026, 2390325492, 2975484382, 3092726480, 2738905026, 2857194700, 3973773121, 3856137295, 4274053469, 4157467219, 3371096953, 3252932727, 3673476453, 3556361835, 2763173681, 2915017791, 3064510765, 3215307299, 2156299017, 2307622919, 2459735317, 2610011675, 2081048481, 1963412655, 1846563261, 1729977011, 1480485785, 1362321559, 1243905413, 1126790795, 878845905, 1030690015, 645401037, 796197571, 274084841, 425408743, 38544885, 188821243, 3613494426, 3731654548, 3313212038, 3430322568, 4082475170, 4200115116, 3780097726, 3896688048, 2668221674, 2516901860, 2366882550, 2216610296, 3141400786, 2989552604, 2837966542, 2687165888, 1202797690, 1320957812, 1437280870, 1554391400, 1669664834, 1787304780, 1906247262, 2022837584, 265905162, 114585348, 499347990, 349075736, 736970802, 585122620, 972512814, 821712160, 2595684844, 2478443234, 2293045232, 2174754046, 3196267988, 3079546586, 2895723464, 2777952454, 3537852828, 3687994002, 3234156416, 3385345166, 4142626212, 4293295786, 3841024952, 3992742070, 174567692, 57326082, 410887952, 292596766, 777231668, 660510266, 1011452712, 893681702, 1108339068, 1258480242, 1343618912, 1494807662, 1715193156, 1865862730, 1948373848, 2100090966, 2701949495, 2818666809, 3004591147, 3122358053, 2235061775, 2352307457, 2535604243, 2653899549, 3915653703, 3764988233, 4219352155, 4067639125, 3444575871, 3294430577, 3746175075, 3594982253, 836553431, 953270745, 600235211, 718002117, 367585007, 484830689, 133361907, 251657213, 2041877159, 1891211689, 1806599355, 1654886325, 1568718495, 1418573201, 1335535747, 1184342925];
-function an(e) {
+  Qt = [1374988112, 2118214995, 437757123, 975658646, 1001089995, 530400753, 2902087851, 1273168787, 540080725, 2910219766, 2295101073, 4110568485, 1340463100, 3307916247, 641025152, 3043140495, 3736164937, 632953703, 1172967064, 1576976609, 3274667266, 2169303058, 2370213795, 1809054150, 59727847, 361929877, 3211623147, 2505202138, 3569255213, 1484005843, 1239443753, 2395588676, 1975683434, 4102977912, 2572697195, 666464733, 3202437046, 4035489047, 3374361702, 2110667444, 1675577880, 3843699074, 2538681184, 1649639237, 2976151520, 3144396420, 4269907996, 4178062228, 1883793496, 2403728665, 2497604743, 1383856311, 2876494627, 1917518562, 3810496343, 1716890410, 3001755655, 800440835, 2261089178, 3543599269, 807962610, 599762354, 33778362, 3977675356, 2328828971, 2809771154, 4077384432, 1315562145, 1708848333, 101039829, 3509871135, 3299278474, 875451293, 2733856160, 92987698, 2767645557, 193195065, 1080094634, 1584504582, 3178106961, 1042385657, 2531067453, 3711829422, 1306967366, 2438237621, 1908694277, 67556463, 1615861247, 429456164, 3602770327, 2302690252, 1742315127, 2968011453, 126454664, 3877198648, 2043211483, 2709260871, 2084704233, 4169408201, 0, 159417987, 841739592, 504459436, 1817866830, 4245618683, 260388950, 1034867998, 908933415, 168810852, 1750902305, 2606453969, 607530554, 202008497, 2472011535, 3035535058, 463180190, 2160117071, 1641816226, 1517767529, 470948374, 3801332234, 3231722213, 1008918595, 303765277, 235474187, 4069246893, 766945465, 337553864, 1475418501, 2943682380, 4003061179, 2743034109, 4144047775, 1551037884, 1147550661, 1543208500, 2336434550, 3408119516, 3069049960, 3102011747, 3610369226, 1113818384, 328671808, 2227573024, 2236228733, 3535486456, 2935566865, 3341394285, 496906059, 3702665459, 226906860, 2009195472, 733156972, 2842737049, 294930682, 1206477858, 2835123396, 2700099354, 1451044056, 573804783, 2269728455, 3644379585, 2362090238, 2564033334, 2801107407, 2776292904, 3669462566, 1068351396, 742039012, 1350078989, 1784663195, 1417561698, 4136440770, 2430122216, 775550814, 2193862645, 2673705150, 1775276924, 1876241833, 3475313331, 3366754619, 270040487, 3902563182, 3678124923, 3441850377, 1851332852, 3969562369, 2203032232, 3868552805, 2868897406, 566021896, 4011190502, 3135740889, 1248802510, 3936291284, 699432150, 832877231, 708780849, 3332740144, 899835584, 1951317047, 4236429990, 3767586992, 866637845, 4043610186, 1106041591, 2144161806, 395441711, 1984812685, 1139781709, 3433712980, 3835036895, 2664543715, 1282050075, 3240894392, 1181045119, 2640243204, 25965917, 4203181171, 4211818798, 3009879386, 2463879762, 3910161971, 1842759443, 2597806476, 933301370, 1509430414, 3943906441, 3467192302, 3076639029, 3776767469, 2051518780, 2631065433, 1441952575, 404016761, 1942435775, 1408749034, 1610459739, 3745345300, 2017778566, 3400528769, 3110650942, 941896748, 3265478751, 371049330, 3168937228, 675039627, 4279080257, 967311729, 135050206, 3635733660, 1683407248, 2076935265, 3576870512, 1215061108, 3501741890],
+  Xt = [1347548327, 1400783205, 3273267108, 2520393566, 3409685355, 4045380933, 2880240216, 2471224067, 1428173050, 4138563181, 2441661558, 636813900, 4233094615, 3620022987, 2149987652, 2411029155, 1239331162, 1730525723, 2554718734, 3781033664, 46346101, 310463728, 2743944855, 3328955385, 3875770207, 2501218972, 3955191162, 3667219033, 768917123, 3545789473, 692707433, 1150208456, 1786102409, 2029293177, 1805211710, 3710368113, 3065962831, 401639597, 1724457132, 3028143674, 409198410, 2196052529, 1620529459, 1164071807, 3769721975, 2226875310, 486441376, 2499348523, 1483753576, 428819965, 2274680428, 3075636216, 598438867, 3799141122, 1474502543, 711349675, 129166120, 53458370, 2592523643, 2782082824, 4063242375, 2988687269, 3120694122, 1559041666, 730517276, 2460449204, 4042459122, 2706270690, 3446004468, 3573941694, 533804130, 2328143614, 2637442643, 2695033685, 839224033, 1973745387, 957055980, 2856345839, 106852767, 1371368976, 4181598602, 1033297158, 2933734917, 1179510461, 3046200461, 91341917, 1862534868, 4284502037, 605657339, 2547432937, 3431546947, 2003294622, 3182487618, 2282195339, 954669403, 3682191598, 1201765386, 3917234703, 3388507166, 0, 2198438022, 1211247597, 2887651696, 1315723890, 4227665663, 1443857720, 507358933, 657861945, 1678381017, 560487590, 3516619604, 975451694, 2970356327, 261314535, 3535072918, 2652609425, 1333838021, 2724322336, 1767536459, 370938394, 182621114, 3854606378, 1128014560, 487725847, 185469197, 2918353863, 3106780840, 3356761769, 2237133081, 1286567175, 3152976349, 4255350624, 2683765030, 3160175349, 3309594171, 878443390, 1988838185, 3704300486, 1756818940, 1673061617, 3403100636, 272786309, 1075025698, 545572369, 2105887268, 4174560061, 296679730, 1841768865, 1260232239, 4091327024, 3960309330, 3497509347, 1814803222, 2578018489, 4195456072, 575138148, 3299409036, 446754879, 3629546796, 4011996048, 3347532110, 3252238545, 4270639778, 915985419, 3483825537, 681933534, 651868046, 2755636671, 3828103837, 223377554, 2607439820, 1649704518, 3270937875, 3901806776, 1580087799, 4118987695, 3198115200, 2087309459, 2842678573, 3016697106, 1003007129, 2802849917, 1860738147, 2077965243, 164439672, 4100872472, 32283319, 2827177882, 1709610350, 2125135846, 136428751, 3874428392, 3652904859, 3460984630, 3572145929, 3593056380, 2939266226, 824852259, 818324884, 3224740454, 930369212, 2801566410, 2967507152, 355706840, 1257309336, 4148292826, 243256656, 790073846, 2373340630, 1296297904, 1422699085, 3756299780, 3818836405, 457992840, 3099667487, 2135319889, 77422314, 1560382517, 1945798516, 788204353, 1521706781, 1385356242, 870912086, 325965383, 2358957921, 2050466060, 2388260884, 2313884476, 4006521127, 901210569, 3990953189, 1014646705, 1503449823, 1062597235, 2031621326, 3212035895, 3931371469, 1533017514, 350174575, 2256028891, 2177544179, 1052338372, 741876788, 1606591296, 1914052035, 213705253, 2334669897, 1107234197, 1899603969, 3725069491, 2631447780, 2422494913, 1635502980, 1893020342, 1950903388, 1120974935],
+  Zt = [2807058932, 1699970625, 2764249623, 1586903591, 1808481195, 1173430173, 1487645946, 59984867, 4199882800, 1844882806, 1989249228, 1277555970, 3623636965, 3419915562, 1149249077, 2744104290, 1514790577, 459744698, 244860394, 3235995134, 1963115311, 4027744588, 2544078150, 4190530515, 1608975247, 2627016082, 2062270317, 1507497298, 2200818878, 567498868, 1764313568, 3359936201, 2305455554, 2037970062, 1047239e3, 1910319033, 1337376481, 2904027272, 2892417312, 984907214, 1243112415, 830661914, 861968209, 2135253587, 2011214180, 2927934315, 2686254721, 731183368, 1750626376, 4246310725, 1820824798, 4172763771, 3542330227, 48394827, 2404901663, 2871682645, 671593195, 3254988725, 2073724613, 145085239, 2280796200, 2779915199, 1790575107, 2187128086, 472615631, 3029510009, 4075877127, 3802222185, 4107101658, 3201631749, 1646252340, 4270507174, 1402811438, 1436590835, 3778151818, 3950355702, 3963161475, 4020912224, 2667994737, 273792366, 2331590177, 104699613, 95345982, 3175501286, 2377486676, 1560637892, 3564045318, 369057872, 4213447064, 3919042237, 1137477952, 2658625497, 1119727848, 2340947849, 1530455833, 4007360968, 172466556, 266959938, 516552836, 0, 2256734592, 3980931627, 1890328081, 1917742170, 4294704398, 945164165, 3575528878, 958871085, 3647212047, 2787207260, 1423022939, 775562294, 1739656202, 3876557655, 2530391278, 2443058075, 3310321856, 547512796, 1265195639, 437656594, 3121275539, 719700128, 3762502690, 387781147, 218828297, 3350065803, 2830708150, 2848461854, 428169201, 122466165, 3720081049, 1627235199, 648017665, 4122762354, 1002783846, 2117360635, 695634755, 3336358691, 4234721005, 4049844452, 3704280881, 2232435299, 574624663, 287343814, 612205898, 1039717051, 840019705, 2708326185, 793451934, 821288114, 1391201670, 3822090177, 376187827, 3113855344, 1224348052, 1679968233, 2361698556, 1058709744, 752375421, 2431590963, 1321699145, 3519142200, 2734591178, 188127444, 2177869557, 3727205754, 2384911031, 3215212461, 2648976442, 2450346104, 3432737375, 1180849278, 331544205, 3102249176, 4150144569, 2952102595, 2159976285, 2474404304, 766078933, 313773861, 2570832044, 2108100632, 1668212892, 3145456443, 2013908262, 418672217, 3070356634, 2594734927, 1852171925, 3867060991, 3473416636, 3907448597, 2614737639, 919489135, 164948639, 2094410160, 2997825956, 590424639, 2486224549, 1723872674, 3157750862, 3399941250, 3501252752, 3625268135, 2555048196, 3673637356, 1343127501, 4130281361, 3599595085, 2957853679, 1297403050, 81781910, 3051593425, 2283490410, 532201772, 1367295589, 3926170974, 895287692, 1953757831, 1093597963, 492483431, 3528626907, 1446242576, 1192455638, 1636604631, 209336225, 344873464, 1015671571, 669961897, 3375740769, 3857572124, 2973530695, 3747192018, 1933530610, 3464042516, 935293895, 3454686199, 2858115069, 1863638845, 3683022916, 4085369519, 3292445032, 875313188, 1080017571, 3279033885, 621591778, 1233856572, 2504130317, 24197544, 3017672716, 3835484340, 3247465558, 2220981195, 3060847922, 1551124588, 1463996600],
+  en = [4104605777, 1097159550, 396673818, 660510266, 2875968315, 2638606623, 4200115116, 3808662347, 821712160, 1986918061, 3430322568, 38544885, 3856137295, 718002117, 893681702, 1654886325, 2975484382, 3122358053, 3926825029, 4274053469, 796197571, 1290801793, 1184342925, 3556361835, 2405426947, 2459735317, 1836772287, 1381620373, 3196267988, 1948373848, 3764988233, 3385345166, 3263785589, 2390325492, 1480485785, 3111247143, 3780097726, 2293045232, 548169417, 3459953789, 3746175075, 439452389, 1362321559, 1400849762, 1685577905, 1806599355, 2174754046, 137073913, 1214797936, 1174215055, 3731654548, 2079897426, 1943217067, 1258480242, 529487843, 1437280870, 3945269170, 3049390895, 3313212038, 923313619, 679998e3, 3215307299, 57326082, 377642221, 3474729866, 2041877159, 133361907, 1776460110, 3673476453, 96392454, 878845905, 2801699524, 777231668, 4082475170, 2330014213, 4142626212, 2213296395, 1626319424, 1906247262, 1846563261, 562755902, 3708173718, 1040559837, 3871163981, 1418573201, 3294430577, 114585348, 1343618912, 2566595609, 3186202582, 1078185097, 3651041127, 3896688048, 2307622919, 425408743, 3371096953, 2081048481, 1108339068, 2216610296, 0, 2156299017, 736970802, 292596766, 1517440620, 251657213, 2235061775, 2933202493, 758720310, 265905162, 1554391400, 1532285339, 908999204, 174567692, 1474760595, 4002861748, 2610011675, 3234156416, 3693126241, 2001430874, 303699484, 2478443234, 2687165888, 585122620, 454499602, 151849742, 2345119218, 3064510765, 514443284, 4044981591, 1963412655, 2581445614, 2137062819, 19308535, 1928707164, 1715193156, 4219352155, 1126790795, 600235211, 3992742070, 3841024952, 836553431, 1669664834, 2535604243, 3323011204, 1243905413, 3141400786, 4180808110, 698445255, 2653899549, 2989552604, 2253581325, 3252932727, 3004591147, 1891211689, 2487810577, 3915653703, 4237083816, 4030667424, 2100090966, 865136418, 1229899655, 953270745, 3399679628, 3557504664, 4118925222, 2061379749, 3079546586, 2915017791, 983426092, 2022837584, 1607244650, 2118541908, 2366882550, 3635996816, 972512814, 3283088770, 1568718495, 3499326569, 3576539503, 621982671, 2895723464, 410887952, 2623762152, 1002142683, 645401037, 1494807662, 2595684844, 1335535747, 2507040230, 4293295786, 3167684641, 367585007, 3885750714, 1865862730, 2668221674, 2960971305, 2763173681, 1059270954, 2777952454, 2724642869, 1320957812, 2194319100, 2429595872, 2815956275, 77089521, 3973773121, 3444575871, 2448830231, 1305906550, 4021308739, 2857194700, 2516901860, 3518358430, 1787304780, 740276417, 1699839814, 1592394909, 2352307457, 2272556026, 188821243, 1729977011, 3687994002, 274084841, 3594982253, 3613494426, 2701949495, 4162096729, 322734571, 2837966542, 1640576439, 484830689, 1202797690, 3537852828, 4067639125, 349075736, 3342319475, 4157467219, 4255800159, 1030690015, 1155237496, 2951971274, 1757691577, 607398968, 2738905026, 499347990, 3794078908, 1011452712, 227885567, 2818666809, 213114376, 3034881240, 1455525988, 3414450555, 850817237, 1817998408, 3092726480],
+  tn = [0, 235474187, 470948374, 303765277, 941896748, 908933415, 607530554, 708780849, 1883793496, 2118214995, 1817866830, 1649639237, 1215061108, 1181045119, 1417561698, 1517767529, 3767586992, 4003061179, 4236429990, 4069246893, 3635733660, 3602770327, 3299278474, 3400528769, 2430122216, 2664543715, 2362090238, 2193862645, 2835123396, 2801107407, 3035535058, 3135740889, 3678124923, 3576870512, 3341394285, 3374361702, 3810496343, 3977675356, 4279080257, 4043610186, 2876494627, 2776292904, 3076639029, 3110650942, 2472011535, 2640243204, 2403728665, 2169303058, 1001089995, 899835584, 666464733, 699432150, 59727847, 226906860, 530400753, 294930682, 1273168787, 1172967064, 1475418501, 1509430414, 1942435775, 2110667444, 1876241833, 1641816226, 2910219766, 2743034109, 2976151520, 3211623147, 2505202138, 2606453969, 2302690252, 2269728455, 3711829422, 3543599269, 3240894392, 3475313331, 3843699074, 3943906441, 4178062228, 4144047775, 1306967366, 1139781709, 1374988112, 1610459739, 1975683434, 2076935265, 1775276924, 1742315127, 1034867998, 866637845, 566021896, 800440835, 92987698, 193195065, 429456164, 395441711, 1984812685, 2017778566, 1784663195, 1683407248, 1315562145, 1080094634, 1383856311, 1551037884, 101039829, 135050206, 437757123, 337553864, 1042385657, 807962610, 573804783, 742039012, 2531067453, 2564033334, 2328828971, 2227573024, 2935566865, 2700099354, 3001755655, 3168937228, 3868552805, 3902563182, 4203181171, 4102977912, 3736164937, 3501741890, 3265478751, 3433712980, 1106041591, 1340463100, 1576976609, 1408749034, 2043211483, 2009195472, 1708848333, 1809054150, 832877231, 1068351396, 766945465, 599762354, 159417987, 126454664, 361929877, 463180190, 2709260871, 2943682380, 3178106961, 3009879386, 2572697195, 2538681184, 2236228733, 2336434550, 3509871135, 3745345300, 3441850377, 3274667266, 3910161971, 3877198648, 4110568485, 4211818798, 2597806476, 2497604743, 2261089178, 2295101073, 2733856160, 2902087851, 3202437046, 2968011453, 3936291284, 3835036895, 4136440770, 4169408201, 3535486456, 3702665459, 3467192302, 3231722213, 2051518780, 1951317047, 1716890410, 1750902305, 1113818384, 1282050075, 1584504582, 1350078989, 168810852, 67556463, 371049330, 404016761, 841739592, 1008918595, 775550814, 540080725, 3969562369, 3801332234, 4035489047, 4269907996, 3569255213, 3669462566, 3366754619, 3332740144, 2631065433, 2463879762, 2160117071, 2395588676, 2767645557, 2868897406, 3102011747, 3069049960, 202008497, 33778362, 270040487, 504459436, 875451293, 975658646, 675039627, 641025152, 2084704233, 1917518562, 1615861247, 1851332852, 1147550661, 1248802510, 1484005843, 1451044056, 933301370, 967311729, 733156972, 632953703, 260388950, 25965917, 328671808, 496906059, 1206477858, 1239443753, 1543208500, 1441952575, 2144161806, 1908694277, 1675577880, 1842759443, 3610369226, 3644379585, 3408119516, 3307916247, 4011190502, 3776767469, 4077384432, 4245618683, 2809771154, 2842737049, 3144396420, 3043140495, 2673705150, 2438237621, 2203032232, 2370213795],
+  nn = [0, 185469197, 370938394, 487725847, 741876788, 657861945, 975451694, 824852259, 1483753576, 1400783205, 1315723890, 1164071807, 1950903388, 2135319889, 1649704518, 1767536459, 2967507152, 3152976349, 2801566410, 2918353863, 2631447780, 2547432937, 2328143614, 2177544179, 3901806776, 3818836405, 4270639778, 4118987695, 3299409036, 3483825537, 3535072918, 3652904859, 2077965243, 1893020342, 1841768865, 1724457132, 1474502543, 1559041666, 1107234197, 1257309336, 598438867, 681933534, 901210569, 1052338372, 261314535, 77422314, 428819965, 310463728, 3409685355, 3224740454, 3710368113, 3593056380, 3875770207, 3960309330, 4045380933, 4195456072, 2471224067, 2554718734, 2237133081, 2388260884, 3212035895, 3028143674, 2842678573, 2724322336, 4138563181, 4255350624, 3769721975, 3955191162, 3667219033, 3516619604, 3431546947, 3347532110, 2933734917, 2782082824, 3099667487, 3016697106, 2196052529, 2313884476, 2499348523, 2683765030, 1179510461, 1296297904, 1347548327, 1533017514, 1786102409, 1635502980, 2087309459, 2003294622, 507358933, 355706840, 136428751, 53458370, 839224033, 957055980, 605657339, 790073846, 2373340630, 2256028891, 2607439820, 2422494913, 2706270690, 2856345839, 3075636216, 3160175349, 3573941694, 3725069491, 3273267108, 3356761769, 4181598602, 4063242375, 4011996048, 3828103837, 1033297158, 915985419, 730517276, 545572369, 296679730, 446754879, 129166120, 213705253, 1709610350, 1860738147, 1945798516, 2029293177, 1239331162, 1120974935, 1606591296, 1422699085, 4148292826, 4233094615, 3781033664, 3931371469, 3682191598, 3497509347, 3446004468, 3328955385, 2939266226, 2755636671, 3106780840, 2988687269, 2198438022, 2282195339, 2501218972, 2652609425, 1201765386, 1286567175, 1371368976, 1521706781, 1805211710, 1620529459, 2105887268, 1988838185, 533804130, 350174575, 164439672, 46346101, 870912086, 954669403, 636813900, 788204353, 2358957921, 2274680428, 2592523643, 2441661558, 2695033685, 2880240216, 3065962831, 3182487618, 3572145929, 3756299780, 3270937875, 3388507166, 4174560061, 4091327024, 4006521127, 3854606378, 1014646705, 930369212, 711349675, 560487590, 272786309, 457992840, 106852767, 223377554, 1678381017, 1862534868, 1914052035, 2031621326, 1211247597, 1128014560, 1580087799, 1428173050, 32283319, 182621114, 401639597, 486441376, 768917123, 651868046, 1003007129, 818324884, 1503449823, 1385356242, 1333838021, 1150208456, 1973745387, 2125135846, 1673061617, 1756818940, 2970356327, 3120694122, 2802849917, 2887651696, 2637442643, 2520393566, 2334669897, 2149987652, 3917234703, 3799141122, 4284502037, 4100872472, 3309594171, 3460984630, 3545789473, 3629546796, 2050466060, 1899603969, 1814803222, 1730525723, 1443857720, 1560382517, 1075025698, 1260232239, 575138148, 692707433, 878443390, 1062597235, 243256656, 91341917, 409198410, 325965383, 3403100636, 3252238545, 3704300486, 3620022987, 3874428392, 3990953189, 4042459122, 4227665663, 2460449204, 2578018489, 2226875310, 2411029155, 3198115200, 3046200461, 2827177882, 2743944855],
+  sn = [0, 218828297, 437656594, 387781147, 875313188, 958871085, 775562294, 590424639, 1750626376, 1699970625, 1917742170, 2135253587, 1551124588, 1367295589, 1180849278, 1265195639, 3501252752, 3720081049, 3399941250, 3350065803, 3835484340, 3919042237, 4270507174, 4085369519, 3102249176, 3051593425, 2734591178, 2952102595, 2361698556, 2177869557, 2530391278, 2614737639, 3145456443, 3060847922, 2708326185, 2892417312, 2404901663, 2187128086, 2504130317, 2555048196, 3542330227, 3727205754, 3375740769, 3292445032, 3876557655, 3926170974, 4246310725, 4027744588, 1808481195, 1723872674, 1910319033, 2094410160, 1608975247, 1391201670, 1173430173, 1224348052, 59984867, 244860394, 428169201, 344873464, 935293895, 984907214, 766078933, 547512796, 1844882806, 1627235199, 2011214180, 2062270317, 1507497298, 1423022939, 1137477952, 1321699145, 95345982, 145085239, 532201772, 313773861, 830661914, 1015671571, 731183368, 648017665, 3175501286, 2957853679, 2807058932, 2858115069, 2305455554, 2220981195, 2474404304, 2658625497, 3575528878, 3625268135, 3473416636, 3254988725, 3778151818, 3963161475, 4213447064, 4130281361, 3599595085, 3683022916, 3432737375, 3247465558, 3802222185, 4020912224, 4172763771, 4122762354, 3201631749, 3017672716, 2764249623, 2848461854, 2331590177, 2280796200, 2431590963, 2648976442, 104699613, 188127444, 472615631, 287343814, 840019705, 1058709744, 671593195, 621591778, 1852171925, 1668212892, 1953757831, 2037970062, 1514790577, 1463996600, 1080017571, 1297403050, 3673637356, 3623636965, 3235995134, 3454686199, 4007360968, 3822090177, 4107101658, 4190530515, 2997825956, 3215212461, 2830708150, 2779915199, 2256734592, 2340947849, 2627016082, 2443058075, 172466556, 122466165, 273792366, 492483431, 1047239e3, 861968209, 612205898, 695634755, 1646252340, 1863638845, 2013908262, 1963115311, 1446242576, 1530455833, 1277555970, 1093597963, 1636604631, 1820824798, 2073724613, 1989249228, 1436590835, 1487645946, 1337376481, 1119727848, 164948639, 81781910, 331544205, 516552836, 1039717051, 821288114, 669961897, 719700128, 2973530695, 3157750862, 2871682645, 2787207260, 2232435299, 2283490410, 2667994737, 2450346104, 3647212047, 3564045318, 3279033885, 3464042516, 3980931627, 3762502690, 4150144569, 4199882800, 3070356634, 3121275539, 2904027272, 2686254721, 2200818878, 2384911031, 2570832044, 2486224549, 3747192018, 3528626907, 3310321856, 3359936201, 3950355702, 3867060991, 4049844452, 4234721005, 1739656202, 1790575107, 2108100632, 1890328081, 1402811438, 1586903591, 1233856572, 1149249077, 266959938, 48394827, 369057872, 418672217, 1002783846, 919489135, 567498868, 752375421, 209336225, 24197544, 376187827, 459744698, 945164165, 895287692, 574624663, 793451934, 1679968233, 1764313568, 2117360635, 1933530610, 1343127501, 1560637892, 1243112415, 1192455638, 3704280881, 3519142200, 3336358691, 3419915562, 3907448597, 3857572124, 4075877127, 4294704398, 3029510009, 3113855344, 2927934315, 2744104290, 2159976285, 2377486676, 2594734927, 2544078150],
+  rn = [0, 151849742, 303699484, 454499602, 607398968, 758720310, 908999204, 1059270954, 1214797936, 1097159550, 1517440620, 1400849762, 1817998408, 1699839814, 2118541908, 2001430874, 2429595872, 2581445614, 2194319100, 2345119218, 3034881240, 3186202582, 2801699524, 2951971274, 3635996816, 3518358430, 3399679628, 3283088770, 4237083816, 4118925222, 4002861748, 3885750714, 1002142683, 850817237, 698445255, 548169417, 529487843, 377642221, 227885567, 77089521, 1943217067, 2061379749, 1640576439, 1757691577, 1474760595, 1592394909, 1174215055, 1290801793, 2875968315, 2724642869, 3111247143, 2960971305, 2405426947, 2253581325, 2638606623, 2487810577, 3808662347, 3926825029, 4044981591, 4162096729, 3342319475, 3459953789, 3576539503, 3693126241, 1986918061, 2137062819, 1685577905, 1836772287, 1381620373, 1532285339, 1078185097, 1229899655, 1040559837, 923313619, 740276417, 621982671, 439452389, 322734571, 137073913, 19308535, 3871163981, 4021308739, 4104605777, 4255800159, 3263785589, 3414450555, 3499326569, 3651041127, 2933202493, 2815956275, 3167684641, 3049390895, 2330014213, 2213296395, 2566595609, 2448830231, 1305906550, 1155237496, 1607244650, 1455525988, 1776460110, 1626319424, 2079897426, 1928707164, 96392454, 213114376, 396673818, 514443284, 562755902, 679998e3, 865136418, 983426092, 3708173718, 3557504664, 3474729866, 3323011204, 4180808110, 4030667424, 3945269170, 3794078908, 2507040230, 2623762152, 2272556026, 2390325492, 2975484382, 3092726480, 2738905026, 2857194700, 3973773121, 3856137295, 4274053469, 4157467219, 3371096953, 3252932727, 3673476453, 3556361835, 2763173681, 2915017791, 3064510765, 3215307299, 2156299017, 2307622919, 2459735317, 2610011675, 2081048481, 1963412655, 1846563261, 1729977011, 1480485785, 1362321559, 1243905413, 1126790795, 878845905, 1030690015, 645401037, 796197571, 274084841, 425408743, 38544885, 188821243, 3613494426, 3731654548, 3313212038, 3430322568, 4082475170, 4200115116, 3780097726, 3896688048, 2668221674, 2516901860, 2366882550, 2216610296, 3141400786, 2989552604, 2837966542, 2687165888, 1202797690, 1320957812, 1437280870, 1554391400, 1669664834, 1787304780, 1906247262, 2022837584, 265905162, 114585348, 499347990, 349075736, 736970802, 585122620, 972512814, 821712160, 2595684844, 2478443234, 2293045232, 2174754046, 3196267988, 3079546586, 2895723464, 2777952454, 3537852828, 3687994002, 3234156416, 3385345166, 4142626212, 4293295786, 3841024952, 3992742070, 174567692, 57326082, 410887952, 292596766, 777231668, 660510266, 1011452712, 893681702, 1108339068, 1258480242, 1343618912, 1494807662, 1715193156, 1865862730, 1948373848, 2100090966, 2701949495, 2818666809, 3004591147, 3122358053, 2235061775, 2352307457, 2535604243, 2653899549, 3915653703, 3764988233, 4219352155, 4067639125, 3444575871, 3294430577, 3746175075, 3594982253, 836553431, 953270745, 600235211, 718002117, 367585007, 484830689, 133361907, 251657213, 2041877159, 1891211689, 1806599355, 1654886325, 1568718495, 1418573201, 1335535747, 1184342925];
+function on(e) {
   for (var t = [], n = 0; n < e.length; n += 4) {
     t.push(e[n] << 24 | e[n + 1] << 16 | e[n + 2] << 8 | e[n + 3]);
   }
   return t;
 }
-var cn = /*#__PURE__*/function () {
-  function cn(e) {
-    (0, _classCallCheck2.default)(this, cn);
-    if (!(this instanceof cn)) throw Error("AES must be instanitated with `new`");
+var an = /*#__PURE__*/function () {
+  function an(e) {
+    (0, _classCallCheck2.default)(this, an);
+    if (!(this instanceof an)) throw Error("AES must be instanitated with `new`");
     Object.defineProperty(this, "key", {
-      value: qt(e, !0)
+      value: Ft(e, !0)
     }), this._prepare();
   }
-  (0, _createClass2.default)(cn, [{
+  (0, _createClass2.default)(an, [{
     key: "_prepare",
     value: function _prepare() {
-      var e = Wt[this.key.length];
+      var e = $t[this.key.length];
       if (null == e) throw new Error("invalid key size (must be 16, 24 or 32 bytes)");
       this._Ke = [], this._Kd = [];
       for (var t = 0; t <= e; t++) {
@@ -18265,18 +19388,18 @@ var cn = /*#__PURE__*/function () {
       var n,
         s = 4 * (e + 1),
         r = this.key.length / 4,
-        i = an(this.key);
+        i = on(this.key);
       for (t = 0; t < r; t++) {
         n = t >> 2, this._Ke[n][t % 4] = i[t], this._Kd[e - n][t % 4] = i[t];
       }
       for (var o, a = 0, c = r; c < s;) {
-        if (o = i[r - 1], i[0] ^= Jt[o >> 16 & 255] << 24 ^ Jt[o >> 8 & 255] << 16 ^ Jt[255 & o] << 8 ^ Jt[o >> 24 & 255] ^ zt[a] << 24, a += 1, 8 != r) for (t = 1; t < r; t++) {
+        if (o = i[r - 1], i[0] ^= zt[o >> 16 & 255] << 24 ^ zt[o >> 8 & 255] << 16 ^ zt[255 & o] << 8 ^ zt[o >> 24 & 255] ^ Wt[a] << 24, a += 1, 8 != r) for (t = 1; t < r; t++) {
           i[t] ^= i[t - 1];
         } else {
           for (t = 1; t < r / 2; t++) {
             i[t] ^= i[t - 1];
           }
-          o = i[r / 2 - 1], i[r / 2] ^= Jt[255 & o] ^ Jt[o >> 8 & 255] << 8 ^ Jt[o >> 16 & 255] << 16 ^ Jt[o >> 24 & 255] << 24;
+          o = i[r / 2 - 1], i[r / 2] ^= zt[255 & o] ^ zt[o >> 8 & 255] << 8 ^ zt[o >> 16 & 255] << 16 ^ zt[o >> 24 & 255] << 24;
           for (t = r / 2 + 1; t < r; t++) {
             i[t] ^= i[t - 1];
           }
@@ -18287,7 +19410,7 @@ var cn = /*#__PURE__*/function () {
       }
       for (var u = 1; u < e; u++) {
         for (var h = 0; h < 4; h++) {
-          o = this._Kd[u][h], this._Kd[u][h] = nn[o >> 24 & 255] ^ sn[o >> 16 & 255] ^ rn[o >> 8 & 255] ^ on[255 & o];
+          o = this._Kd[u][h], this._Kd[u][h] = tn[o >> 24 & 255] ^ nn[o >> 16 & 255] ^ sn[o >> 8 & 255] ^ rn[255 & o];
         }
       }
     }
@@ -18295,19 +19418,19 @@ var cn = /*#__PURE__*/function () {
     key: "encrypt",
     value: function encrypt(e) {
       if (16 != e.length) throw new Error("invalid plaintext size (must be 16 bytes)");
-      for (var t = this._Ke.length - 1, n = [0, 0, 0, 0], s = an(e), r = 0; r < 4; r++) {
+      for (var t = this._Ke.length - 1, n = [0, 0, 0, 0], s = on(e), r = 0; r < 4; r++) {
         s[r] ^= this._Ke[0][r];
       }
       for (var i = 1; i < t; i++) {
         for (r = 0; r < 4; r++) {
-          n[r] = Gt[s[r] >> 24 & 255] ^ Vt[s[(r + 1) % 4] >> 16 & 255] ^ Qt[s[(r + 2) % 4] >> 8 & 255] ^ Yt[255 & s[(r + 3) % 4]] ^ this._Ke[i][r];
+          n[r] = Ht[s[r] >> 24 & 255] ^ Gt[s[(r + 1) % 4] >> 16 & 255] ^ Vt[s[(r + 2) % 4] >> 8 & 255] ^ Yt[255 & s[(r + 3) % 4]] ^ this._Ke[i][r];
         }
         s = n.slice();
       }
       var o,
-        a = Mt(16);
+        a = qt(16);
       for (r = 0; r < 4; r++) {
-        o = this._Ke[t][r], a[4 * r] = 255 & (Jt[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (Jt[s[(r + 1) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (Jt[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (Jt[255 & s[(r + 3) % 4]] ^ o);
+        o = this._Ke[t][r], a[4 * r] = 255 & (zt[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (zt[s[(r + 1) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (zt[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (zt[255 & s[(r + 3) % 4]] ^ o);
       }
       return a;
     }
@@ -18315,46 +19438,84 @@ var cn = /*#__PURE__*/function () {
     key: "decrypt",
     value: function decrypt(e) {
       if (16 != e.length) throw new Error("invalid ciphertext size (must be 16 bytes)");
-      for (var t = this._Kd.length - 1, n = [0, 0, 0, 0], s = an(e), r = 0; r < 4; r++) {
+      for (var t = this._Kd.length - 1, n = [0, 0, 0, 0], s = on(e), r = 0; r < 4; r++) {
         s[r] ^= this._Kd[0][r];
       }
       for (var i = 1; i < t; i++) {
         for (r = 0; r < 4; r++) {
-          n[r] = Xt[s[r] >> 24 & 255] ^ Zt[s[(r + 3) % 4] >> 16 & 255] ^ en[s[(r + 2) % 4] >> 8 & 255] ^ tn[255 & s[(r + 1) % 4]] ^ this._Kd[i][r];
+          n[r] = Qt[s[r] >> 24 & 255] ^ Xt[s[(r + 3) % 4] >> 16 & 255] ^ Zt[s[(r + 2) % 4] >> 8 & 255] ^ en[255 & s[(r + 1) % 4]] ^ this._Kd[i][r];
         }
         s = n.slice();
       }
       var o,
-        a = Mt(16);
+        a = qt(16);
       for (r = 0; r < 4; r++) {
-        o = this._Kd[t][r], a[4 * r] = 255 & (Ht[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (Ht[s[(r + 3) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (Ht[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (Ht[255 & s[(r + 1) % 4]] ^ o);
+        o = this._Kd[t][r], a[4 * r] = 255 & (Jt[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (Jt[s[(r + 3) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (Jt[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (Jt[255 & s[(r + 1) % 4]] ^ o);
       }
       return a;
     }
   }]);
-  return cn;
+  return an;
 }();
-var un = /*#__PURE__*/function () {
-  function un(e) {
-    (0, _classCallCheck2.default)(this, un);
-    if (!(this instanceof un)) throw Error("AES must be instanitated with `new`");
-    this.description = "Electronic Code Block", this.name = "ecb", this._aes = new cn(e);
+var cn = /*#__PURE__*/function () {
+  function cn(e) {
+    (0, _classCallCheck2.default)(this, cn);
+    if (!(this instanceof cn)) throw Error("AES must be instanitated with `new`");
+    this.description = "Electronic Code Block", this.name = "ecb", this._aes = new an(e);
   }
-  (0, _createClass2.default)(un, [{
+  (0, _createClass2.default)(cn, [{
     key: "encrypt",
     value: function encrypt(e) {
-      if ((e = qt(e)).length % 16 != 0) throw new Error("invalid plaintext size (must be multiple of 16 bytes)");
-      for (var t = Mt(e.length), n = Mt(16), s = 0; s < e.length; s += 16) {
-        Kt(e, n, 0, s, s + 16), Kt(n = this._aes.encrypt(n), t, s);
+      if ((e = Ft(e)).length % 16 != 0) throw new Error("invalid plaintext size (must be multiple of 16 bytes)");
+      for (var t = qt(e.length), n = qt(16), s = 0; s < e.length; s += 16) {
+        Mt(e, n, 0, s, s + 16), Mt(n = this._aes.encrypt(n), t, s);
       }
       return t;
     }
   }, {
     key: "decrypt",
     value: function decrypt(e) {
-      if ((e = qt(e)).length % 16 != 0) throw new Error("invalid ciphertext size (must be multiple of 16 bytes)");
-      for (var t = Mt(e.length), n = Mt(16), s = 0; s < e.length; s += 16) {
-        Kt(e, n, 0, s, s + 16), Kt(n = this._aes.decrypt(n), t, s);
+      if ((e = Ft(e)).length % 16 != 0) throw new Error("invalid ciphertext size (must be multiple of 16 bytes)");
+      for (var t = qt(e.length), n = qt(16), s = 0; s < e.length; s += 16) {
+        Mt(e, n, 0, s, s + 16), Mt(n = this._aes.decrypt(n), t, s);
+      }
+      return t;
+    }
+  }]);
+  return cn;
+}();
+var un = /*#__PURE__*/function () {
+  function un(e, t) {
+    (0, _classCallCheck2.default)(this, un);
+    if (!(this instanceof un)) throw Error("AES must be instanitated with `new`");
+    if (this.description = "Cipher Block Chaining", this.name = "cbc", t) {
+      if (16 != t.length) throw new Error("invalid initialation vector size (must be 16 bytes)");
+    } else t = qt(16);
+    this._lastCipherblock = Ft(t, !0), this._aes = new an(e);
+  }
+  (0, _createClass2.default)(un, [{
+    key: "encrypt",
+    value: function encrypt(e) {
+      if ((e = Ft(e)).length % 16 != 0) throw new Error("invalid plaintext size (must be multiple of 16 bytes)");
+      for (var t = qt(e.length), n = qt(16), s = 0; s < e.length; s += 16) {
+        Mt(e, n, 0, s, s + 16);
+        for (var r = 0; r < 16; r++) {
+          n[r] ^= this._lastCipherblock[r];
+        }
+        this._lastCipherblock = this._aes.encrypt(n), Mt(this._lastCipherblock, t, s);
+      }
+      return t;
+    }
+  }, {
+    key: "decrypt",
+    value: function decrypt(e) {
+      if ((e = Ft(e)).length % 16 != 0) throw new Error("invalid ciphertext size (must be multiple of 16 bytes)");
+      for (var t = qt(e.length), n = qt(16), s = 0; s < e.length; s += 16) {
+        Mt(e, n, 0, s, s + 16), n = this._aes.decrypt(n);
+        for (var r = 0; r < 16; r++) {
+          t[s + r] = n[r] ^ this._lastCipherblock[r];
+        }
+        Mt(e, this._lastCipherblock, 0, s, s + 16);
       }
       return t;
     }
@@ -18362,62 +19523,24 @@ var un = /*#__PURE__*/function () {
   return un;
 }();
 var hn = /*#__PURE__*/function () {
-  function hn(e, t) {
+  function hn(e, t, n) {
     (0, _classCallCheck2.default)(this, hn);
     if (!(this instanceof hn)) throw Error("AES must be instanitated with `new`");
-    if (this.description = "Cipher Block Chaining", this.name = "cbc", t) {
-      if (16 != t.length) throw new Error("invalid initialation vector size (must be 16 bytes)");
-    } else t = Mt(16);
-    this._lastCipherblock = qt(t, !0), this._aes = new cn(e);
+    if (this.description = "Cipher Feedback", this.name = "cfb", t) {
+      if (16 != t.length) throw new Error("invalid initialation vector size (must be 16 size)");
+    } else t = qt(16);
+    n || (n = 1), this.segmentSize = n, this._shiftRegister = Ft(t, !0), this._aes = new an(e);
   }
   (0, _createClass2.default)(hn, [{
     key: "encrypt",
     value: function encrypt(e) {
-      if ((e = qt(e)).length % 16 != 0) throw new Error("invalid plaintext size (must be multiple of 16 bytes)");
-      for (var t = Mt(e.length), n = Mt(16), s = 0; s < e.length; s += 16) {
-        Kt(e, n, 0, s, s + 16);
-        for (var r = 0; r < 16; r++) {
-          n[r] ^= this._lastCipherblock[r];
-        }
-        this._lastCipherblock = this._aes.encrypt(n), Kt(this._lastCipherblock, t, s);
-      }
-      return t;
-    }
-  }, {
-    key: "decrypt",
-    value: function decrypt(e) {
-      if ((e = qt(e)).length % 16 != 0) throw new Error("invalid ciphertext size (must be multiple of 16 bytes)");
-      for (var t = Mt(e.length), n = Mt(16), s = 0; s < e.length; s += 16) {
-        Kt(e, n, 0, s, s + 16), n = this._aes.decrypt(n);
-        for (var r = 0; r < 16; r++) {
-          t[s + r] = n[r] ^ this._lastCipherblock[r];
-        }
-        Kt(e, this._lastCipherblock, 0, s, s + 16);
-      }
-      return t;
-    }
-  }]);
-  return hn;
-}();
-var ln = /*#__PURE__*/function () {
-  function ln(e, t, n) {
-    (0, _classCallCheck2.default)(this, ln);
-    if (!(this instanceof ln)) throw Error("AES must be instanitated with `new`");
-    if (this.description = "Cipher Feedback", this.name = "cfb", t) {
-      if (16 != t.length) throw new Error("invalid initialation vector size (must be 16 size)");
-    } else t = Mt(16);
-    n || (n = 1), this.segmentSize = n, this._shiftRegister = qt(t, !0), this._aes = new cn(e);
-  }
-  (0, _createClass2.default)(ln, [{
-    key: "encrypt",
-    value: function encrypt(e) {
       if (e.length % this.segmentSize != 0) throw new Error("invalid plaintext size (must be segmentSize bytes)");
-      for (var t, n = qt(e, !0), s = 0; s < n.length; s += this.segmentSize) {
+      for (var t, n = Ft(e, !0), s = 0; s < n.length; s += this.segmentSize) {
         t = this._aes.encrypt(this._shiftRegister);
         for (var r = 0; r < this.segmentSize; r++) {
           n[s + r] ^= t[r];
         }
-        Kt(this._shiftRegister, this._shiftRegister, 0, this.segmentSize), Kt(n, this._shiftRegister, 16 - this.segmentSize, s, s + this.segmentSize);
+        Mt(this._shiftRegister, this._shiftRegister, 0, this.segmentSize), Mt(n, this._shiftRegister, 16 - this.segmentSize, s, s + this.segmentSize);
       }
       return n;
     }
@@ -18425,31 +19548,31 @@ var ln = /*#__PURE__*/function () {
     key: "decrypt",
     value: function decrypt(e) {
       if (e.length % this.segmentSize != 0) throw new Error("invalid ciphertext size (must be segmentSize bytes)");
-      for (var t, n = qt(e, !0), s = 0; s < n.length; s += this.segmentSize) {
+      for (var t, n = Ft(e, !0), s = 0; s < n.length; s += this.segmentSize) {
         t = this._aes.encrypt(this._shiftRegister);
         for (var r = 0; r < this.segmentSize; r++) {
           n[s + r] ^= t[r];
         }
-        Kt(this._shiftRegister, this._shiftRegister, 0, this.segmentSize), Kt(e, this._shiftRegister, 16 - this.segmentSize, s, s + this.segmentSize);
+        Mt(this._shiftRegister, this._shiftRegister, 0, this.segmentSize), Mt(e, this._shiftRegister, 16 - this.segmentSize, s, s + this.segmentSize);
       }
       return n;
     }
   }]);
-  return ln;
+  return hn;
 }();
-var dn = /*#__PURE__*/function () {
-  function dn(e, t) {
-    (0, _classCallCheck2.default)(this, dn);
-    if (!(this instanceof dn)) throw Error("AES must be instanitated with `new`");
+var ln = /*#__PURE__*/function () {
+  function ln(e, t) {
+    (0, _classCallCheck2.default)(this, ln);
+    if (!(this instanceof ln)) throw Error("AES must be instanitated with `new`");
     if (this.description = "Output Feedback", this.name = "ofb", t) {
       if (16 != t.length) throw new Error("invalid initialation vector size (must be 16 bytes)");
-    } else t = Mt(16);
-    this._lastPrecipher = qt(t, !0), this._lastPrecipherIndex = 16, this._aes = new cn(e);
+    } else t = qt(16);
+    this._lastPrecipher = Ft(t, !0), this._lastPrecipherIndex = 16, this._aes = new an(e);
   }
-  (0, _createClass2.default)(dn, [{
+  (0, _createClass2.default)(ln, [{
     key: "encrypt",
     value: function encrypt(e) {
-      for (var t = qt(e, !0), n = 0; n < t.length; n++) {
+      for (var t = Ft(e, !0), n = 0; n < t.length; n++) {
         16 === this._lastPrecipherIndex && (this._lastPrecipher = this._aes.encrypt(this._lastPrecipher), this._lastPrecipherIndex = 0), t[n] ^= this._lastPrecipher[this._lastPrecipherIndex++];
       }
       return t;
@@ -18460,15 +19583,15 @@ var dn = /*#__PURE__*/function () {
       return this.encrypt(e);
     }
   }]);
-  return dn;
+  return ln;
 }();
-var pn = /*#__PURE__*/function () {
-  function pn(e) {
-    (0, _classCallCheck2.default)(this, pn);
-    if (!(this instanceof pn)) throw Error("Counter must be instanitated with `new`");
-    0 === e || e || (e = 1), "number" == typeof e ? (this._counter = Mt(16), this.setValue(e)) : this.setBytes(e);
+var dn = /*#__PURE__*/function () {
+  function dn(e) {
+    (0, _classCallCheck2.default)(this, dn);
+    if (!(this instanceof dn)) throw Error("Counter must be instanitated with `new`");
+    0 === e || e || (e = 1), "number" == typeof e ? (this._counter = qt(16), this.setValue(e)) : this.setBytes(e);
   }
-  (0, _createClass2.default)(pn, [{
+  (0, _createClass2.default)(dn, [{
     key: "setValue",
     value: function setValue(e) {
       if ("number" != typeof e || parseInt(e) != e) throw new Error("invalid counter value (must be an integer)");
@@ -18480,7 +19603,7 @@ var pn = /*#__PURE__*/function () {
   }, {
     key: "setBytes",
     value: function setBytes(e) {
-      if (16 != (e = qt(e, !0)).length) throw new Error("invalid counter bytes size (must be 16 bytes)");
+      if (16 != (e = Ft(e, !0)).length) throw new Error("invalid counter bytes size (must be 16 bytes)");
       this._counter = e;
     }
   }, {
@@ -18495,18 +19618,18 @@ var pn = /*#__PURE__*/function () {
       }
     }
   }]);
-  return pn;
+  return dn;
 }();
-var fn = /*#__PURE__*/function () {
-  function fn(e, t) {
-    (0, _classCallCheck2.default)(this, fn);
-    if (!(this instanceof fn)) throw Error("AES must be instanitated with `new`");
-    this.description = "Counter", this.name = "ctr", t instanceof pn || (t = new pn(t)), this._counter = t, this._remainingCounter = null, this._remainingCounterIndex = 16, this._aes = new cn(e);
+var pn = /*#__PURE__*/function () {
+  function pn(e, t) {
+    (0, _classCallCheck2.default)(this, pn);
+    if (!(this instanceof pn)) throw Error("AES must be instanitated with `new`");
+    this.description = "Counter", this.name = "ctr", t instanceof dn || (t = new dn(t)), this._counter = t, this._remainingCounter = null, this._remainingCounterIndex = 16, this._aes = new an(e);
   }
-  (0, _createClass2.default)(fn, [{
+  (0, _createClass2.default)(pn, [{
     key: "encrypt",
     value: function encrypt(e) {
-      for (var t = qt(e, !0), n = 0; n < t.length; n++) {
+      for (var t = Ft(e, !0), n = 0; n < t.length; n++) {
         16 === this._remainingCounterIndex && (this._remainingCounter = this._aes.encrypt(this._counter._counter), this._remainingCounterIndex = 0, this._counter.increment()), t[n] ^= this._remainingCounter[this._remainingCounterIndex++];
       }
       return t;
@@ -18517,79 +19640,79 @@ var fn = /*#__PURE__*/function () {
       return this.encrypt(e);
     }
   }]);
-  return fn;
+  return pn;
 }();
-var gn = {
-  AES: cn,
-  Counter: pn,
+var fn = {
+  AES: an,
+  Counter: dn,
   ModeOfOperation: {
-    ecb: un,
-    cbc: hn,
-    cfb: ln,
-    ofb: dn,
-    ctr: fn
+    ecb: cn,
+    cbc: un,
+    cfb: hn,
+    ofb: ln,
+    ctr: pn
   },
   utils: {
-    hex: $t,
-    utf8: Bt
+    hex: Bt,
+    utf8: jt
   },
   padding: {
     pkcs7: {
       pad: function pad(e) {
-        var t = 16 - (e = qt(e, !0)).length % 16,
-          n = Mt(e.length + t);
-        Kt(e, n);
+        var t = 16 - (e = Ft(e, !0)).length % 16,
+          n = qt(e.length + t);
+        Mt(e, n);
         for (var s = e.length; s < n.length; s++) {
           n[s] = t;
         }
         return n;
       },
       strip: function strip(e) {
-        if ((e = qt(e, !0)).length < 16) throw new Error("PKCS#7 invalid length");
+        if ((e = Ft(e, !0)).length < 16) throw new Error("PKCS#7 invalid length");
         var t = e[e.length - 1];
         if (t > 16) throw new Error("PKCS#7 padding byte out of range");
         for (var n = e.length - t, s = 0; s < t; s++) {
           if (e[n + s] !== t) throw new Error("PKCS#7 invalid padding byte");
         }
-        var r = Mt(n);
-        return Kt(e, r, 0, 0, n), r;
+        var r = qt(n);
+        return Mt(e, r, 0, 0, n), r;
       }
     }
   },
   _arrayTest: {
-    coerceArray: qt,
-    createArray: Mt,
-    copyArray: Kt
+    coerceArray: Ft,
+    createArray: qt,
+    copyArray: Mt
   }
 };
-function mn(e, t, n) {
+function gn(e, t, n) {
   var s = new Uint8Array(uni.base64ToArrayBuffer(t)),
-    r = gn.utils.utf8.toBytes(n),
-    i = gn.utils.utf8.toBytes(e),
-    o = new gn.ModeOfOperation.cbc(s, r),
-    a = gn.padding.pkcs7.pad(i),
+    r = fn.utils.utf8.toBytes(n),
+    i = fn.utils.utf8.toBytes(e),
+    o = new fn.ModeOfOperation.cbc(s, r),
+    a = fn.padding.pkcs7.pad(i),
     c = o.encrypt(a);
   return uni.arrayBufferToBase64(c);
 }
-var yn = {
+var mn = {
     code: 2e4,
     message: "System error"
   },
-  _n = {
+  yn = {
     code: 20101,
     message: "Invalid client"
   },
-  wn = {
+  _n = {
     code: 20102,
     message: "Get encrypt key failed"
   },
-  vn = {
+  wn = {
     10001: "Secure network is not supported on current playground or unimpsdk",
     10003: "Config missing in current app. If the problem pesist, please contact DCloud.",
     10009: "Encrypt payload failed",
     10010: "Decrypt response failed"
   };
-function Sn(e) {
+function vn(e) {
   var _ref25 = e || {},
     t = _ref25.errSubject,
     n = _ref25.subject,
@@ -18598,26 +19721,26 @@ function Sn(e) {
     i = _ref25.code,
     o = _ref25.message,
     a = _ref25.cause;
-  return new se({
+  return new ne({
     subject: t || n || "uni-secure-network",
-    code: s || i || yn.code,
+    code: s || i || mn.code,
     message: r || o,
     cause: a
   });
 }
 var In,
-  bn,
-  kn = null;
-var Tn = /*#__PURE__*/function (_Nt) {
-  (0, _inherits2.default)(Tn, _Nt);
-  var _super9 = _createSuper(Tn);
-  function Tn(e) {
+  Sn,
+  bn = null;
+var kn = /*#__PURE__*/function (_Lt) {
+  (0, _inherits2.default)(kn, _Lt);
+  var _super9 = _createSuper(kn);
+  function kn(e) {
     var _this14;
-    (0, _classCallCheck2.default)(this, Tn);
+    (0, _classCallCheck2.default)(this, kn);
     _this14 = _super9.call(this, e), _this14.clientType = "mp-weixin", _this14.userEncryptKey = null;
     return _this14;
   }
-  (0, _createClass2.default)(Tn, [{
+  (0, _createClass2.default)(kn, [{
     key: "isLogin",
     value: function isLogin() {
       return !!this.scopedGlobalCache.mpWeixinCode || !!this.scopedGlobalCache.mpWeixinOpenid;
@@ -18676,24 +19799,24 @@ var Tn = /*#__PURE__*/function (_Nt) {
                 }
                 return _context39.abrupt("return", this.userEncryptKey);
               case 2:
-                if (!(kn && kn.expireTime)) {
+                if (!(bn && bn.expireTime)) {
                   _context39.next = 6;
                   break;
                 }
                 e = Date.now();
-                if (!(kn.expireTime - e > 0)) {
+                if (!(bn.expireTime - e > 0)) {
                   _context39.next = 6;
                   break;
                 }
-                return _context39.abrupt("return", (this.userEncryptKey = kn, this.userEncryptKey));
+                return _context39.abrupt("return", (this.userEncryptKey = bn, this.userEncryptKey));
               case 6:
                 return _context39.abrupt("return", new Promise(function (e, t) {
                   uni.getUserCryptoManager().getLatestUserKey({
                     success: function success(t) {
-                      kn = t, _this15.userEncryptKey = t, e(_this15.userEncryptKey);
+                      bn = t, _this15.userEncryptKey = t, e(_this15.userEncryptKey);
                     },
                     fail: function fail(e) {
-                      t(Sn(_objectSpread(_objectSpread({}, wn), {}, {
+                      t(vn(_objectSpread(_objectSpread({}, _n), {}, {
                         cause: e
                       })));
                     }
@@ -18733,12 +19856,12 @@ var Tn = /*#__PURE__*/function (_Nt) {
                 t = _yield$this$getUserEn.iv;
                 n = _yield$this$getUserEn.version;
                 return _context40.abrupt("return", {
-                  verifyClientSign: mn(JSON.stringify({
+                  verifyClientSign: gn(JSON.stringify({
                     data: JSON.stringify({}),
                     appId: this.appId,
                     deviceId: this.deviceId,
                     wxAppId: this.getWxAppId(),
-                    simulator: "devtools" === ue().platform,
+                    simulator: "devtools" === ce().platform,
                     timestamp: Date.now()
                   }), e, t),
                   encryptKeyId: n,
@@ -18779,16 +19902,16 @@ var Tn = /*#__PURE__*/function (_Nt) {
                   mpWeixinCode: this.scopedGlobalCache.mpWeixinCode,
                   mpWeixinOpenid: this.scopedGlobalCache.mpWeixinOpenid
                 };
-                return _context41.abrupt("return", this.secretType === Ut ? {
+                return _context41.abrupt("return", this.secretType === Rt ? {
                   content: e,
                   _uniCloudOptions: r
                 } : {
-                  content: mn(JSON.stringify({
+                  content: gn(JSON.stringify({
                     data: JSON.stringify(e),
                     appId: this.appId,
                     deviceId: this.deviceId,
                     wxAppId: this.getWxAppId(),
-                    simulator: "devtools" === ue().platform,
+                    simulator: "devtools" === ce().platform,
                     timestamp: Date.now()
                   }), t, n),
                   _uniCloudOptions: r
@@ -18824,10 +19947,10 @@ var Tn = /*#__PURE__*/function (_Nt) {
                 return _context42.abrupt("return", JSON.parse(function (e, t, n) {
                   var s = new Uint8Array(uni.base64ToArrayBuffer(e)),
                     r = new Uint8Array(uni.base64ToArrayBuffer(t)),
-                    i = gn.utils.utf8.toBytes(n),
-                    o = new gn.ModeOfOperation.cbc(r, i),
-                    a = gn.padding.pkcs7.strip(o.decrypt(s));
-                  return gn.utils.utf8.fromBytes(a);
+                    i = fn.utils.utf8.toBytes(n),
+                    o = new fn.ModeOfOperation.cbc(r, i),
+                    a = fn.padding.pkcs7.strip(o.decrypt(s));
+                  return fn.utils.utf8.fromBytes(a);
                 }(t, n, s)));
               case 7:
               case "end":
@@ -18847,8 +19970,8 @@ var Tn = /*#__PURE__*/function (_Nt) {
       return !1;
     }
   }]);
-  return Tn;
-}(Nt);
+  return kn;
+}(Lt);
 function Cn(e) {
   var t = ["hasClientKey", "encryptGetClientKeyPayload", "setClientKey", "encrypt", "decrypt"],
     n = {};
@@ -18867,12 +19990,12 @@ function Cn(e) {
             i = _ref26.errMsg,
             o = _ref26.errSubject,
             a = _ref26.message;
-          "success" === e ? n(t) : s(Sn({
+          "success" === e ? n(t) : s(vn({
             errCode: r,
-            errMsg: vn[r] || i || a,
+            errMsg: wn[r] || i || a,
             errSubject: o
           }));
-        }])) : s(Sn({
+        }])) : s(vn({
           message: "请检查manifest.json内是否开启安全网络模块，另外注意标准基座不支持安全网络模块"
         }));
       });
@@ -18883,16 +20006,16 @@ function Cn(e) {
   }
   return n;
 }
-var Pn = /*#__PURE__*/function (_Nt2) {
-  (0, _inherits2.default)(Pn, _Nt2);
-  var _super10 = _createSuper(Pn);
-  function Pn(e) {
+var Tn = /*#__PURE__*/function (_Lt2) {
+  (0, _inherits2.default)(Tn, _Lt2);
+  var _super10 = _createSuper(Tn);
+  function Tn(e) {
     var _this16;
-    (0, _classCallCheck2.default)(this, Pn);
-    _this16 = _super10.call(this, e), _this16.clientType = "app", _this16.appUtils = _objectSpread({}, Cn(uni.requireNativePlugin("plus"))), _this16.systemInfo = In || (In = ue());
+    (0, _classCallCheck2.default)(this, Tn);
+    _this16 = _super10.call(this, e), _this16.clientType = "app", _this16.appUtils = _objectSpread({}, Cn(uni.requireNativePlugin("plus"))), _this16.systemInfo = In || (In = ce());
     return _this16;
   }
-  (0, _createClass2.default)(Pn, [{
+  (0, _createClass2.default)(Tn, [{
     key: "hasClientKey",
     value: function () {
       var _hasClientKey = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee43() {
@@ -18961,9 +20084,9 @@ var Pn = /*#__PURE__*/function (_Nt2) {
                   break;
                 }
                 throw function (e) {
-                  return new se({
+                  return new ne({
                     subject: e.errSubject || "uni-secure-network",
-                    code: e.errCode || e.code || yn.code,
+                    code: e.errCode || e.code || mn.code,
                     message: e.errMsg || e.message
                   });
                 }(n);
@@ -19122,7 +20245,7 @@ var Pn = /*#__PURE__*/function (_Nt2) {
                   secretType: this.secretType,
                   encryptKeyId: n
                 };
-                return _context48.abrupt("return", this.secretType === Ut ? {
+                return _context48.abrupt("return", this.secretType === Rt ? {
                   content: e,
                   _uniCloudOptions: s
                 } : {
@@ -19184,36 +20307,36 @@ var Pn = /*#__PURE__*/function (_Nt2) {
       return 70009 === t.errCode && "uni-secure-network" === t.errSubject;
     }
   }]);
-  return Pn;
-}(Nt);
-function An() {
+  return Tn;
+}(Lt);
+function Pn() {
   var _ref29 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref29.secretType;
-  return e === Rt || e === Ut || e === Lt;
+  return e === xt || e === Rt || e === Ut;
 }
-function En() {
+function An() {
   var _ref30 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref30.name,
     _ref30$data = _ref30.data,
     t = _ref30$data === void 0 ? {} : _ref30$data;
-  return "app" === A && "DCloud-clientDB" === e && "encryption" === t.redirectTo && "getAppClientKey" === t.action;
+  return "app" === P && "DCloud-clientDB" === e && "encryption" === t.redirectTo && "getAppClientKey" === t.action;
 }
-function On() {
+function En() {
   var _ref31 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref31.provider,
     t = _ref31.spaceId,
     n = _ref31.functionName;
-  var _ue = ue(),
-    s = _ue.appId,
-    r = _ue.uniPlatform,
-    i = _ue.osName;
+  var _ce = ce(),
+    s = _ce.appId,
+    r = _ce.uniPlatform,
+    i = _ce.osName;
   var o = r;
   "app" === r && (o = i);
   var a = function () {
     var _ref32 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       e = _ref32.provider,
       t = _ref32.spaceId;
-    var n = P;
+    var n = T;
     if (!n) return {};
     e = function (e) {
       return "tencent" === e ? "tcb" : e;
@@ -19245,13 +20368,13 @@ function On() {
     var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     return e.appId === s && (e.platform || "").toLowerCase() === o.toLowerCase();
   })) return !0;
-  throw console.error("\u6B64\u5E94\u7528[appId: ".concat(s, ", platform: ").concat(o, "]\u4E0D\u5728\u4E91\u7AEF\u914D\u7F6E\u7684\u5141\u8BB8\u8BBF\u95EE\u7684\u5E94\u7528\u5217\u8868\u5185\uFF0C\u53C2\u8003\uFF1Ahttps://uniapp.dcloud.net.cn/uniCloud/secure-network.html#verify-client")), Sn(_n);
+  throw console.error("\u6B64\u5E94\u7528[appId: ".concat(s, ", platform: ").concat(o, "]\u4E0D\u5728\u4E91\u7AEF\u914D\u7F6E\u7684\u5141\u8BB8\u8BBF\u95EE\u7684\u5E94\u7528\u5217\u8868\u5185\uFF0C\u53C2\u8003\uFF1Ahttps://uniapp.dcloud.net.cn/uniCloud/secure-network.html#verify-client")), vn(yn);
 }
-function xn(_ref33) {
+function On(_ref33) {
   var e = _ref33.functionName,
     t = _ref33.result,
     n = _ref33.logPvd;
-  if (k && this.__dev__.debugLog && t && t.requestId) {
+  if (b && this.__dev__.debugLog && t && t.requestId) {
     var _s11 = JSON.stringify({
       spaceId: this.config.spaceId,
       functionName: e,
@@ -19260,12 +20383,12 @@ function xn(_ref33) {
     console.log("[".concat(n, "-request]").concat(_s11, "[/").concat(n, "-request]"));
   }
 }
-function Rn(e) {
+function xn(e) {
   var t = e.callFunction,
     n = function n(_n7) {
       var _this18 = this;
       var s = _n7.name;
-      _n7.data = Tt.call(e, {
+      _n7.data = kt.call(e, {
         data: _n7.data
       });
       var r = {
@@ -19273,17 +20396,17 @@ function Rn(e) {
           tencent: "tcb",
           tcb: "tcb"
         }[this.config.provider],
-        i = An(_n7),
-        o = En(_n7),
+        i = Pn(_n7),
+        o = An(_n7),
         a = i || o;
       return t.call(this, _n7).then(function (e) {
-        return e.errCode = 0, !a && xn.call(_this18, {
+        return e.errCode = 0, !a && On.call(_this18, {
           functionName: s,
           result: e,
           logPvd: r
         }), Promise.resolve(e);
       }, function (e) {
-        return !a && xn.call(_this18, {
+        return !a && On.call(_this18, {
           functionName: s,
           result: e,
           logPvd: r
@@ -19303,18 +20426,18 @@ function Rn(e) {
               _a = e.match(_r4);
             if (!_a) continue;
             var _c = _i3;
-            for (var _e19 = 1; _e19 < _a.length; _e19++) {
-              _c = Ot(_c, "{$".concat(_e19, "}"), _a[_e19]);
+            for (var _e20 = 1; _e20 < _a.length; _e20++) {
+              _c = Et(_c, "{$".concat(_e20, "}"), _a[_e20]);
             }
-            for (var _e20 in t) {
-              _c = Ot(_c, "{".concat(_e20, "}"), t[_e20]);
+            for (var _e21 in t) {
+              _c = Et(_c, "{".concat(_e21, "}"), t[_e21]);
             }
             return "replace" === _o3 ? _c : e + _c;
           }
           return e;
         }({
           message: "[".concat(_n7.name, "]: ").concat(e.message),
-          formatter: Pt,
+          formatter: Tt,
           extraInfo: {
             functionName: s
           }
@@ -19327,22 +20450,22 @@ function Rn(e) {
       r = _e$config.spaceId,
       i = t.name;
     var o, a;
-    if (t.data = t.data || {}, k && e.__dev__.debugInfo && !e.__dev__.debugInfo.forceRemote && O ? (e._callCloudFunction || (e._callCloudFunction = n, e._callLocalFunction = Ct), o = Ct) : o = n, o = o.bind(e), En(t)) a = n.call(e, t);else if (function (_ref35) {
+    if (t.data = t.data || {}, b && e.__dev__.debugInfo && !e.__dev__.debugInfo.forceRemote && E ? (e._callCloudFunction || (e._callCloudFunction = n, e._callLocalFunction = Ct), o = Ct) : o = n, o = o.bind(e), An(t)) a = n.call(e, t);else if (function (_ref35) {
       var e = _ref35.name,
         _ref35$data = _ref35.data,
         t = _ref35$data === void 0 ? {} : _ref35$data;
-      return "mp-weixin" === A && "uni-id-co" === e && "secureNetworkHandshakeByWeixin" === t.method;
-    }(t)) a = o.call(e, t);else if (An(t)) {
-      a = new bn({
+      return "mp-weixin" === P && "uni-id-co" === e && "secureNetworkHandshakeByWeixin" === t.method;
+    }(t)) a = o.call(e, t);else if (Pn(t)) {
+      a = new Sn({
         secretType: t.secretType,
         uniCloudIns: e
       }).wrapEncryptDataCallFunction(n.bind(e))(t);
-    } else if (On({
+    } else if (En({
       provider: s,
       spaceId: r,
       functionName: i
     })) {
-      a = new bn({
+      a = new Sn({
         secretType: t.secretType,
         uniCloudIns: e
       }).wrapVerifyClientCallFunction(n.bind(e))(t);
@@ -19354,26 +20477,26 @@ function Rn(e) {
     }), a;
   };
 }
-bn = "mp-weixin" !== A && "app" !== A ? /*#__PURE__*/function () {
+Sn = "mp-weixin" !== P && "app" !== P ? /*#__PURE__*/function () {
   function _class2() {
     (0, _classCallCheck2.default)(this, _class2);
-    throw Sn({
-      message: "Platform ".concat(A, " is not supported by secure network")
+    throw vn({
+      message: "Platform ".concat(P, " is not supported by secure network")
     });
   }
   return (0, _createClass2.default)(_class2);
-}() : C ? "mp-weixin" === A ? Tn : Pn : /*#__PURE__*/function () {
+}() : C ? "mp-weixin" === P ? kn : Tn : /*#__PURE__*/function () {
   function _class3() {
     (0, _classCallCheck2.default)(this, _class3);
-    throw Sn({
-      message: "Platform ".concat(A, " is not enabled, please check whether secure network module is enabled in your manifest.json")
+    throw vn({
+      message: "Platform ".concat(P, " is not enabled, please check whether secure network module is enabled in your manifest.json")
     });
   }
   return (0, _createClass2.default)(_class3);
 }();
-var Un = Symbol("CLIENT_DB_INTERNAL");
-function Ln(e, t) {
-  return e.then = "DoNotReturnProxyWithAFunctionNamedThen", e._internalType = Un, e.inspect = null, e.__ob__ = void 0, new Proxy(e, {
+var Rn = Symbol("CLIENT_DB_INTERNAL");
+function Un(e, t) {
+  return e.then = "DoNotReturnProxyWithAFunctionNamedThen", e._internalType = Rn, e.inspect = null, e.__ob__ = void 0, new Proxy(e, {
     get: function get(e, n, s) {
       if ("_uniClient" === n) return null;
       if ("symbol" == (0, _typeof2.default)(n)) return e[n];
@@ -19385,7 +20508,7 @@ function Ln(e, t) {
     }
   });
 }
-function Nn(e) {
+function Ln(e) {
   return {
     on: function on(t, n) {
       e[t] = e[t] || [], e[t].indexOf(n) > -1 || e[t].push(n);
@@ -19397,19 +20520,19 @@ function Nn(e) {
     }
   };
 }
-var Dn = ["db.Geo", "db.command", "command.aggregate"];
-function Fn(e, t) {
-  return Dn.indexOf("".concat(e, ".").concat(t)) > -1;
+var Nn = ["db.Geo", "db.command", "command.aggregate"];
+function Dn(e, t) {
+  return Nn.indexOf("".concat(e, ".").concat(t)) > -1;
 }
-function qn(e) {
+function Fn(e) {
   switch (g(e)) {
     case "array":
       return e.map(function (e) {
-        return qn(e);
+        return Fn(e);
       });
     case "object":
-      return e._internalType === Un || Object.keys(e).forEach(function (t) {
-        e[t] = qn(e[t]);
+      return e._internalType === Rn || Object.keys(e).forEach(function (t) {
+        e[t] = Fn(e[t]);
       }), e;
     case "regexp":
       return {
@@ -19426,15 +20549,15 @@ function qn(e) {
       return e;
   }
 }
-function Mn(e) {
+function qn(e) {
   return e && e.content && e.content.$method;
 }
-var Kn = /*#__PURE__*/function () {
-  function Kn(e, t, n) {
-    (0, _classCallCheck2.default)(this, Kn);
+var Mn = /*#__PURE__*/function () {
+  function Mn(e, t, n) {
+    (0, _classCallCheck2.default)(this, Mn);
     this.content = e, this.prevStage = t || null, this.udb = null, this._database = n;
   }
-  (0, _createClass2.default)(Kn, [{
+  (0, _createClass2.default)(Mn, [{
     key: "toJSON",
     value: function toJSON() {
       var e = this;
@@ -19446,7 +20569,7 @@ var Kn = /*#__PURE__*/function () {
         $db: t.reverse().map(function (e) {
           return {
             $method: e.$method,
-            $param: qn(e.$param)
+            $param: Fn(e.$param)
           };
         })
       };
@@ -19478,8 +20601,8 @@ var Kn = /*#__PURE__*/function () {
     get: function get() {
       var e = this;
       for (; e;) {
-        var t = Mn(e),
-          _n8 = Mn(e.prevStage);
+        var t = qn(e),
+          _n8 = qn(e.prevStage);
         if ("aggregate" === t && "collection" === _n8 || "pipeline" === t) return !0;
         e = e.prevStage;
       }
@@ -19490,7 +20613,7 @@ var Kn = /*#__PURE__*/function () {
     get: function get() {
       var e = this;
       for (; e;) {
-        if ("command" === Mn(e)) return !0;
+        if ("command" === qn(e)) return !0;
         e = e.prevStage;
       }
       return !1;
@@ -19500,8 +20623,8 @@ var Kn = /*#__PURE__*/function () {
     get: function get() {
       var e = this;
       for (; e;) {
-        var t = Mn(e),
-          _n9 = Mn(e.prevStage);
+        var t = qn(e),
+          _n9 = qn(e.prevStage);
         if ("aggregate" === t && "command" === _n9) return !0;
         e = e.prevStage;
       }
@@ -19512,9 +20635,9 @@ var Kn = /*#__PURE__*/function () {
     value: function getNextStageFn(e) {
       var t = this;
       return function () {
-        return jn({
+        return Kn({
           $method: e,
-          $param: qn(Array.from(arguments))
+          $param: Fn(Array.from(arguments))
         }, t, t._database);
       };
     }
@@ -19568,13 +20691,13 @@ var Kn = /*#__PURE__*/function () {
         s = this.getCommand();
       if (s.$db.push({
         $method: e,
-        $param: qn(t)
-      }), k) {
-        var _e21 = s.$db.find(function (e) {
+        $param: Fn(t)
+      }), b) {
+        var _e22 = s.$db.find(function (e) {
             return "collection" === e.$method;
           }),
-          _t11 = _e21 && _e21.$param;
-        _t11 && 1 === _t11.length && "string" == typeof _e21.$param[0] && _e21.$param[0].indexOf(",") > -1 && console.warn("检测到使用JQL语法联表查询时，未使用getTemp先过滤主表数据，在主表数据量大的情况下可能会查询缓慢。\n- 如何优化请参考此文档：https://uniapp.dcloud.net.cn/uniCloud/jql?id=lookup-with-temp \n- 如果主表数据量很小请忽略此信息，项目发行时不会出现此提示。");
+          _t11 = _e22 && _e22.$param;
+        _t11 && 1 === _t11.length && "string" == typeof _e22.$param[0] && _e22.$param[0].indexOf(",") > -1 && console.warn("检测到使用JQL语法联表查询时，未使用getTemp先过滤主表数据，在主表数据量大的情况下可能会查询缓慢。\n- 如何优化请参考此文档：https://uniapp.dcloud.net.cn/uniCloud/jql?id=lookup-with-temp \n- 如果主表数据量很小请忽略此信息，项目发行时不会出现此提示。");
       }
       return this._database._callCloudFunction({
         action: n,
@@ -19582,24 +20705,24 @@ var Kn = /*#__PURE__*/function () {
       });
     }
   }]);
-  return Kn;
+  return Mn;
 }();
-function jn(e, t, n) {
-  return Ln(new Kn(e, t, n), {
+function Kn(e, t, n) {
+  return Un(new Mn(e, t, n), {
     get: function get(e, t) {
       var s = "db";
-      return e && e.content && (s = e.content.$method), Fn(s, t) ? jn({
+      return e && e.content && (s = e.content.$method), Dn(s, t) ? Kn({
         $method: t
       }, e, n) : function () {
-        return jn({
+        return Kn({
           $method: t,
-          $param: qn(Array.from(arguments))
+          $param: Fn(Array.from(arguments))
         }, e, n);
       };
     }
   });
 }
-function Bn(_ref36) {
+function jn(_ref36) {
   var e = _ref36.path,
     t = _ref36.method;
   return /*#__PURE__*/function () {
@@ -19630,29 +20753,29 @@ function Bn(_ref36) {
     return _class4;
   }();
 }
-function $n(e) {
+function Bn(e) {
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  return Ln(new e(t), {
+  return Un(new e(t), {
     get: function get(e, t) {
-      return Fn("db", t) ? jn({
+      return Dn("db", t) ? Kn({
         $method: t
       }, null, e) : function () {
-        return jn({
+        return Kn({
           $method: t,
-          $param: qn(Array.from(arguments))
+          $param: Fn(Array.from(arguments))
         }, null, e);
       };
     }
   });
 }
-var Wn = /*#__PURE__*/function (_ref37) {
-  (0, _inherits2.default)(Wn, _ref37);
-  var _super11 = _createSuper(Wn);
-  function Wn() {
-    (0, _classCallCheck2.default)(this, Wn);
+var $n = /*#__PURE__*/function (_ref37) {
+  (0, _inherits2.default)($n, _ref37);
+  var _super11 = _createSuper($n);
+  function $n() {
+    (0, _classCallCheck2.default)(this, $n);
     return _super11.apply(this, arguments);
   }
-  (0, _createClass2.default)(Wn, [{
+  (0, _createClass2.default)($n, [{
     key: "_parseResult",
     value: function _parseResult(e) {
       return this._isJQL ? e.result : e;
@@ -19674,16 +20797,16 @@ var Wn = /*#__PURE__*/function (_ref37) {
       var i = this,
         o = this._isJQL ? "databaseForJQL" : "database";
       function a(e) {
-        return i._callback("error", [e]), M(K(o, "fail"), e).then(function () {
-          return M(K(o, "complete"), e);
+        return i._callback("error", [e]), q(M(o, "fail"), e).then(function () {
+          return q(M(o, "complete"), e);
         }).then(function () {
-          return r(null, e), X($, {
-            type: J,
+          return r(null, e), Q(B, {
+            type: z,
             content: e
           }), Promise.reject(e);
         });
       }
-      var c = M(K(o, "invoke")),
+      var c = q(M(o, "invoke")),
         u = this._uniClient;
       return c.then(function () {
         return u.callFunction({
@@ -19703,23 +20826,23 @@ var Wn = /*#__PURE__*/function (_ref37) {
           c = _e$result.tokenExpired,
           _e$result$systemInfo = _e$result.systemInfo,
           u = _e$result$systemInfo === void 0 ? [] : _e$result$systemInfo;
-        if (u) for (var _e22 = 0; _e22 < u.length; _e22++) {
-          var _u$_e = u[_e22],
+        if (u) for (var _e23 = 0; _e23 < u.length; _e23++) {
+          var _u$_e = u[_e23],
             _t12 = _u$_e.level,
             _n11 = _u$_e.message,
             _s13 = _u$_e.detail,
-            _r6 = console["app" === A && "warn" === _t12 ? "error" : _t12] || console.log;
+            _r6 = console["app" === P && "warn" === _t12 ? "error" : _t12] || console.log;
           var _i4 = "[System Info]" + _n11;
           _s13 && (_i4 = "".concat(_i4, "\n\u8BE6\u7EC6\u4FE1\u606F\uFF1A").concat(_s13)), _r6(_i4);
         }
         if (t) {
-          return a(new se({
+          return a(new ne({
             code: t,
             message: n,
             requestId: e.requestId
           }));
         }
-        e.result.errCode = e.result.errCode || e.result.code, e.result.errMsg = e.result.errMsg || e.result.message, s && c && (oe({
+        e.result.errCode = e.result.errCode || e.result.code, e.result.errMsg = e.result.errMsg || e.result.message, s && c && (ie({
           token: s,
           tokenExpired: c
         }), _this19._callbackAuth("refreshToken", [{
@@ -19728,7 +20851,7 @@ var Wn = /*#__PURE__*/function (_ref37) {
         }]), _this19._callback("refreshToken", [{
           token: s,
           tokenExpired: c
-        }]), X(z, {
+        }]), Q(W, {
           token: s,
           tokenExpired: c
         }));
@@ -19759,20 +20882,20 @@ var Wn = /*#__PURE__*/function (_ref37) {
           _loop2(_t13);
         }
         return function (e) {
-          return M(K(o, "success"), e).then(function () {
-            return M(K(o, "complete"), e);
+          return q(M(o, "success"), e).then(function () {
+            return q(M(o, "complete"), e);
           }).then(function () {
             r(e, null);
             var t = i._parseResult(e);
-            return X($, {
-              type: J,
+            return Q(B, {
+              type: z,
               content: t
             }), Promise.resolve(t);
           });
         }(e);
       }, function (e) {
         /fc_function_not_found|FUNCTION_NOT_FOUND/g.test(e.message) && console.warn("clientDB未初始化，请在web控制台保存一次schema以开启clientDB");
-        return a(new se({
+        return a(new ne({
           code: e.code || "SYSTEM_ERROR",
           message: e.message,
           requestId: e.requestId
@@ -19780,7 +20903,7 @@ var Wn = /*#__PURE__*/function (_ref37) {
       });
     }
   }]);
-  return Wn;
+  return $n;
 }( /*#__PURE__*/function () {
   function _class5() {
     var _ref39 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -19789,23 +20912,23 @@ var Wn = /*#__PURE__*/function (_ref37) {
       _ref39$isJQL = _ref39.isJQL,
       t = _ref39$isJQL === void 0 ? !1 : _ref39$isJQL;
     (0, _classCallCheck2.default)(this, _class5);
-    this._uniClient = e, this._authCallBacks = {}, this._dbCallBacks = {}, e._isDefault && (this._dbCallBacks = L("_globalUniCloudDatabaseCallback")), t || (this.auth = Nn(this._authCallBacks)), this._isJQL = t, Object.assign(this, Nn(this._dbCallBacks)), this.env = Ln({}, {
+    this._uniClient = e, this._authCallBacks = {}, this._dbCallBacks = {}, e._isDefault && (this._dbCallBacks = U("_globalUniCloudDatabaseCallback")), t || (this.auth = Ln(this._authCallBacks)), this._isJQL = t, Object.assign(this, Ln(this._dbCallBacks)), this.env = Un({}, {
       get: function get(e, t) {
         return {
           $env: t
         };
       }
-    }), this.Geo = Ln({}, {
+    }), this.Geo = Un({}, {
       get: function get(e, t) {
-        return Bn({
+        return jn({
           path: ["Geo"],
           method: t
         });
       }
-    }), this.serverDate = Bn({
+    }), this.serverDate = jn({
       path: [],
       method: "serverDate"
-    }), this.RegExp = Bn({
+    }), this.RegExp = jn({
       path: [],
       method: "RegExp"
     });
@@ -19855,32 +20978,32 @@ var Wn = /*#__PURE__*/function (_ref37) {
   }]);
   return _class5;
 }());
-var zn = "token无效，跳转登录页面",
-  Jn = "token过期，跳转登录页面",
-  Hn = {
-    TOKEN_INVALID_TOKEN_EXPIRED: Jn,
-    TOKEN_INVALID_INVALID_CLIENTID: zn,
-    TOKEN_INVALID: zn,
-    TOKEN_INVALID_WRONG_TOKEN: zn,
-    TOKEN_INVALID_ANONYMOUS_USER: zn
+var Wn = "token无效，跳转登录页面",
+  zn = "token过期，跳转登录页面",
+  Jn = {
+    TOKEN_INVALID_TOKEN_EXPIRED: zn,
+    TOKEN_INVALID_INVALID_CLIENTID: Wn,
+    TOKEN_INVALID: Wn,
+    TOKEN_INVALID_WRONG_TOKEN: Wn,
+    TOKEN_INVALID_ANONYMOUS_USER: Wn
   },
-  Gn = {
-    "uni-id-token-expired": Jn,
-    "uni-id-check-token-failed": zn,
-    "uni-id-token-not-exist": zn,
-    "uni-id-check-device-feature-failed": zn
+  Hn = {
+    "uni-id-token-expired": zn,
+    "uni-id-check-token-failed": Wn,
+    "uni-id-token-not-exist": Wn,
+    "uni-id-check-device-feature-failed": Wn
   };
-function Vn(e, t) {
+function Gn(e, t) {
   var n = "";
   return n = e ? "".concat(e, "/").concat(t) : t, n.replace(/^\//, "");
 }
-function Qn() {
+function Vn() {
   var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
   var n = [],
     s = [];
   return e.forEach(function (e) {
-    !0 === e.needLogin ? n.push(Vn(t, e.path)) : !1 === e.needLogin && s.push(Vn(t, e.path));
+    !0 === e.needLogin ? n.push(Gn(t, e.path)) : !1 === e.needLogin && s.push(Gn(t, e.path));
   }), {
     needLoginPage: n,
     notNeedLoginPage: s
@@ -19889,7 +21012,7 @@ function Qn() {
 function Yn(e) {
   return e.split("?")[0].replace(/^\//, "");
 }
-function Xn() {
+function Qn() {
   return function (e) {
     var t = e && e.$page && e.$page.fullPath || "";
     return t ? ("/" !== t.charAt(0) && (t = "/" + t), t) : t;
@@ -19898,10 +21021,10 @@ function Xn() {
     return e[e.length - 1];
   }());
 }
-function Zn() {
-  return Yn(Xn());
+function Xn() {
+  return Yn(Qn());
 }
-function es() {
+function Zn() {
   var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   if (!e) return !1;
@@ -19912,7 +21035,7 @@ function es() {
     return e.pagePath === s;
   });
 }
-var ts = !!_pages.default.uniIdRouter;
+var es = !!_pages.default.uniIdRouter;
 var _ref40 = function () {
     var _ref21 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _pages.default,
       _ref21$pages = _ref21.pages,
@@ -19928,9 +21051,9 @@ var _ref40 = function () {
       o = _s$needLogin === void 0 ? [] : _s$needLogin,
       _s$resToLogin = s.resToLogin,
       a = _s$resToLogin === void 0 ? !0 : _s$resToLogin,
-      _Qn = Qn(e),
-      c = _Qn.needLoginPage,
-      u = _Qn.notNeedLoginPage,
+      _Vn = Vn(e),
+      c = _Vn.needLoginPage,
+      u = _Vn.notNeedLoginPage,
       _ref23 = function () {
         var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         var t = [],
@@ -19939,9 +21062,9 @@ var _ref40 = function () {
           var s = e.root,
             _e$pages = e.pages,
             r = _e$pages === void 0 ? [] : _e$pages,
-            _Qn2 = Qn(r, s),
-            i = _Qn2.needLoginPage,
-            o = _Qn2.notNeedLoginPage;
+            _Vn2 = Vn(r, s),
+            i = _Vn2.needLoginPage,
+            o = _Vn2.notNeedLoginPage;
           t.push.apply(t, (0, _toConsumableArray2.default)(i)), n.push.apply(n, (0, _toConsumableArray2.default)(o));
         }), {
           needLoginPage: t,
@@ -19956,18 +21079,18 @@ var _ref40 = function () {
       resToLogin: a,
       needLoginPage: [].concat((0, _toConsumableArray2.default)(c), (0, _toConsumableArray2.default)(h)),
       notNeedLoginPage: [].concat((0, _toConsumableArray2.default)(u), (0, _toConsumableArray2.default)(l)),
-      loginPageInTabBar: es(i, r)
+      loginPageInTabBar: Zn(i, r)
     };
   }(),
-  ns = _ref40.loginPage,
-  ss = _ref40.routerNeedLogin,
-  rs = _ref40.resToLogin,
-  is = _ref40.needLoginPage,
-  os = _ref40.notNeedLoginPage,
-  as = _ref40.loginPageInTabBar;
-if (is.indexOf(ns) > -1) throw new Error("Login page [".concat(ns, "] should not be \"needLogin\", please check your pages.json"));
-function cs(e) {
-  var t = Zn();
+  ts = _ref40.loginPage,
+  ns = _ref40.routerNeedLogin,
+  ss = _ref40.resToLogin,
+  rs = _ref40.needLoginPage,
+  is = _ref40.notNeedLoginPage,
+  os = _ref40.loginPageInTabBar;
+if (rs.indexOf(ts) > -1) throw new Error("Login page [".concat(ts, "] should not be \"needLogin\", please check your pages.json"));
+function as(e) {
+  var t = Xn();
   if ("/" === e.charAt(0)) return e;
   var _e$split = e.split("?"),
     _e$split2 = (0, _slicedToArray2.default)(_e$split, 2),
@@ -19976,37 +21099,37 @@ function cs(e) {
     r = n.replace(/^\//, "").split("/"),
     i = t.split("/");
   i.pop();
-  for (var _e23 = 0; _e23 < r.length; _e23++) {
-    var _t15 = r[_e23];
+  for (var _e24 = 0; _e24 < r.length; _e24++) {
+    var _t15 = r[_e24];
     ".." === _t15 ? i.pop() : "." !== _t15 && i.push(_t15);
   }
   return "" === i[0] && i.shift(), "/" + i.join("/") + (s ? "?" + s : "");
 }
-function us(e) {
-  var t = Yn(cs(e));
-  return !(os.indexOf(t) > -1) && (is.indexOf(t) > -1 || ss.some(function (t) {
+function cs(e) {
+  var t = Yn(as(e));
+  return !(is.indexOf(t) > -1) && (rs.indexOf(t) > -1 || ns.some(function (t) {
     return function (e, t) {
       return new RegExp(t).test(e);
     }(e, t);
   }));
 }
-function hs(_ref41) {
+function us(_ref41) {
   var e = _ref41.redirect;
   var t = Yn(e),
-    n = Yn(ns);
-  return Zn() !== n && t !== n;
+    n = Yn(ts);
+  return Xn() !== n && t !== n;
 }
-function ls() {
+function hs() {
   var _ref42 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref42.api,
     t = _ref42.redirect;
-  if (!t || !hs({
+  if (!t || !us({
     redirect: t
   })) return;
   var n = function (e, t) {
     return "/" !== e.charAt(0) && (e = "/" + e), t ? e.indexOf("?") > -1 ? e + "&uniIdRedirectUrl=".concat(encodeURIComponent(t)) : e + "?uniIdRedirectUrl=".concat(encodeURIComponent(t)) : e;
-  }(ns, t);
-  as ? "navigateTo" !== e && "redirectTo" !== e || (e = "switchTab") : "switchTab" === e && (e = "navigateTo");
+  }(ts, t);
+  os ? "navigateTo" !== e && "redirectTo" !== e || (e = "switchTab") : "switchTab" === e && (e = "navigateTo");
   var s = {
     navigateTo: uni.navigateTo,
     redirectTo: uni.redirectTo,
@@ -20019,7 +21142,7 @@ function ls() {
     });
   });
 }
-function ds() {
+function ls() {
   var _ref43 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref43.url;
   var t = {
@@ -20027,45 +21150,45 @@ function ds() {
       autoToLoginPage: !1
     },
     n = function () {
-      var _ie3 = ie(),
-        e = _ie3.token,
-        t = _ie3.tokenExpired;
+      var _re3 = re(),
+        e = _re3.token,
+        t = _re3.tokenExpired;
       var n;
       if (e) {
         if (t < Date.now()) {
-          var _e24 = "uni-id-token-expired";
+          var _e25 = "uni-id-token-expired";
           n = {
-            errCode: _e24,
-            errMsg: Gn[_e24]
+            errCode: _e25,
+            errMsg: Hn[_e25]
           };
         }
       } else {
-        var _e25 = "uni-id-check-token-failed";
+        var _e26 = "uni-id-check-token-failed";
         n = {
-          errCode: _e25,
-          errMsg: Gn[_e25]
+          errCode: _e26,
+          errMsg: Hn[_e26]
         };
       }
       return n;
     }();
-  if (us(e) && n) {
+  if (cs(e) && n) {
     n.uniIdRedirectUrl = e;
-    if (V(W).length > 0) return setTimeout(function () {
-      X(W, n);
+    if (G($).length > 0) return setTimeout(function () {
+      Q($, n);
     }, 0), t.abortLoginPageJump = !0, t;
     t.autoToLoginPage = !0;
   }
   return t;
 }
-function ps() {
+function ds() {
   !function () {
-    var e = Xn(),
-      _ds = ds({
+    var e = Qn(),
+      _ls = ls({
         url: e
       }),
-      t = _ds.abortLoginPageJump,
-      n = _ds.autoToLoginPage;
-    t || n && ls({
+      t = _ls.abortLoginPageJump,
+      n = _ls.autoToLoginPage;
+    t || n && hs({
       api: "redirectTo",
       redirect: e
     });
@@ -20075,14 +21198,14 @@ function ps() {
     var n = e[_t16];
     uni.addInterceptor(n, {
       invoke: function invoke(e) {
-        var _ds2 = ds({
+        var _ls2 = ls({
             url: e.url
           }),
-          t = _ds2.abortLoginPageJump,
-          s = _ds2.autoToLoginPage;
-        return t ? e : s ? (ls({
+          t = _ls2.abortLoginPageJump,
+          s = _ls2.autoToLoginPage;
+        return t ? e : s ? (hs({
           api: n,
-          redirect: cs(e.url)
+          redirect: as(e.url)
         }), !1) : e;
       }
     });
@@ -20091,7 +21214,7 @@ function ps() {
     _loop3(_t16);
   }
 }
-function fs() {
+function ps() {
   this.onResponse(function (e) {
     var t = e.type,
       n = e.content;
@@ -20102,7 +21225,7 @@ function fs() {
           if ("object" != (0, _typeof2.default)(e)) return !1;
           var _ref44 = e || {},
             t = _ref44.errCode;
-          return t in Gn;
+          return t in Hn;
         }(n);
         break;
       case "clientdb":
@@ -20110,19 +21233,19 @@ function fs() {
           if ("object" != (0, _typeof2.default)(e)) return !1;
           var _ref45 = e || {},
             t = _ref45.errCode;
-          return t in Hn;
+          return t in Jn;
         }(n);
     }
     s && function () {
       var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var t = V(W);
-      te().then(function () {
-        var n = Xn();
-        if (n && hs({
+      var t = G($);
+      ee().then(function () {
+        var n = Qn();
+        if (n && us({
           redirect: n
-        })) return t.length > 0 ? X(W, Object.assign({
+        })) return t.length > 0 ? Q($, Object.assign({
           uniIdRedirectUrl: n
-        }, e)) : void (ns && ls({
+        }, e)) : void (ts && hs({
           api: "navigateTo",
           redirect: n
         }));
@@ -20130,34 +21253,34 @@ function fs() {
     }(n);
   });
 }
-function gs(e) {
+function fs(e) {
   !function (e) {
     e.onResponse = function (e) {
-      Q($, e);
+      V(B, e);
     }, e.offResponse = function (e) {
-      Y($, e);
+      Y(B, e);
     };
   }(e), function (e) {
     e.onNeedLogin = function (e) {
-      Q(W, e);
+      V($, e);
     }, e.offNeedLogin = function (e) {
-      Y(W, e);
-    }, ts && (L("_globalUniCloudStatus").needLoginInit || (L("_globalUniCloudStatus").needLoginInit = !0, te().then(function () {
-      ps.call(e);
-    }), rs && fs.call(e)));
+      Y($, e);
+    }, es && (U("_globalUniCloudStatus").needLoginInit || (U("_globalUniCloudStatus").needLoginInit = !0, ee().then(function () {
+      ds.call(e);
+    }), ss && ps.call(e)));
   }(e), function (e) {
     e.onRefreshToken = function (e) {
-      Q(z, e);
+      V(W, e);
     }, e.offRefreshToken = function (e) {
-      Y(z, e);
+      Y(W, e);
     };
   }(e);
 }
-var ms;
-var ys = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-  _s = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
-function ws() {
-  var e = ie().token || "",
+var gs;
+var ms = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+  ys = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+function _s() {
+  var e = re().token || "",
     t = e.split(".");
   if (!e || 3 !== t.length) return {
     uid: null,
@@ -20167,7 +21290,7 @@ function ws() {
   };
   var n;
   try {
-    n = JSON.parse((s = t[1], decodeURIComponent(ms(s).split("").map(function (e) {
+    n = JSON.parse((s = t[1], decodeURIComponent(gs(s).split("").map(function (e) {
       return "%" + ("00" + e.charCodeAt(0).toString(16)).slice(-2);
     }).join(""))));
   } catch (e) {
@@ -20176,16 +21299,16 @@ function ws() {
   var s;
   return n.tokenExpired = 1e3 * n.exp, delete n.exp, delete n.iat, n;
 }
-ms = "function" != typeof atob ? function (e) {
-  if (e = String(e).replace(/[\t\n\f\r ]+/g, ""), !_s.test(e)) throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+gs = "function" != typeof atob ? function (e) {
+  if (e = String(e).replace(/[\t\n\f\r ]+/g, ""), !ys.test(e)) throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
   var t;
   e += "==".slice(2 - (3 & e.length));
   for (var n, s, r = "", i = 0; i < e.length;) {
-    t = ys.indexOf(e.charAt(i++)) << 18 | ys.indexOf(e.charAt(i++)) << 12 | (n = ys.indexOf(e.charAt(i++))) << 6 | (s = ys.indexOf(e.charAt(i++))), r += 64 === n ? String.fromCharCode(t >> 16 & 255) : 64 === s ? String.fromCharCode(t >> 16 & 255, t >> 8 & 255) : String.fromCharCode(t >> 16 & 255, t >> 8 & 255, 255 & t);
+    t = ms.indexOf(e.charAt(i++)) << 18 | ms.indexOf(e.charAt(i++)) << 12 | (n = ms.indexOf(e.charAt(i++))) << 6 | (s = ms.indexOf(e.charAt(i++))), r += 64 === n ? String.fromCharCode(t >> 16 & 255) : 64 === s ? String.fromCharCode(t >> 16 & 255, t >> 8 & 255) : String.fromCharCode(t >> 16 & 255, t >> 8 & 255, 255 & t);
   }
   return r;
 } : atob;
-var vs = s(function (e, t) {
+var ws = s(function (e, t) {
     Object.defineProperty(t, "__esModule", {
       value: !0
     });
@@ -20344,9 +21467,9 @@ var vs = s(function (e, t) {
       };
     };
   }),
-  Ss = n(vs);
+  vs = n(ws);
 var Is = "manual";
-function bs(e) {
+function Ss(e) {
   return {
     props: {
       localdata: {
@@ -20533,7 +21656,7 @@ function bs(e) {
     }
   };
 }
-function ks(e) {
+function bs(e) {
   return function (t) {
     var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     n = function (e) {
@@ -20583,14 +21706,14 @@ function ks(e) {
                     }) : {};
                     _context50.prev = 2;
                     _context50.next = 5;
-                    return M(K(t, "invoke"), _objectSpread({}, r));
+                    return q(M(t, "invoke"), _objectSpread({}, r));
                   case 5:
                     _context50.next = 7;
                     return e.apply(void 0, s);
                   case 7:
                     i = _context50.sent;
                     _context50.next = 10;
-                    return M(K(t, "success"), _objectSpread(_objectSpread({}, r), {}, {
+                    return q(M(t, "success"), _objectSpread(_objectSpread({}, r), {}, {
                       result: i
                     }));
                   case 10:
@@ -20600,7 +21723,7 @@ function ks(e) {
                     _context50.t0 = _context50["catch"](2);
                     o = _context50.t0;
                     _context50.next = 18;
-                    return M(K(t, "fail"), _objectSpread(_objectSpread({}, r), {}, {
+                    return q(M(t, "fail"), _objectSpread(_objectSpread({}, r), {}, {
                       error: o
                     }));
                   case 18:
@@ -20608,7 +21731,7 @@ function ks(e) {
                   case 19:
                     _context50.prev = 19;
                     _context50.next = 22;
-                    return M(K(t, "complete"), o ? _objectSpread(_objectSpread({}, r), {}, {
+                    return q(M(t, "complete"), o ? _objectSpread(_objectSpread({}, r), {}, {
                       error: o
                     }) : _objectSpread(_objectSpread({}, r), {}, {
                       result: i
@@ -20636,7 +21759,7 @@ function ks(e) {
                 g,
                 m,
                 y,
-                _e26,
+                _e27,
                 _yield,
                 _t18,
                 _n14,
@@ -20678,15 +21801,15 @@ function ks(e) {
                       _context52.prev = 11;
                       _context52.t0 = _context52["catch"](5);
                       p = !0, l = {
-                        result: new se(_context52.t0)
+                        result: new ne(_context52.t0)
                       };
                     case 14:
                       _ref50 = l.result || {}, f = _ref50.errSubject, g = _ref50.errCode, m = _ref50.errMsg, y = _ref50.newToken;
-                      if (!(a && uni.hideLoading(), y && y.token && y.tokenExpired && (oe(y), X(z, _objectSpread({}, y))), g)) {
+                      if (!(a && uni.hideLoading(), y && y.token && y.tokenExpired && (ie(y), Q(W, _objectSpread({}, y))), g)) {
                         _context52.next = 39;
                         break;
                       }
-                      _e26 = m;
+                      _e27 = m;
                       if (!(p && o)) {
                         _context52.next = 24;
                         break;
@@ -20708,7 +21831,7 @@ function ks(e) {
                       }
                       _context52.t1 = m;
                     case 23:
-                      _e26 = _context52.t1;
+                      _e27 = _context52.t1;
                     case 24:
                       if (!a) {
                         _context52.next = 37;
@@ -20719,7 +21842,7 @@ function ks(e) {
                         break;
                       }
                       uni.showToast({
-                        title: _e26,
+                        title: _e27,
                         icon: "none"
                       });
                       _context52.next = 37;
@@ -20771,7 +21894,7 @@ function ks(e) {
                         }, _callee51);
                       }))({
                         title: "提示",
-                        content: _e26,
+                        content: _e27,
                         showCancel: i.retry,
                         cancelText: "取消",
                         confirmText: i.retry ? "重试" : "确定"
@@ -20785,19 +21908,19 @@ function ks(e) {
                       }
                       return _context52.abrupt("return", s.apply(void 0, u));
                     case 37:
-                      _n14 = new se({
+                      _n14 = new ne({
                         subject: f,
                         code: g,
                         message: m,
                         requestId: l.requestId
                       });
-                      throw _n14.detail = l.result, X($, {
-                        type: G,
+                      throw _n14.detail = l.result, Q(B, {
+                        type: H,
                         content: _n14
                       }), _n14;
                     case 39:
-                      return _context52.abrupt("return", (X($, {
-                        type: G,
+                      return _context52.abrupt("return", (Q(B, {
+                        type: H,
                         content: l.result
                       }), l.result));
                     case 40:
@@ -20827,8 +21950,8 @@ function ks(e) {
     });
   };
 }
-function Ts(e) {
-  return L("_globalUniCloudSecureNetworkCache__{spaceId}".replace("{spaceId}", e.config.spaceId));
+function ks(e) {
+  return U("_globalUniCloudSecureNetworkCache__{spaceId}".replace("{spaceId}", e.config.spaceId));
 }
 function Cs() {
   return _Cs.apply(this, arguments);
@@ -20848,12 +21971,12 @@ function _Cs() {
         switch (_context55.prev = _context55.next) {
           case 0:
             _ref65 = _args7.length > 0 && _args7[0] !== undefined ? _args7[0] : {}, e = _ref65.openid, _ref65$callLoginByWei = _ref65.callLoginByWeixin, t = _ref65$callLoginByWei === void 0 ? !1 : _ref65$callLoginByWei;
-            n = Ts(this);
-            if (!("mp-weixin" !== A)) {
+            n = ks(this);
+            if (!("mp-weixin" !== P)) {
               _context55.next = 4;
               break;
             }
-            throw new Error("[SecureNetwork] API `initSecureNetworkByWeixin` is not supported on platform `".concat(A, "`"));
+            throw new Error("[SecureNetwork] API `initSecureNetworkByWeixin` is not supported on platform `".concat(P, "`"));
           case 4:
             if (!(e && t)) {
               _context55.next = 6;
@@ -20902,17 +22025,17 @@ function _Cs() {
   }));
   return _Cs.apply(this, arguments);
 }
-function Ps(_x37) {
-  return _Ps.apply(this, arguments);
+function Ts(_x37) {
+  return _Ts.apply(this, arguments);
 }
-function _Ps() {
-  _Ps = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee56(e) {
+function _Ts() {
+  _Ts = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee56(e) {
     var t;
     return _regenerator.default.wrap(function _callee56$(_context56) {
       while (1) {
         switch (_context56.prev = _context56.next) {
           case 0:
-            t = Ts(this);
+            t = ks(this);
             return _context56.abrupt("return", (t.initPromise || (t.initPromise = Cs.call(this, e)), t.initPromise));
           case 2:
           case "end":
@@ -20921,17 +22044,35 @@ function _Ps() {
       }
     }, _callee56, this);
   }));
-  return _Ps.apply(this, arguments);
+  return _Ts.apply(this, arguments);
 }
-function As(e) {
+function Ps(e) {
   return function () {
     var _ref54 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       t = _ref54.openid,
       _ref54$callLoginByWei = _ref54.callLoginByWeixin,
       n = _ref54$callLoginByWei === void 0 ? !1 : _ref54$callLoginByWei;
-    return Ps.call(e, {
+    return Ts.call(e, {
       openid: t,
       callLoginByWeixin: n
+    });
+  };
+}
+function As(e) {
+  var t = {
+    getSystemInfo: uni.getSystemInfo,
+    getPushClientId: uni.getPushClientId
+  };
+  return function (n) {
+    return new Promise(function (s, r) {
+      t[e](_objectSpread(_objectSpread({}, n), {}, {
+        success: function success(e) {
+          s(e);
+        },
+        fail: function fail(e) {
+          r(e);
+        }
+      }));
     });
   };
 }
@@ -20948,7 +22089,7 @@ var Es = /*#__PURE__*/function (_ref55) {
     key: "init",
     value: function init() {
       var _this23 = this;
-      return Promise.all([I("getSystemInfo")(), I("getPushClientId")()]).then(function () {
+      return Promise.all([As("getSystemInfo")(), As("getPushClientId")()]).then(function () {
         var _ref56 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [],
           _ref57 = (0, _slicedToArray2.default)(_ref56, 2),
           _ref57$ = _ref57[0];
@@ -21011,11 +22152,11 @@ var Es = /*#__PURE__*/function (_ref55) {
     value: function _consumMessage() {
       var _this24 = this;
       for (;;) {
-        var _e27 = this._payloadQueue.find(function (e) {
+        var _e28 = this._payloadQueue.find(function (e) {
           return e.messageId === _this24._currentMessageId + 1;
         });
-        if (!_e27) break;
-        this._currentMessageId++, this._parseMessagePayload(_e27);
+        if (!_e28) break;
+        this._currentMessageId++, this._parseMessagePayload(_e28);
       }
     }
   }, {
@@ -21120,8 +22261,8 @@ var Es = /*#__PURE__*/function (_ref55) {
       for (var _len4 = arguments.length, t = new Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
         t[_key4 - 1] = arguments[_key4];
       }
-      if (n) for (var _e28 = 0; _e28 < n.length; _e28++) {
-        n[_e28].apply(n, t);
+      if (n) for (var _e29 = 0; _e29 < n.length; _e29++) {
+        n[_e29].apply(n, t);
       }
     }
   }]);
@@ -21132,7 +22273,7 @@ function Os(_x38, _x39) {
 }
 function _Os() {
   _Os = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee57(e, t) {
-    var n, _e32, s;
+    var n, _e33, s;
     return _regenerator.default.wrap(function _callee57$(_context57) {
       while (1) {
         switch (_context57.prev = _context57.next) {
@@ -21144,7 +22285,7 @@ function _Os() {
               url: n,
               timeout: 500
             }, new Promise(function (e, t) {
-              re.request(_objectSpread(_objectSpread({}, s), {}, {
+              se.request(_objectSpread(_objectSpread({}, s), {}, {
                 success: function success(t) {
                   e(t);
                 },
@@ -21154,8 +22295,8 @@ function _Os() {
               }));
             });
           case 4:
-            _e32 = _context57.sent;
-            return _context57.abrupt("return", !(!_e32.data || 0 !== _e32.data.code));
+            _e33 = _context57.sent;
+            return _context57.abrupt("return", !(!_e33.data || 0 !== _e33.data.code));
           case 8:
             _context57.prev = 8;
             _context57.t0 = _context57["catch"](1);
@@ -21174,20 +22315,20 @@ function xs(_x40) {
 }
 function _xs() {
   _xs = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee59(e) {
-    var _ue2, _e33, _t20, t, _t$debugInfo, n, s, _yield2, r, i, o;
+    var _ce2, _e34, _t20, t, _t$debugInfo, n, s, _yield2, r, i, o;
     return _regenerator.default.wrap(function _callee59$(_context59) {
       while (1) {
         switch (_context59.prev = _context59.next) {
           case 0:
-            if (k) {
+            if (b) {
               _context59.next = 2;
               break;
             }
             return _context59.abrupt("return", Promise.resolve());
           case 2:
-            if ("app" === A) {
-              _ue2 = ue(), _e33 = _ue2.osName, _t20 = _ue2.osVersion;
-              "ios" === _e33 && function (e) {
+            if ("app" === P) {
+              _ce2 = ce(), _e34 = _ce2.osName, _t20 = _ce2.osVersion;
+              "ios" === _e34 && function (e) {
                 if (!e || "string" != typeof e) return 0;
                 var t = e.match(/^(\d+)./);
                 return t && t[1] ? parseInt(t[1]) : 0;
@@ -21256,9 +22397,9 @@ function _xs() {
             }
             return _context59.abrupt("return", (t.localAddress = r, void (t.localPort = s)));
           case 15:
-            i = console["app" === A ? "error" : "warn"];
+            i = console["app" === P ? "error" : "warn"];
             o = "";
-            if (!("remote" === t.debugInfo.initialLaunchType ? (t.debugInfo.forceRemote = !0, o = "当前客户端和HBuilderX不在同一局域网下（或其他网络原因无法连接HBuilderX），uniCloud本地调试服务不对当前客户端生效。\n- 如果不使用uniCloud本地调试服务，请直接忽略此信息。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。") : o = "无法连接uniCloud本地调试服务，请检查当前客户端是否与主机在同一局域网下。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。", o += "\n- 如果在HBuilderX开启的状态下切换过网络环境，请重启HBuilderX后再试\n- 检查系统防火墙是否拦截了HBuilderX自带的nodejs\n- 检查是否错误的使用拦截器修改uni.request方法的参数", "web" === A && (o += "\n- 部分浏览器开启节流模式之后访问本地地址受限，请检查是否启用了节流模式"), 0 === A.indexOf("mp-") && (o += "\n- 小程序中如何使用uniCloud，请参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinmp"), !t.debugInfo.forceRemote)) {
+            if (!("remote" === t.debugInfo.initialLaunchType ? (t.debugInfo.forceRemote = !0, o = "当前客户端和HBuilderX不在同一局域网下（或其他网络原因无法连接HBuilderX），uniCloud本地调试服务不对当前客户端生效。\n- 如果不使用uniCloud本地调试服务，请直接忽略此信息。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。") : o = "无法连接uniCloud本地调试服务，请检查当前客户端是否与主机在同一局域网下。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。", o += "\n- 如果在HBuilderX开启的状态下切换过网络环境，请重启HBuilderX后再试\n- 检查系统防火墙是否拦截了HBuilderX自带的nodejs\n- 检查是否错误的使用拦截器修改uni.request方法的参数", "web" === P && (o += "\n- 部分浏览器开启节流模式之后访问本地地址受限，请检查是否启用了节流模式"), 0 === P.indexOf("mp-") && (o += "\n- 小程序中如何使用uniCloud，请参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinmp"), !t.debugInfo.forceRemote)) {
               _context59.next = 19;
               break;
             }
@@ -21275,7 +22416,7 @@ function _xs() {
   return _xs.apply(this, arguments);
 }
 function Rs(e) {
-  e._initPromiseHub || (e._initPromiseHub = new S({
+  e._initPromiseHub || (e._initPromiseHub = new I({
     createPromise: function createPromise() {
       var t = Promise.resolve();
       var n;
@@ -21296,8 +22437,8 @@ function Rs(e) {
 var Us = {
   tcb: It,
   tencent: It,
-  aliyun: me,
-  private: kt
+  aliyun: ge,
+  private: bt
 };
 var Ls = new ( /*#__PURE__*/function () {
   function _class7() {
@@ -21309,13 +22450,13 @@ var Ls = new ( /*#__PURE__*/function () {
       var t = {};
       var n = Us[e.provider];
       if (!n) throw new Error("未提供正确的provider参数");
-      t = n.init(e), k && function (e) {
-        if (!k) return;
+      t = n.init(e), b && function (e) {
+        if (!b) return;
         var t = {};
-        e.__dev__ = t, t.debugLog = k && ("web" === A && navigator.userAgent.indexOf("HBuilderX") > 0 || "app" === A);
-        var n = E;
+        e.__dev__ = t, t.debugLog = b && ("web" === P && navigator.userAgent.indexOf("HBuilderX") > 0 || "app" === P);
+        var n = A;
         n && !n.code && (t.debugInfo = n);
-        var s = new S({
+        var s = new I({
           createPromise: function createPromise() {
             return xs(e);
           }
@@ -21323,7 +22464,7 @@ var Ls = new ( /*#__PURE__*/function () {
         t.initLocalNetwork = function () {
           return s.exec();
         };
-      }(t), Rs(t), Rn(t), function (e) {
+      }(t), Rs(t), xn(t), function (e) {
         var t = e.uploadFile;
         e.uploadFile = function (e) {
           return t.call(this, e);
@@ -21332,25 +22473,25 @@ var Ls = new ( /*#__PURE__*/function () {
         e.database = function (t) {
           if (t && Object.keys(t).length > 0) return e.init(t).database();
           if (this._database) return this._database;
-          var n = $n(Wn, {
+          var n = Bn($n, {
             uniClient: e
           });
           return this._database = n, n;
         }, e.databaseForJQL = function (t) {
           if (t && Object.keys(t).length > 0) return e.init(t).databaseForJQL();
           if (this._databaseForJQL) return this._databaseForJQL;
-          var n = $n(Wn, {
+          var n = Bn($n, {
             uniClient: e,
             isJQL: !0
           });
           return this._databaseForJQL = n, n;
         };
       }(t), function (e) {
-        e.getCurrentUserInfo = ws, e.chooseAndUploadFile = Ss.initChooseAndUploadFile(e), Object.assign(e, {
+        e.getCurrentUserInfo = _s, e.chooseAndUploadFile = vs.initChooseAndUploadFile(e), Object.assign(e, {
           get mixinDatacom() {
-            return bs(e);
+            return Ss(e);
           }
-        }), e.SSEChannel = Es, e.initSecureNetworkByWeixin = As(e), e.importObject = ks(e);
+        }), e.SSEChannel = Es, e.initSecureNetworkByWeixin = Ps(e), e.importObject = bs(e);
       }(t);
       return ["callFunction", "uploadFile", "deleteFile", "getTempFileURL", "downloadFile", "chooseAndUploadFile"].forEach(function (e) {
         if (!t[e]) return;
@@ -21362,48 +22503,48 @@ var Ls = new ( /*#__PURE__*/function () {
             var _this25 = this;
             var s = !1;
             if ("callFunction" === t) {
-              var _e29 = n && n.type || u;
-              s = _e29 !== u;
+              var _e30 = n && n.type || u;
+              s = _e30 !== u;
             }
             var r = "callFunction" === t && !s,
               i = this._initPromiseHub.exec();
             n = n || {};
-            var _ne2 = ne(n),
-              o = _ne2.success,
-              a = _ne2.fail,
-              c = _ne2.complete,
+            var _te2 = te(n),
+              o = _te2.success,
+              a = _te2.fail,
+              c = _te2.complete,
               h = i.then(function () {
-                return s ? Promise.resolve() : M(K(t, "invoke"), n);
+                return s ? Promise.resolve() : q(M(t, "invoke"), n);
               }).then(function () {
                 return e.call(_this25, n);
               }).then(function (e) {
-                return s ? Promise.resolve(e) : M(K(t, "success"), e).then(function () {
-                  return M(K(t, "complete"), e);
+                return s ? Promise.resolve(e) : q(M(t, "success"), e).then(function () {
+                  return q(M(t, "complete"), e);
                 }).then(function () {
-                  return r && X($, {
-                    type: H,
+                  return r && Q(B, {
+                    type: J,
                     content: e
                   }), Promise.resolve(e);
                 });
               }, function (e) {
-                return s ? Promise.reject(e) : M(K(t, "fail"), e).then(function () {
-                  return M(K(t, "complete"), e);
+                return s ? Promise.reject(e) : q(M(t, "fail"), e).then(function () {
+                  return q(M(t, "complete"), e);
                 }).then(function () {
-                  return X($, {
-                    type: H,
+                  return Q(B, {
+                    type: J,
                     content: e
                   }), Promise.reject(e);
                 });
               });
             if (!(o || a || c)) return h;
             h.then(function (e) {
-              o && o(e), c && c(e), r && X($, {
-                type: H,
+              o && o(e), c && c(e), r && Q(B, {
+                type: J,
                 content: e
               });
             }, function (e) {
-              a && a(e), c && c(e), r && X($, {
-                type: H,
+              a && a(e), c && c(e), r && Q(B, {
+                type: J,
                 content: e
               });
             });
@@ -21415,14 +22556,14 @@ var Ls = new ( /*#__PURE__*/function () {
   return _class7;
 }())();
 (function () {
-  var e = O;
+  var e = E;
   var t = {};
   if (e && 1 === e.length) t = e[0], Ls = Ls.init(t), Ls._isDefault = !0;else {
     var _t19 = ["auth", "callFunction", "uploadFile", "deleteFile", "getTempFileURL", "downloadFile", "database", "getCurrentUSerInfo", "importObject"];
     var _n16;
-    _n16 = e && e.length > 0 ? "应用有多个服务空间，请通过uniCloud.init方法指定要使用的服务空间" : x ? "应用未关联服务空间，请在uniCloud目录右键关联服务空间" : "uni-app cli项目内使用uniCloud需要使用HBuilderX的运行菜单运行项目，且需要在uniCloud目录关联服务空间", _t19.forEach(function (e) {
+    _n16 = e && e.length > 0 ? "应用有多个服务空间，请通过uniCloud.init方法指定要使用的服务空间" : O ? "应用未关联服务空间，请在uniCloud目录右键关联服务空间" : "uni-app cli项目内使用uniCloud需要使用HBuilderX的运行菜单运行项目，且需要在uniCloud目录关联服务空间", _t19.forEach(function (e) {
       Ls[e] = function () {
-        return console.error(_n16), Promise.reject(new se({
+        return console.error(_n16), Promise.reject(new ne({
           code: "SYS_ERR",
           message: _n16
         }));
@@ -21431,16 +22572,16 @@ var Ls = new ( /*#__PURE__*/function () {
   }
   Object.assign(Ls, {
     get mixinDatacom() {
-      return bs(Ls);
+      return Ss(Ls);
     }
-  }), gs(Ls), Ls.addInterceptor = F, Ls.removeInterceptor = q, Ls.interceptObject = j, k && "web" === A && (window.uniCloud = Ls);
+  }), fs(Ls), Ls.addInterceptor = D, Ls.removeInterceptor = F, Ls.interceptObject = K, b && "web" === P && (window.uniCloud = Ls);
 })();
 var Ns = Ls;
 exports.default = Ns;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 3), __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/wx.js */ 1)["default"]))
 
 /***/ }),
-/* 174 */
+/* 257 */
 /*!**********************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/assertThisInitialized.js ***!
   \**********************************************************************/
@@ -21456,7 +22597,7 @@ function _assertThisInitialized(self) {
 module.exports = _assertThisInitialized, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 175 */
+/* 258 */
 /*!*********************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/inherits.js ***!
   \*********************************************************/
@@ -21483,7 +22624,7 @@ function _inherits(subClass, superClass) {
 module.exports = _inherits, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 176 */
+/* 259 */
 /*!**************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js ***!
   \**************************************************************************/
@@ -21491,7 +22632,7 @@ module.exports = _inherits, module.exports.__esModule = true, module.exports["de
 /***/ (function(module, exports, __webpack_require__) {
 
 var _typeof = __webpack_require__(/*! ./typeof.js */ 13)["default"];
-var assertThisInitialized = __webpack_require__(/*! ./assertThisInitialized.js */ 174);
+var assertThisInitialized = __webpack_require__(/*! ./assertThisInitialized.js */ 257);
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
     return call;
@@ -21503,7 +22644,7 @@ function _possibleConstructorReturn(self, call) {
 module.exports = _possibleConstructorReturn, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 177 */
+/* 260 */
 /*!***************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/getPrototypeOf.js ***!
   \***************************************************************/
@@ -21519,16 +22660,16 @@ function _getPrototypeOf(o) {
 module.exports = _getPrototypeOf, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 178 */
+/* 261 */
 /*!****************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/wrapNativeSuper.js ***!
   \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getPrototypeOf = __webpack_require__(/*! ./getPrototypeOf.js */ 177);
+var getPrototypeOf = __webpack_require__(/*! ./getPrototypeOf.js */ 260);
 var setPrototypeOf = __webpack_require__(/*! ./setPrototypeOf.js */ 16);
-var isNativeFunction = __webpack_require__(/*! ./isNativeFunction.js */ 179);
+var isNativeFunction = __webpack_require__(/*! ./isNativeFunction.js */ 262);
 var construct = __webpack_require__(/*! ./construct.js */ 15);
 function _wrapNativeSuper(Class) {
   var _cache = typeof Map === "function" ? new Map() : undefined;
@@ -21559,7 +22700,7 @@ function _wrapNativeSuper(Class) {
 module.exports = _wrapNativeSuper, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 179 */
+/* 262 */
 /*!*****************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/isNativeFunction.js ***!
   \*****************************************************************/
@@ -21572,10 +22713,10 @@ function _isNativeFunction(fn) {
 module.exports = _isNativeFunction, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 180 */
-/*!*****************************************************************!*\
-  !*** D:/youa/heshangWX/pages.json?{"type":"origin-pages-json"} ***!
-  \*****************************************************************/
+/* 263 */
+/*!*******************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/pages.json?{"type":"origin-pages-json"} ***!
+  \*******************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21592,6 +22733,12 @@ var _default = {
   },
   "pages": [{
     "path": "pages/templeHome/templeHome",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/templeSubHome/templeSubHome",
     "style": {
       "navigationBarTitleText": "",
       "enablePullDownRefresh": false
@@ -21626,6 +22773,42 @@ var _default = {
       "navigationBarTitleText": "",
       "enablePullDownRefresh": false
     }
+  }, {
+    "path": "pages/templeHome/buddhist/buddhist",
+    "style": {
+      "navigationBarTitleText": "皈依申请",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/templeHome/buddhist/buddhistList",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/templeHome/volunteer/volunteer",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/hisOrder/hisOrder",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/hisOrder/orderDetail",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/templeHome/buddhist/home",
+    "style": {
+      "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
   }],
   "globalStyle": {
     "navigationBarTextStyle": "black",
@@ -21638,10 +22821,10 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 181 */
-/*!****************************************************!*\
-  !*** D:/youa/heshangWX/pages.json?{"type":"stat"} ***!
-  \****************************************************/
+/* 264 */
+/*!******************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/pages.json?{"type":"stat"} ***!
+  \******************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21658,24 +22841,38 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 182 */,
-/* 183 */,
-/* 184 */,
-/* 185 */,
-/* 186 */,
-/* 187 */,
-/* 188 */,
-/* 189 */,
-/* 190 */,
-/* 191 */,
-/* 192 */,
-/* 193 */,
-/* 194 */,
-/* 195 */,
-/* 196 */
-/*!**********************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-calendar/components/uni-calendar/util.js ***!
-  \**********************************************************************************/
+/* 265 */,
+/* 266 */,
+/* 267 */,
+/* 268 */,
+/* 269 */,
+/* 270 */,
+/* 271 */,
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */,
+/* 276 */,
+/* 277 */,
+/* 278 */,
+/* 279 */,
+/* 280 */,
+/* 281 */,
+/* 282 */,
+/* 283 */,
+/* 284 */,
+/* 285 */,
+/* 286 */,
+/* 287 */,
+/* 288 */,
+/* 289 */,
+/* 290 */,
+/* 291 */,
+/* 292 */,
+/* 293 */
+/*!********************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-load-more/components/uni-load-more/i18n/index.js ***!
+  \********************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21687,941 +22884,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
-var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
-var _calendar = _interopRequireDefault(__webpack_require__(/*! ./calendar.js */ 197));
-var Calendar = /*#__PURE__*/function () {
-  function Calendar() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-      date = _ref.date,
-      selected = _ref.selected,
-      startDate = _ref.startDate,
-      endDate = _ref.endDate,
-      range = _ref.range;
-    (0, _classCallCheck2.default)(this, Calendar);
-    // 当前日期
-    this.date = this.getDate(new Date()); // 当前初入日期
-    // 打点信息
-    this.selected = selected || [];
-    // 范围开始
-    this.startDate = startDate;
-    // 范围结束
-    this.endDate = endDate;
-    this.range = range;
-    // 多选状态
-    this.cleanMultipleStatus();
-    // 每周日期
-    this.weeks = {};
-    // this._getWeek(this.date.fullDate)
-  }
-  /**
-   * 设置日期
-   * @param {Object} date
-   */
-  (0, _createClass2.default)(Calendar, [{
-    key: "setDate",
-    value: function setDate(date) {
-      this.selectDate = this.getDate(date);
-      this._getWeek(this.selectDate.fullDate);
-    }
-
-    /**
-     * 清理多选状态
-     */
-  }, {
-    key: "cleanMultipleStatus",
-    value: function cleanMultipleStatus() {
-      this.multipleStatus = {
-        before: '',
-        after: '',
-        data: []
-      };
-    }
-
-    /**
-     * 重置开始日期
-     */
-  }, {
-    key: "resetSatrtDate",
-    value: function resetSatrtDate(startDate) {
-      // 范围开始
-      this.startDate = startDate;
-    }
-
-    /**
-     * 重置结束日期
-     */
-  }, {
-    key: "resetEndDate",
-    value: function resetEndDate(endDate) {
-      // 范围结束
-      this.endDate = endDate;
-    }
-
-    /**
-     * 获取任意时间
-     */
-  }, {
-    key: "getDate",
-    value: function getDate(date) {
-      var AddDayCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-      var str = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'day';
-      if (!date) {
-        date = new Date();
-      }
-      if ((0, _typeof2.default)(date) !== 'object') {
-        date = date.replace(/-/g, '/');
-      }
-      var dd = new Date(date);
-      switch (str) {
-        case 'day':
-          dd.setDate(dd.getDate() + AddDayCount); // 获取AddDayCount天后的日期
-          break;
-        case 'month':
-          if (dd.getDate() === 31 && AddDayCount > 0) {
-            dd.setDate(dd.getDate() + AddDayCount);
-          } else {
-            var preMonth = dd.getMonth();
-            dd.setMonth(preMonth + AddDayCount); // 获取AddDayCount天后的日期
-            var nextMonth = dd.getMonth();
-            // 处理 pre 切换月份目标月份为2月没有当前日(30 31) 切换错误问题
-            if (AddDayCount < 0 && preMonth !== 0 && nextMonth - preMonth > AddDayCount) {
-              dd.setMonth(nextMonth + (nextMonth - preMonth + AddDayCount));
-            }
-            // 处理 next 切换月份目标月份为2月没有当前日(30 31) 切换错误问题
-            if (AddDayCount > 0 && nextMonth - preMonth > AddDayCount) {
-              dd.setMonth(nextMonth - (nextMonth - preMonth - AddDayCount));
-            }
-          }
-          break;
-        case 'year':
-          dd.setFullYear(dd.getFullYear() + AddDayCount); // 获取AddDayCount天后的日期
-          break;
-      }
-      var y = dd.getFullYear();
-      var m = dd.getMonth() + 1 < 10 ? '0' + (dd.getMonth() + 1) : dd.getMonth() + 1; // 获取当前月份的日期，不足10补0
-      var d = dd.getDate() < 10 ? '0' + dd.getDate() : dd.getDate(); // 获取当前几号，不足10补0
-      return {
-        fullDate: y + '-' + m + '-' + d,
-        year: y,
-        month: m,
-        date: d,
-        day: dd.getDay()
-      };
-    }
-
-    /**
-     * 获取上月剩余天数
-     */
-  }, {
-    key: "_getLastMonthDays",
-    value: function _getLastMonthDays(firstDay, full) {
-      var dateArr = [];
-      for (var i = firstDay; i > 0; i--) {
-        var beforeDate = new Date(full.year, full.month - 1, -i + 1).getDate();
-        dateArr.push({
-          date: beforeDate,
-          month: full.month - 1,
-          lunar: this.getlunar(full.year, full.month - 1, beforeDate),
-          disable: true
-        });
-      }
-      return dateArr;
-    }
-    /**
-     * 获取本月天数
-     */
-  }, {
-    key: "_currentMonthDys",
-    value: function _currentMonthDys(dateData, full) {
-      var _this = this;
-      var dateArr = [];
-      var fullDate = this.date.fullDate;
-      var _loop = function _loop(i) {
-        var nowDate = full.year + '-' + (full.month < 10 ? full.month : full.month) + '-' + (i < 10 ? '0' + i : i);
-        // 是否今天
-        var isDay = fullDate === nowDate;
-        // 获取打点信息
-        var info = _this.selected && _this.selected.find(function (item) {
-          if (_this.dateEqual(nowDate, item.date)) {
-            return item;
-          }
-        });
-
-        // 日期禁用
-        var disableBefore = true;
-        var disableAfter = true;
-        if (_this.startDate) {
-          // let dateCompBefore = this.dateCompare(this.startDate, fullDate)
-          // disableBefore = this.dateCompare(dateCompBefore ? this.startDate : fullDate, nowDate)
-          disableBefore = _this.dateCompare(_this.startDate, nowDate);
-        }
-        if (_this.endDate) {
-          // let dateCompAfter = this.dateCompare(fullDate, this.endDate)
-          // disableAfter = this.dateCompare(nowDate, dateCompAfter ? this.endDate : fullDate)
-          disableAfter = _this.dateCompare(nowDate, _this.endDate);
-        }
-        var multiples = _this.multipleStatus.data;
-        var checked = false;
-        var multiplesStatus = -1;
-        if (_this.range) {
-          if (multiples) {
-            multiplesStatus = multiples.findIndex(function (item) {
-              return _this.dateEqual(item, nowDate);
-            });
-          }
-          if (multiplesStatus !== -1) {
-            checked = true;
-          }
-        }
-        var data = {
-          fullDate: nowDate,
-          year: full.year,
-          date: i,
-          multiple: _this.range ? checked : false,
-          beforeMultiple: _this.dateEqual(_this.multipleStatus.before, nowDate),
-          afterMultiple: _this.dateEqual(_this.multipleStatus.after, nowDate),
-          month: full.month,
-          lunar: _this.getlunar(full.year, full.month, i),
-          disable: !(disableBefore && disableAfter),
-          isDay: isDay
-        };
-        if (info) {
-          data.extraInfo = info;
-        }
-        dateArr.push(data);
-      };
-      for (var i = 1; i <= dateData; i++) {
-        _loop(i);
-      }
-      return dateArr;
-    }
-    /**
-     * 获取下月天数
-     */
-  }, {
-    key: "_getNextMonthDays",
-    value: function _getNextMonthDays(surplus, full) {
-      var dateArr = [];
-      for (var i = 1; i < surplus + 1; i++) {
-        dateArr.push({
-          date: i,
-          month: Number(full.month) + 1,
-          lunar: this.getlunar(full.year, Number(full.month) + 1, i),
-          disable: true
-        });
-      }
-      return dateArr;
-    }
-
-    /**
-     * 获取当前日期详情
-     * @param {Object} date
-     */
-  }, {
-    key: "getInfo",
-    value: function getInfo(date) {
-      var _this2 = this;
-      if (!date) {
-        date = new Date();
-      }
-      var dateInfo = this.canlender.find(function (item) {
-        return item.fullDate === _this2.getDate(date).fullDate;
-      });
-      return dateInfo;
-    }
-
-    /**
-     * 比较时间大小
-     */
-  }, {
-    key: "dateCompare",
-    value: function dateCompare(startDate, endDate) {
-      // 计算截止时间
-      startDate = new Date(startDate.replace('-', '/').replace('-', '/'));
-      // 计算详细项的截止时间
-      endDate = new Date(endDate.replace('-', '/').replace('-', '/'));
-      if (startDate <= endDate) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    /**
-     * 比较时间是否相等
-     */
-  }, {
-    key: "dateEqual",
-    value: function dateEqual(before, after) {
-      // 计算截止时间
-      before = new Date(before.replace('-', '/').replace('-', '/'));
-      // 计算详细项的截止时间
-      after = new Date(after.replace('-', '/').replace('-', '/'));
-      if (before.getTime() - after.getTime() === 0) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    /**
-     * 获取日期范围内所有日期
-     * @param {Object} begin
-     * @param {Object} end
-     */
-  }, {
-    key: "geDateAll",
-    value: function geDateAll(begin, end) {
-      var arr = [];
-      var ab = begin.split('-');
-      var ae = end.split('-');
-      var db = new Date();
-      db.setFullYear(ab[0], ab[1] - 1, ab[2]);
-      var de = new Date();
-      de.setFullYear(ae[0], ae[1] - 1, ae[2]);
-      var unixDb = db.getTime() - 24 * 60 * 60 * 1000;
-      var unixDe = de.getTime() - 24 * 60 * 60 * 1000;
-      for (var k = unixDb; k <= unixDe;) {
-        k = k + 24 * 60 * 60 * 1000;
-        arr.push(this.getDate(new Date(parseInt(k))).fullDate);
-      }
-      return arr;
-    }
-    /**
-     * 计算阴历日期显示
-     */
-  }, {
-    key: "getlunar",
-    value: function getlunar(year, month, date) {
-      return _calendar.default.solar2lunar(year, month, date);
-    }
-    /**
-     * 设置打点
-     */
-  }, {
-    key: "setSelectInfo",
-    value: function setSelectInfo(data, value) {
-      this.selected = value;
-      this._getWeek(data);
-    }
-
-    /**
-     *  获取多选状态
-     */
-  }, {
-    key: "setMultiple",
-    value: function setMultiple(fullDate) {
-      var _this$multipleStatus = this.multipleStatus,
-        before = _this$multipleStatus.before,
-        after = _this$multipleStatus.after;
-      if (!this.range) return;
-      if (before && after) {
-        this.multipleStatus.before = '';
-        this.multipleStatus.after = '';
-        this.multipleStatus.data = [];
-      } else {
-        if (!before) {
-          this.multipleStatus.before = fullDate;
-        } else {
-          this.multipleStatus.after = fullDate;
-          if (this.dateCompare(this.multipleStatus.before, this.multipleStatus.after)) {
-            this.multipleStatus.data = this.geDateAll(this.multipleStatus.before, this.multipleStatus.after);
-          } else {
-            this.multipleStatus.data = this.geDateAll(this.multipleStatus.after, this.multipleStatus.before);
-          }
-        }
-      }
-      this._getWeek(fullDate);
-    }
-
-    /**
-     * 获取每周数据
-     * @param {Object} dateData
-     */
-  }, {
-    key: "_getWeek",
-    value: function _getWeek(dateData) {
-      var _this$getDate = this.getDate(dateData),
-        year = _this$getDate.year,
-        month = _this$getDate.month;
-      var firstDay = new Date(year, month - 1, 1).getDay();
-      var currentDay = new Date(year, month, 0).getDate();
-      var dates = {
-        lastMonthDays: this._getLastMonthDays(firstDay, this.getDate(dateData)),
-        // 上个月末尾几天
-        currentMonthDys: this._currentMonthDys(currentDay, this.getDate(dateData)),
-        // 本月天数
-        nextMonthDays: [],
-        // 下个月开始几天
-        weeks: []
-      };
-      var canlender = [];
-      var surplus = 42 - (dates.lastMonthDays.length + dates.currentMonthDys.length);
-      dates.nextMonthDays = this._getNextMonthDays(surplus, this.getDate(dateData));
-      canlender = canlender.concat(dates.lastMonthDays, dates.currentMonthDys, dates.nextMonthDays);
-      var weeks = {};
-      // 拼接数组  上个月开始几天 + 本月天数+ 下个月开始几天
-      for (var i = 0; i < canlender.length; i++) {
-        if (i % 7 === 0) {
-          weeks[parseInt(i / 7)] = new Array(7);
-        }
-        weeks[parseInt(i / 7)][i % 7] = canlender[i];
-      }
-      this.canlender = canlender;
-      this.weeks = weeks;
-    }
-
-    //静态方法
-    // static init(date) {
-    // 	if (!this.instance) {
-    // 		this.instance = new Calendar(date);
-    // 	}
-    // 	return this.instance;
-    // }
-  }]);
-  return Calendar;
-}();
-var _default = Calendar;
-exports.default = _default;
-
-/***/ }),
-/* 197 */
-/*!**************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-calendar/components/uni-calendar/calendar.js ***!
-  \**************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-/**
-* @1900-2100区间内的公历、农历互转
-* @charset UTF-8
-* @github  https://github.com/jjonline/calendar.js
-* @Author  Jea杨(JJonline@JJonline.Cn)
-* @Time    2014-7-21
-* @Time    2016-8-13 Fixed 2033hex、Attribution Annals
-* @Time    2016-9-25 Fixed lunar LeapMonth Param Bug
-* @Time    2017-7-24 Fixed use getTerm Func Param Error.use solar year,NOT lunar year
-* @Version 1.0.3
-* @公历转农历：calendar.solar2lunar(1987,11,01); //[you can ignore params of prefix 0]
-* @农历转公历：calendar.lunar2solar(1987,09,10); //[you can ignore params of prefix 0]
-*/
-/* eslint-disable */
-var calendar = {
-  /**
-      * 农历1900-2100的润大小信息表
-      * @Array Of Property
-      * @return Hex
-      */
-  lunarInfo: [0x04bd8, 0x04ae0, 0x0a570, 0x054d5, 0x0d260, 0x0d950, 0x16554, 0x056a0, 0x09ad0, 0x055d2,
-  // 1900-1909
-  0x04ae0, 0x0a5b6, 0x0a4d0, 0x0d250, 0x1d255, 0x0b540, 0x0d6a0, 0x0ada2, 0x095b0, 0x14977,
-  // 1910-1919
-  0x04970, 0x0a4b0, 0x0b4b5, 0x06a50, 0x06d40, 0x1ab54, 0x02b60, 0x09570, 0x052f2, 0x04970,
-  // 1920-1929
-  0x06566, 0x0d4a0, 0x0ea50, 0x06e95, 0x05ad0, 0x02b60, 0x186e3, 0x092e0, 0x1c8d7, 0x0c950,
-  // 1930-1939
-  0x0d4a0, 0x1d8a6, 0x0b550, 0x056a0, 0x1a5b4, 0x025d0, 0x092d0, 0x0d2b2, 0x0a950, 0x0b557,
-  // 1940-1949
-  0x06ca0, 0x0b550, 0x15355, 0x04da0, 0x0a5b0, 0x14573, 0x052b0, 0x0a9a8, 0x0e950, 0x06aa0,
-  // 1950-1959
-  0x0aea6, 0x0ab50, 0x04b60, 0x0aae4, 0x0a570, 0x05260, 0x0f263, 0x0d950, 0x05b57, 0x056a0,
-  // 1960-1969
-  0x096d0, 0x04dd5, 0x04ad0, 0x0a4d0, 0x0d4d4, 0x0d250, 0x0d558, 0x0b540, 0x0b6a0, 0x195a6,
-  // 1970-1979
-  0x095b0, 0x049b0, 0x0a974, 0x0a4b0, 0x0b27a, 0x06a50, 0x06d40, 0x0af46, 0x0ab60, 0x09570,
-  // 1980-1989
-  0x04af5, 0x04970, 0x064b0, 0x074a3, 0x0ea50, 0x06b58, 0x05ac0, 0x0ab60, 0x096d5, 0x092e0,
-  // 1990-1999
-  0x0c960, 0x0d954, 0x0d4a0, 0x0da50, 0x07552, 0x056a0, 0x0abb7, 0x025d0, 0x092d0, 0x0cab5,
-  // 2000-2009
-  0x0a950, 0x0b4a0, 0x0baa4, 0x0ad50, 0x055d9, 0x04ba0, 0x0a5b0, 0x15176, 0x052b0, 0x0a930,
-  // 2010-2019
-  0x07954, 0x06aa0, 0x0ad50, 0x05b52, 0x04b60, 0x0a6e6, 0x0a4e0, 0x0d260, 0x0ea65, 0x0d530,
-  // 2020-2029
-  0x05aa0, 0x076a3, 0x096d0, 0x04afb, 0x04ad0, 0x0a4d0, 0x1d0b6, 0x0d250, 0x0d520, 0x0dd45,
-  // 2030-2039
-  0x0b5a0, 0x056d0, 0x055b2, 0x049b0, 0x0a577, 0x0a4b0, 0x0aa50, 0x1b255, 0x06d20, 0x0ada0,
-  // 2040-2049
-  /** Add By JJonline@JJonline.Cn**/
-  0x14b63, 0x09370, 0x049f8, 0x04970, 0x064b0, 0x168a6, 0x0ea50, 0x06b20, 0x1a6c4, 0x0aae0,
-  // 2050-2059
-  0x0a2e0, 0x0d2e3, 0x0c960, 0x0d557, 0x0d4a0, 0x0da50, 0x05d55, 0x056a0, 0x0a6d0, 0x055d4,
-  // 2060-2069
-  0x052d0, 0x0a9b8, 0x0a950, 0x0b4a0, 0x0b6a6, 0x0ad50, 0x055a0, 0x0aba4, 0x0a5b0, 0x052b0,
-  // 2070-2079
-  0x0b273, 0x06930, 0x07337, 0x06aa0, 0x0ad50, 0x14b55, 0x04b60, 0x0a570, 0x054e4, 0x0d160,
-  // 2080-2089
-  0x0e968, 0x0d520, 0x0daa0, 0x16aa6, 0x056d0, 0x04ae0, 0x0a9d4, 0x0a2d0, 0x0d150, 0x0f252,
-  // 2090-2099
-  0x0d520],
-  // 2100
-
-  /**
-      * 公历每个月份的天数普通表
-      * @Array Of Property
-      * @return Number
-      */
-  solarMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-  /**
-      * 天干地支之天干速查表
-      * @Array Of Property trans["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"]
-      * @return Cn string
-      */
-  Gan: ["\u7532", "\u4E59", "\u4E19", "\u4E01", "\u620A", "\u5DF1", "\u5E9A", "\u8F9B", "\u58EC", "\u7678"],
-  /**
-      * 天干地支之地支速查表
-      * @Array Of Property
-      * @trans["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"]
-      * @return Cn string
-      */
-  Zhi: ["\u5B50", "\u4E11", "\u5BC5", "\u536F", "\u8FB0", "\u5DF3", "\u5348", "\u672A", "\u7533", "\u9149", "\u620C", "\u4EA5"],
-  /**
-      * 天干地支之地支速查表<=>生肖
-      * @Array Of Property
-      * @trans["鼠","牛","虎","兔","龙","蛇","马","羊","猴","鸡","狗","猪"]
-      * @return Cn string
-      */
-  Animals: ["\u9F20", "\u725B", "\u864E", "\u5154", "\u9F99", "\u86C7", "\u9A6C", "\u7F8A", "\u7334", "\u9E21", "\u72D7", "\u732A"],
-  /**
-      * 24节气速查表
-      * @Array Of Property
-      * @trans["小寒","大寒","立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至"]
-      * @return Cn string
-      */
-  solarTerm: ["\u5C0F\u5BD2", "\u5927\u5BD2", "\u7ACB\u6625", "\u96E8\u6C34", "\u60CA\u86F0", "\u6625\u5206", "\u6E05\u660E", "\u8C37\u96E8", "\u7ACB\u590F", "\u5C0F\u6EE1", "\u8292\u79CD", "\u590F\u81F3", "\u5C0F\u6691", "\u5927\u6691", "\u7ACB\u79CB", "\u5904\u6691", "\u767D\u9732", "\u79CB\u5206", "\u5BD2\u9732", "\u971C\u964D", "\u7ACB\u51AC", "\u5C0F\u96EA", "\u5927\u96EA", "\u51AC\u81F3"],
-  /**
-      * 1900-2100各年的24节气日期速查表
-      * @Array Of Property
-      * @return 0x string For splice
-      */
-  sTermInfo: ['9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c3598082c95f8c965cc920f', '97bd0b06bdb0722c965ce1cfcc920f', 'b027097bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd0b06bdb0722c965ce1cfcc920f', 'b027097bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd0b06bdb0722c965ce1cfcc920f', 'b027097bd097c36b0b6fc9274c91aa', '9778397bd19801ec9210c965cc920e', '97b6b97bd19801ec95f8c965cc920f', '97bd09801d98082c95f8e1cfcc920f', '97bd097bd097c36b0b6fc9210c8dc2', '9778397bd197c36c9210c9274c91aa', '97b6b97bd19801ec95f8c965cc920e', '97bd09801d98082c95f8e1cfcc920f', '97bd097bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c91aa', '97b6b97bd19801ec95f8c965cc920e', '97bcf97c3598082c95f8e1cfcc920f', '97bd097bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c3598082c95f8c965cc920f', '97bd097bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c3598082c95f8c965cc920f', '97bd097bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd097bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd097bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf97c359801ec95f8c965cc920f', '97bd097bd07f595b0b6fc920fb0722', '9778397bd097c36b0b6fc9210c8dc2', '9778397bd19801ec9210c9274c920e', '97b6b97bd19801ec95f8c965cc920f', '97bd07f5307f595b0b0bc920fb0722', '7f0e397bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c920e', '97b6b97bd19801ec95f8c965cc920f', '97bd07f5307f595b0b0bc920fb0722', '7f0e397bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bd07f1487f595b0b0bc920fb0722', '7f0e397bd097c36b0b6fc9210c8dc2', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf7f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf7f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf7f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c965cc920e', '97bcf7f1487f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b97bd19801ec9210c9274c920e', '97bcf7f0e47f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9210c91aa', '97b6b97bd197c36c9210c9274c920e', '97bcf7f0e47f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9210c8dc2', '9778397bd097c36c9210c9274c920e', '97b6b7f0e47f531b0723b0b6fb0722', '7f0e37f5307f595b0b0bc920fb0722', '7f0e397bd097c36b0b6fc9210c8dc2', '9778397bd097c36b0b70c9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e37f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc9210c8dc2', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e27f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9274c91aa', '97b6b7f0e47f531b0723b0787b0721', '7f0e27f0e47f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9210c91aa', '97b6b7f0e47f149b0723b0787b0721', '7f0e27f0e47f531b0723b0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '9778397bd097c36b0b6fc9210c8dc2', '977837f0e37f149b0723b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e37f5307f595b0b0bc920fb0722', '7f0e397bd097c35b0b6fc9210c8dc2', '977837f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e37f1487f595b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc9210c8dc2', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd097c35b0b6fc920fb0722', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '977837f0e37f14998082b0787b06bd', '7f07e7f0e47f149b0723b0787b0721', '7f0e27f0e47f531b0b0bb0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '977837f0e37f14998082b0723b06bd', '7f07e7f0e37f149b0723b0787b0721', '7f0e27f0e47f531b0723b0b6fb0722', '7f0e397bd07f595b0b0bc920fb0722', '977837f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e37f1487f595b0b0bb0b6fb0722', '7f0e37f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e37f1487f531b0b0bb0b6fb0722', '7f0e37f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e37f1487f531b0b0bb0b6fb0722', '7f0e37f0e37f14898082b072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e37f0e37f14898082b072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e37f0e366aa89801eb072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f149b0723b0787b0721', '7f0e27f1487f531b0b0bb0b6fb0722', '7f0e37f0e366aa89801eb072297c35', '7ec967f0e37f14998082b0723b06bd', '7f07e7f0e47f149b0723b0787b0721', '7f0e27f0e47f531b0723b0b6fb0722', '7f0e37f0e366aa89801eb072297c35', '7ec967f0e37f14998082b0723b06bd', '7f07e7f0e37f14998083b0787b0721', '7f0e27f0e47f531b0723b0b6fb0722', '7f0e37f0e366aa89801eb072297c35', '7ec967f0e37f14898082b0723b02d5', '7f07e7f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e36665b66aa89801e9808297c35', '665f67f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b0721', '7f07e7f0e47f531b0723b0b6fb0722', '7f0e36665b66a449801e9808297c35', '665f67f0e37f14898082b0723b02d5', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e36665b66a449801e9808297c35', '665f67f0e37f14898082b072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e26665b66a449801e9808297c35', '665f67f0e37f1489801eb072297c35', '7ec967f0e37f14998082b0787b06bd', '7f07e7f0e47f531b0723b0b6fb0721', '7f0e27f1487f531b0b0bb0b6fb0722'],
-  /**
-      * 数字转中文速查表
-      * @Array Of Property
-      * @trans ['日','一','二','三','四','五','六','七','八','九','十']
-      * @return Cn string
-      */
-  nStr1: ["\u65E5", "\u4E00", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341"],
-  /**
-      * 日期转农历称呼速查表
-      * @Array Of Property
-      * @trans ['初','十','廿','卅']
-      * @return Cn string
-      */
-  nStr2: ["\u521D", "\u5341", "\u5EFF", "\u5345"],
-  /**
-      * 月份转农历称呼速查表
-      * @Array Of Property
-      * @trans ['正','一','二','三','四','五','六','七','八','九','十','冬','腊']
-      * @return Cn string
-      */
-  nStr3: ["\u6B63", "\u4E8C", "\u4E09", "\u56DB", "\u4E94", "\u516D", "\u4E03", "\u516B", "\u4E5D", "\u5341", "\u51AC", "\u814A"],
-  /**
-      * 返回农历y年一整年的总天数
-      * @param lunar Year
-      * @return Number
-      * @eg:var count = calendar.lYearDays(1987) ;//count=387
-      */
-  lYearDays: function lYearDays(y) {
-    var i;
-    var sum = 348;
-    for (i = 0x8000; i > 0x8; i >>= 1) {
-      sum += this.lunarInfo[y - 1900] & i ? 1 : 0;
-    }
-    return sum + this.leapDays(y);
-  },
-  /**
-      * 返回农历y年闰月是哪个月；若y年没有闰月 则返回0
-      * @param lunar Year
-      * @return Number (0-12)
-      * @eg:var leapMonth = calendar.leapMonth(1987) ;//leapMonth=6
-      */
-  leapMonth: function leapMonth(y) {
-    // 闰字编码 \u95f0
-    return this.lunarInfo[y - 1900] & 0xf;
-  },
-  /**
-      * 返回农历y年闰月的天数 若该年没有闰月则返回0
-      * @param lunar Year
-      * @return Number (0、29、30)
-      * @eg:var leapMonthDay = calendar.leapDays(1987) ;//leapMonthDay=29
-      */
-  leapDays: function leapDays(y) {
-    if (this.leapMonth(y)) {
-      return this.lunarInfo[y - 1900] & 0x10000 ? 30 : 29;
-    }
-    return 0;
-  },
-  /**
-      * 返回农历y年m月（非闰月）的总天数，计算m为闰月时的天数请使用leapDays方法
-      * @param lunar Year
-      * @return Number (-1、29、30)
-      * @eg:var MonthDay = calendar.monthDays(1987,9) ;//MonthDay=29
-      */
-  monthDays: function monthDays(y, m) {
-    if (m > 12 || m < 1) {
-      return -1;
-    } // 月份参数从1至12，参数错误返回-1
-    return this.lunarInfo[y - 1900] & 0x10000 >> m ? 30 : 29;
-  },
-  /**
-      * 返回公历(!)y年m月的天数
-      * @param solar Year
-      * @return Number (-1、28、29、30、31)
-      * @eg:var solarMonthDay = calendar.leapDays(1987) ;//solarMonthDay=30
-      */
-  solarDays: function solarDays(y, m) {
-    if (m > 12 || m < 1) {
-      return -1;
-    } // 若参数错误 返回-1
-    var ms = m - 1;
-    if (ms == 1) {
-      // 2月份的闰平规律测算后确认返回28或29
-      return y % 4 == 0 && y % 100 != 0 || y % 400 == 0 ? 29 : 28;
-    } else {
-      return this.solarMonth[ms];
-    }
-  },
-  /**
-     * 农历年份转换为干支纪年
-     * @param  lYear 农历年的年份数
-     * @return Cn string
-     */
-  toGanZhiYear: function toGanZhiYear(lYear) {
-    var ganKey = (lYear - 3) % 10;
-    var zhiKey = (lYear - 3) % 12;
-    if (ganKey == 0) ganKey = 10; // 如果余数为0则为最后一个天干
-    if (zhiKey == 0) zhiKey = 12; // 如果余数为0则为最后一个地支
-    return this.Gan[ganKey - 1] + this.Zhi[zhiKey - 1];
-  },
-  /**
-     * 公历月、日判断所属星座
-     * @param  cMonth [description]
-     * @param  cDay [description]
-     * @return Cn string
-     */
-  toAstro: function toAstro(cMonth, cDay) {
-    var s = "\u9B54\u7FAF\u6C34\u74F6\u53CC\u9C7C\u767D\u7F8A\u91D1\u725B\u53CC\u5B50\u5DE8\u87F9\u72EE\u5B50\u5904\u5973\u5929\u79E4\u5929\u874E\u5C04\u624B\u9B54\u7FAF";
-    var arr = [20, 19, 21, 21, 21, 22, 23, 23, 23, 23, 22, 22];
-    return s.substr(cMonth * 2 - (cDay < arr[cMonth - 1] ? 2 : 0), 2) + "\u5EA7"; // 座
-  },
-
-  /**
-      * 传入offset偏移量返回干支
-      * @param offset 相对甲子的偏移量
-      * @return Cn string
-      */
-  toGanZhi: function toGanZhi(offset) {
-    return this.Gan[offset % 10] + this.Zhi[offset % 12];
-  },
-  /**
-      * 传入公历(!)y年获得该年第n个节气的公历日期
-      * @param y公历年(1900-2100)；n二十四节气中的第几个节气(1~24)；从n=1(小寒)算起
-      * @return day Number
-      * @eg:var _24 = calendar.getTerm(1987,3) ;//_24=4;意即1987年2月4日立春
-      */
-  getTerm: function getTerm(y, n) {
-    if (y < 1900 || y > 2100) {
-      return -1;
-    }
-    if (n < 1 || n > 24) {
-      return -1;
-    }
-    var _table = this.sTermInfo[y - 1900];
-    var _info = [parseInt('0x' + _table.substr(0, 5)).toString(), parseInt('0x' + _table.substr(5, 5)).toString(), parseInt('0x' + _table.substr(10, 5)).toString(), parseInt('0x' + _table.substr(15, 5)).toString(), parseInt('0x' + _table.substr(20, 5)).toString(), parseInt('0x' + _table.substr(25, 5)).toString()];
-    var _calday = [_info[0].substr(0, 1), _info[0].substr(1, 2), _info[0].substr(3, 1), _info[0].substr(4, 2), _info[1].substr(0, 1), _info[1].substr(1, 2), _info[1].substr(3, 1), _info[1].substr(4, 2), _info[2].substr(0, 1), _info[2].substr(1, 2), _info[2].substr(3, 1), _info[2].substr(4, 2), _info[3].substr(0, 1), _info[3].substr(1, 2), _info[3].substr(3, 1), _info[3].substr(4, 2), _info[4].substr(0, 1), _info[4].substr(1, 2), _info[4].substr(3, 1), _info[4].substr(4, 2), _info[5].substr(0, 1), _info[5].substr(1, 2), _info[5].substr(3, 1), _info[5].substr(4, 2)];
-    return parseInt(_calday[n - 1]);
-  },
-  /**
-      * 传入农历数字月份返回汉语通俗表示法
-      * @param lunar month
-      * @return Cn string
-      * @eg:var cnMonth = calendar.toChinaMonth(12) ;//cnMonth='腊月'
-      */
-  toChinaMonth: function toChinaMonth(m) {
-    // 月 => \u6708
-    if (m > 12 || m < 1) {
-      return -1;
-    } // 若参数错误 返回-1
-    var s = this.nStr3[m - 1];
-    s += "\u6708"; // 加上月字
-    return s;
-  },
-  /**
-      * 传入农历日期数字返回汉字表示法
-      * @param lunar day
-      * @return Cn string
-      * @eg:var cnDay = calendar.toChinaDay(21) ;//cnMonth='廿一'
-      */
-  toChinaDay: function toChinaDay(d) {
-    // 日 => \u65e5
-    var s;
-    switch (d) {
-      case 10:
-        s = "\u521D\u5341";
-        break;
-      case 20:
-        s = "\u4E8C\u5341";
-        break;
-        break;
-      case 30:
-        s = "\u4E09\u5341";
-        break;
-        break;
-      default:
-        s = this.nStr2[Math.floor(d / 10)];
-        s += this.nStr1[d % 10];
-    }
-    return s;
-  },
-  /**
-      * 年份转生肖[!仅能大致转换] => 精确划分生肖分界线是“立春”
-      * @param y year
-      * @return Cn string
-      * @eg:var animal = calendar.getAnimal(1987) ;//animal='兔'
-      */
-  getAnimal: function getAnimal(y) {
-    return this.Animals[(y - 4) % 12];
-  },
-  /**
-      * 传入阳历年月日获得详细的公历、农历object信息 <=>JSON
-      * @param y  solar year
-      * @param m  solar month
-      * @param d  solar day
-      * @return JSON object
-      * @eg:console.log(calendar.solar2lunar(1987,11,01));
-      */
-  solar2lunar: function solar2lunar(y, m, d) {
-    // 参数区间1900.1.31~2100.12.31
-    // 年份限定、上限
-    if (y < 1900 || y > 2100) {
-      return -1; // undefined转换为数字变为NaN
-    }
-    // 公历传参最下限
-    if (y == 1900 && m == 1 && d < 31) {
-      return -1;
-    }
-    // 未传参  获得当天
-    if (!y) {
-      var objDate = new Date();
-    } else {
-      var objDate = new Date(y, parseInt(m) - 1, d);
-    }
-    var i;
-    var leap = 0;
-    var temp = 0;
-    // 修正ymd参数
-    var y = objDate.getFullYear();
-    var m = objDate.getMonth() + 1;
-    var d = objDate.getDate();
-    var offset = (Date.UTC(objDate.getFullYear(), objDate.getMonth(), objDate.getDate()) - Date.UTC(1900, 0, 31)) / 86400000;
-    for (i = 1900; i < 2101 && offset > 0; i++) {
-      temp = this.lYearDays(i);
-      offset -= temp;
-    }
-    if (offset < 0) {
-      offset += temp;
-      i--;
-    }
-
-    // 是否今天
-    var isTodayObj = new Date();
-    var isToday = false;
-    if (isTodayObj.getFullYear() == y && isTodayObj.getMonth() + 1 == m && isTodayObj.getDate() == d) {
-      isToday = true;
-    }
-    // 星期几
-    var nWeek = objDate.getDay();
-    var cWeek = this.nStr1[nWeek];
-    // 数字表示周几顺应天朝周一开始的惯例
-    if (nWeek == 0) {
-      nWeek = 7;
-    }
-    // 农历年
-    var year = i;
-    var leap = this.leapMonth(i); // 闰哪个月
-    var isLeap = false;
-
-    // 效验闰月
-    for (i = 1; i < 13 && offset > 0; i++) {
-      // 闰月
-      if (leap > 0 && i == leap + 1 && isLeap == false) {
-        --i;
-        isLeap = true;
-        temp = this.leapDays(year); // 计算农历闰月天数
-      } else {
-        temp = this.monthDays(year, i); // 计算农历普通月天数
-      }
-      // 解除闰月
-      if (isLeap == true && i == leap + 1) {
-        isLeap = false;
-      }
-      offset -= temp;
-    }
-    // 闰月导致数组下标重叠取反
-    if (offset == 0 && leap > 0 && i == leap + 1) {
-      if (isLeap) {
-        isLeap = false;
-      } else {
-        isLeap = true;
-        --i;
-      }
-    }
-    if (offset < 0) {
-      offset += temp;
-      --i;
-    }
-    // 农历月
-    var month = i;
-    // 农历日
-    var day = offset + 1;
-    // 天干地支处理
-    var sm = m - 1;
-    var gzY = this.toGanZhiYear(year);
-
-    // 当月的两个节气
-    // bugfix-2017-7-24 11:03:38 use lunar Year Param `y` Not `year`
-    var firstNode = this.getTerm(y, m * 2 - 1); // 返回当月「节」为几日开始
-    var secondNode = this.getTerm(y, m * 2); // 返回当月「节」为几日开始
-
-    // 依据12节气修正干支月
-    var gzM = this.toGanZhi((y - 1900) * 12 + m + 11);
-    if (d >= firstNode) {
-      gzM = this.toGanZhi((y - 1900) * 12 + m + 12);
-    }
-
-    // 传入的日期的节气与否
-    var isTerm = false;
-    var Term = null;
-    if (firstNode == d) {
-      isTerm = true;
-      Term = this.solarTerm[m * 2 - 2];
-    }
-    if (secondNode == d) {
-      isTerm = true;
-      Term = this.solarTerm[m * 2 - 1];
-    }
-    // 日柱 当月一日与 1900/1/1 相差天数
-    var dayCyclical = Date.UTC(y, sm, 1, 0, 0, 0, 0) / 86400000 + 25567 + 10;
-    var gzD = this.toGanZhi(dayCyclical + d - 1);
-    // 该日期所属的星座
-    var astro = this.toAstro(m, d);
-    return {
-      'lYear': year,
-      'lMonth': month,
-      'lDay': day,
-      'Animal': this.getAnimal(year),
-      'IMonthCn': (isLeap ? "\u95F0" : '') + this.toChinaMonth(month),
-      'IDayCn': this.toChinaDay(day),
-      'cYear': y,
-      'cMonth': m,
-      'cDay': d,
-      'gzYear': gzY,
-      'gzMonth': gzM,
-      'gzDay': gzD,
-      'isToday': isToday,
-      'isLeap': isLeap,
-      'nWeek': nWeek,
-      'ncWeek': "\u661F\u671F" + cWeek,
-      'isTerm': isTerm,
-      'Term': Term,
-      'astro': astro
-    };
-  },
-  /**
-      * 传入农历年月日以及传入的月份是否闰月获得详细的公历、农历object信息 <=>JSON
-      * @param y  lunar year
-      * @param m  lunar month
-      * @param d  lunar day
-      * @param isLeapMonth  lunar month is leap or not.[如果是农历闰月第四个参数赋值true即可]
-      * @return JSON object
-      * @eg:console.log(calendar.lunar2solar(1987,9,10));
-      */
-  lunar2solar: function lunar2solar(y, m, d, isLeapMonth) {
-    // 参数区间1900.1.31~2100.12.1
-    var isLeapMonth = !!isLeapMonth;
-    var leapOffset = 0;
-    var leapMonth = this.leapMonth(y);
-    var leapDay = this.leapDays(y);
-    if (isLeapMonth && leapMonth != m) {
-      return -1;
-    } // 传参要求计算该闰月公历 但该年得出的闰月与传参的月份并不同
-    if (y == 2100 && m == 12 && d > 1 || y == 1900 && m == 1 && d < 31) {
-      return -1;
-    } // 超出了最大极限值
-    var day = this.monthDays(y, m);
-    var _day = day;
-    // bugFix 2016-9-25
-    // if month is leap, _day use leapDays method
-    if (isLeapMonth) {
-      _day = this.leapDays(y, m);
-    }
-    if (y < 1900 || y > 2100 || d > _day) {
-      return -1;
-    } // 参数合法性效验
-
-    // 计算农历的时间差
-    var offset = 0;
-    for (var i = 1900; i < y; i++) {
-      offset += this.lYearDays(i);
-    }
-    var leap = 0;
-    var isAdd = false;
-    for (var i = 1; i < m; i++) {
-      leap = this.leapMonth(y);
-      if (!isAdd) {
-        // 处理闰月
-        if (leap <= i && leap > 0) {
-          offset += this.leapDays(y);
-          isAdd = true;
-        }
-      }
-      offset += this.monthDays(y, i);
-    }
-    // 转换闰月农历 需补充该年闰月的前一个月的时差
-    if (isLeapMonth) {
-      offset += day;
-    }
-    // 1900年农历正月一日的公历时间为1900年1月30日0时0分0秒(该时间也是本农历的最开始起始点)
-    var stmap = Date.UTC(1900, 1, 30, 0, 0, 0);
-    var calObj = new Date((offset + d - 31) * 86400000 + stmap);
-    var cY = calObj.getUTCFullYear();
-    var cM = calObj.getUTCMonth() + 1;
-    var cD = calObj.getUTCDate();
-    return this.solar2lunar(cY, cM, cD);
-  }
-};
-var _default = calendar;
-exports.default = _default;
-
-/***/ }),
-/* 198 */
-/*!****************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-calendar/components/uni-calendar/i18n/index.js ***!
-  \****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 199));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 200));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 201));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 294));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 295));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 296));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -22630,110 +22895,47 @@ var _default = {
 exports.default = _default;
 
 /***/ }),
-/* 199 */
-/*!***************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-calendar/components/uni-calendar/i18n/en.json ***!
-  \***************************************************************************************/
-/*! exports provided: uni-calender.ok, uni-calender.cancel, uni-calender.today, uni-calender.MON, uni-calender.TUE, uni-calender.WED, uni-calender.THU, uni-calender.FRI, uni-calender.SAT, uni-calender.SUN, default */
-/***/ (function(module) {
-
-module.exports = JSON.parse("{\"uni-calender.ok\":\"ok\",\"uni-calender.cancel\":\"cancel\",\"uni-calender.today\":\"today\",\"uni-calender.MON\":\"MON\",\"uni-calender.TUE\":\"TUE\",\"uni-calender.WED\":\"WED\",\"uni-calender.THU\":\"THU\",\"uni-calender.FRI\":\"FRI\",\"uni-calender.SAT\":\"SAT\",\"uni-calender.SUN\":\"SUN\"}");
-
-/***/ }),
-/* 200 */
-/*!********************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-calendar/components/uni-calendar/i18n/zh-Hans.json ***!
-  \********************************************************************************************/
-/*! exports provided: uni-calender.ok, uni-calender.cancel, uni-calender.today, uni-calender.SUN, uni-calender.MON, uni-calender.TUE, uni-calender.WED, uni-calender.THU, uni-calender.FRI, uni-calender.SAT, default */
-/***/ (function(module) {
-
-module.exports = JSON.parse("{\"uni-calender.ok\":\"确定\",\"uni-calender.cancel\":\"取消\",\"uni-calender.today\":\"今日\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\"}");
-
-/***/ }),
-/* 201 */
-/*!********************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-calendar/components/uni-calendar/i18n/zh-Hant.json ***!
-  \********************************************************************************************/
-/*! exports provided: uni-calender.ok, uni-calender.cancel, uni-calender.today, uni-calender.SUN, uni-calender.MON, uni-calender.TUE, uni-calender.WED, uni-calender.THU, uni-calender.FRI, uni-calender.SAT, default */
-/***/ (function(module) {
-
-module.exports = JSON.parse("{\"uni-calender.ok\":\"確定\",\"uni-calender.cancel\":\"取消\",\"uni-calender.today\":\"今日\",\"uni-calender.SUN\":\"日\",\"uni-calender.MON\":\"一\",\"uni-calender.TUE\":\"二\",\"uni-calender.WED\":\"三\",\"uni-calender.THU\":\"四\",\"uni-calender.FRI\":\"五\",\"uni-calender.SAT\":\"六\"}");
-
-/***/ }),
-/* 202 */,
-/* 203 */,
-/* 204 */,
-/* 205 */,
-/* 206 */,
-/* 207 */,
-/* 208 */,
-/* 209 */
-/*!******************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-load-more/components/uni-load-more/i18n/index.js ***!
-  \******************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 210));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 211));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 212));
-var _default = {
-  en: _en.default,
-  'zh-Hans': _zhHans.default,
-  'zh-Hant': _zhHant.default
-};
-exports.default = _default;
-
-/***/ }),
-/* 210 */
-/*!*****************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-load-more/components/uni-load-more/i18n/en.json ***!
-  \*****************************************************************************************/
+/* 294 */
+/*!*******************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-load-more/components/uni-load-more/i18n/en.json ***!
+  \*******************************************************************************************************/
 /*! exports provided: uni-load-more.contentdown, uni-load-more.contentrefresh, uni-load-more.contentnomore, default */
 /***/ (function(module) {
 
 module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"Pull up to show more\",\"uni-load-more.contentrefresh\":\"loading...\",\"uni-load-more.contentnomore\":\"No more data\"}");
 
 /***/ }),
-/* 211 */
-/*!**********************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hans.json ***!
-  \**********************************************************************************************/
+/* 295 */
+/*!************************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hans.json ***!
+  \************************************************************************************************************/
 /*! exports provided: uni-load-more.contentdown, uni-load-more.contentrefresh, uni-load-more.contentnomore, default */
 /***/ (function(module) {
 
 module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉显示更多\",\"uni-load-more.contentrefresh\":\"正在加载...\",\"uni-load-more.contentnomore\":\"没有更多数据了\"}");
 
 /***/ }),
-/* 212 */
-/*!**********************************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hant.json ***!
-  \**********************************************************************************************/
+/* 296 */
+/*!************************************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hant.json ***!
+  \************************************************************************************************************/
 /*! exports provided: uni-load-more.contentdown, uni-load-more.contentrefresh, uni-load-more.contentnomore, default */
 /***/ (function(module) {
 
 module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉顯示更多\",\"uni-load-more.contentrefresh\":\"正在加載...\",\"uni-load-more.contentnomore\":\"沒有更多數據了\"}");
 
 /***/ }),
-/* 213 */,
-/* 214 */,
-/* 215 */,
-/* 216 */,
-/* 217 */,
-/* 218 */,
-/* 219 */,
-/* 220 */
-/*!*****************************************************************************!*\
-  !*** D:/youa/heshangWX/uni_modules/uni-icons/components/uni-icons/icons.js ***!
-  \*****************************************************************************/
+/* 297 */,
+/* 298 */,
+/* 299 */,
+/* 300 */,
+/* 301 */,
+/* 302 */,
+/* 303 */,
+/* 304 */
+/*!*******************************************************************************************!*\
+  !*** D:/lmq/youayun/uniapp/heshangWX/uni_modules/uni-icons/components/uni-icons/icons.js ***!
+  \*******************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 

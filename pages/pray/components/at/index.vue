@@ -1,7 +1,7 @@
 <template>
 	<view class="atIndex">
 		<view class="cover">
-			<image src="/static/suixi.png" mode="widthFix"></image>
+			<image v-if="coverImage" :src="$common.disposeSrc(coverImage)" mode="widthFix"></image>
 		</view>
 		<view class="content">
 			<view class="desc">
@@ -38,14 +38,17 @@
 	export default {
 		data() {
 			return {
+				coverImage: '',
 				urlOptions: {},
 				detail: {},
 				temple_id: uni.getStorageSync('temple_id')
 			};
 		},
-		onLoad(option) {
-			if(option.column){
-				this.urlOptions = JSON.parse(option.column)
+		onLoad(options) {
+			this.urlOptions = {
+				id: options.column_id,
+				column_type: options.column_type,
+				buddhist_id: options.buddhist_id
 			}
 			this.getList()
 		},
@@ -56,12 +59,13 @@
 					method: 'GET'
 				}).then(res=>{
 					this.detail = res
-					console.log(res);
+					this.coverImage = res.image
 				})
+				
 			},
 			openForm(item){
 				uni.navigateTo({
-					url: `/pages/pray/pray?column=${JSON.stringify(this.urlOptions)}&ordinary_id=${this.detail.id}&category_id=${item.category_id}`
+					url: `/pages/pray/pray?column_id=${this.urlOptions.id}&column_type=${this.urlOptions.column_type}&buddhist_id=${this.urlOptions.buddhist_id}&ordinary_id=${this.detail.id}&category_id=${item.category_id}`
 				})
 			}
 		}

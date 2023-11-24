@@ -22,7 +22,8 @@
 				<view class="desc">
 					<view :class="['msg',show? 'active' : '']">
 						<label class="btn" @click="show = !show"></label>
-						{{templeData.tem_info.content}}
+						<!-- <text v-html="templeData.tem_info.content"></text> -->
+						<rich-text :nodes="templeData.tem_info.content" space="nbsp"></rich-text>
 					</view>
 				</view>
 			</view>
@@ -37,7 +38,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="dynamic">
+			<view class="dynamic" v-if="fo == 1">
 				<view class="calendar">
 					<image src="/static/date.png" mode="" @click="openDate"></image>
 					<view class="box" v-show="popoverShow">
@@ -73,6 +74,11 @@
 					</view>
 				</view>
 			</view>
+		</view>
+	
+		<view class="hisOrder" @click="$common.skip('/pages/hisOrder/hisOrder','to')">
+			<view>查看</view>
+			<view>订单</view>
 		</view>
 	</view>
 </template>
@@ -113,6 +119,7 @@
 				this.temple_id = options.scene
 				uni.setStorageSync('temple_id', options.scene)
 			}else{
+				// this.temple_id = 45
 				this.temple_id = 14
 				uni.setStorageSync('temple_id', 14)
 				// uni.showToast({
@@ -122,6 +129,8 @@
 				// })
 				// return
 			}
+			uni.removeStorageSync('location_id')
+			uni.removeStorageSync('place_id')
 			this.login()
 		},
 		
@@ -178,7 +187,9 @@
 							version: '/vx/',
 							method: 'GET',
 							data: {
-								code: loginRes.code
+								code: loginRes.code,
+								temple_id: uni.getStorageSync('temple_id'),
+								
 							}
 						}).then(openIdData=>{
 							uni.setStorageSync('openid', openIdData.openid)
@@ -211,7 +222,6 @@
 					}
 				}).then(res=>{
 					this.fo = res.fnSwitch.fo
-					console.log(res);
 				})
 			},
 			getData(){
@@ -225,6 +235,7 @@
 					})
 					this.templeData.tem_info = res.tem_info
 					
+					this.templeData.tem_info.content = res.tem_info.content.replace(/\<img/gi, '<img style="max-width:100%;height:auto;display:block;"')
 				},err=>{
 					
 				})
@@ -297,11 +308,27 @@
 			openForm(option){
 				if(option.column_type == 'at'){
 					uni.navigateTo({
-						url: `/pages/pray/components/at/index?column=${JSON.stringify(option)}`,
+						url: `/pages/pray/components/at/index?column_id=${option.id}&column_type=${option.column_type}&buddhist_id=${option.buddhist_id}`,
+					})
+				}else if(option.column_type == 'sign_up_js'){
+					// 居士申请
+					// uni.navigateTo({
+					// 	url: `/pages/templeHome/buddhist/buddhistList?status=buddhist`
+					// })
+					uni.navigateTo({
+						url: `/pages/templeHome/buddhist/home`
+					})
+				}else if(option.column_type == 'sign_up_yg'){
+					// 义工申请
+					uni.navigateTo({
+						url: `/pages/templeHome/buddhist/buddhistList?status=volunteer`
 					})
 				}else{
+					// uni.navigateTo({
+					// 	url: `/pages/pray/pray?column=${JSON.stringify(option)}`
+					// })
 					uni.navigateTo({
-						url: `/pages/pray/pray?column=${JSON.stringify(option)}`
+						url: `/pages/pray/pray?column_id=${option.id}&column_type=${option.column_type}&buddhist_id=${option.buddhist_id}`
 					})
 				}
 				// console.log(option);
@@ -324,11 +351,33 @@
 		}
 	}
 </script>
-
+<style>
+	page{
+		background: #1E1E1E;
+	}
+</style>
 <style lang="scss" scoped>
 	.templeHome{
 		
-		background: #1E1E1E;
+		.hisOrder{
+			position: fixed;
+			right: 20rpx;
+			bottom: 20%;
+			width: 100rpx;
+			height: 100rpx;
+			border-radius: 50%;
+			background: #373737;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			z-index: 999;
+			view{
+				font-size: 26rpx;
+				color: #BCAA72;
+				font-weight: bold;
+			}
+		}
 		.header{
 			position: fixed;
 			width: 100%;

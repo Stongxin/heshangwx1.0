@@ -1,3 +1,8 @@
+
+page{
+	background: #1E1E1E;
+}
+
 @charset "UTF-8";
 /**
  * 这里是uni-app内置的常用样式变量
@@ -24,8 +29,24 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
-.templeHome.data-v-325ab7c6 {
-  background: #1E1E1E;
+.templeHome .hisOrder.data-v-325ab7c6 {
+  position: fixed;
+  right: 20rpx;
+  bottom: 20%;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background: #373737;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+.templeHome .hisOrder view.data-v-325ab7c6 {
+  font-size: 26rpx;
+  color: #BCAA72;
+  font-weight: bold;
 }
 .templeHome .header.data-v-325ab7c6 {
   position: fixed;

@@ -1,8 +1,6 @@
 <template>
 	<view class="pray">
-		<view class="cover">
-			<image src="/static/suixi.png" mode="widthFix"></image>
-		</view>
+		
 		<view class="content">
 			<merit v-if="urlOptions.column_type == 'merit'"></merit>
 			<toBlessing v-else-if="urlOptions.column_type == 'to' || urlOptions.column_type == 'blessing'"></toBlessing>
@@ -54,9 +52,17 @@
 			};
 		},
 		onLoad(options) {
-			this.urlOptions = JSON.parse(options.column)
-			console.log(JSON.parse(options.column),123);
-			this.getMeritList()
+			// console.log(options,13321);
+			if(options.scene){
+				this.login(options.scene);
+			}else{
+				this.urlOptions = {
+					id: options.column_id,
+					column_type: options.column_type,
+					buddhist_id: options.buddhist_id
+				}
+				this.getMeritList()
+			}
 		},
 		computed: {
 			fn(){
@@ -80,28 +86,56 @@
 			}
 		},
 		methods: {
+			login(scene){
+				uni.login({
+					provider: 'weixin', //使用微信登录
+					success:  (loginRes)=>{
+						this.$request({
+							url: 'onLogin',
+							version: '/vx/',
+							method: 'GET',
+							data: {
+								code: loginRes.code,
+								temple_id: uni.getStorageSync('temple_id')
+							}
+						}).then(openIdData=>{
+							uni.setStorageSync('openid', openIdData.openid)
+							this.$request({
+								url: 'user/WxXxOpendiLogin',
+								data: {
+									openid: openIdData.openid
+								}
+							}).then(res=>{
+								uni.setStorageSync('token', res.token)
+								uni.setStorageSync('mobile', res.mobile)
+								let arr = scene.split('_')
+								uni.setStorageSync('temple_id',arr[0]);
+								this.urlOptions = {
+									id: arr[1],
+									column_type: arr[2],
+									buddhist_id: arr[3]
+								}
+								this.getMeritList()
+							})
+						})
+					}
+				});
+			},
 			getMeritList(){
 				this.$request({
 					url: 'buddhist/meritList',
 					method: 'GET',
 					data: {
-						temple_id: this.urlOptions.id,
+						temple_id: uni.getStorageSync('temple_id'),
 						page: this.page,
 						size: 20,
 						fn: this.fn,
-						type: this.fn == 'water' ? this.urlOptions.column_type : ''
+						type: this.fn == 'water' ? this.urlOptions.column_type : '',
+						buddhist_id: this.urlOptions.buddhist_id,
 					}
 				}).then(res=>{
 					this.dataList = res
 				})
-			},
-			createData(){
-				for(let i = 1; i <= 20; i++){
-					this.dataList.push({
-						author: 'MaoUI',
-						subject: 'OnePlus手机 * ' + i + '部'
-					})
-				}
 			},
 			// 添加祈福姓名
 			addName(){
@@ -114,7 +148,6 @@
 				this.bullyForm.names.splice(index, 1)
 			},
 			confirmCalendar(value){
-				console.log(value);
 				this.bullyForm.lunarDate[this.dateIndex][this.dateKey] = value.lunarDate
 				this.bullyForm.dateArr[this.dateIndex][this.dateKey] = value.dateGL
 			},
@@ -135,7 +168,6 @@
 					start: '',
 					end: ''
 				})
-				
 			},
 			// 删除农历日期
 			delDate(index){
@@ -148,6 +180,7 @@
 
 <style lang="scss" scoped>
 	.pray{
+		width: 750rpx;
 		min-height: 100vh;
 		background: #2E2D2B;
 		.cover{
@@ -156,7 +189,7 @@
 			}
 		}
 		.content{
-			padding: 0 50rpx;
+			// padding: 0 50rpx;
 			
 			.bully{
 				margin-top: 40rpx;

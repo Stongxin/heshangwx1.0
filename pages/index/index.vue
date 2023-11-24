@@ -33,6 +33,8 @@
 	export default {
 		data() {
 			return {
+				source: true,
+				isH5: false,
 				payment: {
 					"code": 200,
 					"msg": "成功",
@@ -66,8 +68,11 @@
 			}
 		},
 		onLoad(options) {
-			console.log(options);
 			this.getOrder(options.order_id)
+			if(options.source && options.source == 'h5'){
+				this.source = false
+				this.isH5 = true
+			}
 		},
 		methods: {
 			getOrder(order_id){
@@ -79,7 +84,8 @@
 							version: '/vx/',
 							method: 'GET',
 							data: {
-								code: loginRes.code
+								code: loginRes.code,
+								temple_id: uni.getStorageSync('temple_id')
 							}
 						}).then(openIdData=>{
 							uni.setStorageSync('openid', openIdData.openid)
@@ -108,16 +114,19 @@
 					success: function (res) {
 						console.log('支付成功',res);
 						uni.redirectTo({
-							url: "/pages/index/paySuccess?result=true"
+							url: `/pages/hisOrder/orderDetail?result=true&isApp=${this.source}&isH5=${this.isH5}&showImg=true&order_id=${option.merOrderId}`
 						})
 						// 业务逻辑。。。
 					},
 					fail: function (err) {
-						uni.showToast({
-							title: '支付失败',
-							icon: 'error',
-							mask: true
+						uni.redirectTo({
+							url: `/pages/hisOrder/orderDetail?result=false&isApp=${this.source}&isH5=${this.isH5}&showImg=true&order_id=${option.merOrderId}`
 						})
+						// uni.showToast({
+						// 	title: '支付失败',
+						// 	icon: 'error',
+						// 	mask: true
+						// })
 						console.log('支付失败',err);
 					}
 				});

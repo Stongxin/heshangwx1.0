@@ -25,14 +25,12 @@
 /* 透明度 */
 /* 文章场景相关 */
 .pray.data-v-272f9946 {
+  width: 750rpx;
   min-height: 100vh;
   background: #2E2D2B;
 }
 .pray .cover image.data-v-272f9946 {
   width: 100%;
-}
-.pray .content.data-v-272f9946 {
-  padding: 0 50rpx;
 }
 .pray .content .bully.data-v-272f9946 {
   margin-top: 40rpx;

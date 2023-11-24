@@ -1,8 +1,11 @@
 import App from './App'
-import { common, request } from 'utils/common.js'
+import { common, request,alUploadImage, login } from 'utils/common.js'
 // import MQTT from 'mqtt'
 Vue.prototype.$common = common
 Vue.prototype.$request = request
+Vue.prototype.$alUploadImage = alUploadImage
+Vue.prototype.$login = login
+
 // #ifndef VUE3
 import Vue from 'vue'
 Vue.config.productionTip = false

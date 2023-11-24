@@ -3,6 +3,7 @@
 		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		
 		{
 		    "path" : "pages/templeHome/templeHome",
 		    "style" :                                                                                    
@@ -10,6 +11,15 @@
 		        "navigationBarTitleText": "",
 		        "enablePullDownRefresh": false
 		    }
+		},
+		{
+		    "path" : "pages/templeSubHome/templeSubHome",
+		    "style" :                                                                                    
+		    {
+		        "navigationBarTitleText": "",
+		        "enablePullDownRefresh": false
+		    }
+		    
 		},
 		{
 		    "path" : "pages/pray/pray",
@@ -44,6 +54,60 @@
         }
         ,{
             "path" : "pages/pray/components/at/index",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/templeHome/buddhist/buddhist",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "皈依申请",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/templeHome/buddhist/buddhistList",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/templeHome/volunteer/volunteer",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/hisOrder/hisOrder",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/hisOrder/orderDetail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/templeHome/buddhist/home",
             "style" :                                                                                    
             {
                 "navigationBarTitleText": "",

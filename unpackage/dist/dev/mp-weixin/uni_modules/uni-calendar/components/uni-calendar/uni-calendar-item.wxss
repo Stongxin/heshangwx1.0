@@ -62,11 +62,13 @@
   color: #c0c0c0;
 }
 .uni-calendar-item--isDay-text.data-v-6097fd5b {
-  color: #745A49;
+  color: #e43d33;
+  font-weight: bold;
 }
 .uni-calendar-item--isDay.data-v-6097fd5b {
-  color: #745A49;
+  color: #e43d33;
   font-weight: bold;
+  font-size: 28rpx;
 }
 .uni-calendar-item--extra.data-v-6097fd5b {
   color: #e43d33;

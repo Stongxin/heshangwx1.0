@@ -24,6 +24,12 @@
 /* 垂直间距 */
 /* 透明度 */
 /* 文章场景相关 */
+.to_blessing .to_blessing_content.data-v-262fc71a {
+  padding: 0 50rpx;
+}
+.to_blessing .cover image.data-v-262fc71a {
+  width: 100%;
+}
 .to_blessing .desc text.data-v-262fc71a {
   display: block;
 }
@@ -123,12 +129,18 @@
 .to_blessing .merit .flex .input_value.data-v-262fc71a {
   flex: 1;
   text-align: right;
+  background-color: inherit;
+}
+.to_blessing .merit .flex .input_value.btn.data-v-262fc71a {
+  color: #808080;
 }
 .to_blessing .merit .flex .suffix.data-v-262fc71a {
   color: #BEAD7A;
+  font-size: 26rpx;
+  font-weight: bold;
 }
 .to_blessing .merit .inline.data-v-262fc71a {
-  height: 80rpx;
+  height: 100rpx;
 }
 .to_blessing .merit .inline .title.data-v-262fc71a {
   flex: 0 0 120rpx;
@@ -142,10 +154,17 @@
   width: 100%;
 }
 .to_blessing .merit .inline .input_value.data-v-262fc71a {
-  height: 80rpx;
+  height: 100rpx;
+  background-color: inherit;
+  line-height: 100rpx;
+}
+.to_blessing .merit .inline .input_value.btn.data-v-262fc71a {
+  color: #808080;
 }
 .to_blessing .merit .inline .suffix.data-v-262fc71a {
   margin-left: 10rpx;
+  font-size: 26rpx;
+  font-weight: bold;
 }
 .to_blessing .bully.data-v-262fc71a {
   margin-top: 40rpx;
@@ -326,5 +345,70 @@
   font-weight: bold;
   color: #fff;
   letter-spacing: 10rpx;
+}
+.to_blessing .placePicker.data-v-262fc71a {
+  width: 100%;
+}
+.to_blessing .placePicker .title.data-v-262fc71a {
+  text-align: center;
+  line-height: 100rpx;
+  position: relative;
+}
+.to_blessing .placePicker .title view.data-v-262fc71a {
+  font-size: 30rpx;
+  font-family: Source Han Serif CN;
+  font-weight: 500;
+  color: #B8AC76;
+}
+.to_blessing .placePicker .title image.data-v-262fc71a {
+  position: absolute;
+  width: 44rpx;
+  height: 44rpx;
+  top: 25rpx;
+  right: 25rpx;
+}
+.to_blessing .placePicker .placeContent.data-v-262fc71a {
+  padding: 13rpx 25rpx;
+  height: 800rpx;
+  overflow-y: scroll;
+}
+.to_blessing .placePicker .placeContent .placeRow.data-v-262fc71a {
+  background: #2B2A28;
+  border-radius: 10rpx;
+  margin-top: 12rpx;
+  padding: 18rpx;
+}
+.to_blessing .placePicker .placeContent .placeRow .row_title.data-v-262fc71a {
+  font-size: 24rpx;
+  font-family: PingFang SC;
+  font-weight: 500;
+  color: #7B703E;
+}
+.to_blessing .placePicker .placeContent .placeRow .tablet_list.data-v-262fc71a {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  /* 重复五次，每个列的宽度平分 */
+  grid-gap: 20rpx;
+  /* 列之间的间距 */
+}
+.to_blessing .placePicker .placeContent .placeRow .tablet_list .tablet_item.data-v-262fc71a {
+  text-align: center;
+  margin-top: 20rpx;
+  border: 1px solid #2B2A28;
+  border-radius: 10rpx;
+}
+.to_blessing .placePicker .placeContent .placeRow .tablet_list .tablet_item.active.data-v-262fc71a {
+  border: 1px solid #BCAA72;
+  border-radius: 10rpx;
+}
+.to_blessing .placePicker .placeContent .placeRow .tablet_list .tablet_item image.data-v-262fc71a {
+  width: 114rpx;
+  height: 114rpx;
+}
+.to_blessing .placePicker .placeContent .placeRow .tablet_list .tablet_item .tablet_name.data-v-262fc71a {
+  font-size: 28rpx;
+  font-family: PingFang SC;
+  font-weight: 500;
+  color: #B8AC76;
 }
 

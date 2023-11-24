@@ -88,18 +88,15 @@
 				const node = this.dataList[i][j];
 				const text = node[this.map.text];
 				const value = node[this.map.value];
-
+				let obj = {}
+				for (let key in this.map) {
+					obj[key] = node[this.map[key]]
+				}
 				if (i < this.selected.length - 1) {
 					this.selected.splice(i, this.selected.length - i)
-					this.selected.push({
-						text,
-						value
-					})
+					this.selected.push(obj)
 				} else if (i === this.selected.length - 1) {
-					this.selected.splice(i, 1, {
-						text,
-						value
-					})
+					this.selected.splice(i, 1, obj)
 				}
 
 				if (node.isleaf) {

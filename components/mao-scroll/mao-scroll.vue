@@ -2,7 +2,7 @@
 	<view>
 		<view class="maoScroll-main" :style="'height:'+(lineHeight*showLine)+'rpx;'">
 			<view :style="'margin-top:-'+marginTop+'rpx;'">
-				<view v-for="(item,index) in showdata" :key="'maoScroll'+index" :style="'height:'+lineHeight+'rpx;'">
+				<view v-for="(item,index) in showdata" :key="index" :style="'height:'+lineHeight+'rpx;'">
 					<!-- <slot :line="item" /> -->
 					<view class="line">
 						<text>{{item.date}}</text>
