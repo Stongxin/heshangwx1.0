@@ -57,7 +57,7 @@
 		</view>
 		<u-popup v-model="popupShow" mode="center" border-radius="20">
 			<view class="popupShow">
-				<image class="logo" src="/static/logo.png" mode=""></image>
+				<image class="logo" src="https://lysmall.heshangsz.com/imgs/hs-logo.png" mode=""></image>
 				<view class="title">
 					支付金额
 				</view>
@@ -408,7 +408,7 @@
 					&::after{
 					    content: "";
 					    display: inline-block;
-					    width: 100%;  
+					    // width: 100%;  
 					}
 				}
 				.input_value{

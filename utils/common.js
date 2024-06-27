@@ -185,12 +185,11 @@ export const request = function(options, showLoading = false) {
 		requestTree[options.url] = uni.request({
 			url: domain + (options.version ? options.version : version) + options.url, // 请求接口地址
 			method: options.method || 'POST', // 方法从options中获取，如果没有传入method，则默认为POST，
-			data: {...options.data,uuid: 'wx28e269b3f78c2d01'}, // 请求接口参数
+			data: {...options.data,uuid: 'wx3348010e520bdffa'}, // 请求接口参数
 			dataType: 'json',
 			header: options.header || {
 				'content-type': 'application/x-www-form-urlencoded',
 				// 'Authorization': 'Bearer' + uni.getStorageSync('authorization'),
-				// token: uni.getStorageSync('token')
 				// token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJoZXNoYW5nX2dvIiwiYXVkIjoiIiwiaWF0IjoxNjk1Nzk5MTUzLCJleHAiOjE3MDI5OTkxNTMsImRhdGEiOnsiaWQiOjIsInVzZXJuYW1lIjoiOTY1MjM0NDY5NTQiLCJtb2JpbGUiOiIxNTAwNDY1MTQxMiIsIm5pY2tuYW1lIjoiXHU5NjMzXHU2NTRjIn19.7I7P7ZkdgGuFsV6OR7kdecm4d0QtxRR9rZyPkn6gvT0'
 			},
 			success: (res) => {

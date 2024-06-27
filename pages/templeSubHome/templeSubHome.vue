@@ -110,8 +110,8 @@
 				}
 				uni.setStorageSync('temple_id', this.temple_id)
 			}else{
-				this.temple_id = 14
-				uni.setStorageSync('temple_id', 14)
+				this.temple_id = 47
+				uni.setStorageSync('temple_id', 47)
 			}
 			this.login()
 		},

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "积分商品",
+  "usingComponents": {
+    "shopro-goods-card": "/components/shopro-goods-card/shopro-goods-card",
+    "shopro-empty": "/components/shopro-empty/shopro-empty",
+    "u-loadmore": "/node-modules/uview-ui/components/u-loadmore/u-loadmore"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "售后记录",
+  "usingComponents": {
+    "u-time-line": "/node-modules/uview-ui/components/u-time-line/u-time-line",
+    "u-time-line-item": "/node-modules/uview-ui/components/u-time-line-item/u-time-line-item",
+    "u-parse": "/node-modules/uview-ui/components/u-parse/u-parse"
+  }
+}

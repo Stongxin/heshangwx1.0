@@ -1,0 +1,185 @@
+@charset "UTF-8";
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.normal-price-box {
+  padding: 20rpx;
+  background: url("https://lysmall.heshangsz.com/imgs/detail/detail_price_normal_bg.png") no-repeat;
+  background-size: 100% 100%;
+}
+.normal-price-box .unit,
+.normal-price-box .notice {
+  font-size: 24rpx;
+  color: #fff;
+}
+.normal-price-box .price {
+  font-size: 36rpx;
+  color: #fff;
+  font-weight: bold;
+  margin: 0 10rpx;
+}
+.normal-price-box .price-bottom-box {
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: 500;
+  padding-top: 10rpx;
+}
+.normal-price-box .price-bottom-box .original-price {
+  text-decoration: line-through;
+}
+.normal-price-box .price-bottom-box .line {
+  margin: 0 20rpx;
+  display: inline-block;
+  width: 3rpx;
+  height: 24rpx;
+  background-color: #fff;
+}
+.groupon-price-box {
+  padding: 20rpx;
+  background: url("https://lysmall.heshangsz.com/imgs/detail/detail_group_price_bg.png") no-repeat;
+  background-size: 100% 100%;
+}
+.groupon-price-box .unit,
+.groupon-price-box .notice {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+.groupon-price-box .notice {
+  line-height: 40rpx;
+  border: 1rpx solid white;
+  border-radius: 6rpx;
+  padding: 0 10rpx;
+}
+.groupon-price-box .price {
+  font-size: 36rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: bold;
+  margin: 0 10rpx;
+}
+.groupon-price-box .price-bottom-box {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  padding-top: 10rpx;
+}
+.groupon-price-box .price-bottom-box .line {
+  margin: 0 20rpx;
+  display: inline-block;
+  width: 3rpx;
+  height: 24rpx;
+  background-color: #fff;
+}
+.groupon-price-box .price-bottom-box .count-down {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+.score-price-card {
+  padding: 20rpx;
+  background: url("https://lysmall.heshangsz.com/imgs/detail/detail_price_score_bg.png") no-repeat;
+  background-size: 100% 100%;
+  width: 750rpx;
+}
+.score-price-card .notice {
+  font-size: 24rpx;
+  color: #fff;
+}
+.score-price-card .score-img {
+  width: 36rpx;
+  height: 36rpx;
+}
+.score-price-card .price {
+  font-size: 36rpx;
+  color: #fff;
+  font-weight: bold;
+  margin: 0 10rpx;
+}
+.score-price-card .price-bottom-box {
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: 500;
+  padding-top: 10rpx;
+}
+.score-price-card .price-bottom-box .original-price {
+  text-decoration: line-through;
+}
+.score-price-card .price-bottom-box .line {
+  margin: 0 20rpx;
+  display: inline-block;
+  width: 3rpx;
+  height: 24rpx;
+  background-color: #fff;
+}
+.seckill-bg {
+  background: url("https://lysmall.heshangsz.com/imgs/detail/detail_price_seckill_bg.png") no-repeat;
+  background-size: 100% 100%;
+}
+.seckilled-bg {
+  background: url("https://lysmall.heshangsz.com/imgs/detail/detail_price_seckilled_bg.png") no-repeat;
+  background-size: 100% 100%;
+}
+.seckill-price-box {
+  padding: 20rpx;
+}
+.seckill-price-box .unit,
+.seckill-price-box .notice,
+.seckill-price-box .count-down {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+.seckill-price-box .notice {
+  line-height: 40rpx;
+  border: 1rpx solid white;
+  border-radius: 6rpx;
+  padding: 0 10rpx;
+  margin-left: 10rpx;
+}
+.seckill-price-box .price {
+  font-size: 36rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: bold;
+  margin: 0 10rpx;
+}
+.seckill-price-box .price-bottom-box {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  padding-top: 10rpx;
+}
+.seckill-price-box .price-bottom-box .original-price {
+  text-decoration: line-through;
+}
+.seckill-price-box .price-bottom-box .express .progress-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 24rpx;
+  margin-left: 10rpx;
+}
+.seckill-price-box .price-bottom-box .line {
+  margin: 0 20rpx;
+  display: inline-block;
+  width: 3rpx;
+  height: 24rpx;
+  background-color: #fff;
+}
+

@@ -151,7 +151,6 @@
 .merit_box .merit .inline .title.data-v-ac6078e4::after {
   content: "";
   display: inline-block;
-  width: 100%;
 }
 .merit_box .merit .inline .input_value.data-v-ac6078e4 {
   height: 100rpx;

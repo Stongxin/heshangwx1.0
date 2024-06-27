@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "u-number-box": "/node-modules/uview-ui/components/u-number-box/u-number-box",
+    "shopro-sku": "/components/shopro-sku/shopro-sku"
+  }
+}

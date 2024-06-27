@@ -75,7 +75,7 @@
 				</view>
 			</view>
 		</view>
-	
+	 <!-- @click="$common.skip('/pages/hisOrder/hisOrder','to')" -->
 		<view class="hisOrder" @click="$common.skip('/pages/hisOrder/hisOrder','to')">
 			<view>查看</view>
 			<view>订单</view>
@@ -115,13 +115,12 @@
 			};
 		},
 		onLoad(options) {
-			if(options.scene){
+			if(options?.scene){
 				this.temple_id = options.scene
 				uni.setStorageSync('temple_id', options.scene)
 			}else{
-				// this.temple_id = 45
-				this.temple_id = 14
-				uni.setStorageSync('temple_id', 14)
+				this.temple_id = 45
+				uni.setStorageSync('temple_id', 45)
 				// uni.showToast({
 				// 	title: '没有该寺庙信息',
 				// 	icon: 'none',
@@ -129,8 +128,12 @@
 				// })
 				// return
 			}
-			uni.removeStorageSync('location_id')
-			uni.removeStorageSync('place_id')
+			if(uni.getStorageSync('location_id')){
+				uni.removeStorageSync('location_id')
+			}
+			if(uni.getStorageSync('place_id')){
+				uni.removeStorageSync('place_id')
+			}
 			this.login()
 		},
 		
@@ -233,9 +236,12 @@
 						elem.video_image = this.$common.disposeSrc(elem.video_image)
 						return elem
 					})
-					this.templeData.tem_info = res.tem_info
-					
-					this.templeData.tem_info.content = res.tem_info.content.replace(/\<img/gi, '<img style="max-width:100%;height:auto;display:block;"')
+					if(res.tem_info == null){
+						this.templeData.tem_info = {}
+					}else{
+						this.templeData.tem_info = res.tem_info
+						this.templeData.tem_info.content = res.tem_info.content.replace(/\<img/gi, '<img style="max-width:100%;height:auto;display:block;"')
+					}
 				},err=>{
 					
 				})
@@ -322,6 +328,10 @@
 					// 义工申请
 					uni.navigateTo({
 						url: `/pages/templeHome/buddhist/buddhistList?status=volunteer`
+					})
+				}else if(option.column_type == 'shop'){
+					uni.switchTab({
+						url: '/pages/index/index'
 					})
 				}else{
 					// uni.navigateTo({

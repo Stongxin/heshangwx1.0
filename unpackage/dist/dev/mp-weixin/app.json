@@ -1,11 +1,16 @@
 {
   "pages": [
     "pages/templeHome/templeHome",
+    "pages/index/index",
+    "pages/index/category",
+    "pages/index/cart",
+    "pages/index/user",
+    "pages/index/view",
     "pages/templeSubHome/templeSubHome",
     "pages/pray/pray",
-    "pages/index/index",
+    "pages/payIndex/index",
     "pages/dynamic/dynamic",
-    "pages/index/paySuccess",
+    "pages/payIndex/paySuccess",
     "pages/pray/components/at/index",
     "pages/templeHome/buddhist/buddhist",
     "pages/templeHome/buddhist/buddhistList",
@@ -14,13 +19,157 @@
     "pages/hisOrder/orderDetail",
     "pages/templeHome/buddhist/home"
   ],
-  "subPackages": [],
+  "subPackages": [
+    {
+      "root": "pages/activity",
+      "pages": [
+        "sign/index",
+        "seckill/list",
+        "groupon/list",
+        "groupon/detail",
+        "groupon/my-groupon",
+        "discounts/list"
+      ]
+    },
+    {
+      "root": "pages/app",
+      "pages": [
+        "score/list",
+        "coupon/list",
+        "coupon/detail",
+        "merchant/index",
+        "merchant/apply",
+        "merchant/detail",
+        "merchant/info",
+        "merchant/list",
+        "commission/index",
+        "commission/team",
+        "commission/commission-log",
+        "commission/order",
+        "commission/goods",
+        "commission/apply",
+        "commission/rankings",
+        "commission/share-log"
+      ]
+    },
+    {
+      "root": "pages/goods",
+      "pages": [
+        "list",
+        "detail",
+        "comment/add-comment",
+        "comment/comment-list"
+      ]
+    },
+    {
+      "root": "pages/order",
+      "pages": [
+        "confirm",
+        "payment/method",
+        "payment/result",
+        "list",
+        "detail",
+        "after-sale/detail",
+        "after-sale/list",
+        "after-sale/log",
+        "after-sale/refund",
+        "express/distribution-detail",
+        "express/express-detail",
+        "express/express-list",
+        "express/store-address"
+      ]
+    },
+    {
+      "root": "pages/public",
+      "pages": [
+        "faq",
+        "feedback",
+        "chat/index",
+        "search",
+        "richtext",
+        "webview",
+        "404",
+        "loading"
+      ]
+    },
+    {
+      "root": "pages/user",
+      "pages": [
+        "info",
+        "set",
+        "view-log",
+        "wallet/index",
+        "wallet/withdraw",
+        "wallet/withdraw-log",
+        "wallet/top-up",
+        "wallet/top-up-log",
+        "wallet/score-balance",
+        "address/list",
+        "address/edit",
+        "favorite"
+      ]
+    }
+  ],
   "window": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "uni-app",
     "navigationBarBackgroundColor": "#F8F8F8",
     "backgroundColor": "#F8F8F8"
   },
-  "permission": {},
+  "tabBar": {
+    "color": "#333",
+    "selectedColor": "#a8700d",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "static/images/tabbar/tabbar_home.png",
+        "selectedIconPath": "/static/images/tabbar/tabbar_home1.png"
+      },
+      {
+        "pagePath": "pages/index/category",
+        "text": "分类",
+        "iconPath": "static/images/tabbar/tabbar_category.png",
+        "selectedIconPath": "/static/images/tabbar/tabbar_category1.png"
+      },
+      {
+        "pagePath": "pages/index/cart",
+        "text": "购物车",
+        "iconPath": "static/images/tabbar/tabbar_cart.png",
+        "selectedIconPath": "/static/images/tabbar/tabbar_cart1.png"
+      },
+      {
+        "pagePath": "pages/index/user",
+        "text": "我的",
+        "iconPath": "static/images/tabbar/tabbar_personal.png",
+        "selectedIconPath": "/static/images/tabbar/tabbar_personal1.png"
+      }
+    ]
+  },
+  "preloadRule": {
+    "pages/index/index": {
+      "network": "all",
+      "packages": [
+        "pages/activity",
+        "pages/user",
+        "pages/goods",
+        "pages/app",
+        "pages/public",
+        "pages/order"
+      ]
+    }
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "计算附近商家位置"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation",
+    "chooseLocation",
+    "chooseAddress"
+  ],
   "usingComponents": {}
 }

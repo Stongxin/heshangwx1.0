@@ -1,15 +1,24 @@
 {
-    "id": "calendar-boke",
-    "name": "公历农历日期选择器calendar",
-    "version": "1.0.0",
-    "description": "阳历/农历日期选择器 ",
-    "keywords": [
-        "选择器,阳历,阴历,公历,农历"
-    ],
-    "dcloudext": {
-        "category": [
-            "前端组件",
-            "通用组件"
-        ]
-    }
+	"name": "shopro-plus",
+	"version": "1.0.0",
+	"main": "main.js",
+	"scripts": {
+		"test": ""
+	},
+	"repository": {
+		"type": "git",
+		"url": ""
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"homepage": "",
+	"dependencies": {
+		"jweixin-module": "^1.6.0",
+		"uni-read-pages": "^1.0.5",
+		"uni-simple-router": "^2.0.6",
+		"uview-ui": "^1.8.4",
+		"vconsole": "^3.7.0"
+	},
+	"description": ""
 }
