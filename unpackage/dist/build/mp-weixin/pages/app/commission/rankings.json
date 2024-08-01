@@ -1,9 +1,0 @@
-{
-  "navigationBarTitleText": "分销排行",
-  "navigationStyle": "custom",
-  "navigationBarTextStyle": "white",
-  "usingComponents": {
-    "shopro-navbar": "/components/shopro-navbar/shopro-navbar",
-    "u-loadmore": "/node-modules/uview-ui/components/u-loadmore/u-loadmore"
-  }
-}

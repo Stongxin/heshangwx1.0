@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "评价列表",
-  "usingComponents": {
-    "shopro-empty": "/components/shopro-empty/shopro-empty",
-    "u-loadmore": "/node-modules/uview-ui/components/u-loadmore/u-loadmore",
-    "sh-comment": "/pages/goods/components/sh-comment"
-  }
-}

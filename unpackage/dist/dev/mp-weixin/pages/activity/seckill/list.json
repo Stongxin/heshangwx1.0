@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "限时秒杀",
-  "enablePullDownRefresh": true,
-  "usingComponents": {
-    "shopro-empty": "/components/shopro-empty/shopro-empty",
-    "u-loadmore": "/node-modules/uview-ui/components/u-loadmore/u-loadmore"
-  }
-}

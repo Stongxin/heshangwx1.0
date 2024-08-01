@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "shopro-canvas": "/components/shopro-canvas/shopro-canvas"
-  }
-}

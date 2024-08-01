@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "提现记录",
-  "usingComponents": {
-    "u-loadmore": "/node-modules/uview-ui/components/u-loadmore/u-loadmore",
-    "shopro-empty": "/components/shopro-empty/shopro-empty"
-  }
-}

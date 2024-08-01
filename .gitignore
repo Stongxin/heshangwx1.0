@@ -3,3 +3,7 @@ composer.lock
 *.log
 thinkphp
 .env
+/node_modules/
+/unpackage/
+/uni_modules/
+.hbuilderx

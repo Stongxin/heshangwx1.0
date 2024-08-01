@@ -1,6 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "shopro-coupon": "/components/shopro-coupon/shopro-coupon"
-  }
-}

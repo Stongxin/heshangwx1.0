@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "充值",
-  "navigationStyle": "custom",
-  "usingComponents": {
-    "shopro-navbar": "/components/shopro-navbar/shopro-navbar"
-  }
-}

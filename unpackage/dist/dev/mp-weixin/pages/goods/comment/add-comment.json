@@ -1,8 +1,0 @@
-{
-  "navigationBarTitleText": "评价",
-  "usingComponents": {
-    "shopro-mini-card": "/components/shopro-mini-card/shopro-mini-card",
-    "u-rate": "/node-modules/uview-ui/components/u-rate/u-rate",
-    "u-upload": "/node-modules/uview-ui/components/u-upload/u-upload"
-  }
-}

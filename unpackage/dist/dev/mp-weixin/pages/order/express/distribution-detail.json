@@ -1,7 +1,0 @@
-{
-  "navigationBarTitleText": "配送详情",
-  "usingComponents": {
-    "shopro-mini-card": "/components/shopro-mini-card/shopro-mini-card",
-    "u-popup": "/node-modules/uview-ui/components/u-popup/u-popup"
-  }
-}

@@ -1,1 +1,0 @@
-<view class="buddhist_home data-v-52c5176f"><view data-event-opts="{{[['tap',[['skip',['/pages/templeHome/buddhist/buddhistList?status=lay']]]]]}}" bindtap="__e" class="data-v-52c5176f">皈依申请</view><view data-event-opts="{{[['tap',[['skip',['/pages/templeHome/buddhist/buddhistList?status=buddhist']]]]]}}" bindtap="__e" class="data-v-52c5176f">皈依认证</view></view>
