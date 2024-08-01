@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "uni-data-picker": "/uni_modules/uni-data-picker/components/uni-data-picker/uni-data-picker",
+    "u-popup": "/node-modules/uview-ui/components/u-popup/u-popup"
+  }
+}

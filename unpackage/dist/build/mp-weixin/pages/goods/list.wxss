@@ -1,0 +1,1 @@
+.u-waterfall{display:flex;flex-direction:row;flex-direction:row;align-items:flex-start}.u-column{display:flex;flex-direction:row;flex:1;flex-direction:column;height:auto}.head-box{position:-webkit-sticky;position:sticky;top:0;z-index:998;background:#fff}

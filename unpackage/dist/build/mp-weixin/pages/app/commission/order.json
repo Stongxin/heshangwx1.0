@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "分销订单",
+  "navigationStyle": "custom",
+  "navigationBarTextStyle": "white",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "shopro-navbar": "/components/shopro-navbar/shopro-navbar",
+    "shopro-empty": "/components/shopro-empty/shopro-empty",
+    "u-loadmore": "/node-modules/uview-ui/components/u-loadmore/u-loadmore",
+    "u-calendar": "/node-modules/uview-ui/components/u-calendar/u-calendar"
+  }
+}

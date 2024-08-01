@@ -13,7 +13,7 @@
 					<view class="info">
 						<image class="avatar" :src="$common.disposeSrc(templeData.tem_info.logo)" mode=""></image>
 						<text>{{templeData.tem_info.name}}</text>
-						<image class="pagoda" src="/static/pagoda.png" mode=""></image>
+						<image class="pagoda" src="/static/pagoda.png" mode="" @click="goBi"></image>
 					</view>
 					<!-- <view class="attent">
 						<text>关注</text>
@@ -29,7 +29,7 @@
 			</view>
 			<view class="merit" v-if="fo == 1">
 				<view class="title">
-					<text>功德随喜</text>
+					<!-- <text>功德随喜</text> -->
 				</view>
 				<view class="items">
 					<view class="item" v-for="(item,index) in templeData.columnList" :key="index"
@@ -127,8 +127,11 @@
 				this.temple_id = options.scene
 				uni.setStorageSync('temple_id', options.scene)
 			} else {
-				this.temple_id = 45
-				uni.setStorageSync('temple_id', 45)
+				// 45 和上 14灵岩山寺  15铁佛寺  47心田寺
+				// this.temple_id = 47
+				// uni.setStorageSync('temple_id', 47)
+				this.temple_id = 14
+				uni.setStorageSync('temple_id', 14)
 				// uni.showToast({
 				// 	title: '没有该寺庙信息',
 				// 	icon: 'none',
@@ -321,8 +324,13 @@
 			openDate(e) {
 				this.popoverShow = !this.popoverShow
 			},
+			// 兑币
+			goBi() {
+				// uni.navigateTo({
+				// 	url: '/pages/changeMoney/index'
+				// })
+			},
 			openForm(option) {
-				console.log(option);
 				if (option.column_type == 'at') {
 					uni.navigateTo({
 						url: `/pages/pray/components/at/index?column_id=${option.id}&column_type=${option.column_type}&buddhist_id=${option.buddhist_id}`,

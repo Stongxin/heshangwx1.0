@@ -4,106 +4,101 @@
 		"^shopro-(.*)": "@/components/shopro-$1/shopro-$1.vue"
 	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-		
 		{
-		    "path" : "pages/templeHome/templeHome",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
+			"path": "pages/templeHome/templeHome",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
 		},
 		{
-				"path": "pages/index/index",
-				"aliasPath": "/", //对于h5端你必须在首页加上aliasPath并设置为/
-				"style": {
-					"navigationBarTitleText": "首页",
-					"navigationBarTextStyle": "light",
-					"enablePullDownRefresh": true,
-					"navigationStyle": "custom",
-					"mp-alipay": {
-						"transparentTitle": "always",
-						"titlePenetrate": "YES",
-						"allowsBounceVertical": "NO"
-					}
-				},
-				"meta": {
-					"auth": false, //需要登录
-					"async": true, //是否同步
-					"title": "首页", //标题
-					"group": "商城" //分组
+			"path": "pages/index/index",
+			"aliasPath": "/", //对于h5端你必须在首页加上aliasPath并设置为/
+			"style": {
+				"navigationBarTitleText": "首页",
+				"navigationBarTextStyle": "light",
+				"enablePullDownRefresh": true,
+				"navigationStyle": "custom",
+				"mp-alipay": {
+					"transparentTitle": "always",
+					"titlePenetrate": "YES",
+					"allowsBounceVertical": "NO"
 				}
 			},
-			{
-				"path": "pages/index/category",
-				"style": {
-					"navigationBarTitleText": "分类"
-				},
-				"meta": {
-					"auth": false,
-					"async": true,
-					"title": "分类",
-					"group": "商城"
-				}
-			},
-			{
-				"path": "pages/index/cart",
-				"style": {
-					"navigationBarTitleText": "购物车"
-				},
-				"meta": {
-					"auth": false,
-					"async": true,
-					"title": "购物车",
-					"group": "商城"
-				}
-			},
-			{
-				"path": "pages/index/user",
-				"style": {
-					"navigationBarTitleText": "我的",
-					"navigationStyle": "custom",
-					"navigationBarTextStyle": "white",
-					"enablePullDownRefresh": true
-				},
-				"meta": {
-					"auth": false,
-					"async": true,
-					"title": "我的",
-					"group": "商城"
-				}
-			},
-			{
-				"path": "pages/index/view",
-				"name": "view",
-				"style": {
-					"navigationBarTitleText": "",
-					"enablePullDownRefresh": true
-		
-				},
-				"meta": {
-					"auth": false,
-					"async": true,
-					"title": "自定义页面",
-					"group": "商城"
-				}
-			},
+			"meta": {
+				"auth": false, //需要登录
+				"async": true, //是否同步
+				"title": "首页", //标题
+				"group": "商城" //分组
+			}
+		},
+		// {
+		// 	"path": "pages/index/category",
+		// 	"style": {
+		// 		"navigationBarTitleText": "分类"
+		// 	},
+		// 	"meta": {
+		// 		"auth": false,
+		// 		"async": true,
+		// 		"title": "分类",
+		// 		"group": "商城"
+		// 	}
+		// },
+		// {
+		// 	"path": "pages/index/cart",
+		// 	"style": {
+		// 		"navigationBarTitleText": "购物车"
+		// 	},
+		// 	"meta": {
+		// 		"auth": false,
+		// 		"async": true,
+		// 		"title": "购物车",
+		// 		"group": "商城"
+		// 	}
+		// },
+		// {
+		// 	"path": "pages/index/user",
+		// 	"style": {
+		// 		"navigationBarTitleText": "我的",
+		// 		"navigationStyle": "custom",
+		// 		"navigationBarTextStyle": "white",
+		// 		"enablePullDownRefresh": true
+		// 	},
+		// 	"meta": {
+		// 		"auth": false,
+		// 		"async": true,
+		// 		"title": "我的",
+		// 		"group": "商城"
+		// 	}
+		// },
+		// {
+		// 	"path": "pages/index/view",
+		// 	"name": "view",
+		// 	"style": {
+		// 		"navigationBarTitleText": "",
+		// 		"enablePullDownRefresh": true
+
+		// 	},
+		// 	"meta": {
+		// 		"auth": false,
+		// 		"async": true,
+		// 		"title": "自定义页面",
+		// 		"group": "商城"
+		// 	}
+		// },
 		{
-		    "path" : "pages/templeSubHome/templeSubHome",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
-		    
+			"path": "pages/templeSubHome/templeSubHome",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
 		},
 		{
-		    "path" : "pages/pray/pray",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
+			"path": "pages/pray/pray",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
 		},
 		{
 			"path": "pages/payIndex/index",
@@ -113,85 +108,90 @@
 			}
 		},
 		{
-		    "path" : "pages/dynamic/dynamic",
-		    "style" :                                                                                    
-		    {
-		        "navigationBarTitleText": "",
-		        "enablePullDownRefresh": false
-		    }
+			"path": "pages/dynamic/dynamic",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
 		},
 		{
-            "path" : "pages/payIndex/paySuccess",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-        }
-        ,{
-            "path" : "pages/pray/components/at/index",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/templeHome/buddhist/buddhist",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "皈依申请",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/templeHome/buddhist/buddhistList",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/templeHome/volunteer/volunteer",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/hisOrder/hisOrder",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/hisOrder/orderDetail",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/templeHome/buddhist/home",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+			"path": "pages/payIndex/paySuccess",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/pray/components/at/index",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/templeHome/buddhist/buddhist",
+			"style": {
+				"navigationBarTitleText": "皈依申请",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/templeHome/buddhist/buddhistList",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/templeHome/volunteer/volunteer",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/hisOrder/hisOrder",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/hisOrder/orderDetail",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/templeHome/buddhist/home",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/changeMoney/index",
+			"style": {
+				"navigationBarTitleText": "兑币",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/templeHome/userpolicy/userAgreement",
+			"style": {
+				"navigationBarTitleText": "用户协议",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/templeHome/userpolicy/userProvacy",
+			"style": {
+				"navigationBarTitleText": "用户隐私政策",
+				"enablePullDownRefresh": false
+			}
+		}
+	],
 	"subPackages": [{
 			"root": "pages/activity",
 			"pages": [{
@@ -304,8 +304,8 @@
 					"style": {
 						"navigationBarTitleText": "优惠券中心",
 						"navigationStyle": "custom"
-	
-	
+
+
 					},
 					"meta": {
 						"auth": true,
@@ -333,7 +333,7 @@
 						"navigationStyle": "custom",
 						"enablePullDownRefresh": true,
 						"navigationBarTextStyle": "white"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -452,8 +452,8 @@
 					"path": "commission/goods",
 					"style": {
 						"navigationBarTitleText": "推广商品"
-	
-	
+
+
 					},
 					"meta": {
 						"auth": true,
@@ -468,7 +468,7 @@
 						"navigationBarTitleText": "申请分销商",
 						"navigationStyle": "custom",
 						"navigationBarTextStyle": "white"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -483,7 +483,7 @@
 						"navigationBarTitleText": "分销排行",
 						"navigationStyle": "custom",
 						"navigationBarTextStyle": "white"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -499,7 +499,7 @@
 						"navigationStyle": "custom",
 						"navigationBarTextStyle": "white",
 						"enablePullDownRefresh": true
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -508,7 +508,7 @@
 						"group": "分销"
 					}
 				}
-	
+
 			]
 		},
 		{
@@ -711,14 +711,14 @@
 						"group": "订单"
 					}
 				},
-	
+
 				{
 					"path": "express/store-address",
 					"style": {
 						"navigationBarTitleText": "选择自提点",
 						"navigationStyle": "custom",
 						"navigationBarTextStyle": "white"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -727,7 +727,7 @@
 						"group": "订单"
 					}
 				}
-	
+
 			]
 		},
 		{
@@ -762,7 +762,7 @@
 						"navigationBarTitleText": "客服",
 						"navigationStyle": "custom",
 						"navigationBarTextStyle": "white"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -821,7 +821,7 @@
 						"navigationStyle": "custom",
 						"enablePullDownRefresh": false
 					}
-	
+
 				}
 			]
 		},
@@ -867,7 +867,7 @@
 					"path": "wallet/index",
 					"style": {
 						"navigationBarTitleText": "我的钱包"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -881,7 +881,7 @@
 					"style": {
 						"navigationBarTitleText": "",
 						"navigationStyle": "custom"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -894,7 +894,7 @@
 					"path": "wallet/withdraw-log",
 					"style": {
 						"navigationBarTitleText": "提现记录"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -908,7 +908,7 @@
 					"style": {
 						"navigationBarTitleText": "充值",
 						"navigationStyle": "custom"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -921,7 +921,7 @@
 					"path": "wallet/top-up-log",
 					"style": {
 						"navigationBarTitleText": "充值记录"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -935,7 +935,7 @@
 					"style": {
 						"navigationBarTitleText": "积分余额",
 						"navigationStyle": "custom"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -948,7 +948,7 @@
 					"path": "address/list",
 					"style": {
 						"navigationBarTitleText": "收货地址"
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -961,7 +961,7 @@
 					"path": "address/edit",
 					"style": {
 						"navigationBarTitleText": ""
-	
+
 					},
 					"meta": {
 						"auth": true,
@@ -1000,45 +1000,43 @@
 		"backgroundColor": "#F8F8F8"
 	},
 	"uniIdRouter": {},
-	"tabBar": {
-		"color": "#333",
-		"selectedColor": "#a8700d",
-		"backgroundColor": "#ffffff",
-		"borderStyle": "black",
-		"list": [{
-				"pagePath": "pages/index/index",
-				"text": "首页",
-				"iconPath": "static/images/tabbar/tabbar_home.png",
-				"selectedIconPath": "/static/images/tabbar/tabbar_home1.png"
-			},
-			{
-				"pagePath": "pages/index/category",
-				"text": "分类",
-				"iconPath": "static/images/tabbar/tabbar_category.png",
-				"selectedIconPath": "/static/images/tabbar/tabbar_category1.png"
-			},
-			{
-				"pagePath": "pages/index/cart",
-				"text": "购物车",
-				"iconPath": "static/images/tabbar/tabbar_cart.png",
-				"selectedIconPath": "/static/images/tabbar/tabbar_cart1.png"
-			},
-			{
-				"pagePath": "pages/index/user",
-				"text": "我的",
-				"iconPath": "static/images/tabbar/tabbar_personal.png",
-				"selectedIconPath": "/static/images/tabbar/tabbar_personal1.png"
-			}
-		]
-	},
-	"condition" : { //模式配置，仅开发期间生效
+	// "tabBar": {
+	// 	"color": "#333",
+	// 	"selectedColor": "#a8700d",
+	// 	"backgroundColor": "#ffffff",
+	// 	"borderStyle": "black",
+	// 	"list": [{
+	// 			"pagePath": "pages/index/index",
+	// 			"text": "首页",
+	// 			"iconPath": "static/images/tabbar/tabbar_home.png",
+	// 			"selectedIconPath": "/static/images/tabbar/tabbar_home1.png"
+	// 		},
+	// 		// {
+	// 		// 	"pagePath": "pages/index/category",
+	// 		// 	"text": "分类",
+	// 		// 	"iconPath": "static/images/tabbar/tabbar_category.png",
+	// 		// 	"selectedIconPath": "/static/images/tabbar/tabbar_category1.png"
+	// 		// },
+	// 		// {
+	// 		// 	"pagePath": "pages/index/cart",
+	// 		// 	"text": "购物车",
+	// 		// 	"iconPath": "static/images/tabbar/tabbar_cart.png",
+	// 		// 	"selectedIconPath": "/static/images/tabbar/tabbar_cart1.png"
+	// 		// },
+	// 		{
+	// 			"pagePath": "pages/index/user",
+	// 			"text": "我的",
+	// 			"iconPath": "static/images/tabbar/tabbar_personal.png",
+	// 			"selectedIconPath": "/static/images/tabbar/tabbar_personal1.png"
+	// 		}
+	// 	]
+	// },
+	"condition": { //模式配置，仅开发期间生效
 		"current": 0, //当前激活的模式(list 的索引项)
-		"list": [
-			{
-				"name": "", //模式名称
-				"path": "pages/index/index", //启动页面，必选
-				"query": "" //启动参数，在页面的onLoad函数里面得到
-			}
-		]
+		"list": [{
+			"name": "", //模式名称
+			"path": "pages/index/index", //启动页面，必选
+			"query": "" //启动参数，在页面的onLoad函数里面得到
+		}]
 	}
 }

@@ -1,12 +1,11 @@
 <template>
 	<view class="pray">
-
 		<view class="content">
 			<merit v-if="urlOptions.column_type == 'merit'"></merit>
 			<toBlessing v-else-if="urlOptions.column_type == 'to' || urlOptions.column_type == 'blessing'"></toBlessing>
 			<at v-else-if="urlOptions.column_type == 'at'"></at>
 			<taisui v-else-if="urlOptions.column_type == 'taisui'"></taisui>
-			<view class="list">
+			<view class="list" v-if="urlOptions.column_type != 'at'">
 				<view class="title">
 					功德榜
 				</view>
@@ -60,7 +59,7 @@
 			};
 		},
 		onLoad(options) {
-			// console.log(options,13321);
+			console.log(options, 13321);
 			if (options.scene) {
 				this.login(options.scene);
 			} else {

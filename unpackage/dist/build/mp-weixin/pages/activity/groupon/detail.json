@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "拼团详情",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "shopro-mini-card": "/components/shopro-mini-card/shopro-mini-card",
+    "shopro-share": "/components/shopro-share/shopro-share",
+    "shopro-sku": "/components/shopro-sku/shopro-sku",
+    "shopro-auth-modal": "/components/shopro-auth-modal/shopro-auth-modal"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "shopro-goods-card": "/components/shopro-goods-card/shopro-goods-card",
+    "sh-goods-card": "/pages/index/components/sh-goods-card"
+  }
+}

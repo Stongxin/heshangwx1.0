@@ -169,11 +169,8 @@
 			</view>
 		</view> -->
 		<uni-calendar ref="calendar" :insert="false" :lunar="true" :range="false" @confirm="confirmCalendar" />
-		<uni-data-picker
-			ref="namePicker"
-			:localdata="selectData[selectKey]" popup-title="请选择"
-			@change="confirmPicker"
-		></uni-data-picker>
+		<uni-data-picker ref="namePicker" :localdata="selectData[selectKey]" popup-title="请选择"
+			@change="confirmPicker"></uni-data-picker>
 	</view>
 </template>
 
@@ -206,7 +203,7 @@
 					law_name: '', // 法号
 					standing: '', // 身份区分 volunteer = 义工申请，lay=皈依申请
 				},
-				
+
 				formTitle: {
 					culture_level: '', // 
 					gy_status: '',
@@ -219,26 +216,27 @@
 			}
 		},
 		onLoad(options) {
-			if(options.status){
+			if (options.status) {
 				this.formState.standing = options.status
 			}
-			if(options.id){
+			if (options.id) {
 				this.id = options.id
 				this.getDetail()
 			}
-			
+
 			this.getSelect()
 		},
 		methods: {
-			getDetail(){
-				if(uni.getStorageSync('token')){
+			getDetail() {
+				if (uni.getStorageSync('token')) {
 					fun()
-				}else{
-					this.$login().then(()=>{
+				} else {
+					this.$login().then(() => {
 						fun()
 					})
 				}
-				function fun(){
+
+				function fun() {
 					this.$request({
 						url: `signUp/volunteer/${this.id}`,
 						version: '/v3/',
@@ -246,7 +244,7 @@
 						header: {
 							token: uni.getStorageSync('token')
 						},
-					},true).then(res=>{
+					}, true).then(res => {
 						Object.keys(this.formState).forEach(key => {
 							this.formState[key] = res[key];
 						});
@@ -258,17 +256,17 @@
 					})
 				}
 			},
-			
-			submit(){
-				if(uni.getStorageSync('token')){
+
+			submit() {
+				if (uni.getStorageSync('token')) {
 					this.next()
-				}else{
-					this.$login().then(()=>{
+				} else {
+					this.$login().then(() => {
 						this.next()
 					})
 				}
 			},
-			next(){
+			next() {
 				this.$request({
 					url: this.id ? `signUp/volunteer/${this.id}` : 'signUp/volunteer',
 					version: '/v3/',
@@ -277,16 +275,16 @@
 					header: {
 						token: uni.getStorageSync('token')
 					},
-				},true).then(res=>{
+				}, true).then(res => {
 					uni.showToast({
 						title: '提交成功',
 						mask: true
 					})
-					setTimeout(()=>{
+					setTimeout(() => {
 						uni.navigateBack({
 							delta: 1
 						})
-					},1000)
+					}, 1000)
 				})
 			},
 			getSelect() {
@@ -308,9 +306,14 @@
 						value: key
 					}))
 					this.selectData = res
-					this.selectData.sexList = [
-						{ text: '女', value: 0 },
-						{ text: '男', value: 1 }
+					this.selectData.sexList = [{
+							text: '女',
+							value: 0
+						},
+						{
+							text: '男',
+							value: 1
+						}
 					]
 				})
 			},
@@ -321,21 +324,21 @@
 				this.formState.birthday = value.fulldate
 				console.log(value);
 			},
-			openPicker(e){
+			openPicker(e) {
 				this.selectKey = e
 				this.$refs.namePicker.show()
 			},
-			confirmPicker(e){
-				if(this.selectKey == 'cultureLevel'){
+			confirmPicker(e) {
+				if (this.selectKey == 'cultureLevel') {
 					this.formState.culture_level = e.detail.value[0].value
 					this.formTitle.culture_level = e.detail.value[0].text
-				}else if(this.selectKey == 'gyStatus'){
+				} else if (this.selectKey == 'gyStatus') {
 					this.formState.gy_status = e.detail.value[0].value
 					this.formTitle.gy_status = e.detail.value[0].text
-				}else if(this.selectKey == 'matrimony'){
+				} else if (this.selectKey == 'matrimony') {
 					this.formState.matrimony = e.detail.value[0].value
 					this.formTitle.matrimony = e.detail.value[0].text
-				}else if(this.selectKey == 'sexList'){
+				} else if (this.selectKey == 'sexList') {
 					this.formState.sex = e.detail.value[0].value
 					this.formTitle.sex_text = e.detail.value[0].text
 				}
@@ -591,6 +594,7 @@
 		.submit {
 			width: 100%;
 			padding: 20rpx;
+
 			button {
 				height: 80rpx;
 				background: #BEAD7A;
@@ -605,7 +609,8 @@
 				letter-spacing: 10rpx;
 			}
 		}
-		.area{
+
+		.area {
 			width: 100%;
 			height: env(safe-area-inset-bottom);
 			background: #1E1E1E;

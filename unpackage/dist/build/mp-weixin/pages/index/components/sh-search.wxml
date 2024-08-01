@@ -1,0 +1,1 @@
+<view data-event-opts="{{[['tap',[['e0',['$event']]]]]}}" class="search u-flex u-row-center u-col-center u-m-b-10 u-p-x-20" bindtap="__e"><view class="search-content u-flex u-col-center"><text class="u-iconfont uicon-search search-icon"></text><view class="pl-text">搜索</view></view></view>

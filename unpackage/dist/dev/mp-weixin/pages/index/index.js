@@ -99,16 +99,16 @@ var components
 try {
   components = {
     shoproEmpty: function () {
-      return __webpack_require__.e(/*! import() | components/shopro-empty/shopro-empty */ "components/shopro-empty/shopro-empty").then(__webpack_require__.bind(null, /*! @/components/shopro-empty/shopro-empty.vue */ 721))
+      return __webpack_require__.e(/*! import() | components/shopro-empty/shopro-empty */ "components/shopro-empty/shopro-empty").then(__webpack_require__.bind(null, /*! @/components/shopro-empty/shopro-empty.vue */ 715))
     },
     shoproAuthModal: function () {
-      return Promise.all(/*! import() | components/shopro-auth-modal/shopro-auth-modal */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/shopro-auth-modal/shopro-auth-modal")]).then(__webpack_require__.bind(null, /*! @/components/shopro-auth-modal/shopro-auth-modal.vue */ 728))
+      return Promise.all(/*! import() | components/shopro-auth-modal/shopro-auth-modal */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/shopro-auth-modal/shopro-auth-modal")]).then(__webpack_require__.bind(null, /*! @/components/shopro-auth-modal/shopro-auth-modal.vue */ 722))
     },
     shoproFloatBtn: function () {
-      return Promise.all(/*! import() | components/shopro-float-btn/shopro-float-btn */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/shopro-float-btn/shopro-float-btn")]).then(__webpack_require__.bind(null, /*! @/components/shopro-float-btn/shopro-float-btn.vue */ 738))
+      return Promise.all(/*! import() | components/shopro-float-btn/shopro-float-btn */[__webpack_require__.e("common/vendor"), __webpack_require__.e("components/shopro-float-btn/shopro-float-btn")]).then(__webpack_require__.bind(null, /*! @/components/shopro-float-btn/shopro-float-btn.vue */ 732))
     },
     shoproNoticeModal: function () {
-      return __webpack_require__.e(/*! import() | components/shopro-notice-modal/shopro-notice-modal */ "components/shopro-notice-modal/shopro-notice-modal").then(__webpack_require__.bind(null, /*! @/components/shopro-notice-modal/shopro-notice-modal.vue */ 745))
+      return __webpack_require__.e(/*! import() | components/shopro-notice-modal/shopro-notice-modal */ "components/shopro-notice-modal/shopro-notice-modal").then(__webpack_require__.bind(null, /*! @/components/shopro-notice-modal/shopro-notice-modal.vue */ 739))
     },
   }
 } catch (e) {
@@ -198,52 +198,52 @@ function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (O
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var shBanner = function shBanner() {
   __webpack_require__.e(/*! require.ensure | pages/index/components/sh-banner */ "pages/index/components/sh-banner").then((function () {
-    return resolve(__webpack_require__(/*! ./components/sh-banner.vue */ 752));
+    return resolve(__webpack_require__(/*! ./components/sh-banner.vue */ 746));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var shGridSwiper = function shGridSwiper() {
   __webpack_require__.e(/*! require.ensure | pages/index/components/sh-grid-swiper */ "pages/index/components/sh-grid-swiper").then((function () {
-    return resolve(__webpack_require__(/*! ./components/sh-grid-swiper.vue */ 757));
+    return resolve(__webpack_require__(/*! ./components/sh-grid-swiper.vue */ 751));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var shHotGoods = function shHotGoods() {
   Promise.all(/*! require.ensure | pages/index/components/sh-hot-goods */[__webpack_require__.e("common/vendor"), __webpack_require__.e("pages/index/components/sh-hot-goods")]).then((function () {
-    return resolve(__webpack_require__(/*! ./components/sh-hot-goods.vue */ 764));
+    return resolve(__webpack_require__(/*! ./components/sh-hot-goods.vue */ 758));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var shAdv = function shAdv() {
   __webpack_require__.e(/*! require.ensure | pages/index/components/sh-adv */ "pages/index/components/sh-adv").then((function () {
-    return resolve(__webpack_require__(/*! ./components/sh-adv.vue */ 771));
+    return resolve(__webpack_require__(/*! ./components/sh-adv.vue */ 765));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var shRichtext = function shRichtext() {
   __webpack_require__.e(/*! require.ensure | pages/index/components/sh-richtext */ "pages/index/components/sh-richtext").then((function () {
-    return resolve(__webpack_require__(/*! ./components/sh-richtext.vue */ 778));
+    return resolve(__webpack_require__(/*! ./components/sh-richtext.vue */ 772));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var shTitleCard = function shTitleCard() {
   __webpack_require__.e(/*! require.ensure | pages/index/components/sh-title-card */ "pages/index/components/sh-title-card").then((function () {
-    return resolve(__webpack_require__(/*! ./components/sh-title-card.vue */ 785));
+    return resolve(__webpack_require__(/*! ./components/sh-title-card.vue */ 779));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var shSearch = function shSearch() {
   __webpack_require__.e(/*! require.ensure | pages/index/components/sh-search */ "pages/index/components/sh-search").then((function () {
-    return resolve(__webpack_require__(/*! ./components/sh-search.vue */ 792));
+    return resolve(__webpack_require__(/*! ./components/sh-search.vue */ 786));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var shCategoryTabs = function shCategoryTabs() {
   Promise.all(/*! require.ensure | pages/index/components/sh-category-tabs */[__webpack_require__.e("common/vendor"), __webpack_require__.e("pages/index/components/sh-category-tabs")]).then((function () {
-    return resolve(__webpack_require__(/*! ./components/sh-category-tabs.vue */ 799));
+    return resolve(__webpack_require__(/*! ./components/sh-category-tabs.vue */ 793));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var privacyModal = function privacyModal() {
   __webpack_require__.e(/*! require.ensure | pages/index/index/privacy-modal */ "pages/index/index/privacy-modal").then((function () {
-    return resolve(__webpack_require__(/*! ./index/privacy-modal.vue */ 806));
+    return resolve(__webpack_require__(/*! ./index/privacy-modal.vue */ 800));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var homeHead = function homeHead() {
   __webpack_require__.e(/*! require.ensure | pages/index/index/home-head */ "pages/index/index/home-head").then((function () {
-    return resolve(__webpack_require__(/*! ./index/home-head.vue */ 813));
+    return resolve(__webpack_require__(/*! ./index/home-head.vue */ 807));
   }).bind(null, __webpack_require__)).catch(__webpack_require__.oe);
 };
 var _default = {

@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "系统设置",
+  "usingComponents": {
+    "shopro-auth-modal": "/components/shopro-auth-modal/shopro-auth-modal"
+  }
+}

@@ -1,0 +1,1 @@
+.maoScroll-main{width:100%;overflow:hidden}.line{height:56rpx;line-height:56rpx;display:flex;justify-content:space-around;align-items:center}.line text{display:block;width:25%;text-align:center;font-size:26rpx;font-family:Source Han Serif CN;font-weight:500;color:#2b2522}

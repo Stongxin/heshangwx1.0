@@ -58,33 +58,76 @@ module.exports = _nonIterableRest, module.exports.__esModule = true, module.expo
 
 /***/ }),
 
-/***/ 11:
+/***/ 1012:
 /*!***************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/defineProperty.js ***!
+  !*** E:/heshangwx/node_modules/uview-ui/libs/util/emitter.js ***!
   \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toPropertyKey = __webpack_require__(/*! ./toPropertyKey.js */ 12);
-function _defineProperty(obj, key, value) {
-  key = toPropertyKey(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+/**
+ * 递归使用 call 方式this指向
+ * @param componentName // 需要找的组件的名称
+ * @param eventName // 事件名称
+ * @param params // 需要传递的参数
+ */
+function _broadcast(componentName, eventName, params) {
+  // 循环子节点找到名称一样的子节点 否则 递归 当前子节点
+  this.$children.map(function (child) {
+    if (componentName === child.$options.name) {
+      child.$emit.apply(child, [eventName].concat(params));
+    } else {
+      _broadcast.apply(child, [componentName, eventName].concat(params));
+    }
+  });
 }
-module.exports = _defineProperty, module.exports.__esModule = true, module.exports["default"] = module.exports;
+var _default = {
+  methods: {
+    /**
+     * 派发 (向上查找) (一个)
+     * @param componentName // 需要找的组件的名称
+     * @param eventName // 事件名称
+     * @param params // 需要传递的参数
+     */
+    dispatch: function dispatch(componentName, eventName, params) {
+      var parent = this.$parent || this.$root; //$parent 找到最近的父节点 $root 根节点
+      var name = parent.$options.name; // 获取当前组件实例的name
+      // 如果当前有节点 && 当前没名称 且 当前名称等于需要传进来的名称的时候就去查找当前的节点
+      // 循环出当前名称的一样的组件实例
+      while (parent && (!name || name !== componentName)) {
+        parent = parent.$parent;
+        if (parent) {
+          name = parent.$options.name;
+        }
+      }
+      // 有节点表示当前找到了name一样的实例
+      if (parent) {
+        parent.$emit.apply(parent, [eventName].concat(params));
+      }
+    },
+    /**
+     * 广播 (向下查找) (广播多个)
+     * @param componentName // 需要找的组件的名称
+     * @param eventName // 事件名称
+     * @param params // 需要传递的参数
+     */
+    broadcast: function broadcast(componentName, eventName, params) {
+      _broadcast.call(this, componentName, eventName, params);
+    }
+  }
+};
+exports.default = _default;
 
 /***/ }),
 
-/***/ 1166:
+/***/ 1076:
 /*!**********************************************************************************!*\
   !*** E:/heshangwx/node_modules/uview-ui/components/u-parse/libs/MpHtmlParser.js ***!
   \**********************************************************************************/
@@ -98,9 +141,9 @@ module.exports = _defineProperty, module.exports.__esModule = true, module.expor
  * @author JinYufeng
  * @listens MIT
  */
-var cfg = __webpack_require__(/*! ./config.js */ 1167),
+var cfg = __webpack_require__(/*! ./config.js */ 1077),
   blankChar = cfg.blankChar,
-  CssHandler = __webpack_require__(/*! ./CssHandler.js */ 1168),
+  CssHandler = __webpack_require__(/*! ./CssHandler.js */ 1078),
   windowWidth = uni.getSystemInfoSync().windowWidth;
 var emoji;
 function MpHtmlParser(data) {
@@ -664,7 +707,7 @@ module.exports = MpHtmlParser;
 
 /***/ }),
 
-/***/ 1167:
+/***/ 1077:
 /*!****************************************************************************!*\
   !*** E:/heshangwx/node_modules/uview-ui/components/u-parse/libs/config.js ***!
   \****************************************************************************/
@@ -746,14 +789,14 @@ module.exports = cfg;
 
 /***/ }),
 
-/***/ 1168:
+/***/ 1078:
 /*!********************************************************************************!*\
   !*** E:/heshangwx/node_modules/uview-ui/components/u-parse/libs/CssHandler.js ***!
   \********************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var cfg = __webpack_require__(/*! ./config.js */ 1167),
+var cfg = __webpack_require__(/*! ./config.js */ 1077),
   isLetter = function isLetter(c) {
     return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
   };
@@ -852,24 +895,33 @@ parser.prototype.Content = function () {
 
 /***/ }),
 
-/***/ 12:
-/*!**************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/toPropertyKey.js ***!
-  \**************************************************************/
+/***/ 11:
+/*!***************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/defineProperty.js ***!
+  \***************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(/*! ./typeof.js */ 13)["default"];
-var toPrimitive = __webpack_require__(/*! ./toPrimitive.js */ 14);
-function toPropertyKey(t) {
-  var i = toPrimitive(t, "string");
-  return "symbol" == _typeof(i) ? i : i + "";
+var toPropertyKey = __webpack_require__(/*! ./toPropertyKey.js */ 12);
+function _defineProperty(obj, key, value) {
+  key = toPropertyKey(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
 }
-module.exports = toPropertyKey, module.exports.__esModule = true, module.exports["default"] = module.exports;
+module.exports = _defineProperty, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 
-/***/ 1281:
+/***/ 1191:
 /*!*****************************************************!*\
   !*** E:/heshangwx/pages/public/chat/shopro/chat.js ***!
   \*****************************************************/
@@ -1134,7 +1186,7 @@ exports.default = Socket;
 
 /***/ }),
 
-/***/ 1289:
+/***/ 1199:
 /*!***************************************************!*\
   !*** E:/heshangwx/pages/public/chat/wm/config.js ***!
   \***************************************************/
@@ -1270,7 +1322,24 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 1297:
+/***/ 12:
+/*!**************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/toPropertyKey.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var _typeof = __webpack_require__(/*! ./typeof.js */ 13)["default"];
+var toPrimitive = __webpack_require__(/*! ./toPrimitive.js */ 14);
+function toPropertyKey(t) {
+  var i = toPrimitive(t, "string");
+  return "symbol" == _typeof(i) ? i : i + "";
+}
+module.exports = toPropertyKey, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+
+/***/ 1207:
 /*!****************************************************************!*\
   !*** E:/heshangwx/node_modules/uview-ui/libs/util/province.js ***!
   \****************************************************************/
@@ -1392,7 +1461,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 1298:
+/***/ 1208:
 /*!************************************************************!*\
   !*** E:/heshangwx/node_modules/uview-ui/libs/util/city.js ***!
   \************************************************************/
@@ -2513,7 +2582,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 1299:
+/***/ 1209:
 /*!************************************************************!*\
   !*** E:/heshangwx/node_modules/uview-ui/libs/util/area.js ***!
   \************************************************************/
@@ -11632,257 +11701,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 13:
-/*!*******************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/typeof.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function _typeof(o) {
-  "@babel/helpers - typeof";
-
-  return (module.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
-    return typeof o;
-  } : function (o) {
-    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
-  }, module.exports.__esModule = true, module.exports["default"] = module.exports), _typeof(o);
-}
-module.exports = _typeof, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ }),
-
-/***/ 1328:
-/*!*******************************************!*\
-  !*** E:/heshangwx/shopro/poster/tools.js ***!
-  \*******************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 31));
-var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 33));
-var _default = {
-  checkImgHttp: function checkImgHttp(imgPath, type) {
-    var _this = this;
-    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-      var res, newPath, pathArr;
-      return _regenerator.default.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.next = 2;
-              return _this.getImageInfo_PromiseFc(imgPath);
-            case 2:
-              res = _context.sent;
-              newPath = '';
-              if (res) {
-                _context.next = 20;
-                break;
-              }
-              uni.hideLoading();
-              _context.t0 = type;
-              _context.next = _context.t0 === 'avatar' ? 9 : _context.t0 === 'bgImage' ? 11 : _context.t0 === 'wxCode' ? 13 : _context.t0 === 'goodsImage' ? 15 : 17;
-              break;
-            case 9:
-              console.log('%cerr:海报头像图片错误: ' + imgPath, 'color:green;background:yellow');
-              return _context.abrupt("break", 18);
-            case 11:
-              console.log('%cerr:海报背景图片错误: ' + imgPath, 'color:green;background:yellow');
-              return _context.abrupt("break", 18);
-            case 13:
-              console.log('%cerr:海报微信二维码图片错误: ' + imgPath, 'color:green;background:yellow');
-              return _context.abrupt("break", 18);
-            case 15:
-              console.log('%cerr:海报商品图片错误: ' + imgPath, 'color:green;background:yellow');
-              return _context.abrupt("break", 18);
-            case 17:
-              return _context.abrupt("break", 18);
-            case 18:
-              _context.next = 23;
-              break;
-            case 20:
-              pathArr = imgPath.split('://');
-              pathArr[0] = 'https';
-              newPath = pathArr.join('://');
-            case 23:
-              return _context.abrupt("return", newPath);
-            case 24:
-            case "end":
-              return _context.stop();
-          }
-        }
-      }, _callee);
-    }))();
-  },
-  // 检测图片是否可用
-  getImageInfo_PromiseFc: function getImageInfo_PromiseFc(imgPath) {
-    var _this2 = this;
-    return new Promise(function (rs, rj) {
-      imgPath = _this2.checkMPUrl(imgPath);
-      uni.getImageInfo({
-        src: imgPath,
-        success: function success(res) {
-          rs(1);
-        },
-        fail: function fail(err) {
-          console.log(err);
-          rs(0);
-        }
-      });
-    });
-  },
-  // 微信头像
-  checkMPUrl: function checkMPUrl(url) {
-    if (url.substring(0, 4) === 'http' && url.substring(0, 5) !== 'https' && url.substring(0, 12) !== 'http://store' && url.substring(0, 10) !== 'http://tmp' && url.substring(0, 10) !== 'http://usr') {
-      url = 'https' + url.substring(4, url.length);
-    }
-    return url;
-  },
-  /**
-   * 相对比例
-   * @param {Object} bgObj -  背景图片数据对象
-   * @param {Number} num -  需要计算的绘制模块数值
-   */
-  getScale: function getScale(bgObj) {
-    var num = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-    return Number(bgObj.width * (num / bgObj.width).toFixed(2));
-  },
-  /**
-   * 绘制序列
-   * @param {Object} bgObj -  背景图片数据对象
-   * @param {Array} drawArr -  绘制元素数组对象
-   */
-  initDrawArray: function initDrawArray(bgObj, drawArr) {
-    var _this3 = this;
-    var that = this;
-    var arr = [];
-    drawArr.forEach(function (item) {
-      var _item$lineFeed, _item$lineFeed2, _item$lineFeed3, _item$lineFeed4, _item$lineThrough, _item$lineThrough2, _item$lineThrough3, _item$lineThrough4, _arr$push, _item$circleSet, _item$circleSet2, _item$circleSet3, _item$roundRectSet, _arr$push2;
-      switch (item.type) {
-        case 'text':
-          arr.push((_arr$push = {
-            type: 'text',
-            text: item.text,
-            //文本
-            size: that.getScale(bgObj, item.size) || 50,
-            //大小
-            color: item.color || 'black',
-            //颜色
-            alpha: item.alpha || 1,
-            //透明度
-            textAlign: item.textAlign || 'left',
-            //文字x对齐方式: 'left'、'middle'、'right'
-            textBaseline: item.textBaseline || 'middle',
-            //文字y对齐方式: 'top'、'bottom'、'middle'、'normal'
-            dx: that.getScale(bgObj, item.dx) || 0,
-            //文字x轴位置
-            dy: that.getScale(bgObj, item.dy + item.size) || 0
-          }, (0, _defineProperty2.default)(_arr$push, item.lineFeed ? 'lineFeed' : '', {
-            //设置换行
-            maxWidth: ((_item$lineFeed = item.lineFeed) === null || _item$lineFeed === void 0 ? void 0 : _item$lineFeed.maxWidth) && that.getScale(bgObj, item.lineFeed.maxWidth) || bgObj.width,
-            //最大宽度
-            lineHeight: ((_item$lineFeed2 = item.lineFeed) === null || _item$lineFeed2 === void 0 ? void 0 : _item$lineFeed2.lineHeight) && that.getScale(bgObj, item.lineFeed.lineHeight) || 50,
-            //行高
-            lineNum: ((_item$lineFeed3 = item.lineFeed) === null || _item$lineFeed3 === void 0 ? void 0 : _item$lineFeed3.lineNum) || -1,
-            // 最多行数，小于0为无限
-            dx: ((_item$lineFeed4 = item.lineFeed) === null || _item$lineFeed4 === void 0 ? void 0 : _item$lineFeed4.dx) || -1 //非第一行文字位置，小于0为默认位置
-          }), (0, _defineProperty2.default)(_arr$push, "infoCallBack", function infoCallBack(textLength) {
-            //回调函数，返回文本信息
-            if (item.isBgCenter) {
-              return {
-                dx: (bgObj.width - textLength) / 2
-              };
-            }
-            return {};
-          }), (0, _defineProperty2.default)(_arr$push, item.lineThrough ? 'lineThrough' : '', {
-            // 设置删除线，默认为字体样式
-            width: ((_item$lineThrough = item.lineThrough) === null || _item$lineThrough === void 0 ? void 0 : _item$lineThrough.width) || item.size / 10,
-            style: ((_item$lineThrough2 = item.lineThrough) === null || _item$lineThrough2 === void 0 ? void 0 : _item$lineThrough2.style) || item.color,
-            alpha: ((_item$lineThrough3 = item.lineThrough) === null || _item$lineThrough3 === void 0 ? void 0 : _item$lineThrough3.alpha) || 1,
-            cap: ((_item$lineThrough4 = item.lineThrough) === null || _item$lineThrough4 === void 0 ? void 0 : _item$lineThrough4.cap) || 'butt'
-          }), (0, _defineProperty2.default)(_arr$push, "fontStyle", item.fontStyle || 'normal'), (0, _defineProperty2.default)(_arr$push, "fontVariant", item.fontVariant || 'normal'), (0, _defineProperty2.default)(_arr$push, "fontWeight", item.fontWeight || 'normal'), (0, _defineProperty2.default)(_arr$push, "fontFamily", item.fontFamily || 'sans-serif'), _arr$push));
-          break;
-        case 'qrcode':
-          arr.push({
-            type: 'qrcode',
-            text: String(item.text || '') || '',
-            // 生成内容
-            size: Number(that.getScale(bgObj, item.size) || 0) || 200,
-            // 二维码大小
-            background: String(item.background || '') || '#ffffff',
-            // 背景色
-            foreground: String(item.foreground || '') || '#000000',
-            // 前景色
-            correctLevel: Number(item.correctLevel || 0) || 3,
-            // 容错级别
-            image: String(item.image || '') || '',
-            // 二维码图标
-            imageSize: Number(that.getScale(bgObj, item.imageSize) || 0) || 40,
-            // 二维码图标大小
-            dx: item.isBgCenter ? (bgObj.width - item.size) / 2 : Number(that.getScale(bgObj, item.dx) || 0) || 0,
-            dy: Number(that.getScale(bgObj, item.dy) || 0) || 0 // y轴距离
-          });
-
-          break;
-        case 'image':
-          arr.push((_arr$push2 = {
-            type: 'image',
-            url: _this3.checkImgHttp(item.url, item.name),
-            // 网络图片路径
-            dWidth: Number(that.getScale(bgObj, item.dWidth) || 0) || 100,
-            //绘制图像的宽度，允许缩放
-            dHeight: Number(that.getScale(bgObj, item.dHeight) || 0) || 100,
-            //绘制图像的高度，允许缩放
-            sWidth: Number(that.getScale(bgObj, item.sWidth) || 0) || 100,
-            //绘制图像的宽度，允许缩放
-            sHeight: Number(that.getScale(bgObj, item.sHeight) || 0) || 100,
-            //绘制图像的高度，允许缩放
-            dx: Number(that.getScale(bgObj, item.dx) || 0) || 0,
-            // x轴距离
-            dy: Number(that.getScale(bgObj, item.dy) || 0) || 0,
-            // y轴距离
-            sx: Number(that.getScale(bgObj, item.sx) || 0) || 0,
-            sy: Number(that.getScale(bgObj, item.sy) || 0) || 0
-          }, (0, _defineProperty2.default)(_arr$push2, item.circleSet ? 'circleSet' : '', {
-            //圆形设置
-            r: Number(((_item$circleSet = item.circleSet) === null || _item$circleSet === void 0 ? void 0 : _item$circleSet.r) && that.getScale(bgObj, item.circleSet.r) || 0),
-            x: Number(((_item$circleSet2 = item.circleSet) === null || _item$circleSet2 === void 0 ? void 0 : _item$circleSet2.x) && that.getScale(bgObj, item.circleSet.x) || 0),
-            y: Number(((_item$circleSet3 = item.circleSet) === null || _item$circleSet3 === void 0 ? void 0 : _item$circleSet3.y) && that.getScale(bgObj, item.circleSet.y) || 0)
-          }), (0, _defineProperty2.default)(_arr$push2, item.roundRectSet ? 'roundRectSet' : '', {
-            //圆角设置
-            r: Number(((_item$roundRectSet = item.roundRectSet) === null || _item$roundRectSet === void 0 ? void 0 : _item$roundRectSet.r) && that.getScale(bgObj, item.roundRectSet.r) || 0)
-          }), (0, _defineProperty2.default)(_arr$push2, "infoCallBack", function infoCallBack(imgInfo) {
-            //回调函数，返回图片信息
-            if (item.isBgCenter) {
-              return {
-                dx: (bgObj.width - item.dWidth) / 2
-              };
-            }
-          }), _arr$push2));
-          break;
-        default:
-          _app.log('暂无次类型');
-          break;
-      }
-    });
-    return arr;
-  }
-};
-exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-
-/***/ 1343:
+/***/ 1259:
 /*!*************************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-load-more/components/uni-load-more/i18n/index.js ***!
   \*************************************************************************************/
@@ -11897,9 +11716,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 1344));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 1345));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 1346));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 1260));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 1261));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 1262));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -11909,7 +11728,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 1344:
+/***/ 1260:
 /*!************************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-load-more/components/uni-load-more/i18n/en.json ***!
   \************************************************************************************/
@@ -11920,7 +11739,7 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"Pull up to show mo
 
 /***/ }),
 
-/***/ 1345:
+/***/ 1261:
 /*!*****************************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hans.json ***!
   \*****************************************************************************************/
@@ -11931,7 +11750,7 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉显示更多
 
 /***/ }),
 
-/***/ 1346:
+/***/ 1262:
 /*!*****************************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-load-more/components/uni-load-more/i18n/zh-Hant.json ***!
   \*****************************************************************************************/
@@ -11942,7 +11761,7 @@ module.exports = JSON.parse("{\"uni-load-more.contentdown\":\"上拉顯示更多
 
 /***/ }),
 
-/***/ 1354:
+/***/ 1270:
 /*!************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-icons/components/uni-icons/icons.js ***!
   \************************************************************************/
@@ -12964,6 +12783,256 @@ exports.default = _default;
 
 /***/ }),
 
+/***/ 13:
+/*!*******************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/typeof.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _typeof(o) {
+  "@babel/helpers - typeof";
+
+  return (module.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) {
+    return typeof o;
+  } : function (o) {
+    return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o;
+  }, module.exports.__esModule = true, module.exports["default"] = module.exports), _typeof(o);
+}
+module.exports = _typeof, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+
+/***/ 1306:
+/*!*******************************************!*\
+  !*** E:/heshangwx/shopro/poster/tools.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 31));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 33));
+var _default = {
+  checkImgHttp: function checkImgHttp(imgPath, type) {
+    var _this = this;
+    return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+      var res, newPath, pathArr;
+      return _regenerator.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _this.getImageInfo_PromiseFc(imgPath);
+            case 2:
+              res = _context.sent;
+              newPath = '';
+              if (res) {
+                _context.next = 20;
+                break;
+              }
+              uni.hideLoading();
+              _context.t0 = type;
+              _context.next = _context.t0 === 'avatar' ? 9 : _context.t0 === 'bgImage' ? 11 : _context.t0 === 'wxCode' ? 13 : _context.t0 === 'goodsImage' ? 15 : 17;
+              break;
+            case 9:
+              console.log('%cerr:海报头像图片错误: ' + imgPath, 'color:green;background:yellow');
+              return _context.abrupt("break", 18);
+            case 11:
+              console.log('%cerr:海报背景图片错误: ' + imgPath, 'color:green;background:yellow');
+              return _context.abrupt("break", 18);
+            case 13:
+              console.log('%cerr:海报微信二维码图片错误: ' + imgPath, 'color:green;background:yellow');
+              return _context.abrupt("break", 18);
+            case 15:
+              console.log('%cerr:海报商品图片错误: ' + imgPath, 'color:green;background:yellow');
+              return _context.abrupt("break", 18);
+            case 17:
+              return _context.abrupt("break", 18);
+            case 18:
+              _context.next = 23;
+              break;
+            case 20:
+              pathArr = imgPath.split('://');
+              pathArr[0] = 'https';
+              newPath = pathArr.join('://');
+            case 23:
+              return _context.abrupt("return", newPath);
+            case 24:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, _callee);
+    }))();
+  },
+  // 检测图片是否可用
+  getImageInfo_PromiseFc: function getImageInfo_PromiseFc(imgPath) {
+    var _this2 = this;
+    return new Promise(function (rs, rj) {
+      imgPath = _this2.checkMPUrl(imgPath);
+      uni.getImageInfo({
+        src: imgPath,
+        success: function success(res) {
+          rs(1);
+        },
+        fail: function fail(err) {
+          console.log(err);
+          rs(0);
+        }
+      });
+    });
+  },
+  // 微信头像
+  checkMPUrl: function checkMPUrl(url) {
+    if (url.substring(0, 4) === 'http' && url.substring(0, 5) !== 'https' && url.substring(0, 12) !== 'http://store' && url.substring(0, 10) !== 'http://tmp' && url.substring(0, 10) !== 'http://usr') {
+      url = 'https' + url.substring(4, url.length);
+    }
+    return url;
+  },
+  /**
+   * 相对比例
+   * @param {Object} bgObj -  背景图片数据对象
+   * @param {Number} num -  需要计算的绘制模块数值
+   */
+  getScale: function getScale(bgObj) {
+    var num = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+    return Number(bgObj.width * (num / bgObj.width).toFixed(2));
+  },
+  /**
+   * 绘制序列
+   * @param {Object} bgObj -  背景图片数据对象
+   * @param {Array} drawArr -  绘制元素数组对象
+   */
+  initDrawArray: function initDrawArray(bgObj, drawArr) {
+    var _this3 = this;
+    var that = this;
+    var arr = [];
+    drawArr.forEach(function (item) {
+      var _item$lineFeed, _item$lineFeed2, _item$lineFeed3, _item$lineFeed4, _item$lineThrough, _item$lineThrough2, _item$lineThrough3, _item$lineThrough4, _arr$push, _item$circleSet, _item$circleSet2, _item$circleSet3, _item$roundRectSet, _arr$push2;
+      switch (item.type) {
+        case 'text':
+          arr.push((_arr$push = {
+            type: 'text',
+            text: item.text,
+            //文本
+            size: that.getScale(bgObj, item.size) || 50,
+            //大小
+            color: item.color || 'black',
+            //颜色
+            alpha: item.alpha || 1,
+            //透明度
+            textAlign: item.textAlign || 'left',
+            //文字x对齐方式: 'left'、'middle'、'right'
+            textBaseline: item.textBaseline || 'middle',
+            //文字y对齐方式: 'top'、'bottom'、'middle'、'normal'
+            dx: that.getScale(bgObj, item.dx) || 0,
+            //文字x轴位置
+            dy: that.getScale(bgObj, item.dy + item.size) || 0
+          }, (0, _defineProperty2.default)(_arr$push, item.lineFeed ? 'lineFeed' : '', {
+            //设置换行
+            maxWidth: ((_item$lineFeed = item.lineFeed) === null || _item$lineFeed === void 0 ? void 0 : _item$lineFeed.maxWidth) && that.getScale(bgObj, item.lineFeed.maxWidth) || bgObj.width,
+            //最大宽度
+            lineHeight: ((_item$lineFeed2 = item.lineFeed) === null || _item$lineFeed2 === void 0 ? void 0 : _item$lineFeed2.lineHeight) && that.getScale(bgObj, item.lineFeed.lineHeight) || 50,
+            //行高
+            lineNum: ((_item$lineFeed3 = item.lineFeed) === null || _item$lineFeed3 === void 0 ? void 0 : _item$lineFeed3.lineNum) || -1,
+            // 最多行数，小于0为无限
+            dx: ((_item$lineFeed4 = item.lineFeed) === null || _item$lineFeed4 === void 0 ? void 0 : _item$lineFeed4.dx) || -1 //非第一行文字位置，小于0为默认位置
+          }), (0, _defineProperty2.default)(_arr$push, "infoCallBack", function infoCallBack(textLength) {
+            //回调函数，返回文本信息
+            if (item.isBgCenter) {
+              return {
+                dx: (bgObj.width - textLength) / 2
+              };
+            }
+            return {};
+          }), (0, _defineProperty2.default)(_arr$push, item.lineThrough ? 'lineThrough' : '', {
+            // 设置删除线，默认为字体样式
+            width: ((_item$lineThrough = item.lineThrough) === null || _item$lineThrough === void 0 ? void 0 : _item$lineThrough.width) || item.size / 10,
+            style: ((_item$lineThrough2 = item.lineThrough) === null || _item$lineThrough2 === void 0 ? void 0 : _item$lineThrough2.style) || item.color,
+            alpha: ((_item$lineThrough3 = item.lineThrough) === null || _item$lineThrough3 === void 0 ? void 0 : _item$lineThrough3.alpha) || 1,
+            cap: ((_item$lineThrough4 = item.lineThrough) === null || _item$lineThrough4 === void 0 ? void 0 : _item$lineThrough4.cap) || 'butt'
+          }), (0, _defineProperty2.default)(_arr$push, "fontStyle", item.fontStyle || 'normal'), (0, _defineProperty2.default)(_arr$push, "fontVariant", item.fontVariant || 'normal'), (0, _defineProperty2.default)(_arr$push, "fontWeight", item.fontWeight || 'normal'), (0, _defineProperty2.default)(_arr$push, "fontFamily", item.fontFamily || 'sans-serif'), _arr$push));
+          break;
+        case 'qrcode':
+          arr.push({
+            type: 'qrcode',
+            text: String(item.text || '') || '',
+            // 生成内容
+            size: Number(that.getScale(bgObj, item.size) || 0) || 200,
+            // 二维码大小
+            background: String(item.background || '') || '#ffffff',
+            // 背景色
+            foreground: String(item.foreground || '') || '#000000',
+            // 前景色
+            correctLevel: Number(item.correctLevel || 0) || 3,
+            // 容错级别
+            image: String(item.image || '') || '',
+            // 二维码图标
+            imageSize: Number(that.getScale(bgObj, item.imageSize) || 0) || 40,
+            // 二维码图标大小
+            dx: item.isBgCenter ? (bgObj.width - item.size) / 2 : Number(that.getScale(bgObj, item.dx) || 0) || 0,
+            dy: Number(that.getScale(bgObj, item.dy) || 0) || 0 // y轴距离
+          });
+
+          break;
+        case 'image':
+          arr.push((_arr$push2 = {
+            type: 'image',
+            url: _this3.checkImgHttp(item.url, item.name),
+            // 网络图片路径
+            dWidth: Number(that.getScale(bgObj, item.dWidth) || 0) || 100,
+            //绘制图像的宽度，允许缩放
+            dHeight: Number(that.getScale(bgObj, item.dHeight) || 0) || 100,
+            //绘制图像的高度，允许缩放
+            sWidth: Number(that.getScale(bgObj, item.sWidth) || 0) || 100,
+            //绘制图像的宽度，允许缩放
+            sHeight: Number(that.getScale(bgObj, item.sHeight) || 0) || 100,
+            //绘制图像的高度，允许缩放
+            dx: Number(that.getScale(bgObj, item.dx) || 0) || 0,
+            // x轴距离
+            dy: Number(that.getScale(bgObj, item.dy) || 0) || 0,
+            // y轴距离
+            sx: Number(that.getScale(bgObj, item.sx) || 0) || 0,
+            sy: Number(that.getScale(bgObj, item.sy) || 0) || 0
+          }, (0, _defineProperty2.default)(_arr$push2, item.circleSet ? 'circleSet' : '', {
+            //圆形设置
+            r: Number(((_item$circleSet = item.circleSet) === null || _item$circleSet === void 0 ? void 0 : _item$circleSet.r) && that.getScale(bgObj, item.circleSet.r) || 0),
+            x: Number(((_item$circleSet2 = item.circleSet) === null || _item$circleSet2 === void 0 ? void 0 : _item$circleSet2.x) && that.getScale(bgObj, item.circleSet.x) || 0),
+            y: Number(((_item$circleSet3 = item.circleSet) === null || _item$circleSet3 === void 0 ? void 0 : _item$circleSet3.y) && that.getScale(bgObj, item.circleSet.y) || 0)
+          }), (0, _defineProperty2.default)(_arr$push2, item.roundRectSet ? 'roundRectSet' : '', {
+            //圆角设置
+            r: Number(((_item$roundRectSet = item.roundRectSet) === null || _item$roundRectSet === void 0 ? void 0 : _item$roundRectSet.r) && that.getScale(bgObj, item.roundRectSet.r) || 0)
+          }), (0, _defineProperty2.default)(_arr$push2, "infoCallBack", function infoCallBack(imgInfo) {
+            //回调函数，返回图片信息
+            if (item.isBgCenter) {
+              return {
+                dx: (bgObj.width - item.dWidth) / 2
+              };
+            }
+          }), _arr$push2));
+          break;
+        default:
+          _app.log('暂无次类型');
+          break;
+      }
+    });
+    return arr;
+  }
+};
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
+
+/***/ }),
+
 /***/ 14:
 /*!************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/toPrimitive.js ***!
@@ -13808,13 +13877,13 @@ function populateParameters(result) {
   // wx.getAccountInfoSync
 
   var parameters = {
-    appId: "__UNI__4F68B60",
+    appId: "__UNI__E88DDB9",
     appName: "heshangWX",
     appVersion: "1.0.0",
     appVersionCode: "100",
     appLanguage: getAppLanguage(hostLanguage),
-    uniCompileVersion: "4.15",
-    uniRuntimeVersion: "4.15",
+    uniCompileVersion: "4.24",
+    uniRuntimeVersion: "4.24",
     uniPlatform: undefined || "mp-weixin",
     deviceBrand: deviceBrand,
     deviceModel: model,
@@ -13907,7 +13976,7 @@ var getAppBaseInfo = {
     var _hostName = getHostName(result);
     var hostLanguage = language.replace('_', '-');
     result = sortObject(Object.assign(result, {
-      appId: "__UNI__4F68B60",
+      appId: "__UNI__E88DDB9",
       appName: "heshangWX",
       appVersion: "1.0.0",
       appVersionCode: "100",
@@ -22312,7 +22381,7 @@ module.exports = runtime;
 
 /***/ }),
 
-/***/ 318:
+/***/ 312:
 /*!***********************************************!*\
   !*** E:/heshangwx/shopro/permission/index.js ***!
   \***********************************************/
@@ -22331,7 +22400,7 @@ var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 33));
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
-var _mp = _interopRequireDefault(__webpack_require__(/*! ./mp.js */ 319));
+var _mp = _interopRequireDefault(__webpack_require__(/*! ./mp.js */ 313));
 /**
  * 权限入口文件
  * @param {String}  authType -权限种类
@@ -22376,7 +22445,7 @@ exports.default = Auth;
 
 /***/ }),
 
-/***/ 319:
+/***/ 313:
 /*!********************************************!*\
   !*** E:/heshangwx/shopro/permission/mp.js ***!
   \********************************************/
@@ -24360,7 +24429,7 @@ var actions = {
   syncPages: function syncPages(_ref3) {
     var commit = _ref3.commit;
     (0, _index.default)('common.syncPages', {
-      data: [{"path":"/pages/templeHome/templeHome","aliasPath":"/"},{"path":"/pages/index/index","aliasPath":"/","meta":{"auth":false,"async":true,"title":"首页","group":"商城"}},{"path":"/pages/index/category","meta":{"auth":false,"async":true,"title":"分类","group":"商城"}},{"path":"/pages/index/cart","meta":{"auth":false,"async":true,"title":"购物车","group":"商城"}},{"path":"/pages/index/user","meta":{"auth":false,"async":true,"title":"我的","group":"商城"}},{"path":"/pages/index/view","name":"view","meta":{"auth":false,"async":true,"title":"自定义页面","group":"商城"}},{"path":"/pages/templeSubHome/templeSubHome"},{"path":"/pages/pray/pray"},{"path":"/pages/payIndex/index"},{"path":"/pages/dynamic/dynamic"},{"path":"/pages/payIndex/paySuccess"},{"path":"/pages/pray/components/at/index"},{"path":"/pages/templeHome/buddhist/buddhist"},{"path":"/pages/templeHome/buddhist/buddhistList"},{"path":"/pages/templeHome/volunteer/volunteer"},{"path":"/pages/hisOrder/hisOrder"},{"path":"/pages/hisOrder/orderDetail"},{"path":"/pages/templeHome/buddhist/home"},{"path":"/pages/activity/sign/index","meta":{"auth":true,"async":true,"title":"签到中心","group":"应用"}},{"path":"/pages/activity/seckill/list","meta":{"auth":false,"async":true,"title":"限时秒杀","group":"秒杀"}},{"path":"/pages/activity/groupon/list","meta":{"auth":false,"async":true,"title":"今日必拼","group":"拼团"}},{"path":"/pages/activity/groupon/detail","meta":{"auth":false,"async":false,"title":"拼团详情","group":"拼团"}},{"path":"/pages/activity/groupon/my-groupon","meta":{"auth":true,"async":true,"title":"我的拼团","group":"拼团"}},{"path":"/pages/activity/discounts/list","meta":{"auth":false,"async":false,"title":"优惠活动商品","group":"活动"}},{"path":"/pages/app/score/list","meta":{"auth":false,"async":true,"title":"积分商品","group":"积分"}},{"path":"/pages/app/coupon/list","meta":{"auth":true,"async":true,"title":"优惠券中心","group":"优惠券"}},{"path":"/pages/app/coupon/detail","meta":{"auth":true,"async":true,"title":"优惠券详情","group":"优惠券"}},{"path":"/pages/app/merchant/index","meta":{"auth":true,"async":false,"title":"门店中心","group":"门店"}},{"path":"/pages/app/merchant/apply","meta":{"auth":true,"async":true,"title":"门店入驻","group":"门店"}},{"path":"/pages/app/merchant/detail","meta":{"auth":true,"async":false,"title":"订单详情","group":"订单"}},{"path":"/pages/app/merchant/info","meta":{"auth":true,"async":false,"title":"门店详情","group":"门店"}},{"path":"/pages/app/merchant/list","meta":{"auth":true,"async":true,"title":"我的门店","group":"门店"}},{"path":"/pages/app/commission/index","meta":{"auth":true,"async":true,"title":"分销中心","group":"分销"}},{"path":"/pages/app/commission/team","meta":{"auth":true,"async":true,"title":"我的团队","group":"分销"}},{"path":"/pages/app/commission/commission-log","meta":{"auth":true,"async":true,"title":"佣金明细","group":"分销"}},{"path":"/pages/app/commission/order","meta":{"auth":true,"async":true,"title":"分销订单","group":"分销"}},{"path":"/pages/app/commission/goods","meta":{"auth":true,"async":true,"title":"推广商品","group":"分销"}},{"path":"/pages/app/commission/apply","meta":{"auth":true,"async":true,"title":"申请分销商","group":"分销"}},{"path":"/pages/app/commission/rankings","meta":{"auth":true,"async":true,"title":"分销排行","group":"分销"}},{"path":"/pages/app/commission/share-log","meta":{"auth":true,"async":false,"title":"分享记录","group":"分销"}},{"path":"/pages/goods/list","meta":{"auth":false,"async":true,"title":"商品列表","group":"商品"}},{"path":"/pages/goods/detail","meta":{"auth":false,"async":true,"title":"商品详情","group":"商品"}},{"path":"/pages/goods/comment/add-comment","meta":{"auth":false,"async":false,"title":"评价","group":"商品"}},{"path":"/pages/goods/comment/comment-list","meta":{"auth":false,"async":false,"title":"评价列表","group":"商品"}},{"path":"/pages/order/confirm","meta":{"auth":true,"async":false,"title":"确认订单","group":"订单"}},{"path":"/pages/order/payment/method","meta":{"auth":true,"async":false,"title":"收银台","group":"订单"}},{"path":"/pages/order/payment/result","meta":{"auth":false,"async":false,"title":"支付结果","group":"订单"}},{"path":"/pages/order/list","meta":{"auth":true,"async":true,"title":"订单列表","group":"订单"}},{"path":"/pages/order/detail","meta":{"auth":true,"async":false,"title":"订单详情","group":"订单"}},{"path":"/pages/order/after-sale/detail","meta":{"auth":true,"async":false,"title":"售后详情","group":"订单"}},{"path":"/pages/order/after-sale/list","meta":{"auth":true,"async":true,"title":"售后列表","group":"订单"}},{"path":"/pages/order/after-sale/log","meta":{"auth":true,"async":false,"title":"售后记录","group":"订单"}},{"path":"/pages/order/after-sale/refund","meta":{"auth":true,"async":false,"title":"申请售后","group":"订单"}},{"path":"/pages/order/express/distribution-detail","meta":{"auth":true,"async":false,"title":"配送详情","group":"订单"}},{"path":"/pages/order/express/express-detail","meta":{"auth":true,"async":false,"title":"物流详情","group":"订单"}},{"path":"/pages/order/express/express-list","meta":{"auth":true,"async":false,"title":"包裹列表","group":"订单"}},{"path":"/pages/order/express/store-address","meta":{"auth":true,"async":false,"title":"选择自提点","group":"订单"}},{"path":"/pages/public/faq","meta":{"auth":false,"async":true,"title":"常见问题","group":"通用"}},{"path":"/pages/public/feedback","meta":{"auth":true,"async":true,"title":"问题反馈","group":"通用"}},{"path":"/pages/public/chat/index","meta":{"auth":true,"async":true,"title":"客服","group":"通用"}},{"path":"/pages/public/search","meta":{"auth":false,"async":true,"title":"搜索","group":"通用"}},{"path":"/pages/public/richtext","meta":{"auth":false,"async":true,"title":"富文本","group":"通用"}},{"path":"/pages/public/webview","meta":{"auth":false,"async":true,"title":"外链","group":"通用"}},{"path":"/pages/public/404","name":"404"},{"path":"/pages/public/loading"},{"path":"/pages/user/info","meta":{"auth":true,"async":true,"title":"个人信息","group":"用户"}},{"path":"/pages/user/set","meta":{"auth":false,"async":true,"title":"系统设置","group":"通用"}},{"path":"/pages/user/view-log","meta":{"auth":true,"async":true,"title":"浏览足迹","group":"用户"}},{"path":"/pages/user/wallet/index","meta":{"auth":true,"async":true,"title":"钱包","group":"用户"}},{"path":"/pages/user/wallet/withdraw","meta":{"auth":true,"async":true,"title":"提现","group":"用户"}},{"path":"/pages/user/wallet/withdraw-log","meta":{"auth":true,"async":true,"title":"提现记录","group":"用户"}},{"path":"/pages/user/wallet/top-up","meta":{"auth":true,"async":true,"title":"充值","group":"用户"}},{"path":"/pages/user/wallet/top-up-log","meta":{"auth":true,"async":true,"title":"充值记录","group":"用户"}},{"path":"/pages/user/wallet/score-balance","meta":{"auth":true,"async":true,"title":"积分余额","group":"积分"}},{"path":"/pages/user/address/list","meta":{"auth":true,"async":true,"title":"收货地址","group":"用户"}},{"path":"/pages/user/address/edit","meta":{"auth":true,"async":false,"title":"修改地址","group":"用户"}},{"path":"/pages/user/favorite","meta":{"auth":true,"async":true,"title":"我的收藏","group":"用户"}}]
+      data: [{"path":"/pages/templeHome/templeHome","aliasPath":"/"},{"path":"/pages/index/index","aliasPath":"/","meta":{"auth":false,"async":true,"title":"首页","group":"商城"}},{"path":"/pages/templeSubHome/templeSubHome"},{"path":"/pages/pray/pray"},{"path":"/pages/payIndex/index"},{"path":"/pages/dynamic/dynamic"},{"path":"/pages/payIndex/paySuccess"},{"path":"/pages/pray/components/at/index"},{"path":"/pages/templeHome/buddhist/buddhist"},{"path":"/pages/templeHome/buddhist/buddhistList"},{"path":"/pages/templeHome/volunteer/volunteer"},{"path":"/pages/hisOrder/hisOrder"},{"path":"/pages/hisOrder/orderDetail"},{"path":"/pages/templeHome/buddhist/home"},{"path":"/pages/changeMoney/index"},{"path":"/pages/templeHome/userpolicy/userAgreement"},{"path":"/pages/templeHome/userpolicy/userProvacy"},{"path":"/pages/activity/sign/index","meta":{"auth":true,"async":true,"title":"签到中心","group":"应用"}},{"path":"/pages/activity/seckill/list","meta":{"auth":false,"async":true,"title":"限时秒杀","group":"秒杀"}},{"path":"/pages/activity/groupon/list","meta":{"auth":false,"async":true,"title":"今日必拼","group":"拼团"}},{"path":"/pages/activity/groupon/detail","meta":{"auth":false,"async":false,"title":"拼团详情","group":"拼团"}},{"path":"/pages/activity/groupon/my-groupon","meta":{"auth":true,"async":true,"title":"我的拼团","group":"拼团"}},{"path":"/pages/activity/discounts/list","meta":{"auth":false,"async":false,"title":"优惠活动商品","group":"活动"}},{"path":"/pages/app/score/list","meta":{"auth":false,"async":true,"title":"积分商品","group":"积分"}},{"path":"/pages/app/coupon/list","meta":{"auth":true,"async":true,"title":"优惠券中心","group":"优惠券"}},{"path":"/pages/app/coupon/detail","meta":{"auth":true,"async":true,"title":"优惠券详情","group":"优惠券"}},{"path":"/pages/app/merchant/index","meta":{"auth":true,"async":false,"title":"门店中心","group":"门店"}},{"path":"/pages/app/merchant/apply","meta":{"auth":true,"async":true,"title":"门店入驻","group":"门店"}},{"path":"/pages/app/merchant/detail","meta":{"auth":true,"async":false,"title":"订单详情","group":"订单"}},{"path":"/pages/app/merchant/info","meta":{"auth":true,"async":false,"title":"门店详情","group":"门店"}},{"path":"/pages/app/merchant/list","meta":{"auth":true,"async":true,"title":"我的门店","group":"门店"}},{"path":"/pages/app/commission/index","meta":{"auth":true,"async":true,"title":"分销中心","group":"分销"}},{"path":"/pages/app/commission/team","meta":{"auth":true,"async":true,"title":"我的团队","group":"分销"}},{"path":"/pages/app/commission/commission-log","meta":{"auth":true,"async":true,"title":"佣金明细","group":"分销"}},{"path":"/pages/app/commission/order","meta":{"auth":true,"async":true,"title":"分销订单","group":"分销"}},{"path":"/pages/app/commission/goods","meta":{"auth":true,"async":true,"title":"推广商品","group":"分销"}},{"path":"/pages/app/commission/apply","meta":{"auth":true,"async":true,"title":"申请分销商","group":"分销"}},{"path":"/pages/app/commission/rankings","meta":{"auth":true,"async":true,"title":"分销排行","group":"分销"}},{"path":"/pages/app/commission/share-log","meta":{"auth":true,"async":false,"title":"分享记录","group":"分销"}},{"path":"/pages/goods/list","meta":{"auth":false,"async":true,"title":"商品列表","group":"商品"}},{"path":"/pages/goods/detail","meta":{"auth":false,"async":true,"title":"商品详情","group":"商品"}},{"path":"/pages/goods/comment/add-comment","meta":{"auth":false,"async":false,"title":"评价","group":"商品"}},{"path":"/pages/goods/comment/comment-list","meta":{"auth":false,"async":false,"title":"评价列表","group":"商品"}},{"path":"/pages/order/confirm","meta":{"auth":true,"async":false,"title":"确认订单","group":"订单"}},{"path":"/pages/order/payment/method","meta":{"auth":true,"async":false,"title":"收银台","group":"订单"}},{"path":"/pages/order/payment/result","meta":{"auth":false,"async":false,"title":"支付结果","group":"订单"}},{"path":"/pages/order/list","meta":{"auth":true,"async":true,"title":"订单列表","group":"订单"}},{"path":"/pages/order/detail","meta":{"auth":true,"async":false,"title":"订单详情","group":"订单"}},{"path":"/pages/order/after-sale/detail","meta":{"auth":true,"async":false,"title":"售后详情","group":"订单"}},{"path":"/pages/order/after-sale/list","meta":{"auth":true,"async":true,"title":"售后列表","group":"订单"}},{"path":"/pages/order/after-sale/log","meta":{"auth":true,"async":false,"title":"售后记录","group":"订单"}},{"path":"/pages/order/after-sale/refund","meta":{"auth":true,"async":false,"title":"申请售后","group":"订单"}},{"path":"/pages/order/express/distribution-detail","meta":{"auth":true,"async":false,"title":"配送详情","group":"订单"}},{"path":"/pages/order/express/express-detail","meta":{"auth":true,"async":false,"title":"物流详情","group":"订单"}},{"path":"/pages/order/express/express-list","meta":{"auth":true,"async":false,"title":"包裹列表","group":"订单"}},{"path":"/pages/order/express/store-address","meta":{"auth":true,"async":false,"title":"选择自提点","group":"订单"}},{"path":"/pages/public/faq","meta":{"auth":false,"async":true,"title":"常见问题","group":"通用"}},{"path":"/pages/public/feedback","meta":{"auth":true,"async":true,"title":"问题反馈","group":"通用"}},{"path":"/pages/public/chat/index","meta":{"auth":true,"async":true,"title":"客服","group":"通用"}},{"path":"/pages/public/search","meta":{"auth":false,"async":true,"title":"搜索","group":"通用"}},{"path":"/pages/public/richtext","meta":{"auth":false,"async":true,"title":"富文本","group":"通用"}},{"path":"/pages/public/webview","meta":{"auth":false,"async":true,"title":"外链","group":"通用"}},{"path":"/pages/public/404","name":"404"},{"path":"/pages/public/loading"},{"path":"/pages/user/info","meta":{"auth":true,"async":true,"title":"个人信息","group":"用户"}},{"path":"/pages/user/set","meta":{"auth":false,"async":true,"title":"系统设置","group":"通用"}},{"path":"/pages/user/view-log","meta":{"auth":true,"async":true,"title":"浏览足迹","group":"用户"}},{"path":"/pages/user/wallet/index","meta":{"auth":true,"async":true,"title":"钱包","group":"用户"}},{"path":"/pages/user/wallet/withdraw","meta":{"auth":true,"async":true,"title":"提现","group":"用户"}},{"path":"/pages/user/wallet/withdraw-log","meta":{"auth":true,"async":true,"title":"提现记录","group":"用户"}},{"path":"/pages/user/wallet/top-up","meta":{"auth":true,"async":true,"title":"充值","group":"用户"}},{"path":"/pages/user/wallet/top-up-log","meta":{"auth":true,"async":true,"title":"充值记录","group":"用户"}},{"path":"/pages/user/wallet/score-balance","meta":{"auth":true,"async":true,"title":"积分余额","group":"积分"}},{"path":"/pages/user/address/list","meta":{"auth":true,"async":true,"title":"收货地址","group":"用户"}},{"path":"/pages/user/address/edit","meta":{"auth":true,"async":false,"title":"修改地址","group":"用户"}},{"path":"/pages/user/favorite","meta":{"auth":true,"async":true,"title":"我的收藏","group":"用户"}}]
     });
   }
 };
@@ -26257,7 +26326,7 @@ var router = (0, _uniSimpleRouter.createRouter)({
     }
   },
   // 通配符，非定义页面，跳转404
-  routes: [].concat((0, _toConsumableArray2.default)([{"path":"/pages/templeHome/templeHome","aliasPath":"/"},{"path":"/pages/index/index","aliasPath":"/","meta":{"auth":false,"async":true,"title":"首页","group":"商城"}},{"path":"/pages/index/category","meta":{"auth":false,"async":true,"title":"分类","group":"商城"}},{"path":"/pages/index/cart","meta":{"auth":false,"async":true,"title":"购物车","group":"商城"}},{"path":"/pages/index/user","meta":{"auth":false,"async":true,"title":"我的","group":"商城"}},{"path":"/pages/index/view","name":"view","meta":{"auth":false,"async":true,"title":"自定义页面","group":"商城"}},{"path":"/pages/templeSubHome/templeSubHome"},{"path":"/pages/pray/pray"},{"path":"/pages/payIndex/index"},{"path":"/pages/dynamic/dynamic"},{"path":"/pages/payIndex/paySuccess"},{"path":"/pages/pray/components/at/index"},{"path":"/pages/templeHome/buddhist/buddhist"},{"path":"/pages/templeHome/buddhist/buddhistList"},{"path":"/pages/templeHome/volunteer/volunteer"},{"path":"/pages/hisOrder/hisOrder"},{"path":"/pages/hisOrder/orderDetail"},{"path":"/pages/templeHome/buddhist/home"},{"path":"/pages/activity/sign/index","meta":{"auth":true,"async":true,"title":"签到中心","group":"应用"}},{"path":"/pages/activity/seckill/list","meta":{"auth":false,"async":true,"title":"限时秒杀","group":"秒杀"}},{"path":"/pages/activity/groupon/list","meta":{"auth":false,"async":true,"title":"今日必拼","group":"拼团"}},{"path":"/pages/activity/groupon/detail","meta":{"auth":false,"async":false,"title":"拼团详情","group":"拼团"}},{"path":"/pages/activity/groupon/my-groupon","meta":{"auth":true,"async":true,"title":"我的拼团","group":"拼团"}},{"path":"/pages/activity/discounts/list","meta":{"auth":false,"async":false,"title":"优惠活动商品","group":"活动"}},{"path":"/pages/app/score/list","meta":{"auth":false,"async":true,"title":"积分商品","group":"积分"}},{"path":"/pages/app/coupon/list","meta":{"auth":true,"async":true,"title":"优惠券中心","group":"优惠券"}},{"path":"/pages/app/coupon/detail","meta":{"auth":true,"async":true,"title":"优惠券详情","group":"优惠券"}},{"path":"/pages/app/merchant/index","meta":{"auth":true,"async":false,"title":"门店中心","group":"门店"}},{"path":"/pages/app/merchant/apply","meta":{"auth":true,"async":true,"title":"门店入驻","group":"门店"}},{"path":"/pages/app/merchant/detail","meta":{"auth":true,"async":false,"title":"订单详情","group":"订单"}},{"path":"/pages/app/merchant/info","meta":{"auth":true,"async":false,"title":"门店详情","group":"门店"}},{"path":"/pages/app/merchant/list","meta":{"auth":true,"async":true,"title":"我的门店","group":"门店"}},{"path":"/pages/app/commission/index","meta":{"auth":true,"async":true,"title":"分销中心","group":"分销"}},{"path":"/pages/app/commission/team","meta":{"auth":true,"async":true,"title":"我的团队","group":"分销"}},{"path":"/pages/app/commission/commission-log","meta":{"auth":true,"async":true,"title":"佣金明细","group":"分销"}},{"path":"/pages/app/commission/order","meta":{"auth":true,"async":true,"title":"分销订单","group":"分销"}},{"path":"/pages/app/commission/goods","meta":{"auth":true,"async":true,"title":"推广商品","group":"分销"}},{"path":"/pages/app/commission/apply","meta":{"auth":true,"async":true,"title":"申请分销商","group":"分销"}},{"path":"/pages/app/commission/rankings","meta":{"auth":true,"async":true,"title":"分销排行","group":"分销"}},{"path":"/pages/app/commission/share-log","meta":{"auth":true,"async":false,"title":"分享记录","group":"分销"}},{"path":"/pages/goods/list","meta":{"auth":false,"async":true,"title":"商品列表","group":"商品"}},{"path":"/pages/goods/detail","meta":{"auth":false,"async":true,"title":"商品详情","group":"商品"}},{"path":"/pages/goods/comment/add-comment","meta":{"auth":false,"async":false,"title":"评价","group":"商品"}},{"path":"/pages/goods/comment/comment-list","meta":{"auth":false,"async":false,"title":"评价列表","group":"商品"}},{"path":"/pages/order/confirm","meta":{"auth":true,"async":false,"title":"确认订单","group":"订单"}},{"path":"/pages/order/payment/method","meta":{"auth":true,"async":false,"title":"收银台","group":"订单"}},{"path":"/pages/order/payment/result","meta":{"auth":false,"async":false,"title":"支付结果","group":"订单"}},{"path":"/pages/order/list","meta":{"auth":true,"async":true,"title":"订单列表","group":"订单"}},{"path":"/pages/order/detail","meta":{"auth":true,"async":false,"title":"订单详情","group":"订单"}},{"path":"/pages/order/after-sale/detail","meta":{"auth":true,"async":false,"title":"售后详情","group":"订单"}},{"path":"/pages/order/after-sale/list","meta":{"auth":true,"async":true,"title":"售后列表","group":"订单"}},{"path":"/pages/order/after-sale/log","meta":{"auth":true,"async":false,"title":"售后记录","group":"订单"}},{"path":"/pages/order/after-sale/refund","meta":{"auth":true,"async":false,"title":"申请售后","group":"订单"}},{"path":"/pages/order/express/distribution-detail","meta":{"auth":true,"async":false,"title":"配送详情","group":"订单"}},{"path":"/pages/order/express/express-detail","meta":{"auth":true,"async":false,"title":"物流详情","group":"订单"}},{"path":"/pages/order/express/express-list","meta":{"auth":true,"async":false,"title":"包裹列表","group":"订单"}},{"path":"/pages/order/express/store-address","meta":{"auth":true,"async":false,"title":"选择自提点","group":"订单"}},{"path":"/pages/public/faq","meta":{"auth":false,"async":true,"title":"常见问题","group":"通用"}},{"path":"/pages/public/feedback","meta":{"auth":true,"async":true,"title":"问题反馈","group":"通用"}},{"path":"/pages/public/chat/index","meta":{"auth":true,"async":true,"title":"客服","group":"通用"}},{"path":"/pages/public/search","meta":{"auth":false,"async":true,"title":"搜索","group":"通用"}},{"path":"/pages/public/richtext","meta":{"auth":false,"async":true,"title":"富文本","group":"通用"}},{"path":"/pages/public/webview","meta":{"auth":false,"async":true,"title":"外链","group":"通用"}},{"path":"/pages/public/404","name":"404"},{"path":"/pages/public/loading"},{"path":"/pages/user/info","meta":{"auth":true,"async":true,"title":"个人信息","group":"用户"}},{"path":"/pages/user/set","meta":{"auth":false,"async":true,"title":"系统设置","group":"通用"}},{"path":"/pages/user/view-log","meta":{"auth":true,"async":true,"title":"浏览足迹","group":"用户"}},{"path":"/pages/user/wallet/index","meta":{"auth":true,"async":true,"title":"钱包","group":"用户"}},{"path":"/pages/user/wallet/withdraw","meta":{"auth":true,"async":true,"title":"提现","group":"用户"}},{"path":"/pages/user/wallet/withdraw-log","meta":{"auth":true,"async":true,"title":"提现记录","group":"用户"}},{"path":"/pages/user/wallet/top-up","meta":{"auth":true,"async":true,"title":"充值","group":"用户"}},{"path":"/pages/user/wallet/top-up-log","meta":{"auth":true,"async":true,"title":"充值记录","group":"用户"}},{"path":"/pages/user/wallet/score-balance","meta":{"auth":true,"async":true,"title":"积分余额","group":"积分"}},{"path":"/pages/user/address/list","meta":{"auth":true,"async":true,"title":"收货地址","group":"用户"}},{"path":"/pages/user/address/edit","meta":{"auth":true,"async":false,"title":"修改地址","group":"用户"}},{"path":"/pages/user/favorite","meta":{"auth":true,"async":true,"title":"我的收藏","group":"用户"}}]), [{
+  routes: [].concat((0, _toConsumableArray2.default)([{"path":"/pages/templeHome/templeHome","aliasPath":"/"},{"path":"/pages/index/index","aliasPath":"/","meta":{"auth":false,"async":true,"title":"首页","group":"商城"}},{"path":"/pages/templeSubHome/templeSubHome"},{"path":"/pages/pray/pray"},{"path":"/pages/payIndex/index"},{"path":"/pages/dynamic/dynamic"},{"path":"/pages/payIndex/paySuccess"},{"path":"/pages/pray/components/at/index"},{"path":"/pages/templeHome/buddhist/buddhist"},{"path":"/pages/templeHome/buddhist/buddhistList"},{"path":"/pages/templeHome/volunteer/volunteer"},{"path":"/pages/hisOrder/hisOrder"},{"path":"/pages/hisOrder/orderDetail"},{"path":"/pages/templeHome/buddhist/home"},{"path":"/pages/changeMoney/index"},{"path":"/pages/templeHome/userpolicy/userAgreement"},{"path":"/pages/templeHome/userpolicy/userProvacy"},{"path":"/pages/activity/sign/index","meta":{"auth":true,"async":true,"title":"签到中心","group":"应用"}},{"path":"/pages/activity/seckill/list","meta":{"auth":false,"async":true,"title":"限时秒杀","group":"秒杀"}},{"path":"/pages/activity/groupon/list","meta":{"auth":false,"async":true,"title":"今日必拼","group":"拼团"}},{"path":"/pages/activity/groupon/detail","meta":{"auth":false,"async":false,"title":"拼团详情","group":"拼团"}},{"path":"/pages/activity/groupon/my-groupon","meta":{"auth":true,"async":true,"title":"我的拼团","group":"拼团"}},{"path":"/pages/activity/discounts/list","meta":{"auth":false,"async":false,"title":"优惠活动商品","group":"活动"}},{"path":"/pages/app/score/list","meta":{"auth":false,"async":true,"title":"积分商品","group":"积分"}},{"path":"/pages/app/coupon/list","meta":{"auth":true,"async":true,"title":"优惠券中心","group":"优惠券"}},{"path":"/pages/app/coupon/detail","meta":{"auth":true,"async":true,"title":"优惠券详情","group":"优惠券"}},{"path":"/pages/app/merchant/index","meta":{"auth":true,"async":false,"title":"门店中心","group":"门店"}},{"path":"/pages/app/merchant/apply","meta":{"auth":true,"async":true,"title":"门店入驻","group":"门店"}},{"path":"/pages/app/merchant/detail","meta":{"auth":true,"async":false,"title":"订单详情","group":"订单"}},{"path":"/pages/app/merchant/info","meta":{"auth":true,"async":false,"title":"门店详情","group":"门店"}},{"path":"/pages/app/merchant/list","meta":{"auth":true,"async":true,"title":"我的门店","group":"门店"}},{"path":"/pages/app/commission/index","meta":{"auth":true,"async":true,"title":"分销中心","group":"分销"}},{"path":"/pages/app/commission/team","meta":{"auth":true,"async":true,"title":"我的团队","group":"分销"}},{"path":"/pages/app/commission/commission-log","meta":{"auth":true,"async":true,"title":"佣金明细","group":"分销"}},{"path":"/pages/app/commission/order","meta":{"auth":true,"async":true,"title":"分销订单","group":"分销"}},{"path":"/pages/app/commission/goods","meta":{"auth":true,"async":true,"title":"推广商品","group":"分销"}},{"path":"/pages/app/commission/apply","meta":{"auth":true,"async":true,"title":"申请分销商","group":"分销"}},{"path":"/pages/app/commission/rankings","meta":{"auth":true,"async":true,"title":"分销排行","group":"分销"}},{"path":"/pages/app/commission/share-log","meta":{"auth":true,"async":false,"title":"分享记录","group":"分销"}},{"path":"/pages/goods/list","meta":{"auth":false,"async":true,"title":"商品列表","group":"商品"}},{"path":"/pages/goods/detail","meta":{"auth":false,"async":true,"title":"商品详情","group":"商品"}},{"path":"/pages/goods/comment/add-comment","meta":{"auth":false,"async":false,"title":"评价","group":"商品"}},{"path":"/pages/goods/comment/comment-list","meta":{"auth":false,"async":false,"title":"评价列表","group":"商品"}},{"path":"/pages/order/confirm","meta":{"auth":true,"async":false,"title":"确认订单","group":"订单"}},{"path":"/pages/order/payment/method","meta":{"auth":true,"async":false,"title":"收银台","group":"订单"}},{"path":"/pages/order/payment/result","meta":{"auth":false,"async":false,"title":"支付结果","group":"订单"}},{"path":"/pages/order/list","meta":{"auth":true,"async":true,"title":"订单列表","group":"订单"}},{"path":"/pages/order/detail","meta":{"auth":true,"async":false,"title":"订单详情","group":"订单"}},{"path":"/pages/order/after-sale/detail","meta":{"auth":true,"async":false,"title":"售后详情","group":"订单"}},{"path":"/pages/order/after-sale/list","meta":{"auth":true,"async":true,"title":"售后列表","group":"订单"}},{"path":"/pages/order/after-sale/log","meta":{"auth":true,"async":false,"title":"售后记录","group":"订单"}},{"path":"/pages/order/after-sale/refund","meta":{"auth":true,"async":false,"title":"申请售后","group":"订单"}},{"path":"/pages/order/express/distribution-detail","meta":{"auth":true,"async":false,"title":"配送详情","group":"订单"}},{"path":"/pages/order/express/express-detail","meta":{"auth":true,"async":false,"title":"物流详情","group":"订单"}},{"path":"/pages/order/express/express-list","meta":{"auth":true,"async":false,"title":"包裹列表","group":"订单"}},{"path":"/pages/order/express/store-address","meta":{"auth":true,"async":false,"title":"选择自提点","group":"订单"}},{"path":"/pages/public/faq","meta":{"auth":false,"async":true,"title":"常见问题","group":"通用"}},{"path":"/pages/public/feedback","meta":{"auth":true,"async":true,"title":"问题反馈","group":"通用"}},{"path":"/pages/public/chat/index","meta":{"auth":true,"async":true,"title":"客服","group":"通用"}},{"path":"/pages/public/search","meta":{"auth":false,"async":true,"title":"搜索","group":"通用"}},{"path":"/pages/public/richtext","meta":{"auth":false,"async":true,"title":"富文本","group":"通用"}},{"path":"/pages/public/webview","meta":{"auth":false,"async":true,"title":"外链","group":"通用"}},{"path":"/pages/public/404","name":"404"},{"path":"/pages/public/loading"},{"path":"/pages/user/info","meta":{"auth":true,"async":true,"title":"个人信息","group":"用户"}},{"path":"/pages/user/set","meta":{"auth":false,"async":true,"title":"系统设置","group":"通用"}},{"path":"/pages/user/view-log","meta":{"auth":true,"async":true,"title":"浏览足迹","group":"用户"}},{"path":"/pages/user/wallet/index","meta":{"auth":true,"async":true,"title":"钱包","group":"用户"}},{"path":"/pages/user/wallet/withdraw","meta":{"auth":true,"async":true,"title":"提现","group":"用户"}},{"path":"/pages/user/wallet/withdraw-log","meta":{"auth":true,"async":true,"title":"提现记录","group":"用户"}},{"path":"/pages/user/wallet/top-up","meta":{"auth":true,"async":true,"title":"充值","group":"用户"}},{"path":"/pages/user/wallet/top-up-log","meta":{"auth":true,"async":true,"title":"充值记录","group":"用户"}},{"path":"/pages/user/wallet/score-balance","meta":{"auth":true,"async":true,"title":"积分余额","group":"积分"}},{"path":"/pages/user/address/list","meta":{"auth":true,"async":true,"title":"收货地址","group":"用户"}},{"path":"/pages/user/address/edit","meta":{"auth":true,"async":false,"title":"修改地址","group":"用户"}},{"path":"/pages/user/favorite","meta":{"auth":true,"async":true,"title":"我的收藏","group":"用户"}}]), [{
     path: '*',
     redirect: function redirect(to) {
       return {
@@ -26281,6 +26350,454 @@ router.beforeEach(function (to, from, next) {
     next();
   }
 });
+
+/***/ }),
+
+/***/ 458:
+/*!****************************************!*\
+  !*** E:/heshangwx/shopro/pay/index.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(uni) {
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 31));
+var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
+var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 33));
+var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
+var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
+var _index = _interopRequireDefault(__webpack_require__(/*! @/shopro/request/index */ 38));
+var _wechat = _interopRequireDefault(__webpack_require__(/*! @/shopro/wechat/wechat */ 48));
+var _index2 = __webpack_require__(/*! @/shopro/router/index.js */ 45);
+var _store = _interopRequireDefault(__webpack_require__(/*! @/shopro/store */ 35));
+var _platform = _interopRequireDefault(__webpack_require__(/*! @/shopro/platform */ 40));
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+/**
+ * 支付
+ * 
+ * @param {String} payment = ['wechat','alipay','wallet']  	- 支付方式
+ * @param {Object} order = {}  								- 订单详情
+ * @param {String} orderType = ['goods','recharge'] 		- 订单类型
+ */
+var ShoproPay = /*#__PURE__*/function () {
+  //						wxOfficialAccount			wxMiniProgram			App						H5
+  // 			wechat			公众号JSSDK支付				小程序支付			微信开放平台支付			H5网页支付
+  //			alipay			复制网址						复制网址				支付宝开放平台支付		    直接跳转链接
+  // 			wallet			v							v					v						v
+
+  function ShoproPay(payment, order, orderType) {
+    (0, _classCallCheck2.default)(this, ShoproPay);
+    this.payment = payment;
+    this.order = order;
+    this.orderType = orderType;
+    this.platform = _platform.default.get();
+    var payMehod = this.getPayMethod();
+    payMehod();
+  }
+  (0, _createClass2.default)(ShoproPay, [{
+    key: "getPayMethod",
+    value: function getPayMethod() {
+      var _this = this;
+      var payMethod = {
+        'wxOfficialAccount': {
+          'wechat': function wechat() {
+            _this.wxOfficialAccountPay();
+          },
+          'alipay': function alipay() {
+            _this.copyPayLink();
+          },
+          'wallet': function wallet() {
+            _this.walletPay();
+          }
+        },
+        'wxMiniProgram': {
+          'wechat': function wechat() {
+            _this.wxMiniProgramPay();
+          },
+          'alipay': function alipay() {
+            _this.copyPayLink();
+          },
+          'wallet': function wallet() {
+            _this.walletPay();
+          }
+        },
+        'App': {
+          'wechat': function wechat() {
+            _this.wechatPay();
+          },
+          'alipay': function alipay() {
+            _this.aliPay();
+          },
+          'wallet': function wallet() {
+            _this.walletPay();
+          }
+        },
+        'H5': {
+          'wechat': function wechat() {
+            _this.wechatWapPay();
+          },
+          'alipay': function alipay() {
+            _this.goToPayLink();
+          },
+          'wallet': function wallet() {
+            _this.walletPay();
+          }
+        }
+      };
+      return payMethod[this.platform][this.payment];
+    }
+
+    // 预支付
+  }, {
+    key: "prepay",
+    value: function prepay() {
+      var _this2 = this;
+      var that = this;
+      return new Promise(function (resolve, reject) {
+        var that = _this2;
+        var domain = _store.default.getters.initShop.domain;
+        var return_url = "".concat(domain, "pages/order/payment/result?orderId=***&type=").concat(that.payment, "&payState=success&orderType=").concat(that.orderType);
+        console.log(return_url, 'return_url');
+        var params = {
+          order_sn: that.order.order_sn,
+          payment: that.payment,
+          return_url: return_url
+        };
+        if (uni.getStorageSync('openid')) {
+          params.openid = uni.getStorageSync('openid');
+        }
+        (0, _index.default)('money.prepay', params, '支付中').then(function (res) {
+          if (res.code === 1) {
+            res.data === 'no_openid' ? uni.showModal({
+              title: '微信支付',
+              content: '请先绑定微信再使用微信支付',
+              success: function success(res) {
+                if (res.confirm) {
+                  _wechat.default.bind();
+                }
+              }
+            }) : resolve(res);
+          }
+        });
+      });
+    }
+
+    // 微信H5支付
+  }, {
+    key: "wxOfficialAccountPay",
+    value: function () {
+      var _wxOfficialAccountPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
+        var that, result;
+        return _regenerator.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                that = this;
+                _context.next = 3;
+                return this.prepay();
+              case 3:
+                result = _context.sent;
+                wxsdk.wxpay(result.data.pay_data, function (res) {
+                  res.errMsg == "chooseWXPay:ok" ? that.payResult('success') : that.payResult('fail');
+                });
+              case 5:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+      function wxOfficialAccountPay() {
+        return _wxOfficialAccountPay.apply(this, arguments);
+      }
+      return wxOfficialAccountPay;
+    }() //浏览器微信支付
+  }, {
+    key: "wechatWapPay",
+    value: function () {
+      var _wechatWapPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
+        var that, result, newUrl, url, reg, domain, params;
+        return _regenerator.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                that = this;
+                _context2.next = 3;
+                return this.prepay();
+              case 3:
+                result = _context2.sent;
+                if (result.code === 1) {
+                  newUrl = '';
+                  if (result.data.pay_data && result.data.pay_data.h5_url != undefined) {
+                    console.log('v3');
+                    newUrl = result.data.pay_data.h5_url;
+                  } else {
+                    console.log('v2');
+                    url = result.data.pay_data.match(/url\=\'(\S*)\'/);
+                    reg = new RegExp('&amp;', 'g'); //g代表全部
+                    newUrl = url[1].replace(reg, '&');
+                  }
+                  domain = _store.default.getters.initShop.domain; //域名需要https
+                  params = encodeURIComponent("".concat(domain, "pages/order/payment/result?orderId=").concat(that.order.id, "&type=").concat(that.payment, "&orderType=").concat(that.orderType));
+                  window.location.href = newUrl + '&redirect_url=' + params;
+                }
+              case 5:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this);
+      }));
+      function wechatWapPay() {
+        return _wechatWapPay.apply(this, arguments);
+      }
+      return wechatWapPay;
+    }() // 微信小程序支付
+  }, {
+    key: "wxMiniProgramPay",
+    value: function () {
+      var _wxMiniProgramPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
+        var that, result;
+        return _regenerator.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                that = this;
+                _context3.next = 3;
+                return this.prepay();
+              case 3:
+                result = _context3.sent;
+                uni.requestPayment(_objectSpread(_objectSpread({
+                  provider: 'wxpay'
+                }, result.data.pay_data), {}, {
+                  success: function success(res) {
+                    that.payResult('success');
+                  },
+                  fail: function fail(err) {
+                    console.log('支付取消或者失败:', err);
+                    err.errMsg !== "requestPayment:fail cancel" && that.payResult('fail');
+                  }
+                }));
+              case 5:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+      function wxMiniProgramPay() {
+        return _wxMiniProgramPay.apply(this, arguments);
+      }
+      return wxMiniProgramPay;
+    }() // 余额支付
+  }, {
+    key: "walletPay",
+    value: function () {
+      var _walletPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
+        var that, result;
+        return _regenerator.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                that = this;
+                _context4.next = 3;
+                return this.prepay();
+              case 3:
+                result = _context4.sent;
+                result.code === 1 && that.payResult('success');
+              case 5:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4, this);
+      }));
+      function walletPay() {
+        return _walletPay.apply(this, arguments);
+      }
+      return walletPay;
+    }() // 支付宝复制链接支付
+  }, {
+    key: "copyPayLink",
+    value: function () {
+      var _copyPayLink = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
+        var that, result;
+        return _regenerator.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                that = this;
+                _context5.next = 3;
+                return this.prepay();
+              case 3:
+                result = _context5.sent;
+                if (result.code === 1) {
+                  //引入showModal 点击确认 复制链接；
+                  uni.showModal({
+                    title: '支付宝支付',
+                    content: '复制链接到外部浏览器',
+                    confirmText: '复制链接',
+                    success: function success(res) {
+                      if (res.confirm) {
+                        uni.setClipboardData({
+                          data: result.data.pay_data,
+                          success: function success(data) {
+                            that.$u.toast('已复制到剪切板');
+                          }
+                        });
+                      }
+                    }
+                  });
+                }
+              case 5:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5, this);
+      }));
+      function copyPayLink() {
+        return _copyPayLink.apply(this, arguments);
+      }
+      return copyPayLink;
+    }() // 支付链接
+  }, {
+    key: "goToPayLink",
+    value: function () {
+      var _goToPayLink = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6() {
+        var that, result;
+        return _regenerator.default.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                that = this;
+                _context6.next = 3;
+                return this.prepay();
+              case 3:
+                result = _context6.sent;
+                if (result.code === 1) {
+                  window.location = result.data.pay_data;
+                }
+              case 5:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6, this);
+      }));
+      function goToPayLink() {
+        return _goToPayLink.apply(this, arguments);
+      }
+      return goToPayLink;
+    }() // 支付宝支付
+  }, {
+    key: "aliPay",
+    value: function () {
+      var _aliPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7() {
+        var that, result;
+        return _regenerator.default.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                that = this;
+                _context7.next = 3;
+                return this.prepay();
+              case 3:
+                result = _context7.sent;
+                if (result.code === 1) {
+                  uni.requestPayment({
+                    provider: 'alipay',
+                    orderInfo: result.data.pay_data,
+                    //支付宝订单数据
+                    success: function success(res) {
+                      that.payResult('success');
+                    },
+                    fail: function fail(err) {
+                      console.log('支付取消或者失败:', err);
+                      err.errMsg !== "requestPayment:fail cancel" && that.payResult('fail');
+                    }
+                  });
+                }
+              case 5:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7, this);
+      }));
+      function aliPay() {
+        return _aliPay.apply(this, arguments);
+      }
+      return aliPay;
+    }() // 微信支付
+  }, {
+    key: "wechatPay",
+    value: function () {
+      var _wechatPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8() {
+        var that, result;
+        return _regenerator.default.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                that = this;
+                _context8.next = 3;
+                return this.prepay();
+              case 3:
+                result = _context8.sent;
+                if (result.code === 1) {
+                  uni.requestPayment({
+                    provider: 'wxpay',
+                    orderInfo: JSON.parse(result.data.pay_data),
+                    //微信订单数据(官方说是string。实测为object)
+                    success: function success(res) {
+                      that.payResult('success');
+                    },
+                    fail: function fail(err) {
+                      err.errMsg !== "requestPayment:fail cancel" && that.payResult('fail');
+                      console.log('支付取消或者失败:', err);
+                    }
+                  });
+                }
+              case 5:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8, this);
+      }));
+      function wechatPay() {
+        return _wechatPay.apply(this, arguments);
+      }
+      return wechatPay;
+    }() // 支付结果跳转,success:成功，fail:失败
+  }, {
+    key: "payResult",
+    value: function payResult(resultType) {
+      var that = this;
+      _index2.router.replace({
+        path: '/pages/order/payment/result',
+        query: {
+          orderId: that.order.id,
+          type: that.payment,
+          //重新支付的时候使用
+          payState: resultType,
+          orderType: that.orderType
+        }
+      });
+    }
+  }]);
+  return ShoproPay;
+}();
+exports.default = ShoproPay;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
 
 /***/ }),
 
@@ -28099,454 +28616,6 @@ router.beforeEach(function (to, from, next) {
 
 /***/ }),
 
-/***/ 464:
-/*!****************************************!*\
-  !*** E:/heshangwx/shopro/pay/index.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 31));
-var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 33));
-var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
-var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
-var _index = _interopRequireDefault(__webpack_require__(/*! @/shopro/request/index */ 38));
-var _wechat = _interopRequireDefault(__webpack_require__(/*! @/shopro/wechat/wechat */ 48));
-var _index2 = __webpack_require__(/*! @/shopro/router/index.js */ 45);
-var _store = _interopRequireDefault(__webpack_require__(/*! @/shopro/store */ 35));
-var _platform = _interopRequireDefault(__webpack_require__(/*! @/shopro/platform */ 40));
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-/**
- * 支付
- * 
- * @param {String} payment = ['wechat','alipay','wallet']  	- 支付方式
- * @param {Object} order = {}  								- 订单详情
- * @param {String} orderType = ['goods','recharge'] 		- 订单类型
- */
-var ShoproPay = /*#__PURE__*/function () {
-  //						wxOfficialAccount			wxMiniProgram			App						H5
-  // 			wechat			公众号JSSDK支付				小程序支付			微信开放平台支付			H5网页支付
-  //			alipay			复制网址						复制网址				支付宝开放平台支付		    直接跳转链接
-  // 			wallet			v							v					v						v
-
-  function ShoproPay(payment, order, orderType) {
-    (0, _classCallCheck2.default)(this, ShoproPay);
-    this.payment = payment;
-    this.order = order;
-    this.orderType = orderType;
-    this.platform = _platform.default.get();
-    var payMehod = this.getPayMethod();
-    payMehod();
-  }
-  (0, _createClass2.default)(ShoproPay, [{
-    key: "getPayMethod",
-    value: function getPayMethod() {
-      var _this = this;
-      var payMethod = {
-        'wxOfficialAccount': {
-          'wechat': function wechat() {
-            _this.wxOfficialAccountPay();
-          },
-          'alipay': function alipay() {
-            _this.copyPayLink();
-          },
-          'wallet': function wallet() {
-            _this.walletPay();
-          }
-        },
-        'wxMiniProgram': {
-          'wechat': function wechat() {
-            _this.wxMiniProgramPay();
-          },
-          'alipay': function alipay() {
-            _this.copyPayLink();
-          },
-          'wallet': function wallet() {
-            _this.walletPay();
-          }
-        },
-        'App': {
-          'wechat': function wechat() {
-            _this.wechatPay();
-          },
-          'alipay': function alipay() {
-            _this.aliPay();
-          },
-          'wallet': function wallet() {
-            _this.walletPay();
-          }
-        },
-        'H5': {
-          'wechat': function wechat() {
-            _this.wechatWapPay();
-          },
-          'alipay': function alipay() {
-            _this.goToPayLink();
-          },
-          'wallet': function wallet() {
-            _this.walletPay();
-          }
-        }
-      };
-      return payMethod[this.platform][this.payment];
-    }
-
-    // 预支付
-  }, {
-    key: "prepay",
-    value: function prepay() {
-      var _this2 = this;
-      var that = this;
-      return new Promise(function (resolve, reject) {
-        var that = _this2;
-        var domain = _store.default.getters.initShop.domain;
-        var return_url = "".concat(domain, "pages/order/payment/result?orderId=***&type=").concat(that.payment, "&payState=success&orderType=").concat(that.orderType);
-        console.log(return_url, 'return_url');
-        var params = {
-          order_sn: that.order.order_sn,
-          payment: that.payment,
-          return_url: return_url
-        };
-        if (uni.getStorageSync('openid')) {
-          params.openid = uni.getStorageSync('openid');
-        }
-        (0, _index.default)('money.prepay', params, '支付中').then(function (res) {
-          if (res.code === 1) {
-            res.data === 'no_openid' ? uni.showModal({
-              title: '微信支付',
-              content: '请先绑定微信再使用微信支付',
-              success: function success(res) {
-                if (res.confirm) {
-                  _wechat.default.bind();
-                }
-              }
-            }) : resolve(res);
-          }
-        });
-      });
-    }
-
-    // 微信H5支付
-  }, {
-    key: "wxOfficialAccountPay",
-    value: function () {
-      var _wxOfficialAccountPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-        var that, result;
-        return _regenerator.default.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                that = this;
-                _context.next = 3;
-                return this.prepay();
-              case 3:
-                result = _context.sent;
-                wxsdk.wxpay(result.data.pay_data, function (res) {
-                  res.errMsg == "chooseWXPay:ok" ? that.payResult('success') : that.payResult('fail');
-                });
-              case 5:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-      function wxOfficialAccountPay() {
-        return _wxOfficialAccountPay.apply(this, arguments);
-      }
-      return wxOfficialAccountPay;
-    }() //浏览器微信支付
-  }, {
-    key: "wechatWapPay",
-    value: function () {
-      var _wechatWapPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee2() {
-        var that, result, newUrl, url, reg, domain, params;
-        return _regenerator.default.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                that = this;
-                _context2.next = 3;
-                return this.prepay();
-              case 3:
-                result = _context2.sent;
-                if (result.code === 1) {
-                  newUrl = '';
-                  if (result.data.pay_data && result.data.pay_data.h5_url != undefined) {
-                    console.log('v3');
-                    newUrl = result.data.pay_data.h5_url;
-                  } else {
-                    console.log('v2');
-                    url = result.data.pay_data.match(/url\=\'(\S*)\'/);
-                    reg = new RegExp('&amp;', 'g'); //g代表全部
-                    newUrl = url[1].replace(reg, '&');
-                  }
-                  domain = _store.default.getters.initShop.domain; //域名需要https
-                  params = encodeURIComponent("".concat(domain, "pages/order/payment/result?orderId=").concat(that.order.id, "&type=").concat(that.payment, "&orderType=").concat(that.orderType));
-                  window.location.href = newUrl + '&redirect_url=' + params;
-                }
-              case 5:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, this);
-      }));
-      function wechatWapPay() {
-        return _wechatWapPay.apply(this, arguments);
-      }
-      return wechatWapPay;
-    }() // 微信小程序支付
-  }, {
-    key: "wxMiniProgramPay",
-    value: function () {
-      var _wxMiniProgramPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee3() {
-        var that, result;
-        return _regenerator.default.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                that = this;
-                _context3.next = 3;
-                return this.prepay();
-              case 3:
-                result = _context3.sent;
-                uni.requestPayment(_objectSpread(_objectSpread({
-                  provider: 'wxpay'
-                }, result.data.pay_data), {}, {
-                  success: function success(res) {
-                    that.payResult('success');
-                  },
-                  fail: function fail(err) {
-                    console.log('支付取消或者失败:', err);
-                    err.errMsg !== "requestPayment:fail cancel" && that.payResult('fail');
-                  }
-                }));
-              case 5:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3, this);
-      }));
-      function wxMiniProgramPay() {
-        return _wxMiniProgramPay.apply(this, arguments);
-      }
-      return wxMiniProgramPay;
-    }() // 余额支付
-  }, {
-    key: "walletPay",
-    value: function () {
-      var _walletPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee4() {
-        var that, result;
-        return _regenerator.default.wrap(function _callee4$(_context4) {
-          while (1) {
-            switch (_context4.prev = _context4.next) {
-              case 0:
-                that = this;
-                _context4.next = 3;
-                return this.prepay();
-              case 3:
-                result = _context4.sent;
-                result.code === 1 && that.payResult('success');
-              case 5:
-              case "end":
-                return _context4.stop();
-            }
-          }
-        }, _callee4, this);
-      }));
-      function walletPay() {
-        return _walletPay.apply(this, arguments);
-      }
-      return walletPay;
-    }() // 支付宝复制链接支付
-  }, {
-    key: "copyPayLink",
-    value: function () {
-      var _copyPayLink = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee5() {
-        var that, result;
-        return _regenerator.default.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                that = this;
-                _context5.next = 3;
-                return this.prepay();
-              case 3:
-                result = _context5.sent;
-                if (result.code === 1) {
-                  //引入showModal 点击确认 复制链接；
-                  uni.showModal({
-                    title: '支付宝支付',
-                    content: '复制链接到外部浏览器',
-                    confirmText: '复制链接',
-                    success: function success(res) {
-                      if (res.confirm) {
-                        uni.setClipboardData({
-                          data: result.data.pay_data,
-                          success: function success(data) {
-                            that.$u.toast('已复制到剪切板');
-                          }
-                        });
-                      }
-                    }
-                  });
-                }
-              case 5:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _callee5, this);
-      }));
-      function copyPayLink() {
-        return _copyPayLink.apply(this, arguments);
-      }
-      return copyPayLink;
-    }() // 支付链接
-  }, {
-    key: "goToPayLink",
-    value: function () {
-      var _goToPayLink = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee6() {
-        var that, result;
-        return _regenerator.default.wrap(function _callee6$(_context6) {
-          while (1) {
-            switch (_context6.prev = _context6.next) {
-              case 0:
-                that = this;
-                _context6.next = 3;
-                return this.prepay();
-              case 3:
-                result = _context6.sent;
-                if (result.code === 1) {
-                  window.location = result.data.pay_data;
-                }
-              case 5:
-              case "end":
-                return _context6.stop();
-            }
-          }
-        }, _callee6, this);
-      }));
-      function goToPayLink() {
-        return _goToPayLink.apply(this, arguments);
-      }
-      return goToPayLink;
-    }() // 支付宝支付
-  }, {
-    key: "aliPay",
-    value: function () {
-      var _aliPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee7() {
-        var that, result;
-        return _regenerator.default.wrap(function _callee7$(_context7) {
-          while (1) {
-            switch (_context7.prev = _context7.next) {
-              case 0:
-                that = this;
-                _context7.next = 3;
-                return this.prepay();
-              case 3:
-                result = _context7.sent;
-                if (result.code === 1) {
-                  uni.requestPayment({
-                    provider: 'alipay',
-                    orderInfo: result.data.pay_data,
-                    //支付宝订单数据
-                    success: function success(res) {
-                      that.payResult('success');
-                    },
-                    fail: function fail(err) {
-                      console.log('支付取消或者失败:', err);
-                      err.errMsg !== "requestPayment:fail cancel" && that.payResult('fail');
-                    }
-                  });
-                }
-              case 5:
-              case "end":
-                return _context7.stop();
-            }
-          }
-        }, _callee7, this);
-      }));
-      function aliPay() {
-        return _aliPay.apply(this, arguments);
-      }
-      return aliPay;
-    }() // 微信支付
-  }, {
-    key: "wechatPay",
-    value: function () {
-      var _wechatPay = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee8() {
-        var that, result;
-        return _regenerator.default.wrap(function _callee8$(_context8) {
-          while (1) {
-            switch (_context8.prev = _context8.next) {
-              case 0:
-                that = this;
-                _context8.next = 3;
-                return this.prepay();
-              case 3:
-                result = _context8.sent;
-                if (result.code === 1) {
-                  uni.requestPayment({
-                    provider: 'wxpay',
-                    orderInfo: JSON.parse(result.data.pay_data),
-                    //微信订单数据(官方说是string。实测为object)
-                    success: function success(res) {
-                      that.payResult('success');
-                    },
-                    fail: function fail(err) {
-                      err.errMsg !== "requestPayment:fail cancel" && that.payResult('fail');
-                      console.log('支付取消或者失败:', err);
-                    }
-                  });
-                }
-              case 5:
-              case "end":
-                return _context8.stop();
-            }
-          }
-        }, _callee8, this);
-      }));
-      function wechatPay() {
-        return _wechatPay.apply(this, arguments);
-      }
-      return wechatPay;
-    }() // 支付结果跳转,success:成功，fail:失败
-  }, {
-    key: "payResult",
-    value: function payResult(resultType) {
-      var that = this;
-      _index2.router.replace({
-        path: '/pages/order/payment/result',
-        query: {
-          orderId: that.order.id,
-          type: that.payment,
-          //重新支付的时候使用
-          payState: resultType,
-          orderType: that.orderType
-        }
-      });
-    }
-  }]);
-  return ShoproPay;
-}();
-exports.default = ShoproPay;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"]))
-
-/***/ }),
-
 /***/ 47:
 /*!***********************************!*\
   !*** (webpack)/buildin/module.js ***!
@@ -29190,7 +29259,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 529:
+/***/ 523:
 /*!********************************************************!*\
   !*** E:/heshangwx/shopro/poster/QS-SharePoster/app.js ***!
   \********************************************************/
@@ -29558,139 +29627,7 @@ module.exports = _app;
 
 /***/ }),
 
-/***/ 53:
-/*!**********************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
-  \**********************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode, /* vue-cli only */
-  components, // fixed by xxxxxx auto components
-  renderjs // fixed by xxxxxx renderjs
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // fixed by xxxxxx auto components
-  if (components) {
-    if (!options.components) {
-      options.components = {}
-    }
-    var hasOwn = Object.prototype.hasOwnProperty
-    for (var name in components) {
-      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
-        options.components[name] = components[name]
-      }
-    }
-  }
-  // fixed by xxxxxx renderjs
-  if (renderjs) {
-    if(typeof renderjs.beforeCreate === 'function'){
-			renderjs.beforeCreate = [renderjs.beforeCreate]
-		}
-    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
-      this[renderjs.__module] = this
-    });
-    (options.mixins || (options.mixins = [])).push(renderjs)
-  }
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-
-/***/ 530:
+/***/ 524:
 /*!*******************************************************************!*\
   !*** E:/heshangwx/shopro/poster/QS-SharePoster/QS-SharePoster.js ***!
   \*******************************************************************/
@@ -29706,9 +29643,9 @@ var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/hel
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ 18));
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 33));
-var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ 529));
-var _QRCodeAlg = _interopRequireDefault(__webpack_require__(/*! ./QRCodeAlg.js */ 531));
-var _imageTools = __webpack_require__(/*! ./image-tools.js */ 532);
+var _app2 = _interopRequireDefault(__webpack_require__(/*! ./app.js */ 523));
+var _QRCodeAlg = _interopRequireDefault(__webpack_require__(/*! ./QRCodeAlg.js */ 525));
+var _imageTools = __webpack_require__(/*! ./image-tools.js */ 526);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { (0, _defineProperty2.default)(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 var ShreUserPosterBackgroundKey = 'ShrePosterBackground_'; // 背景图片缓存名称前缀
@@ -31489,7 +31426,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 531:
+/***/ 525:
 /*!**************************************************************!*\
   !*** E:/heshangwx/shopro/poster/QS-SharePoster/QRCodeAlg.js ***!
   \**************************************************************/
@@ -32310,7 +32247,7 @@ QRBitBuffer.prototype = {
 
 /***/ }),
 
-/***/ 532:
+/***/ 526:
 /*!****************************************************************!*\
   !*** E:/heshangwx/shopro/poster/QS-SharePoster/image-tools.js ***!
   \****************************************************************/
@@ -32475,6 +32412,138 @@ function base64ToPath(base64) {
   });
 }
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/wx.js */ 1)["default"]))
+
+/***/ }),
+
+/***/ 53:
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
+  \**********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode, /* vue-cli only */
+  components, // fixed by xxxxxx auto components
+  renderjs // fixed by xxxxxx renderjs
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // fixed by xxxxxx auto components
+  if (components) {
+    if (!options.components) {
+      options.components = {}
+    }
+    var hasOwn = Object.prototype.hasOwnProperty
+    for (var name in components) {
+      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
+        options.components[name] = components[name]
+      }
+    }
+  }
+  // fixed by xxxxxx renderjs
+  if (renderjs) {
+    if(typeof renderjs.beforeCreate === 'function'){
+			renderjs.beforeCreate = [renderjs.beforeCreate]
+		}
+    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
+      this[renderjs.__module] = this
+    });
+    (options.mixins || (options.mixins = [])).push(renderjs)
+  }
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
 
 /***/ }),
 
@@ -32674,7 +32743,7 @@ var request = function request(options) {
       method: options.method || 'POST',
       // 方法从options中获取，如果没有传入method，则默认为POST，
       data: _objectSpread(_objectSpread({}, options.data), {}, {
-        uuid: 'wx3348010e520bdffa'
+        uuid: 'wx28e269b3f78c2d01'
       }),
       // 请求接口参数
       dataType: 'json',
@@ -32918,11 +32987,11 @@ var push = function push(params) {
 };
 
 /**
-        * debounce 函数在给定的时间间隔内只允许你提供的回调函数执行一次，以此降低它的执行频率。
-        * @method 防抖函数(设定时间之后出结果，重复点击无效，如果重复点击，从点击的时刻,重新计算时间)
-        * @param func 目标函数
-        * @param wait 延迟执行毫秒数
-      */
+ * debounce 函数在给定的时间间隔内只允许你提供的回调函数执行一次，以此降低它的执行频率。
+ * @method 防抖函数(设定时间之后出结果，重复点击无效，如果重复点击，从点击的时刻,重新计算时间)
+ * @param func 目标函数
+ * @param wait 延迟执行毫秒数
+ */
 exports.push = push;
 var debounce = function debounce(func, wait) {
   var _lastTime;
@@ -32936,9 +33005,9 @@ var debounce = function debounce(func, wait) {
   };
 };
 /**
-    * @method 节流函数(设定时间之内只能点击一次，点击后立即触发，重复点击无效，必须等到设定时间执行完才执行第二次)	
-    * @param func 函数
-    * @param wait 延迟执行毫秒数
+ * @method 节流函数(设定时间之内只能点击一次，点击后立即触发，重复点击无效，必须等到设定时间执行完才执行第二次)	
+ * @param func 函数
+ * @param wait 延迟执行毫秒数
  */
 exports.debounce = debounce;
 var throttle = function throttle(func, wait) {
@@ -34444,72 +34513,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 65:
-/*!********************************************************************!*\
-  !*** E:/heshangwx/node_modules/uview-ui/libs/function/timeFrom.js ***!
-  \********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _timeFormat = _interopRequireDefault(__webpack_require__(/*! ../../libs/function/timeFormat.js */ 64));
-/**
- * 时间戳转为多久之前
- * @param String timestamp 时间戳
- * @param String | Boolean format 如果为时间格式字符串，超出一定时间范围，返回固定的时间格式；
- * 如果为布尔值false，无论什么时间，都返回多久以前的格式
- */
-function timeFrom() {
-  var dateTime = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'yyyy-mm-dd';
-  // 如果为null,则格式化当前时间
-  if (!dateTime) dateTime = Number(new Date());
-  // 如果dateTime长度为10或者13，则为秒和毫秒的时间戳，如果超过13位，则为其他的时间格式
-  if (dateTime.toString().length == 10) dateTime *= 1000;
-  var timestamp = +new Date(Number(dateTime));
-  var timer = (Number(new Date()) - timestamp) / 1000;
-  // 如果小于5分钟,则返回"刚刚",其他以此类推
-  var tips = '';
-  switch (true) {
-    case timer < 300:
-      tips = '刚刚';
-      break;
-    case timer >= 300 && timer < 3600:
-      tips = parseInt(timer / 60) + '分钟前';
-      break;
-    case timer >= 3600 && timer < 86400:
-      tips = parseInt(timer / 3600) + '小时前';
-      break;
-    case timer >= 86400 && timer < 2592000:
-      tips = parseInt(timer / 86400) + '天前';
-      break;
-    default:
-      // 如果format为false，则无论什么时间戳，都显示xx之前
-      if (format === false) {
-        if (timer >= 2592000 && timer < 365 * 86400) {
-          tips = parseInt(timer / (86400 * 30)) + '个月前';
-        } else {
-          tips = parseInt(timer / (86400 * 365)) + '年前';
-        }
-      } else {
-        tips = (0, _timeFormat.default)(timestamp, format);
-      }
-  }
-  return tips;
-}
-var _default = timeFrom;
-exports.default = _default;
-
-/***/ }),
-
-/***/ 655:
+/***/ 649:
 /*!********************************************!*\
   !*** E:/heshangwx/shopro/validate/form.js ***!
   \********************************************/
@@ -34616,6 +34620,71 @@ var _default = {
     trigger: ['change', 'blur']
   }]
 };
+exports.default = _default;
+
+/***/ }),
+
+/***/ 65:
+/*!********************************************************************!*\
+  !*** E:/heshangwx/node_modules/uview-ui/libs/function/timeFrom.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _interopRequireDefault = __webpack_require__(/*! @babel/runtime/helpers/interopRequireDefault */ 4);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _timeFormat = _interopRequireDefault(__webpack_require__(/*! ../../libs/function/timeFormat.js */ 64));
+/**
+ * 时间戳转为多久之前
+ * @param String timestamp 时间戳
+ * @param String | Boolean format 如果为时间格式字符串，超出一定时间范围，返回固定的时间格式；
+ * 如果为布尔值false，无论什么时间，都返回多久以前的格式
+ */
+function timeFrom() {
+  var dateTime = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'yyyy-mm-dd';
+  // 如果为null,则格式化当前时间
+  if (!dateTime) dateTime = Number(new Date());
+  // 如果dateTime长度为10或者13，则为秒和毫秒的时间戳，如果超过13位，则为其他的时间格式
+  if (dateTime.toString().length == 10) dateTime *= 1000;
+  var timestamp = +new Date(Number(dateTime));
+  var timer = (Number(new Date()) - timestamp) / 1000;
+  // 如果小于5分钟,则返回"刚刚",其他以此类推
+  var tips = '';
+  switch (true) {
+    case timer < 300:
+      tips = '刚刚';
+      break;
+    case timer >= 300 && timer < 3600:
+      tips = parseInt(timer / 60) + '分钟前';
+      break;
+    case timer >= 3600 && timer < 86400:
+      tips = parseInt(timer / 3600) + '小时前';
+      break;
+    case timer >= 86400 && timer < 2592000:
+      tips = parseInt(timer / 86400) + '天前';
+      break;
+    default:
+      // 如果format为false，则无论什么时间戳，都显示xx之前
+      if (format === false) {
+        if (timer >= 2592000 && timer < 365 * 86400) {
+          tips = parseInt(timer / (86400 * 30)) + '个月前';
+        } else {
+          tips = parseInt(timer / (86400 * 365)) + '年前';
+        }
+      } else {
+        tips = (0, _timeFormat.default)(timestamp, format);
+      }
+  }
+  return tips;
+}
+var _default = timeFrom;
 exports.default = _default;
 
 /***/ }),
@@ -35059,40 +35128,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 73:
-/*!****************************************************************!*\
-  !*** E:/heshangwx/node_modules/uview-ui/libs/function/trim.js ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-function trim(str) {
-  var pos = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'both';
-  if (pos == 'both') {
-    return str.replace(/^\s+|\s+$/g, "");
-  } else if (pos == "left") {
-    return str.replace(/^\s*/, '');
-  } else if (pos == 'right') {
-    return str.replace(/(\s*$)/g, "");
-  } else if (pos == 'all') {
-    return str.replace(/\s+/g, "");
-  } else {
-    return str;
-  }
-}
-var _default = trim;
-exports.default = _default;
-
-/***/ }),
-
-/***/ 733:
+/***/ 727:
 /*!***********************************************************************!*\
   !*** E:/heshangwx/node_modules/uview-ui/libs/util/async-validator.js ***!
   \***********************************************************************/
@@ -36270,11 +36306,11 @@ Schema.warning = warning;
 Schema.messages = messages;
 var _default = Schema;
 exports.default = _default;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 734)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/node-libs-browser/mock/process.js */ 728)))
 
 /***/ }),
 
-/***/ 734:
+/***/ 728:
 /*!********************************************************!*\
   !*** ./node_modules/node-libs-browser/mock/process.js ***!
   \********************************************************/
@@ -36305,7 +36341,7 @@ exports.binding = function (name) {
     var path;
     exports.cwd = function () { return cwd };
     exports.chdir = function (dir) {
-        if (!path) path = __webpack_require__(/*! path */ 735);
+        if (!path) path = __webpack_require__(/*! path */ 729);
         cwd = path.resolve(dir, cwd);
     };
 })();
@@ -36319,7 +36355,7 @@ exports.features = {};
 
 /***/ }),
 
-/***/ 735:
+/***/ 729:
 /*!***********************************************!*\
   !*** ./node_modules/path-browserify/index.js ***!
   \***********************************************/
@@ -36629,7 +36665,40 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 734)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../node-libs-browser/mock/process.js */ 728)))
+
+/***/ }),
+
+/***/ 73:
+/*!****************************************************************!*\
+  !*** E:/heshangwx/node_modules/uview-ui/libs/function/trim.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+function trim(str) {
+  var pos = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'both';
+  if (pos == 'both') {
+    return str.replace(/^\s+|\s+$/g, "");
+  } else if (pos == "left") {
+    return str.replace(/^\s*/, '');
+  } else if (pos == 'right') {
+    return str.replace(/(\s*$)/g, "");
+  } else if (pos == 'all') {
+    return str.replace(/\s+/g, "");
+  } else {
+    return str;
+  }
+}
+var _default = trim;
+exports.default = _default;
 
 /***/ }),
 
@@ -36976,94 +37045,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 853:
-/*!***************************************************************!*\
-  !*** E:/heshangwx/node_modules/uview-ui/libs/util/emitter.js ***!
-  \***************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-/**
- * 递归使用 call 方式this指向
- * @param componentName // 需要找的组件的名称
- * @param eventName // 事件名称
- * @param params // 需要传递的参数
- */
-function _broadcast(componentName, eventName, params) {
-  // 循环子节点找到名称一样的子节点 否则 递归 当前子节点
-  this.$children.map(function (child) {
-    if (componentName === child.$options.name) {
-      child.$emit.apply(child, [eventName].concat(params));
-    } else {
-      _broadcast.apply(child, [componentName, eventName].concat(params));
-    }
-  });
-}
-var _default = {
-  methods: {
-    /**
-     * 派发 (向上查找) (一个)
-     * @param componentName // 需要找的组件的名称
-     * @param eventName // 事件名称
-     * @param params // 需要传递的参数
-     */
-    dispatch: function dispatch(componentName, eventName, params) {
-      var parent = this.$parent || this.$root; //$parent 找到最近的父节点 $root 根节点
-      var name = parent.$options.name; // 获取当前组件实例的name
-      // 如果当前有节点 && 当前没名称 且 当前名称等于需要传进来的名称的时候就去查找当前的节点
-      // 循环出当前名称的一样的组件实例
-      while (parent && (!name || name !== componentName)) {
-        parent = parent.$parent;
-        if (parent) {
-          name = parent.$options.name;
-        }
-      }
-      // 有节点表示当前找到了name一样的实例
-      if (parent) {
-        parent.$emit.apply(parent, [eventName].concat(params));
-      }
-    },
-    /**
-     * 广播 (向下查找) (广播多个)
-     * @param componentName // 需要找的组件的名称
-     * @param eventName // 事件名称
-     * @param params // 需要传递的参数
-     */
-    broadcast: function broadcast(componentName, eventName, params) {
-      _broadcast.call(this, componentName, eventName, params);
-    }
-  }
-};
-exports.default = _default;
-
-/***/ }),
-
-/***/ 9:
-/*!*****************************************************************!*\
-  !*** ./node_modules/@babel/runtime/helpers/arrayLikeToArray.js ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
-  }
-  return arr2;
-}
-module.exports = _arrayLikeToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ }),
-
-/***/ 938:
+/***/ 826:
 /*!*********************************************************!*\
   !*** E:/heshangwx/components/calendar-boke/calendar.js ***!
   \*********************************************************/
@@ -37716,7 +37698,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 946:
+/***/ 834:
 /*!***************************************!*\
   !*** E:/heshangwx/utils/regions.json ***!
   \***************************************/
@@ -37727,7 +37709,7 @@ module.exports = JSON.parse("[{\"value\":\"11\",\"text\":\"北京市\",\"childre
 
 /***/ }),
 
-/***/ 975:
+/***/ 870:
 /*!*****************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-calendar/components/uni-calendar/util.js ***!
   \*****************************************************************************/
@@ -37745,7 +37727,7 @@ exports.default = void 0;
 var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
-var _calendar = _interopRequireDefault(__webpack_require__(/*! ./calendar.js */ 976));
+var _calendar = _interopRequireDefault(__webpack_require__(/*! ./calendar.js */ 871));
 var Calendar = /*#__PURE__*/function () {
   function Calendar() {
     var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -38143,7 +38125,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 976:
+/***/ 871:
 /*!*********************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-calendar/components/uni-calendar/calendar.js ***!
   \*********************************************************************************/
@@ -38661,7 +38643,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 977:
+/***/ 872:
 /*!***********************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-calendar/components/uni-calendar/i18n/index.js ***!
   \***********************************************************************************/
@@ -38676,9 +38658,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 978));
-var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 979));
-var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 980));
+var _en = _interopRequireDefault(__webpack_require__(/*! ./en.json */ 873));
+var _zhHans = _interopRequireDefault(__webpack_require__(/*! ./zh-Hans.json */ 874));
+var _zhHant = _interopRequireDefault(__webpack_require__(/*! ./zh-Hant.json */ 875));
 var _default = {
   en: _en.default,
   'zh-Hans': _zhHans.default,
@@ -38688,7 +38670,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 978:
+/***/ 873:
 /*!**********************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-calendar/components/uni-calendar/i18n/en.json ***!
   \**********************************************************************************/
@@ -38699,7 +38681,7 @@ module.exports = JSON.parse("{\"uni-calender.ok\":\"ok\",\"uni-calender.cancel\"
 
 /***/ }),
 
-/***/ 979:
+/***/ 874:
 /*!***************************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-calendar/components/uni-calendar/i18n/zh-Hans.json ***!
   \***************************************************************************************/
@@ -38710,7 +38692,7 @@ module.exports = JSON.parse("{\"uni-calender.ok\":\"确定\",\"uni-calender.canc
 
 /***/ }),
 
-/***/ 980:
+/***/ 875:
 /*!***************************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-calendar/components/uni-calendar/i18n/zh-Hant.json ***!
   \***************************************************************************************/
@@ -38721,7 +38703,7 @@ module.exports = JSON.parse("{\"uni-calender.ok\":\"確定\",\"uni-calender.canc
 
 /***/ }),
 
-/***/ 988:
+/***/ 883:
 /*!**************************************************************************************************!*\
   !*** E:/heshangwx/uni_modules/uni-data-picker/components/uni-data-pickerview/uni-data-picker.js ***!
   \**************************************************************************************************/
@@ -39387,11 +39369,11 @@ var _default2 = {
   }
 };
 exports.default = _default2;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 989)["default"]))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js */ 884)["default"]))
 
 /***/ }),
 
-/***/ 989:
+/***/ 884:
 /*!************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/uni-cloud/dist/index.js ***!
   \************************************************************************************/
@@ -39407,20 +39389,20 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _regenerator = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/regenerator */ 31));
-var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/assertThisInitialized */ 990));
+var _assertThisInitialized2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/assertThisInitialized */ 885));
 var _slicedToArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ 5));
 var _typeof2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/typeof */ 13));
 var _toConsumableArray2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/toConsumableArray */ 18));
 var _asyncToGenerator2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ 33));
 var _defineProperty2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/defineProperty */ 11));
-var _inherits2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/inherits */ 991));
-var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ 992));
-var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ 993));
-var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/wrapNativeSuper */ 994));
+var _inherits2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/inherits */ 886));
+var _possibleConstructorReturn2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/possibleConstructorReturn */ 887));
+var _getPrototypeOf2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/getPrototypeOf */ 888));
+var _wrapNativeSuper2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/wrapNativeSuper */ 889));
 var _classCallCheck2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ 23));
 var _createClass2 = _interopRequireDefault(__webpack_require__(/*! @babel/runtime/helpers/createClass */ 24));
-var _pages = _interopRequireDefault(__webpack_require__(/*! @/pages.json */ 996));
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e34) { throw _e34; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e35) { didErr = true; err = _e35; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+var _pages = _interopRequireDefault(__webpack_require__(/*! @/pages.json */ 891));
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e33) { throw _e33; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e34) { didErr = true; err = _e34; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -39665,12 +39647,12 @@ var s = n(function (e, t) {
             b = e[t + 12],
             k = e[t + 13],
             A = e[t + 14],
-            P = e[t + 15],
-            T = i[0],
-            C = i[1],
+            C = e[t + 15],
+            P = i[0],
+            T = i[1],
             x = i[2],
             O = i[3];
-          T = u(T, C, x, O, o, 7, a[0]), O = u(O, T, C, x, c, 12, a[1]), x = u(x, O, T, C, p, 17, a[2]), C = u(C, x, O, T, f, 22, a[3]), T = u(T, C, x, O, g, 7, a[4]), O = u(O, T, C, x, m, 12, a[5]), x = u(x, O, T, C, y, 17, a[6]), C = u(C, x, O, T, _, 22, a[7]), T = u(T, C, x, O, w, 7, a[8]), O = u(O, T, C, x, v, 12, a[9]), x = u(x, O, T, C, I, 17, a[10]), C = u(C, x, O, T, S, 22, a[11]), T = u(T, C, x, O, b, 7, a[12]), O = u(O, T, C, x, k, 12, a[13]), x = u(x, O, T, C, A, 17, a[14]), T = h(T, C = u(C, x, O, T, P, 22, a[15]), x, O, c, 5, a[16]), O = h(O, T, C, x, y, 9, a[17]), x = h(x, O, T, C, S, 14, a[18]), C = h(C, x, O, T, o, 20, a[19]), T = h(T, C, x, O, m, 5, a[20]), O = h(O, T, C, x, I, 9, a[21]), x = h(x, O, T, C, P, 14, a[22]), C = h(C, x, O, T, g, 20, a[23]), T = h(T, C, x, O, v, 5, a[24]), O = h(O, T, C, x, A, 9, a[25]), x = h(x, O, T, C, f, 14, a[26]), C = h(C, x, O, T, w, 20, a[27]), T = h(T, C, x, O, k, 5, a[28]), O = h(O, T, C, x, p, 9, a[29]), x = h(x, O, T, C, _, 14, a[30]), T = l(T, C = h(C, x, O, T, b, 20, a[31]), x, O, m, 4, a[32]), O = l(O, T, C, x, w, 11, a[33]), x = l(x, O, T, C, S, 16, a[34]), C = l(C, x, O, T, A, 23, a[35]), T = l(T, C, x, O, c, 4, a[36]), O = l(O, T, C, x, g, 11, a[37]), x = l(x, O, T, C, _, 16, a[38]), C = l(C, x, O, T, I, 23, a[39]), T = l(T, C, x, O, k, 4, a[40]), O = l(O, T, C, x, o, 11, a[41]), x = l(x, O, T, C, f, 16, a[42]), C = l(C, x, O, T, y, 23, a[43]), T = l(T, C, x, O, v, 4, a[44]), O = l(O, T, C, x, b, 11, a[45]), x = l(x, O, T, C, P, 16, a[46]), T = d(T, C = l(C, x, O, T, p, 23, a[47]), x, O, o, 6, a[48]), O = d(O, T, C, x, _, 10, a[49]), x = d(x, O, T, C, A, 15, a[50]), C = d(C, x, O, T, m, 21, a[51]), T = d(T, C, x, O, b, 6, a[52]), O = d(O, T, C, x, f, 10, a[53]), x = d(x, O, T, C, I, 15, a[54]), C = d(C, x, O, T, c, 21, a[55]), T = d(T, C, x, O, w, 6, a[56]), O = d(O, T, C, x, P, 10, a[57]), x = d(x, O, T, C, y, 15, a[58]), C = d(C, x, O, T, k, 21, a[59]), T = d(T, C, x, O, g, 6, a[60]), O = d(O, T, C, x, S, 10, a[61]), x = d(x, O, T, C, p, 15, a[62]), C = d(C, x, O, T, v, 21, a[63]), i[0] = i[0] + T | 0, i[1] = i[1] + C | 0, i[2] = i[2] + x | 0, i[3] = i[3] + O | 0;
+          P = u(P, T, x, O, o, 7, a[0]), O = u(O, P, T, x, c, 12, a[1]), x = u(x, O, P, T, p, 17, a[2]), T = u(T, x, O, P, f, 22, a[3]), P = u(P, T, x, O, g, 7, a[4]), O = u(O, P, T, x, m, 12, a[5]), x = u(x, O, P, T, y, 17, a[6]), T = u(T, x, O, P, _, 22, a[7]), P = u(P, T, x, O, w, 7, a[8]), O = u(O, P, T, x, v, 12, a[9]), x = u(x, O, P, T, I, 17, a[10]), T = u(T, x, O, P, S, 22, a[11]), P = u(P, T, x, O, b, 7, a[12]), O = u(O, P, T, x, k, 12, a[13]), x = u(x, O, P, T, A, 17, a[14]), P = h(P, T = u(T, x, O, P, C, 22, a[15]), x, O, c, 5, a[16]), O = h(O, P, T, x, y, 9, a[17]), x = h(x, O, P, T, S, 14, a[18]), T = h(T, x, O, P, o, 20, a[19]), P = h(P, T, x, O, m, 5, a[20]), O = h(O, P, T, x, I, 9, a[21]), x = h(x, O, P, T, C, 14, a[22]), T = h(T, x, O, P, g, 20, a[23]), P = h(P, T, x, O, v, 5, a[24]), O = h(O, P, T, x, A, 9, a[25]), x = h(x, O, P, T, f, 14, a[26]), T = h(T, x, O, P, w, 20, a[27]), P = h(P, T, x, O, k, 5, a[28]), O = h(O, P, T, x, p, 9, a[29]), x = h(x, O, P, T, _, 14, a[30]), P = l(P, T = h(T, x, O, P, b, 20, a[31]), x, O, m, 4, a[32]), O = l(O, P, T, x, w, 11, a[33]), x = l(x, O, P, T, S, 16, a[34]), T = l(T, x, O, P, A, 23, a[35]), P = l(P, T, x, O, c, 4, a[36]), O = l(O, P, T, x, g, 11, a[37]), x = l(x, O, P, T, _, 16, a[38]), T = l(T, x, O, P, I, 23, a[39]), P = l(P, T, x, O, k, 4, a[40]), O = l(O, P, T, x, o, 11, a[41]), x = l(x, O, P, T, f, 16, a[42]), T = l(T, x, O, P, y, 23, a[43]), P = l(P, T, x, O, v, 4, a[44]), O = l(O, P, T, x, b, 11, a[45]), x = l(x, O, P, T, C, 16, a[46]), P = d(P, T = l(T, x, O, P, p, 23, a[47]), x, O, o, 6, a[48]), O = d(O, P, T, x, _, 10, a[49]), x = d(x, O, P, T, A, 15, a[50]), T = d(T, x, O, P, m, 21, a[51]), P = d(P, T, x, O, b, 6, a[52]), O = d(O, P, T, x, f, 10, a[53]), x = d(x, O, P, T, I, 15, a[54]), T = d(T, x, O, P, c, 21, a[55]), P = d(P, T, x, O, w, 6, a[56]), O = d(O, P, T, x, C, 10, a[57]), x = d(x, O, P, T, y, 15, a[58]), T = d(T, x, O, P, k, 21, a[59]), P = d(P, T, x, O, g, 6, a[60]), O = d(O, P, T, x, S, 10, a[61]), x = d(x, O, P, T, p, 15, a[62]), T = d(T, x, O, P, v, 21, a[63]), i[0] = i[0] + P | 0, i[1] = i[1] + T | 0, i[2] = i[2] + x | 0, i[3] = i[3] + O | 0;
         },
         _doFinalize: function _doFinalize() {
           var t = this._data,
@@ -39866,13 +39848,13 @@ var S = "development" === "development",
   b = "mp-weixin",
   k = "true" === undefined || !0 === undefined,
   A = I([]),
-  P = "h5" === b ? "web" : "app-plus" === b ? "app" : b,
-  T = I(undefined),
-  C = I([]) || [],
+  C = "h5" === b ? "web" : "app-plus" === b ? "app" : b,
+  P = I(undefined),
+  T = I([]) || [],
   x = true;
 var O = "";
 try {
-  O = (__webpack_require__(/*! uni-stat-config */ 997).default || __webpack_require__(/*! uni-stat-config */ 997)).appid;
+  O = (__webpack_require__(/*! uni-stat-config */ 892).default || __webpack_require__(/*! uni-stat-config */ 892)).appid;
 } catch (e) {}
 var E = {};
 function L(e) {
@@ -39880,7 +39862,7 @@ function L(e) {
   var n, s;
   return n = E, s = e, Object.prototype.hasOwnProperty.call(n, s) || (E[e] = t), E[e];
 }
-"app" === P && (E = uni._globalUniCloudObj ? uni._globalUniCloudObj : uni._globalUniCloudObj = {});
+"app" === C && (E = uni._globalUniCloudObj ? uni._globalUniCloudObj : uni._globalUniCloudObj = {});
 var R = ["invoke", "success", "fail", "complete"],
   U = L("_globalUniCloudInterceptor");
 function N(e, t) {
@@ -39924,11 +39906,11 @@ var K = L("_globalUniCloudListener"),
 function J(e) {
   return K[e] || (K[e] = []), K[e];
 }
-function G(e, t) {
+function V(e, t) {
   var n = J(e);
   n.includes(t) || n.push(t);
 }
-function V(e, t) {
+function G(e, t) {
   var n = J(e),
     s = n.indexOf(t);
   -1 !== s && n.splice(s, 1);
@@ -40003,6 +39985,9 @@ var ne = {
   },
   clearStorageSync: function clearStorageSync() {
     return uni.clearStorageSync();
+  },
+  connectSocket: function connectSocket(e) {
+    return uni.connectSocket(e);
   }
 };
 function se() {
@@ -40037,9 +40022,10 @@ function ce() {
     scene: t
   };
 }
-function ue() {
+var ue = {};
+function he() {
   var e = uni.getLocale && uni.getLocale() || "en";
-  if (oe) return _objectSpread(_objectSpread({}, oe), {}, {
+  if (oe) return _objectSpread(_objectSpread(_objectSpread({}, ue), oe), {}, {
     locale: e,
     LOCALE: e
   });
@@ -40048,21 +40034,21 @@ function ue() {
     s = t.osName,
     r = t.uniPlatform,
     i = t.appId,
-    o = ["pixelRatio", "brand", "model", "system", "language", "version", "platform", "host", "SDKVersion", "swanNativeVersion", "app", "AppPlatform", "fontSizeSetting"];
-  for (var _e3 = 0; _e3 < o.length; _e3++) {
-    delete t[o[_e3]];
+    o = ["appId", "appLanguage", "appName", "appVersion", "appVersionCode", "appWgtVersion", "browserName", "browserVersion", "deviceBrand", "deviceId", "deviceModel", "deviceType", "osName", "osVersion", "romName", "romVersion", "ua", "hostName", "hostVersion", "uniPlatform", "uniRuntimeVersion", "uniRuntimeVersionCode", "uniCompilerVersion", "uniCompilerVersionCode"];
+  for (var _e3 in t) {
+    Object.hasOwnProperty.call(t, _e3) && -1 === o.indexOf(_e3) && delete t[_e3];
   }
   return oe = _objectSpread(_objectSpread({
     PLATFORM: r,
     OS: s,
     APPID: i,
     DEVICEID: n
-  }, ce()), t), _objectSpread(_objectSpread({}, oe), {}, {
+  }, ce()), t), _objectSpread(_objectSpread(_objectSpread({}, ue), oe), {}, {
     locale: e,
     LOCALE: e
   });
 }
-var he = {
+var le = {
   sign: function sign(e, t) {
     var n = "";
     return Object.keys(e).sort().forEach(function (t) {
@@ -40073,7 +40059,7 @@ var he = {
     return new Promise(function (n, s) {
       t(Object.assign(e, {
         complete: function complete(e) {
-          e || (e = {}), S && "web" === P && e.errMsg && 0 === e.errMsg.indexOf("request:fail") && console.warn("发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5");
+          e || (e = {}), S && "web" === C && e.errMsg && 0 === e.errMsg.indexOf("request:fail") && console.warn("发布H5，需要在uniCloud后台操作，绑定安全域名，否则会因为跨域问题而无法访问。教程参考：https://uniapp.dcloud.io/uniCloud/quickstart?id=useinh5");
           var t = e.data && e.data.header && e.data.header["x-serverless-request-id"] || e.header && e.header["request-id"];
           if (!e.statusCode || e.statusCode >= 400) {
             var _n4 = e.data && e.data.error && e.data.error.code || "SYS_ERR",
@@ -40099,10 +40085,10 @@ var he = {
     return a.stringify(o.parse(e));
   }
 };
-var le = /*#__PURE__*/function () {
-  function le(e) {
+var de = /*#__PURE__*/function () {
+  function de(e) {
     var _this3 = this;
-    (0, _classCallCheck2.default)(this, le);
+    (0, _classCallCheck2.default)(this, de);
     ["spaceId", "clientSecret"].forEach(function (t) {
       if (!Object.prototype.hasOwnProperty.call(e, t)) throw new Error("".concat(t, " required"));
     }), this.config = Object.assign({}, {
@@ -40123,7 +40109,7 @@ var le = /*#__PURE__*/function () {
       retryRule: w
     });
   }
-  (0, _createClass2.default)(le, [{
+  (0, _createClass2.default)(de, [{
     key: "hasAccessToken",
     get: function get() {
       return !!this.accessToken;
@@ -40136,7 +40122,7 @@ var le = /*#__PURE__*/function () {
   }, {
     key: "requestWrapped",
     value: function requestWrapped(e) {
-      return he.wrappedRequest(e, this.adapter.request);
+      return le.wrappedRequest(e, this.adapter.request);
     }
   }, {
     key: "requestAuth",
@@ -40167,7 +40153,7 @@ var le = /*#__PURE__*/function () {
     key: "rebuildRequest",
     value: function rebuildRequest(e) {
       var t = Object.assign({}, e);
-      return t.data.token = this.accessToken, t.header["x-basement-token"] = this.accessToken, t.header["x-serverless-sign"] = he.sign(t.data, this.config.clientSecret), t;
+      return t.data.token = this.accessToken, t.header["x-basement-token"] = this.accessToken, t.header["x-serverless-sign"] = le.sign(t.data, this.config.clientSecret), t;
     }
   }, {
     key: "setupRequest",
@@ -40179,7 +40165,7 @@ var le = /*#__PURE__*/function () {
         s = {
           "Content-Type": "application/json"
         };
-      return "auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = he.sign(n, this.config.clientSecret), {
+      return "auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = le.sign(n, this.config.clientSecret), {
         url: this.config.requestUrl,
         method: "POST",
         data: n,
@@ -40369,7 +40355,7 @@ var le = /*#__PURE__*/function () {
                     }),
                     callbackBodyType: "application/json"
                   });
-                  _.callback = he.toBase64(_e4);
+                  _.callback = le.toBase64(_e4);
                 }
                 w = {
                   url: "https://" + a.host,
@@ -40494,11 +40480,11 @@ var le = /*#__PURE__*/function () {
       return getFileInfo;
     }()
   }]);
-  return le;
+  return de;
 }();
-var de = {
+var pe = {
   init: function init(e) {
-    var t = new le(e),
+    var t = new de(e),
       n = {
         signInAnonymously: function signInAnonymously() {
           return t.authorize();
@@ -40512,13 +40498,13 @@ var de = {
     }, t.customAuth = t.auth, t;
   }
 };
-var pe = "undefined" != typeof location && "http:" === location.protocol ? "http:" : "https:";
-var fe;
+var fe = "undefined" != typeof location && "http:" === location.protocol ? "http:" : "https:";
+var ge;
 !function (e) {
   e.local = "local", e.none = "none", e.session = "session";
-}(fe || (fe = {}));
-var ge = function ge() {},
-  me = n(function (e, t) {
+}(ge || (ge = {}));
+var me = function me() {},
+  ye = n(function (e, t) {
     var n;
     e.exports = (n = r, function (e) {
       var t = n,
@@ -40578,11 +40564,11 @@ var ge = function ge() {},
       t.SHA256 = i._createHelper(h), t.HmacSHA256 = i._createHmacHelper(h);
     }(Math), n.SHA256);
   }),
-  ye = me,
-  _e = n(function (e, t) {
+  _e = ye,
+  we = n(function (e, t) {
     e.exports = r.HmacSHA256;
   });
-var we = function we() {
+var ve = function ve() {
   var e;
   if (!Promise) {
     e = function e() {}, e.promise = {};
@@ -40604,14 +40590,14 @@ var we = function we() {
   });
   return e.promise = t, e;
 };
-function ve(e) {
+function Ie(e) {
   return void 0 === e;
 }
-function Ie(e) {
+function Se(e) {
   return "[object Null]" === Object.prototype.toString.call(e);
 }
-var Se;
-function be(e) {
+var be;
+function ke(e) {
   var t = (n = e, "[object Array]" === Object.prototype.toString.call(n) ? e : [e]);
   var n;
   var _iterator = _createForOfIteratorHelper(t),
@@ -40635,44 +40621,44 @@ function be(e) {
 }
 !function (e) {
   e.WEB = "web", e.WX_MP = "wx_mp";
-}(Se || (Se = {}));
-var ke = {
+}(be || (be = {}));
+var Ae = {
     adapter: null,
     runtime: void 0
   },
-  Ae = ["anonymousUuidKey"];
-var Pe = /*#__PURE__*/function (_ge) {
-  (0, _inherits2.default)(Pe, _ge);
+  Ce = ["anonymousUuidKey"];
+var Pe = /*#__PURE__*/function (_me) {
+  (0, _inherits2.default)(Pe, _me);
   var _super2 = _createSuper(Pe);
   function Pe() {
     var _this6;
     (0, _classCallCheck2.default)(this, Pe);
-    _this6 = _super2.call(this), ke.adapter.root.tcbObject || (ke.adapter.root.tcbObject = {});
+    _this6 = _super2.call(this), Ae.adapter.root.tcbObject || (Ae.adapter.root.tcbObject = {});
     return _this6;
   }
   (0, _createClass2.default)(Pe, [{
     key: "setItem",
     value: function setItem(e, t) {
-      ke.adapter.root.tcbObject[e] = t;
+      Ae.adapter.root.tcbObject[e] = t;
     }
   }, {
     key: "getItem",
     value: function getItem(e) {
-      return ke.adapter.root.tcbObject[e];
+      return Ae.adapter.root.tcbObject[e];
     }
   }, {
     key: "removeItem",
     value: function removeItem(e) {
-      delete ke.adapter.root.tcbObject[e];
+      delete Ae.adapter.root.tcbObject[e];
     }
   }, {
     key: "clear",
     value: function clear() {
-      delete ke.adapter.root.tcbObject;
+      delete Ae.adapter.root.tcbObject;
     }
   }]);
   return Pe;
-}(ge);
+}(me);
 function Te(e, t) {
   switch (e) {
     case "local":
@@ -40683,11 +40669,11 @@ function Te(e, t) {
       return t.sessionStorage || new Pe();
   }
 }
-var Ce = /*#__PURE__*/function () {
-  function Ce(e) {
-    (0, _classCallCheck2.default)(this, Ce);
+var xe = /*#__PURE__*/function () {
+  function xe(e) {
+    (0, _classCallCheck2.default)(this, xe);
     if (!this._storage) {
-      this._persistence = ke.adapter.primaryStorage || e.persistence, this._storage = Te(this._persistence, ke.adapter);
+      this._persistence = Ae.adapter.primaryStorage || e.persistence, this._storage = Te(this._persistence, Ae.adapter);
       var _t5 = "access_token_".concat(e.env),
         _n6 = "access_token_expire_".concat(e.env),
         _s5 = "refresh_token_".concat(e.env),
@@ -40704,18 +40690,18 @@ var Ce = /*#__PURE__*/function () {
       };
     }
   }
-  (0, _createClass2.default)(Ce, [{
+  (0, _createClass2.default)(xe, [{
     key: "updatePersistence",
     value: function updatePersistence(e) {
       if (e === this._persistence) return;
       var t = "local" === this._persistence;
       this._persistence = e;
-      var n = Te(e, ke.adapter);
+      var n = Te(e, Ae.adapter);
       for (var _e7 in this.keys) {
         var _s6 = this.keys[_e7];
-        if (t && Ae.includes(_e7)) continue;
+        if (t && Ce.includes(_e7)) continue;
         var _r3 = this._storage.getItem(_s6);
-        ve(_r3) || Ie(_r3) || (n.setItem(_s6, _r3), this._storage.removeItem(_s6));
+        Ie(_r3) || Se(_r3) || (n.setItem(_s6, _r3), this._storage.removeItem(_s6));
       }
       this._storage = n;
     }
@@ -40756,32 +40742,32 @@ var Ce = /*#__PURE__*/function () {
       this._storage.removeItem(e);
     }
   }]);
-  return Ce;
+  return xe;
 }();
-var xe = {},
-  Oe = {};
-function Ee(e) {
-  return xe[e];
+var Oe = {},
+  Ee = {};
+function Le(e) {
+  return Oe[e];
 }
-var Le = /*#__PURE__*/(0, _createClass2.default)(function Le(e, t) {
-  (0, _classCallCheck2.default)(this, Le);
+var Re = /*#__PURE__*/(0, _createClass2.default)(function Re(e, t) {
+  (0, _classCallCheck2.default)(this, Re);
   this.data = t || null, this.name = e;
 });
-var Re = /*#__PURE__*/function (_Le) {
-  (0, _inherits2.default)(Re, _Le);
-  var _super3 = _createSuper(Re);
-  function Re(e, t) {
+var Ue = /*#__PURE__*/function (_Re) {
+  (0, _inherits2.default)(Ue, _Re);
+  var _super3 = _createSuper(Ue);
+  function Ue(e, t) {
     var _this7;
-    (0, _classCallCheck2.default)(this, Re);
+    (0, _classCallCheck2.default)(this, Ue);
     _this7 = _super3.call(this, "error", {
       error: e,
       data: t
     }), _this7.error = e;
     return _this7;
   }
-  return (0, _createClass2.default)(Re);
-}(Le);
-var Ue = new ( /*#__PURE__*/function () {
+  return (0, _createClass2.default)(Ue);
+}(Re);
+var Ne = new ( /*#__PURE__*/function () {
   function _class() {
     (0, _classCallCheck2.default)(this, _class);
     this._listeners = {};
@@ -40806,8 +40792,8 @@ var Ue = new ( /*#__PURE__*/function () {
   }, {
     key: "fire",
     value: function fire(e, t) {
-      if (e instanceof Re) return console.error(e.error), this;
-      var n = "string" == typeof e ? new Le(e, t || {}) : e;
+      if (e instanceof Ue) return console.error(e.error), this;
+      var n = "string" == typeof e ? new Re(e, t || {}) : e;
       var s = n.name;
       if (this._listens(s)) {
         n.target = this;
@@ -40835,30 +40821,30 @@ var Ue = new ( /*#__PURE__*/function () {
   }]);
   return _class;
 }())();
-function Ne(e, t) {
-  Ue.on(e, t);
+function De(e, t) {
+  Ne.on(e, t);
 }
-function De(e) {
+function Me(e) {
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  Ue.fire(e, t);
+  Ne.fire(e, t);
 }
-function Me(e, t) {
-  Ue.off(e, t);
+function qe(e, t) {
+  Ne.off(e, t);
 }
-var qe = "loginStateChanged",
-  Fe = "loginStateExpire",
-  Ke = "loginTypeChanged",
-  je = "anonymousConverted",
-  $e = "refreshAccessToken";
-var Be;
+var Fe = "loginStateChanged",
+  Ke = "loginStateExpire",
+  je = "loginTypeChanged",
+  $e = "anonymousConverted",
+  Be = "refreshAccessToken";
+var We;
 !function (e) {
   e.ANONYMOUS = "ANONYMOUS", e.WECHAT = "WECHAT", e.WECHAT_PUBLIC = "WECHAT-PUBLIC", e.WECHAT_OPEN = "WECHAT-OPEN", e.CUSTOM = "CUSTOM", e.EMAIL = "EMAIL", e.USERNAME = "USERNAME", e.NULL = "NULL";
-}(Be || (Be = {}));
-var We = ["auth.getJwt", "auth.logout", "auth.signInWithTicket", "auth.signInAnonymously", "auth.signIn", "auth.fetchAccessTokenWithRefreshToken", "auth.signUpWithEmailAndPassword", "auth.activateEndUserMail", "auth.sendPasswordResetEmail", "auth.resetPasswordWithToken", "auth.isUsernameRegistered"],
-  He = {
+}(We || (We = {}));
+var He = ["auth.getJwt", "auth.logout", "auth.signInWithTicket", "auth.signInAnonymously", "auth.signIn", "auth.fetchAccessTokenWithRefreshToken", "auth.signUpWithEmailAndPassword", "auth.activateEndUserMail", "auth.sendPasswordResetEmail", "auth.resetPasswordWithToken", "auth.isUsernameRegistered"],
+  ze = {
     "X-SDK-Version": "1.3.5"
   };
-function ze(e, t, n) {
+function Je(e, t, n) {
   var s = e[t];
   e[t] = function (t) {
     var r = {},
@@ -40878,13 +40864,13 @@ function ze(e, t, n) {
     }(), t.headers = _objectSpread(_objectSpread({}, t.headers || {}), i), s.call(e, t);
   };
 }
-function Je() {
+function Ve() {
   var e = Math.random().toString(16).slice(2);
   return {
     data: {
       seqId: e
     },
-    headers: _objectSpread(_objectSpread({}, He), {}, {
+    headers: _objectSpread(_objectSpread({}, ze), {}, {
       "x-seqid": e
     })
   };
@@ -40894,11 +40880,11 @@ var Ge = /*#__PURE__*/function () {
     var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     (0, _classCallCheck2.default)(this, Ge);
     var t;
-    this.config = e, this._reqClass = new ke.adapter.reqClass({
+    this.config = e, this._reqClass = new Ae.adapter.reqClass({
       timeout: this.config.timeout,
       timeoutMsg: "\u8BF7\u6C42\u5728".concat(this.config.timeout / 1e3, "s\u5185\u672A\u5B8C\u6210\uFF0C\u5DF2\u4E2D\u65AD"),
       restrictedMethods: ["post"]
-    }), this._cache = Ee(this.config.env), this._localCache = (t = this.config.env, Oe[t]), ze(this._reqClass, "post", [Je]), ze(this._reqClass, "upload", [Je]), ze(this._reqClass, "download", [Je]);
+    }), this._cache = Le(this.config.env), this._localCache = (t = this.config.env, Ee[t]), Je(this._reqClass, "post", [Ve]), Je(this._reqClass, "upload", [Ve]), Je(this._reqClass, "download", [Ve]);
   }
   (0, _createClass2.default)(Ge, [{
     key: "post",
@@ -41049,7 +41035,7 @@ var Ge = /*#__PURE__*/function () {
                   _context8.next = 20;
                   break;
                 }
-                if (!(this._cache.getStore(s) === Be.ANONYMOUS && "INVALID_REFRESH_TOKEN" === _e10)) {
+                if (!(this._cache.getStore(s) === We.ANONYMOUS && "INVALID_REFRESH_TOKEN" === _e10)) {
                   _context8.next = 19;
                   break;
                 }
@@ -41064,7 +41050,7 @@ var Ge = /*#__PURE__*/function () {
                 _s8 = _context8.sent;
                 return _context8.abrupt("return", (this.setRefreshToken(_s8.refresh_token), this._refreshAccessToken()));
               case 19:
-                De(Fe), this._cache.removeStore(n);
+                Me(Ke), this._cache.removeStore(n);
               case 20:
                 throw new te({
                   code: a.data.code,
@@ -41075,7 +41061,7 @@ var Ge = /*#__PURE__*/function () {
                   _context8.next = 23;
                   break;
                 }
-                return _context8.abrupt("return", (De($e), this._cache.setStore(e, a.data.access_token), this._cache.setStore(t, a.data.access_token_expire + Date.now()), {
+                return _context8.abrupt("return", (Me(Be), this._cache.setStore(e, a.data.access_token), this._cache.setStore(t, a.data.access_token_expire + Date.now()), {
                   accessToken: a.data.access_token,
                   accessTokenExpire: a.data.access_token_expire
                 }));
@@ -41161,7 +41147,7 @@ var Ge = /*#__PURE__*/function () {
                   env: this.config.env,
                   dataVersion: "2019-08-16"
                 }, t);
-                if (!(-1 === We.indexOf(e))) {
+                if (!(-1 === He.indexOf(e))) {
                   _context10.next = 10;
                   break;
                 }
@@ -41209,7 +41195,7 @@ var Ge = /*#__PURE__*/function () {
                     "" === r ? !s && (t += "?") : r += "&", r += "".concat(_e15, "=").concat(encodeURIComponent(n[_e15]));
                   }
                   return /^http(s)?\:\/\//.test(t += r) ? t : "".concat(e).concat(t);
-                }(pe, "//tcb-api.tencentcloudapi.com/web", d);
+                }(fe, "//tcb-api.tencentcloudapi.com/web", d);
                 l && (p += l);
                 _context10.next = 22;
                 return this.post(_objectSpread({
@@ -41260,7 +41246,7 @@ var Ge = /*#__PURE__*/function () {
                 });
               case 3:
                 n = _context11.sent;
-                if (!("ACCESS_TOKEN_EXPIRED" === n.data.code && -1 === We.indexOf(e))) {
+                if (!("ACCESS_TOKEN_EXPIRED" === n.data.code && -1 === He.indexOf(e))) {
                   _context11.next = 13;
                   break;
                 }
@@ -41318,16 +41304,16 @@ var Ge = /*#__PURE__*/function () {
   }]);
   return Ge;
 }();
-var Ve = {};
-function Ye(e) {
-  return Ve[e];
+var Ye = {};
+function Qe(e) {
+  return Ye[e];
 }
-var Qe = /*#__PURE__*/function () {
-  function Qe(e) {
-    (0, _classCallCheck2.default)(this, Qe);
-    this.config = e, this._cache = Ee(e.env), this._request = Ye(e.env);
+var Xe = /*#__PURE__*/function () {
+  function Xe(e) {
+    (0, _classCallCheck2.default)(this, Xe);
+    this.config = e, this._cache = Le(e.env), this._request = Qe(e.env);
   }
-  (0, _createClass2.default)(Qe, [{
+  (0, _createClass2.default)(Xe, [{
     key: "setRefreshToken",
     value: function setRefreshToken(e) {
       var _this$_cache$keys4 = this._cache.keys,
@@ -41378,18 +41364,18 @@ var Qe = /*#__PURE__*/function () {
       this._cache.setStore(t, e);
     }
   }]);
-  return Qe;
+  return Xe;
 }();
-var Xe = /*#__PURE__*/function () {
-  function Xe(e) {
-    (0, _classCallCheck2.default)(this, Xe);
+var Ze = /*#__PURE__*/function () {
+  function Ze(e) {
+    (0, _classCallCheck2.default)(this, Ze);
     if (!e) throw new te({
       code: "PARAM_ERROR",
       message: "envId is not defined"
     });
-    this._envId = e, this._cache = Ee(this._envId), this._request = Ye(this._envId), this.setUserInfo();
+    this._envId = e, this._cache = Le(this._envId), this._request = Qe(this._envId), this.setUserInfo();
   }
-  (0, _createClass2.default)(Xe, [{
+  (0, _createClass2.default)(Ze, [{
     key: "linkWithTicket",
     value: function linkWithTicket(e) {
       if ("string" != typeof e) throw new te({
@@ -41567,16 +41553,16 @@ var Xe = /*#__PURE__*/function () {
       this._cache.setStore(t, e), this.setUserInfo();
     }
   }]);
-  return Xe;
+  return Ze;
 }();
-var Ze = /*#__PURE__*/function () {
-  function Ze(e) {
-    (0, _classCallCheck2.default)(this, Ze);
+var et = /*#__PURE__*/function () {
+  function et(e) {
+    (0, _classCallCheck2.default)(this, et);
     if (!e) throw new te({
       code: "PARAM_ERROR",
       message: "envId is not defined"
     });
-    this._cache = Ee(e);
+    this._cache = Le(e);
     var _this$_cache$keys6 = this._cache.keys,
       t = _this$_cache$keys6.refreshTokenKey,
       n = _this$_cache$keys6.accessTokenKey,
@@ -41588,22 +41574,22 @@ var Ze = /*#__PURE__*/function () {
       refreshToken: r,
       accessToken: i,
       accessTokenExpire: o
-    }, this.user = new Xe(e);
+    }, this.user = new Ze(e);
   }
-  (0, _createClass2.default)(Ze, [{
+  (0, _createClass2.default)(et, [{
     key: "isAnonymousAuth",
     get: function get() {
-      return this.loginType === Be.ANONYMOUS;
+      return this.loginType === We.ANONYMOUS;
     }
   }, {
     key: "isCustomAuth",
     get: function get() {
-      return this.loginType === Be.CUSTOM;
+      return this.loginType === We.CUSTOM;
     }
   }, {
     key: "isWeixinAuth",
     get: function get() {
-      return this.loginType === Be.WECHAT || this.loginType === Be.WECHAT_OPEN || this.loginType === Be.WECHAT_PUBLIC;
+      return this.loginType === We.WECHAT || this.loginType === We.WECHAT_OPEN || this.loginType === We.WECHAT_PUBLIC;
     }
   }, {
     key: "loginType",
@@ -41611,16 +41597,16 @@ var Ze = /*#__PURE__*/function () {
       return this._cache.getStore(this._cache.keys.loginTypeKey);
     }
   }]);
-  return Ze;
+  return et;
 }();
-var et = /*#__PURE__*/function (_Qe) {
-  (0, _inherits2.default)(et, _Qe);
-  var _super4 = _createSuper(et);
-  function et() {
-    (0, _classCallCheck2.default)(this, et);
+var tt = /*#__PURE__*/function (_Xe) {
+  (0, _inherits2.default)(tt, _Xe);
+  var _super4 = _createSuper(tt);
+  function tt() {
+    (0, _classCallCheck2.default)(this, tt);
     return _super4.apply(this, arguments);
   }
-  (0, _createClass2.default)(et, [{
+  (0, _createClass2.default)(tt, [{
     key: "signIn",
     value: function () {
       var _signIn = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee16() {
@@ -41651,13 +41637,13 @@ var et = /*#__PURE__*/function (_Qe) {
                 _context16.next = 14;
                 return this._request.refreshAccessToken();
               case 14:
-                De(qe);
-                De(Ke, {
+                Me(Fe);
+                Me(je, {
                   env: this.config.env,
-                  loginType: Be.ANONYMOUS,
+                  loginType: We.ANONYMOUS,
                   persistence: "local"
                 });
-                _e16 = new Ze(this.config.env);
+                _e16 = new et(this.config.env);
                 _context16.next = 19;
                 return _e16.user.refresh();
               case 19:
@@ -41709,11 +41695,11 @@ var et = /*#__PURE__*/function (_Qe) {
                 _context17.next = 13;
                 return this._request.refreshAccessToken();
               case 13:
-                De(je, {
+                Me($e, {
                   env: this.config.env
                 });
-                De(Ke, {
-                  loginType: Be.CUSTOM,
+                Me(je, {
+                  loginType: We.CUSTOM,
                   persistence: "local"
                 });
                 return _context17.abrupt("return", {
@@ -41743,7 +41729,7 @@ var et = /*#__PURE__*/function (_Qe) {
       var _this$_cache$keys9 = this._cache.keys,
         t = _this$_cache$keys9.anonymousUuidKey,
         n = _this$_cache$keys9.loginTypeKey;
-      this._cache.removeStore(t), this._cache.setStore(t, e), this._cache.setStore(n, Be.ANONYMOUS);
+      this._cache.removeStore(t), this._cache.setStore(t, e), this._cache.setStore(n, We.ANONYMOUS);
     }
   }, {
     key: "_clearAnonymousUUID",
@@ -41751,16 +41737,16 @@ var et = /*#__PURE__*/function (_Qe) {
       this._cache.removeStore(this._cache.keys.anonymousUuidKey);
     }
   }]);
-  return et;
-}(Qe);
-var tt = /*#__PURE__*/function (_Qe2) {
-  (0, _inherits2.default)(tt, _Qe2);
-  var _super5 = _createSuper(tt);
-  function tt() {
-    (0, _classCallCheck2.default)(this, tt);
+  return tt;
+}(Xe);
+var nt = /*#__PURE__*/function (_Xe2) {
+  (0, _inherits2.default)(nt, _Xe2);
+  var _super5 = _createSuper(nt);
+  function nt() {
+    (0, _classCallCheck2.default)(this, nt);
     return _super5.apply(this, arguments);
   }
-  (0, _createClass2.default)(tt, [{
+  (0, _createClass2.default)(nt, [{
     key: "signIn",
     value: function () {
       var _signIn2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee18(e) {
@@ -41794,16 +41780,16 @@ var tt = /*#__PURE__*/function (_Qe2) {
                 _context18.next = 10;
                 return this._request.refreshAccessToken();
               case 10:
-                De(qe);
-                De(Ke, {
+                Me(Fe);
+                Me(je, {
                   env: this.config.env,
-                  loginType: Be.CUSTOM,
+                  loginType: We.CUSTOM,
                   persistence: this.config.persistence
                 });
                 _context18.next = 14;
                 return this.refreshUserInfo();
               case 14:
-                return _context18.abrupt("return", new Ze(this.config.env));
+                return _context18.abrupt("return", new et(this.config.env));
               case 15:
                 throw new te({
                   message: "自定义登录失败"
@@ -41821,16 +41807,16 @@ var tt = /*#__PURE__*/function (_Qe2) {
       return signIn;
     }()
   }]);
-  return tt;
-}(Qe);
-var nt = /*#__PURE__*/function (_Qe3) {
-  (0, _inherits2.default)(nt, _Qe3);
-  var _super6 = _createSuper(nt);
-  function nt() {
-    (0, _classCallCheck2.default)(this, nt);
+  return nt;
+}(Xe);
+var st = /*#__PURE__*/function (_Xe3) {
+  (0, _inherits2.default)(st, _Xe3);
+  var _super6 = _createSuper(st);
+  function st() {
+    (0, _classCallCheck2.default)(this, st);
     return _super6.apply(this, arguments);
   }
-  (0, _createClass2.default)(nt, [{
+  (0, _createClass2.default)(st, [{
     key: "signIn",
     value: function () {
       var _signIn3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee19(e, t) {
@@ -41880,13 +41866,13 @@ var nt = /*#__PURE__*/function (_Qe3) {
                 _context19.next = 19;
                 return this.refreshUserInfo();
               case 19:
-                De(qe);
-                De(Ke, {
+                Me(Fe);
+                Me(je, {
                   env: this.config.env,
-                  loginType: Be.EMAIL,
+                  loginType: We.EMAIL,
                   persistence: this.config.persistence
                 });
-                return _context19.abrupt("return", new Ze(this.config.env));
+                return _context19.abrupt("return", new et(this.config.env));
               case 22:
                 throw s.code ? new te({
                   code: s.code,
@@ -41954,16 +41940,16 @@ var nt = /*#__PURE__*/function (_Qe3) {
       return resetPasswordWithToken;
     }()
   }]);
-  return nt;
-}(Qe);
-var st = /*#__PURE__*/function (_Qe4) {
-  (0, _inherits2.default)(st, _Qe4);
-  var _super7 = _createSuper(st);
-  function st() {
-    (0, _classCallCheck2.default)(this, st);
+  return st;
+}(Xe);
+var rt = /*#__PURE__*/function (_Xe4) {
+  (0, _inherits2.default)(rt, _Xe4);
+  var _super7 = _createSuper(rt);
+  function rt() {
+    (0, _classCallCheck2.default)(this, rt);
     return _super7.apply(this, arguments);
   }
-  (0, _createClass2.default)(st, [{
+  (0, _createClass2.default)(rt, [{
     key: "signIn",
     value: function () {
       var _signIn4 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee22(e, t) {
@@ -41985,7 +41971,7 @@ var st = /*#__PURE__*/function (_Qe4) {
                 n = this._cache.keys.refreshTokenKey;
                 _context22.next = 6;
                 return this._request.send("auth.signIn", {
-                  loginType: Be.USERNAME,
+                  loginType: We.USERNAME,
                   username: e,
                   password: t,
                   refresh_token: this._cache.getStore(n) || ""
@@ -42014,13 +42000,13 @@ var st = /*#__PURE__*/function (_Qe4) {
                 _context22.next = 20;
                 return this.refreshUserInfo();
               case 20:
-                De(qe);
-                De(Ke, {
+                Me(Fe);
+                Me(je, {
                   env: this.config.env,
-                  loginType: Be.USERNAME,
+                  loginType: We.USERNAME,
                   persistence: this.config.persistence
                 });
-                return _context22.abrupt("return", new Ze(this.config.env));
+                return _context22.abrupt("return", new et(this.config.env));
               case 23:
                 throw s.code ? new te({
                   code: s.code,
@@ -42041,14 +42027,14 @@ var st = /*#__PURE__*/function (_Qe4) {
       return signIn;
     }()
   }]);
-  return st;
-}(Qe);
-var rt = /*#__PURE__*/function () {
-  function rt(e) {
-    (0, _classCallCheck2.default)(this, rt);
-    this.config = e, this._cache = Ee(e.env), this._request = Ye(e.env), this._onAnonymousConverted = this._onAnonymousConverted.bind(this), this._onLoginTypeChanged = this._onLoginTypeChanged.bind(this), Ne(Ke, this._onLoginTypeChanged);
+  return rt;
+}(Xe);
+var it = /*#__PURE__*/function () {
+  function it(e) {
+    (0, _classCallCheck2.default)(this, it);
+    this.config = e, this._cache = Le(e.env), this._request = Qe(e.env), this._onAnonymousConverted = this._onAnonymousConverted.bind(this), this._onLoginTypeChanged = this._onLoginTypeChanged.bind(this), De(je, this._onLoginTypeChanged);
   }
-  (0, _createClass2.default)(rt, [{
+  (0, _createClass2.default)(it, [{
     key: "currentUser",
     get: function get() {
       var e = this.hasLoginState();
@@ -42062,22 +42048,22 @@ var rt = /*#__PURE__*/function () {
   }, {
     key: "anonymousAuthProvider",
     value: function anonymousAuthProvider() {
-      return new et(this.config);
+      return new tt(this.config);
     }
   }, {
     key: "customAuthProvider",
     value: function customAuthProvider() {
-      return new tt(this.config);
+      return new nt(this.config);
     }
   }, {
     key: "emailAuthProvider",
     value: function emailAuthProvider() {
-      return new nt(this.config);
+      return new st(this.config);
     }
   }, {
     key: "usernameAuthProvider",
     value: function usernameAuthProvider() {
-      return new st(this.config);
+      return new rt(this.config);
     }
   }, {
     key: "signInAnonymously",
@@ -42087,7 +42073,7 @@ var rt = /*#__PURE__*/function () {
           while (1) {
             switch (_context23.prev = _context23.next) {
               case 0:
-                return _context23.abrupt("return", new et(this.config).signIn());
+                return _context23.abrupt("return", new tt(this.config).signIn());
               case 1:
               case "end":
                 return _context23.stop();
@@ -42108,7 +42094,7 @@ var rt = /*#__PURE__*/function () {
           while (1) {
             switch (_context24.prev = _context24.next) {
               case 0:
-                return _context24.abrupt("return", new nt(this.config).signIn(e, t));
+                return _context24.abrupt("return", new st(this.config).signIn(e, t));
               case 1:
               case "end":
                 return _context24.stop();
@@ -42124,7 +42110,7 @@ var rt = /*#__PURE__*/function () {
   }, {
     key: "signInWithUsernameAndPassword",
     value: function signInWithUsernameAndPassword(e, t) {
-      return new st(this.config).signIn(e, t);
+      return new rt(this.config).signIn(e, t);
     }
   }, {
     key: "linkAndRetrieveDataWithTicket",
@@ -42134,7 +42120,7 @@ var rt = /*#__PURE__*/function () {
           while (1) {
             switch (_context25.prev = _context25.next) {
               case 0:
-                this._anonymousAuthProvider || (this._anonymousAuthProvider = new et(this.config)), Ne(je, this._onAnonymousConverted);
+                this._anonymousAuthProvider || (this._anonymousAuthProvider = new tt(this.config)), De($e, this._onAnonymousConverted);
                 _context25.next = 3;
                 return this._anonymousAuthProvider.linkAndRetrieveDataWithTicket(e);
               case 3:
@@ -42160,7 +42146,7 @@ var rt = /*#__PURE__*/function () {
           while (1) {
             switch (_context26.prev = _context26.next) {
               case 0:
-                if (!(this.loginType === Be.ANONYMOUS)) {
+                if (!(this.loginType === We.ANONYMOUS)) {
                   _context26.next = 2;
                   break;
                 }
@@ -42181,9 +42167,9 @@ var rt = /*#__PURE__*/function () {
                 });
               case 7:
                 r = _context26.sent;
-                return _context26.abrupt("return", (this._cache.removeStore(e), this._cache.removeStore(t), this._cache.removeStore(n), De(qe), De(Ke, {
+                return _context26.abrupt("return", (this._cache.removeStore(e), this._cache.removeStore(t), this._cache.removeStore(n), Me(Fe), Me(je, {
                   env: this.config.env,
-                  loginType: Be.NULL,
+                  loginType: We.NULL,
                   persistence: this.config.persistence
                 }), r));
               case 9:
@@ -42249,7 +42235,7 @@ var rt = /*#__PURE__*/function () {
     key: "onLoginStateChanged",
     value: function onLoginStateChanged(e) {
       var _this9 = this;
-      Ne(qe, function () {
+      De(Fe, function () {
         var t = _this9.hasLoginState();
         e.call(_this9, t);
       });
@@ -42259,23 +42245,23 @@ var rt = /*#__PURE__*/function () {
   }, {
     key: "onLoginStateExpired",
     value: function onLoginStateExpired(e) {
-      Ne(Fe, e.bind(this));
+      De(Ke, e.bind(this));
     }
   }, {
     key: "onAccessTokenRefreshed",
     value: function onAccessTokenRefreshed(e) {
-      Ne($e, e.bind(this));
+      De(Be, e.bind(this));
     }
   }, {
     key: "onAnonymousConverted",
     value: function onAnonymousConverted(e) {
-      Ne(je, e.bind(this));
+      De($e, e.bind(this));
     }
   }, {
     key: "onLoginTypeChanged",
     value: function onLoginTypeChanged(e) {
       var _this10 = this;
-      Ne(Ke, function () {
+      De(je, function () {
         var t = _this10.hasLoginState();
         e.call(_this10, t);
       });
@@ -42313,7 +42299,7 @@ var rt = /*#__PURE__*/function () {
     key: "hasLoginState",
     value: function hasLoginState() {
       var e = this._cache.keys.refreshTokenKey;
-      return this._cache.getStore(e) ? new Ze(this.config.env) : null;
+      return this._cache.getStore(e) ? new et(this.config.env) : null;
     }
   }, {
     key: "isUsernameRegistered",
@@ -42366,7 +42352,7 @@ var rt = /*#__PURE__*/function () {
           while (1) {
             switch (_context31.prev = _context31.next) {
               case 0:
-                return _context31.abrupt("return", new tt(this.config).signIn(e));
+                return _context31.abrupt("return", new nt(this.config).signIn(e));
               case 1:
               case "end":
                 return _context31.stop();
@@ -42420,11 +42406,11 @@ var rt = /*#__PURE__*/function () {
       s === this.config.env && (this._cache.updatePersistence(n), this._cache.setStore(this._cache.keys.loginTypeKey, t));
     }
   }]);
-  return rt;
+  return it;
 }();
-var it = function it(e, t) {
-    t = t || we();
-    var n = Ye(this.config.env),
+var ot = function ot(e, t) {
+    t = t || ve();
+    var n = Qe(this.config.env),
       s = e.cloudPath,
       r = e.filePath,
       i = e.onUploadProgress,
@@ -42469,9 +42455,9 @@ var it = function it(e, t) {
       t(e);
     }), t.promise;
   },
-  ot = function ot(e, t) {
-    t = t || we();
-    var n = Ye(this.config.env),
+  at = function at(e, t) {
+    t = t || ve();
+    var n = Qe(this.config.env),
       s = e.cloudPath;
     return n.send("storage.getUploadMetadata", {
       path: s
@@ -42481,9 +42467,9 @@ var it = function it(e, t) {
       t(e);
     }), t.promise;
   },
-  at = function at(_ref7, t) {
+  ct = function ct(_ref7, t) {
     var e = _ref7.fileList;
-    if (t = t || we(), !e || !Array.isArray(e)) return {
+    if (t = t || ve(), !e || !Array.isArray(e)) return {
       code: "INVALID_PARAM",
       message: "fileList必须是非空的数组"
     };
@@ -42505,7 +42491,7 @@ var it = function it(e, t) {
     var n = {
       fileid_list: e
     };
-    return Ye(this.config.env).send("storage.batchDeleteFile", n).then(function (e) {
+    return Qe(this.config.env).send("storage.batchDeleteFile", n).then(function (e) {
       e.code ? t(null, e) : t(null, {
         fileList: e.data.delete_list,
         requestId: e.requestId
@@ -42514,9 +42500,9 @@ var it = function it(e, t) {
       t(e);
     }), t.promise;
   },
-  ct = function ct(_ref8, t) {
+  ut = function ut(_ref8, t) {
     var e = _ref8.fileList;
-    t = t || we(), e && Array.isArray(e) || t(null, {
+    t = t || ve(), e && Array.isArray(e) || t(null, {
       code: "INVALID_PARAM",
       message: "fileList必须是非空的数组"
     });
@@ -42547,7 +42533,7 @@ var it = function it(e, t) {
     var s = {
       file_list: n
     };
-    return Ye(this.config.env).send("storage.batchGetDownloadUrl", s).then(function (e) {
+    return Qe(this.config.env).send("storage.batchGetDownloadUrl", s).then(function (e) {
       e.code ? t(null, e) : t(null, {
         fileList: e.data.download_list,
         requestId: e.requestId
@@ -42556,7 +42542,7 @@ var it = function it(e, t) {
       t(e);
     }), t.promise;
   },
-  ut = /*#__PURE__*/function () {
+  ht = /*#__PURE__*/function () {
     var _ref10 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee32(_ref9, t) {
       var e, n, s, r;
       return _regenerator.default.wrap(function _callee32$(_context32) {
@@ -42565,7 +42551,7 @@ var it = function it(e, t) {
             case 0:
               e = _ref9.fileID;
               _context32.next = 3;
-              return ct.call(this, {
+              return ut.call(this, {
                 fileList: [{
                   fileID: e,
                   maxAge: 600
@@ -42581,7 +42567,7 @@ var it = function it(e, t) {
                 e(n);
               }));
             case 6:
-              s = Ye(this.config.env);
+              s = Qe(this.config.env);
               r = n.download_url;
               if (!(r = encodeURI(r), !t)) {
                 _context32.next = 10;
@@ -42606,17 +42592,17 @@ var it = function it(e, t) {
         }
       }, _callee32, this);
     }));
-    return function ut(_x27, _x28) {
+    return function ht(_x27, _x28) {
       return _ref10.apply(this, arguments);
     };
   }(),
-  ht = function ht(_ref11, i) {
+  lt = function lt(_ref11, i) {
     var e = _ref11.name,
       t = _ref11.data,
       n = _ref11.query,
       s = _ref11.parse,
       r = _ref11.search;
-    var o = i || we();
+    var o = i || ve();
     var a;
     try {
       a = t ? JSON.stringify(t) : "";
@@ -42634,7 +42620,7 @@ var it = function it(e, t) {
       function_name: e,
       request_data: a
     };
-    return Ye(this.config.env).send("functions.invokeFunction", c).then(function (e) {
+    return Qe(this.config.env).send("functions.invokeFunction", c).then(function (e) {
       if (e.code) o(null, e);else {
         var _t9 = e.data.response_data;
         if (s) o(null, {
@@ -42656,30 +42642,30 @@ var it = function it(e, t) {
       o(e);
     }), o.promise;
   },
-  lt = {
+  dt = {
     timeout: 15e3,
     persistence: "session"
   },
-  dt = {};
-var pt = /*#__PURE__*/function () {
-  function pt(e) {
-    (0, _classCallCheck2.default)(this, pt);
+  pt = {};
+var ft = /*#__PURE__*/function () {
+  function ft(e) {
+    (0, _classCallCheck2.default)(this, ft);
     this.config = e || this.config, this.authObj = void 0;
   }
-  (0, _createClass2.default)(pt, [{
+  (0, _createClass2.default)(ft, [{
     key: "init",
     value: function init(e) {
-      switch (ke.adapter || (this.requestClient = new ke.adapter.reqClass({
+      switch (Ae.adapter || (this.requestClient = new Ae.adapter.reqClass({
         timeout: e.timeout || 5e3,
         timeoutMsg: "\u8BF7\u6C42\u5728".concat((e.timeout || 5e3) / 1e3, "s\u5185\u672A\u5B8C\u6210\uFF0C\u5DF2\u4E2D\u65AD")
-      })), this.config = _objectSpread(_objectSpread({}, lt), e), !0) {
+      })), this.config = _objectSpread(_objectSpread({}, dt), e), !0) {
         case this.config.timeout > 6e5:
           console.warn("timeout大于可配置上限[10分钟]，已重置为上限数值"), this.config.timeout = 6e5;
           break;
         case this.config.timeout < 100:
           console.warn("timeout小于可配置下限[100ms]，已重置为下限数值"), this.config.timeout = 100;
       }
-      return new pt(this.config);
+      return new ft(this.config);
     }
   }, {
     key: "auth",
@@ -42687,59 +42673,59 @@ var pt = /*#__PURE__*/function () {
       var _ref12 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
         e = _ref12.persistence;
       if (this.authObj) return this.authObj;
-      var t = e || ke.adapter.primaryStorage || lt.persistence;
+      var t = e || Ae.adapter.primaryStorage || dt.persistence;
       var n;
       return t !== this.config.persistence && (this.config.persistence = t), function (e) {
         var t = e.env;
-        xe[t] = new Ce(e), Oe[t] = new Ce(_objectSpread(_objectSpread({}, e), {}, {
+        Oe[t] = new xe(e), Ee[t] = new xe(_objectSpread(_objectSpread({}, e), {}, {
           persistence: "local"
         }));
-      }(this.config), n = this.config, Ve[n.env] = new Ge(n), this.authObj = new rt(this.config), this.authObj;
+      }(this.config), n = this.config, Ye[n.env] = new Ge(n), this.authObj = new it(this.config), this.authObj;
     }
   }, {
     key: "on",
     value: function on(e, t) {
-      return Ne.apply(this, [e, t]);
+      return De.apply(this, [e, t]);
     }
   }, {
     key: "off",
     value: function off(e, t) {
-      return Me.apply(this, [e, t]);
+      return qe.apply(this, [e, t]);
     }
   }, {
     key: "callFunction",
     value: function callFunction(e, t) {
-      return ht.apply(this, [e, t]);
+      return lt.apply(this, [e, t]);
     }
   }, {
     key: "deleteFile",
     value: function deleteFile(e, t) {
-      return at.apply(this, [e, t]);
+      return ct.apply(this, [e, t]);
     }
   }, {
     key: "getTempFileURL",
     value: function getTempFileURL(e, t) {
-      return ct.apply(this, [e, t]);
+      return ut.apply(this, [e, t]);
     }
   }, {
     key: "downloadFile",
     value: function downloadFile(e, t) {
-      return ut.apply(this, [e, t]);
+      return ht.apply(this, [e, t]);
     }
   }, {
     key: "uploadFile",
     value: function uploadFile(e, t) {
-      return it.apply(this, [e, t]);
+      return ot.apply(this, [e, t]);
     }
   }, {
     key: "getUploadMetadata",
     value: function getUploadMetadata(e, t) {
-      return ot.apply(this, [e, t]);
+      return at.apply(this, [e, t]);
     }
   }, {
     key: "registerExtension",
     value: function registerExtension(e) {
-      dt[e.name] = e;
+      pt[e.name] = e;
     }
   }, {
     key: "invokeExtension",
@@ -42750,7 +42736,7 @@ var pt = /*#__PURE__*/function () {
           while (1) {
             switch (_context33.prev = _context33.next) {
               case 0:
-                n = dt[e];
+                n = pt[e];
                 if (n) {
                   _context33.next = 3;
                   break;
@@ -42778,16 +42764,16 @@ var pt = /*#__PURE__*/function () {
   }, {
     key: "useAdapters",
     value: function useAdapters(e) {
-      var _ref13 = be(e) || {},
+      var _ref13 = ke(e) || {},
         t = _ref13.adapter,
         n = _ref13.runtime;
-      t && (ke.adapter = t), n && (ke.runtime = n);
+      t && (Ae.adapter = t), n && (Ae.runtime = n);
     }
   }]);
-  return pt;
+  return ft;
 }();
-var ft = new pt();
-function gt(e, t, n) {
+var gt = new ft();
+function mt(e, t, n) {
   void 0 === n && (n = {});
   var s = /\?/.test(t),
     r = "";
@@ -42796,11 +42782,11 @@ function gt(e, t, n) {
   }
   return /^http(s)?:\/\//.test(t += r) ? t : "" + e + t;
 }
-var mt = /*#__PURE__*/function () {
-  function mt() {
-    (0, _classCallCheck2.default)(this, mt);
+var yt = /*#__PURE__*/function () {
+  function yt() {
+    (0, _classCallCheck2.default)(this, yt);
   }
-  (0, _createClass2.default)(mt, [{
+  (0, _createClass2.default)(yt, [{
     key: "post",
     value: function post(e) {
       var t = e.url,
@@ -42808,7 +42794,7 @@ var mt = /*#__PURE__*/function () {
         s = e.headers;
       return new Promise(function (e, r) {
         ne.request({
-          url: gt("https:", t),
+          url: mt("https:", t),
           data: n,
           method: "POST",
           header: s,
@@ -42831,7 +42817,7 @@ var mt = /*#__PURE__*/function () {
           o = e.headers,
           a = e.fileType,
           c = ne.uploadFile({
-            url: gt("https:", s),
+            url: mt("https:", s),
             name: "file",
             formData: Object.assign({}, i),
             filePath: r,
@@ -42857,9 +42843,9 @@ var mt = /*#__PURE__*/function () {
       });
     }
   }]);
-  return mt;
+  return yt;
 }();
-var yt = {
+var _t = {
   setItem: function setItem(e, t) {
     ne.setStorageSync(e, t);
   },
@@ -42873,12 +42859,12 @@ var yt = {
     ne.clearStorageSync();
   }
 };
-var _t = {
+var wt = {
   genAdapter: function genAdapter() {
     return {
       root: {},
-      reqClass: mt,
-      localStorage: yt,
+      reqClass: yt,
+      localStorage: _t,
       primaryStorage: "local"
     };
   },
@@ -42887,12 +42873,12 @@ var _t = {
   },
   runtime: "uni_app"
 };
-ft.useAdapters(_t);
-var wt = ft,
-  vt = wt.init;
-wt.init = function (e) {
+gt.useAdapters(wt);
+var vt = gt,
+  It = vt.init;
+vt.init = function (e) {
   e.env = e.spaceId;
-  var t = vt.call(this, e);
+  var t = It.call(this, e);
   t.config.provider = "tencent", t.config.spaceId = e.spaceId;
   var n = t.auth;
   return t.auth = function (e) {
@@ -42915,15 +42901,15 @@ wt.init = function (e) {
     }), t;
   }, t.customAuth = t.auth, t;
 };
-var It = wt;
-var St = /*#__PURE__*/function (_le) {
-  (0, _inherits2.default)(St, _le);
-  var _super8 = _createSuper(St);
-  function St() {
-    (0, _classCallCheck2.default)(this, St);
+var St = vt;
+var bt = /*#__PURE__*/function (_de) {
+  (0, _inherits2.default)(bt, _de);
+  var _super8 = _createSuper(bt);
+  function bt() {
+    (0, _classCallCheck2.default)(this, bt);
     return _super8.apply(this, arguments);
   }
-  (0, _createClass2.default)(St, [{
+  (0, _createClass2.default)(bt, [{
     key: "getAccessToken",
     value: function getAccessToken() {
       var _this11 = this;
@@ -42942,8 +42928,8 @@ var St = /*#__PURE__*/function (_le) {
         s = {
           "Content-Type": "application/json"
         };
-      "auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = he.sign(n, this.config.clientSecret);
-      var r = ue();
+      "auth" !== t && (n.token = this.accessToken, s["x-basement-token"] = this.accessToken), s["x-serverless-sign"] = le.sign(n, this.config.clientSecret);
+      var r = he();
       s["x-client-info"] = encodeURIComponent(JSON.stringify(r));
       var _se = se(),
         i = _se.token;
@@ -43093,11 +43079,11 @@ var St = /*#__PURE__*/function (_le) {
       });
     }
   }]);
-  return St;
-}(le);
-var bt = {
+  return bt;
+}(de);
+var kt = {
     init: function init(e) {
-      var t = new St(e),
+      var t = new bt(e),
         n = {
           signInAnonymously: function signInAnonymously() {
             return t.authorize();
@@ -43111,10 +43097,16 @@ var bt = {
       }, t.customAuth = t.auth, t;
     }
   },
-  kt = n(function (e, t) {
+  At = n(function (e, t) {
     e.exports = r.enc.Hex;
   });
-function At() {
+function Ct() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (e) {
+    var t = 16 * Math.random() | 0;
+    return ("x" === e ? t : 3 & t | 8).toString(16);
+  });
+}
+function Pt() {
   var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var n = t.data,
@@ -43125,10 +43117,7 @@ function At() {
     o = _t$signHeaderKeys === void 0 ? [] : _t$signHeaderKeys,
     a = t.config,
     c = Date.now(),
-    u = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (e) {
-      var t = 16 * Math.random() | 0;
-      return ("x" === e ? t : 3 & t | 8).toString(16);
-    }),
+    u = Ct(),
     h = Object.assign({}, i, {
       "x-from-app-id": a.spaceAppId,
       "x-from-env-id": a.spaceId,
@@ -43153,11 +43142,11 @@ function At() {
         n = e.signedHeaders.map(function (t) {
           return "".concat(t.toLowerCase(), ":").concat(e.headers[t], "\n");
         }).join(""),
-        s = ye(e.body).toString(kt),
+        s = _e(e.body).toString(At),
         r = "".concat(e.method.toUpperCase(), "\n").concat(e.path, "\n").concat(e.query, "\n").concat(n, "\n").concat(t, "\n").concat(s, "\n"),
-        i = ye(r).toString(kt),
+        i = _e(r).toString(At),
         o = "HMAC-SHA256\n".concat(e.timestamp, "\n").concat(i, "\n"),
-        a = _e(o, e.secretKey).toString(kt);
+        a = we(o, e.secretKey).toString(At);
       return "HMAC-SHA256 Credential=".concat(e.secretId, ", SignedHeaders=").concat(t, ", Signature=").concat(a);
     }({
       path: d,
@@ -43177,7 +43166,7 @@ function At() {
     })
   };
 }
-function Pt(_ref20) {
+function Tt(_ref20) {
   var e = _ref20.url,
     t = _ref20.data,
     _ref20$method = _ref20.method,
@@ -43188,7 +43177,7 @@ function Pt(_ref20) {
     ne.request({
       url: e,
       method: n,
-      data: t,
+      data: "object" == (0, _typeof2.default)(t) ? JSON.stringify(t) : t,
       header: s,
       dataType: "json",
       complete: function complete() {
@@ -43215,12 +43204,12 @@ function Pt(_ref20) {
     });
   });
 }
-function Tt(e, t) {
+function xt(e, t) {
   var n = e.path,
     s = e.data,
     _e$method = e.method,
     r = _e$method === void 0 ? "GET" : _e$method,
-    _At = At(n, {
+    _Pt = Pt(n, {
       functionName: "",
       data: s,
       method: r,
@@ -43232,9 +43221,9 @@ function Tt(e, t) {
       signHeaderKeys: ["x-data-api-type", "x-expire-timestamp"],
       config: t
     }),
-    i = _At.url,
-    o = _At.headers;
-  return Pt({
+    i = _Pt.url,
+    o = _Pt.headers;
+  return Tt({
     url: i,
     data: s,
     method: r,
@@ -43255,7 +43244,7 @@ function Tt(e, t) {
     });
   });
 }
-function Ct() {
+function Ot() {
   var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   var t = e.trim().replace(/^cloud:\/\//, ""),
     n = t.indexOf("/");
@@ -43267,13 +43256,42 @@ function Ct() {
     r = t.substring(n + 1);
   return s !== this.config.spaceId && console.warn("file ".concat(e, " does not belong to env ").concat(this.config.spaceId)), r;
 }
-function xt() {
+function Et() {
   var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   return "cloud://".concat(this.config.spaceId, "/").concat(e.replace(/^\/+/, ""));
 }
-var Ot = /*#__PURE__*/function () {
-  function Ot(e) {
-    (0, _classCallCheck2.default)(this, Ot);
+var Lt = /*#__PURE__*/function () {
+  function Lt(e) {
+    (0, _classCallCheck2.default)(this, Lt);
+    this.config = e;
+  }
+  (0, _createClass2.default)(Lt, [{
+    key: "signedURL",
+    value: function signedURL(e) {
+      var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var n = "/ws/function/".concat(e),
+        s = this.config.wsEndpoint.replace(/^ws(s)?:\/\//, ""),
+        r = Object.assign({}, t, {
+          accessKeyId: this.config.accessKey,
+          signatureNonce: Ct(),
+          timestamp: "" + Date.now()
+        }),
+        i = [n, ["accessKeyId", "authorization", "signatureNonce", "timestamp"].sort().map(function (e) {
+          return r[e] ? "".concat(e, "=").concat(r[e]) : null;
+        }).filter(Boolean).join("&"), "host:".concat(s)].join("\n"),
+        o = ["HMAC-SHA256", _e(i).toString(At)].join("\n"),
+        a = we(o, this.config.secretKey).toString(At),
+        c = Object.keys(r).map(function (e) {
+          return "".concat(e, "=").concat(encodeURIComponent(r[e]));
+        }).join("&");
+      return "".concat(this.config.wsEndpoint).concat(n, "?").concat(c, "&signature=").concat(a);
+    }
+  }]);
+  return Lt;
+}();
+var Rt = /*#__PURE__*/function () {
+  function Rt(e) {
+    (0, _classCallCheck2.default)(this, Rt);
     if (["spaceId", "spaceAppId", "accessKey", "secretKey"].forEach(function (t) {
       if (!Object.prototype.hasOwnProperty.call(e, t)) throw new Error("".concat(t, " required"));
     }), e.endpoint) {
@@ -43282,37 +43300,52 @@ var Ot = /*#__PURE__*/function () {
       e.endpoint = e.endpoint.replace(/\/$/, "");
     }
     this.config = Object.assign({}, e, {
-      endpoint: e.endpoint || "https://".concat(e.spaceId, ".api-hz.cloudbasefunction.cn")
-    });
+      endpoint: e.endpoint || "https://".concat(e.spaceId, ".api-hz.cloudbasefunction.cn"),
+      wsEndpoint: e.wsEndpoint || "wss://".concat(e.spaceId, ".api-hz.cloudbasefunction.cn")
+    }), this._websocket = new Lt(this.config);
   }
-  (0, _createClass2.default)(Ot, [{
+  (0, _createClass2.default)(Rt, [{
     key: "callFunction",
     value: function callFunction(e) {
       return function (e, t) {
         var n = e.name,
           s = e.data,
-          r = "POST",
-          _At2 = At("/functions/invokeFunction", {
+          _e$async = e.async,
+          r = _e$async === void 0 ? !1 : _e$async,
+          i = "POST",
+          o = {
+            "x-to-function-name": n
+          };
+        r && (o["x-function-invoke-type"] = "async");
+        var _Pt2 = Pt("/functions/invokeFunction", {
             functionName: n,
             data: s,
-            method: r,
-            headers: {
-              "x-to-function-name": n
-            },
+            method: i,
+            headers: o,
             signHeaderKeys: ["x-to-function-name"],
             config: t
           }),
-          i = _At2.url,
-          o = _At2.headers;
-        return Pt({
-          url: i,
+          a = _Pt2.url,
+          c = _Pt2.headers;
+        return Tt({
+          url: a,
           data: s,
-          method: r,
-          headers: o
+          method: i,
+          headers: c
         }).then(function (e) {
+          var t = 0;
+          if (r) {
+            var _n9 = e.data || {};
+            t = "200" === _n9.errCode ? 0 : _n9.errCode, e.data = _n9.data || {}, e.errMsg = _n9.errMsg;
+          }
+          if (0 !== t) throw new te({
+            code: t,
+            message: e.errMsg,
+            requestId: e.requestId
+          });
           return {
-            errCode: 0,
-            success: !0,
+            errCode: t,
+            success: 0 === t,
             requestId: e.requestId,
             result: e.data
           };
@@ -43399,7 +43432,7 @@ var Ot = /*#__PURE__*/function () {
                 });
               case 7:
                 _context34.next = 9;
-                return Tt({
+                return xt({
                   path: "/".concat(t.replace(/^\//, ""), "?post_url")
                 }, this.config);
               case 9:
@@ -43462,7 +43495,7 @@ var Ot = /*#__PURE__*/function () {
                         errCode: "INVALID_PARAM",
                         errMsg: "fileList的元素必须是非空的字符串"
                       }));
-                      var _e17 = Ct.call(_this14, _t10);
+                      var _e17 = Ot.call(_this14, _t10);
                       s.push({
                         file_id: _e17,
                         expire: 600
@@ -43473,7 +43506,7 @@ var Ot = /*#__PURE__*/function () {
                   } finally {
                     _iterator5.f();
                   }
-                  Tt({
+                  xt({
                     path: "/?download_url",
                     data: {
                       file_list: s
@@ -43485,7 +43518,7 @@ var Ot = /*#__PURE__*/function () {
                     t({
                       fileList: n.map(function (e) {
                         return {
-                          fileID: xt.call(_this14, e.file_id),
+                          fileID: Et.call(_this14, e.file_id),
                           tempFileURL: e.download_url
                         };
                       })
@@ -43506,13 +43539,39 @@ var Ot = /*#__PURE__*/function () {
       }
       return getTempFileURL;
     }()
+  }, {
+    key: "connectWebSocket",
+    value: function () {
+      var _connectWebSocket = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee36(e) {
+        var t, n;
+        return _regenerator.default.wrap(function _callee36$(_context36) {
+          while (1) {
+            switch (_context36.prev = _context36.next) {
+              case 0:
+                t = e.name, n = e.query;
+                return _context36.abrupt("return", ne.connectSocket({
+                  url: this._websocket.signedURL(t, n),
+                  complete: function complete() {}
+                }));
+              case 2:
+              case "end":
+                return _context36.stop();
+            }
+          }
+        }, _callee36, this);
+      }));
+      function connectWebSocket(_x33) {
+        return _connectWebSocket.apply(this, arguments);
+      }
+      return connectWebSocket;
+    }()
   }]);
-  return Ot;
+  return Rt;
 }();
-var Et = {
+var Ut = {
   init: function init(e) {
     e.provider = "alipay";
-    var t = new Ot(e);
+    var t = new Rt(e);
     return t.auth = function () {
       return {
         signInAnonymously: function signInAnonymously() {
@@ -43525,10 +43584,10 @@ var Et = {
     }, t;
   }
 };
-function Lt(_ref25) {
+function Nt(_ref25) {
   var e = _ref25.data;
   var t;
-  t = ue();
+  t = he();
   var n = JSON.parse(JSON.stringify(e || {}));
   if (Object.assign(n, {
     clientInfo: t
@@ -43539,11 +43598,11 @@ function Lt(_ref25) {
   }
   return n;
 }
-function Rt() {
-  return _Rt.apply(this, arguments);
+function Dt() {
+  return _Dt.apply(this, arguments);
 }
-function _Rt() {
-  _Rt = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee56() {
+function _Dt() {
+  _Dt = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee57() {
     var _this27 = this;
     var _ref67,
       e,
@@ -43556,12 +43615,12 @@ function _Rt() {
       o,
       a,
       _args6 = arguments;
-    return _regenerator.default.wrap(function _callee56$(_context56) {
+    return _regenerator.default.wrap(function _callee57$(_context57) {
       while (1) {
-        switch (_context56.prev = _context56.next) {
+        switch (_context57.prev = _context57.next) {
           case 0:
             _ref67 = _args6.length > 0 && _args6[0] !== undefined ? _args6[0] : {}, e = _ref67.name, t = _ref67.data;
-            _context56.next = 3;
+            _context57.next = 3;
             return this.__dev__.initLocalNetwork();
           case 3:
             _this$__dev__ = this.__dev__, n = _this$__dev__.localAddress, s = _this$__dev__.localPort, r = {
@@ -43569,13 +43628,13 @@ function _Rt() {
               tencent: "tcb",
               alipay: "alipay"
             }[this.config.provider], i = this.config.spaceId, o = "http://".concat(n, ":").concat(s, "/system/check-function"), a = "http://".concat(n, ":").concat(s, "/cloudfunctions/").concat(e);
-            return _context56.abrupt("return", new Promise(function (t, n) {
+            return _context57.abrupt("return", new Promise(function (t, n) {
               ne.request({
                 method: "POST",
                 url: o,
                 data: {
                   name: e,
-                  platform: P,
+                  platform: C,
                   provider: r,
                   spaceId: i
                 },
@@ -43617,16 +43676,14 @@ function _Rt() {
                     console.error(s || "需要访问加密的uni-clientDB-action，自动切换为云端环境");
                     break;
                   case "NETWORK_ERROR":
-                    {
-                      var _e30 = "连接本地调试服务失败，请检查客户端是否和主机在同一局域网下";
-                      throw console.error(_e30), new Error(_e30);
-                    }
+                    console.error(s || "连接本地调试服务失败，请检查客户端是否和主机在同一局域网下");
+                    break;
                   case "SWITCH_TO_CLOUD":
                     break;
                   default:
                     {
-                      var _e31 = "\u68C0\u6D4B\u672C\u5730\u8C03\u8BD5\u670D\u52A1\u51FA\u73B0\u9519\u8BEF\uFF1A".concat(s, "\uFF0C\u8BF7\u68C0\u67E5\u7F51\u7EDC\u73AF\u5883\u6216\u91CD\u542F\u5BA2\u6237\u7AEF\u518D\u8BD5");
-                      throw console.error(_e31), new Error(_e31);
+                      var _e30 = "\u68C0\u6D4B\u672C\u5730\u8C03\u8BD5\u670D\u52A1\u51FA\u73B0\u9519\u8BEF\uFF1A".concat(s, "\uFF0C\u8BF7\u68C0\u67E5\u7F51\u7EDC\u73AF\u5883\u6216\u91CD\u542F\u5BA2\u6237\u7AEF\u518D\u8BD5");
+                      throw console.error(_e30), new Error(_e30);
                     }
                 }
                 return _this27._callCloudFunction({
@@ -43635,7 +43692,7 @@ function _Rt() {
                 });
               }
               return new Promise(function (e, n) {
-                var s = Lt.call(_this27, {
+                var s = Nt.call(_this27, {
                   data: t
                 });
                 ne.request({
@@ -43643,7 +43700,7 @@ function _Rt() {
                   url: a,
                   data: {
                     provider: r,
-                    platform: P,
+                    platform: C,
                     param: s
                   },
                   success: function success() {
@@ -43668,42 +43725,42 @@ function _Rt() {
             }));
           case 5:
           case "end":
-            return _context56.stop();
+            return _context57.stop();
         }
       }
-    }, _callee56, this);
+    }, _callee57, this);
   }));
-  return _Rt.apply(this, arguments);
+  return _Dt.apply(this, arguments);
 }
-var Ut = [{
+var Mt = [{
   rule: /fc_function_not_found|FUNCTION_NOT_FOUND/,
   content: "，云函数[{functionName}]在云端不存在，请检查此云函数名称是否正确以及该云函数是否已上传到服务空间",
   mode: "append"
 }];
-var Nt = /[\\^$.*+?()[\]{}|]/g,
-  Dt = RegExp(Nt.source);
-function Mt(e, t, n) {
-  return e.replace(new RegExp((s = t) && Dt.test(s) ? s.replace(Nt, "\\$&") : s, "g"), n);
+var qt = /[\\^$.*+?()[\]{}|]/g,
+  Ft = RegExp(qt.source);
+function Kt(e, t, n) {
+  return e.replace(new RegExp((s = t) && Ft.test(s) ? s.replace(qt, "\\$&") : s, "g"), n);
   var s;
 }
-var qt = "none",
-  Ft = "request",
-  Kt = "response",
-  jt = "both";
-var $t = /*#__PURE__*/function () {
-  function $t() {
+var jt = "none",
+  $t = "request",
+  Bt = "response",
+  Wt = "both";
+var Ht = /*#__PURE__*/function () {
+  function Ht() {
     var _ref26 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       e = _ref26.secretType,
       t = _ref26.uniCloudIns;
-    (0, _classCallCheck2.default)(this, $t);
-    this.clientType = "", this.secretType = e || qt, this.uniCloudIns = t;
+    (0, _classCallCheck2.default)(this, Ht);
+    this.clientType = "", this.secretType = e || jt, this.uniCloudIns = t;
     var _this$uniCloudIns$con = this.uniCloudIns.config,
       n = _this$uniCloudIns$con.provider,
       s = _this$uniCloudIns$con.spaceId;
     var r;
     this.provider = n, this.spaceId = s, this.scopedGlobalCache = (r = this.uniCloudIns, L("_globalUniCloudSecureNetworkCache__{spaceId}".replace("{spaceId}", r.config.spaceId)));
   }
-  (0, _createClass2.default)($t, [{
+  (0, _createClass2.default)(Ht, [{
     key: "getSystemInfo",
     value: function getSystemInfo() {
       return this._systemInfo || (this._systemInfo = ae()), this._systemInfo;
@@ -43721,20 +43778,20 @@ var $t = /*#__PURE__*/function () {
   }, {
     key: "encryptData",
     value: function () {
-      var _encryptData = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee36(e) {
-        return _regenerator.default.wrap(function _callee36$(_context36) {
+      var _encryptData = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee37(e) {
+        return _regenerator.default.wrap(function _callee37$(_context37) {
           while (1) {
-            switch (_context36.prev = _context36.next) {
+            switch (_context37.prev = _context37.next) {
               case 0:
-                return _context36.abrupt("return", this.secretType === qt ? e : this.platformEncryptData(e));
+                return _context37.abrupt("return", this.secretType === jt ? e : this.platformEncryptData(e));
               case 1:
               case "end":
-                return _context36.stop();
+                return _context37.stop();
             }
           }
-        }, _callee36, this);
+        }, _callee37, this);
       }));
-      function encryptData(_x33) {
+      function encryptData(_x34) {
         return _encryptData.apply(this, arguments);
       }
       return encryptData;
@@ -43742,28 +43799,28 @@ var $t = /*#__PURE__*/function () {
   }, {
     key: "decryptResult",
     value: function () {
-      var _decryptResult = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee37(e) {
+      var _decryptResult = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee38(e) {
         var _ref27, t, n;
-        return _regenerator.default.wrap(function _callee37$(_context37) {
+        return _regenerator.default.wrap(function _callee38$(_context38) {
           while (1) {
-            switch (_context37.prev = _context37.next) {
+            switch (_context38.prev = _context38.next) {
               case 0:
-                if (!(this.secretType === qt)) {
-                  _context37.next = 2;
+                if (!(this.secretType === jt)) {
+                  _context38.next = 2;
                   break;
                 }
-                return _context37.abrupt("return", e);
+                return _context38.abrupt("return", e);
               case 2:
                 _ref27 = e || {}, t = _ref27.errCode, n = _ref27.content;
-                return _context37.abrupt("return", t || !n ? e : this.secretType === Ft ? n : this.platformDecryptResult(e));
+                return _context38.abrupt("return", t || !n ? e : this.secretType === $t ? n : this.platformDecryptResult(e));
               case 4:
               case "end":
-                return _context37.stop();
+                return _context38.stop();
             }
           }
-        }, _callee37, this);
+        }, _callee38, this);
       }));
-      function decryptResult(_x34) {
+      function decryptResult(_x35) {
         return _decryptResult.apply(this, arguments);
       }
       return decryptResult;
@@ -43772,126 +43829,56 @@ var $t = /*#__PURE__*/function () {
     key: "wrapVerifyClientCallFunction",
     value: function wrapVerifyClientCallFunction(e) {
       var t = this;
-      return /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee38() {
+      return /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee39() {
         var _ref29,
           n,
           _ref29$data,
           s,
           r,
-          _args38 = arguments;
-        return _regenerator.default.wrap(function _callee38$(_context38) {
-          while (1) {
-            switch (_context38.prev = _context38.next) {
-              case 0:
-                _ref29 = _args38.length > 0 && _args38[0] !== undefined ? _args38[0] : {}, n = _ref29.name, _ref29$data = _ref29.data, s = _ref29$data === void 0 ? {} : _ref29$data;
-                _context38.next = 3;
-                return t.prepare();
-              case 3:
-                _context38.next = 5;
-                return t.platformGetSignOption();
-              case 5:
-                (s = JSON.parse(JSON.stringify(s)))._uniCloudOptions = _context38.sent;
-                _context38.next = 8;
-                return e({
-                  name: n,
-                  data: s
-                });
-              case 8:
-                r = _context38.sent;
-                _context38.t0 = t.isClientKeyNotFound(r);
-                if (!_context38.t0) {
-                  _context38.next = 19;
-                  break;
-                }
-                _context38.next = 13;
-                return t.prepare({
-                  forceUpdate: !0
-                });
-              case 13:
-                _context38.next = 15;
-                return t.platformGetSignOption();
-              case 15:
-                s._uniCloudOptions = _context38.sent;
-                _context38.next = 18;
-                return e({
-                  name: n,
-                  data: s
-                });
-              case 18:
-                r = _context38.sent;
-              case 19:
-                return _context38.abrupt("return", r);
-              case 20:
-              case "end":
-                return _context38.stop();
-            }
-          }
-        }, _callee38);
-      }));
-    }
-  }, {
-    key: "wrapEncryptDataCallFunction",
-    value: function wrapEncryptDataCallFunction(e) {
-      var t = this;
-      return /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee39() {
-        var _ref31,
-          n,
-          _ref31$data,
-          s,
-          r,
-          i,
-          _r5,
           _args39 = arguments;
         return _regenerator.default.wrap(function _callee39$(_context39) {
           while (1) {
             switch (_context39.prev = _context39.next) {
               case 0:
-                _ref31 = _args39.length > 0 && _args39[0] !== undefined ? _args39[0] : {}, n = _ref31.name, _ref31$data = _ref31.data, s = _ref31$data === void 0 ? {} : _ref31$data;
+                _ref29 = _args39.length > 0 && _args39[0] !== undefined ? _args39[0] : {}, n = _ref29.name, _ref29$data = _ref29.data, s = _ref29$data === void 0 ? {} : _ref29$data;
                 _context39.next = 3;
                 return t.prepare();
               case 3:
                 _context39.next = 5;
-                return t.encryptData(s);
+                return t.platformGetSignOption();
               case 5:
-                r = _context39.sent;
+                (s = JSON.parse(JSON.stringify(s)))._uniCloudOptions = _context39.sent;
                 _context39.next = 8;
                 return e({
                   name: n,
-                  data: r
+                  data: s
                 });
               case 8:
-                i = _context39.sent;
-                if (!t.isClientKeyNotFound(i)) {
-                  _context39.next = 21;
+                r = _context39.sent;
+                _context39.t0 = t.isClientKeyNotFound(r);
+                if (!_context39.t0) {
+                  _context39.next = 19;
                   break;
                 }
-                _context39.next = 12;
+                _context39.next = 13;
                 return t.prepare({
                   forceUpdate: !0
                 });
-              case 12:
-                _context39.next = 14;
-                return t.encryptData(s);
-              case 14:
-                _r5 = _context39.sent;
-                _context39.next = 17;
+              case 13:
+                _context39.next = 15;
                 return t.platformGetSignOption();
-              case 17:
+              case 15:
                 s._uniCloudOptions = _context39.sent;
-                _context39.next = 20;
+                _context39.next = 18;
                 return e({
                   name: n,
-                  data: _r5
+                  data: s
                 });
+              case 18:
+                r = _context39.sent;
+              case 19:
+                return _context39.abrupt("return", r);
               case 20:
-                i = _context39.sent;
-              case 21:
-                _context39.next = 23;
-                return t.decryptResult(i.result);
-              case 23:
-                i.result = _context39.sent;
-                return _context39.abrupt("return", i);
-              case 25:
               case "end":
                 return _context39.stop();
             }
@@ -43899,37 +43886,107 @@ var $t = /*#__PURE__*/function () {
         }, _callee39);
       }));
     }
+  }, {
+    key: "wrapEncryptDataCallFunction",
+    value: function wrapEncryptDataCallFunction(e) {
+      var t = this;
+      return /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee40() {
+        var _ref31,
+          n,
+          _ref31$data,
+          s,
+          r,
+          i,
+          _r5,
+          _args40 = arguments;
+        return _regenerator.default.wrap(function _callee40$(_context40) {
+          while (1) {
+            switch (_context40.prev = _context40.next) {
+              case 0:
+                _ref31 = _args40.length > 0 && _args40[0] !== undefined ? _args40[0] : {}, n = _ref31.name, _ref31$data = _ref31.data, s = _ref31$data === void 0 ? {} : _ref31$data;
+                _context40.next = 3;
+                return t.prepare();
+              case 3:
+                _context40.next = 5;
+                return t.encryptData(s);
+              case 5:
+                r = _context40.sent;
+                _context40.next = 8;
+                return e({
+                  name: n,
+                  data: r
+                });
+              case 8:
+                i = _context40.sent;
+                if (!t.isClientKeyNotFound(i)) {
+                  _context40.next = 21;
+                  break;
+                }
+                _context40.next = 12;
+                return t.prepare({
+                  forceUpdate: !0
+                });
+              case 12:
+                _context40.next = 14;
+                return t.encryptData(s);
+              case 14:
+                _r5 = _context40.sent;
+                _context40.next = 17;
+                return t.platformGetSignOption();
+              case 17:
+                s._uniCloudOptions = _context40.sent;
+                _context40.next = 20;
+                return e({
+                  name: n,
+                  data: _r5
+                });
+              case 20:
+                i = _context40.sent;
+              case 21:
+                _context40.next = 23;
+                return t.decryptResult(i.result);
+              case 23:
+                i.result = _context40.sent;
+                return _context40.abrupt("return", i);
+              case 25:
+              case "end":
+                return _context40.stop();
+            }
+          }
+        }, _callee40);
+      }));
+    }
   }]);
-  return $t;
+  return Ht;
 }();
 /*! MIT License. Copyright 2015-2018 Richard Moore <me@ricmoo.com>. See LICENSE.txt. */
-function Bt(e) {
+function zt(e) {
   return parseInt(e) === e;
 }
-function Wt(e) {
-  if (!Bt(e.length)) return !1;
+function Jt(e) {
+  if (!zt(e.length)) return !1;
   for (var t = 0; t < e.length; t++) {
-    if (!Bt(e[t]) || e[t] < 0 || e[t] > 255) return !1;
+    if (!zt(e[t]) || e[t] < 0 || e[t] > 255) return !1;
   }
   return !0;
 }
-function Ht(e, t) {
+function Vt(e, t) {
   if (e.buffer && "Uint8Array" === e.name) return t && (e = e.slice ? e.slice() : Array.prototype.slice.call(e)), e;
   if (Array.isArray(e)) {
-    if (!Wt(e)) throw new Error("Array contains invalid value: " + e);
+    if (!Jt(e)) throw new Error("Array contains invalid value: " + e);
     return new Uint8Array(e);
   }
-  if (Bt(e.length) && Wt(e)) return new Uint8Array(e);
+  if (zt(e.length) && Jt(e)) return new Uint8Array(e);
   throw new Error("unsupported array-like object");
 }
-function zt(e) {
+function Gt(e) {
   return new Uint8Array(e);
 }
-function Jt(e, t, n, s, r) {
+function Yt(e, t, n, s, r) {
   null == s && null == r || (e = e.slice ? e.slice(s, r) : Array.prototype.slice.call(e, s, r)), t.set(e, n);
 }
-var Gt,
-  Vt = {
+var Qt,
+  Xt = {
     toBytes: function toBytes(e) {
       var t = [],
         n = 0;
@@ -43937,7 +43994,7 @@ var Gt,
         var s = e.charCodeAt(n++);
         37 === s ? (t.push(parseInt(e.substr(n, 2), 16)), n += 2) : t.push(s);
       }
-      return Ht(t);
+      return Vt(t);
     },
     fromBytes: function fromBytes(e) {
       for (var t = [], n = 0; n < e.length;) {
@@ -43947,7 +44004,7 @@ var Gt,
       return t.join("");
     }
   },
-  Yt = (Gt = "0123456789abcdef", {
+  Zt = (Qt = "0123456789abcdef", {
     toBytes: function toBytes(e) {
       for (var t = [], n = 0; n < e.length; n += 2) {
         t.push(parseInt(e.substr(n, 2), 16));
@@ -43957,49 +44014,49 @@ var Gt,
     fromBytes: function fromBytes(e) {
       for (var t = [], n = 0; n < e.length; n++) {
         var s = e[n];
-        t.push(Gt[(240 & s) >> 4] + Gt[15 & s]);
+        t.push(Qt[(240 & s) >> 4] + Qt[15 & s]);
       }
       return t.join("");
     }
   }),
-  Qt = {
+  en = {
     16: 10,
     24: 12,
     32: 14
   },
-  Xt = [1, 2, 4, 8, 16, 32, 64, 128, 27, 54, 108, 216, 171, 77, 154, 47, 94, 188, 99, 198, 151, 53, 106, 212, 179, 125, 250, 239, 197, 145],
-  Zt = [99, 124, 119, 123, 242, 107, 111, 197, 48, 1, 103, 43, 254, 215, 171, 118, 202, 130, 201, 125, 250, 89, 71, 240, 173, 212, 162, 175, 156, 164, 114, 192, 183, 253, 147, 38, 54, 63, 247, 204, 52, 165, 229, 241, 113, 216, 49, 21, 4, 199, 35, 195, 24, 150, 5, 154, 7, 18, 128, 226, 235, 39, 178, 117, 9, 131, 44, 26, 27, 110, 90, 160, 82, 59, 214, 179, 41, 227, 47, 132, 83, 209, 0, 237, 32, 252, 177, 91, 106, 203, 190, 57, 74, 76, 88, 207, 208, 239, 170, 251, 67, 77, 51, 133, 69, 249, 2, 127, 80, 60, 159, 168, 81, 163, 64, 143, 146, 157, 56, 245, 188, 182, 218, 33, 16, 255, 243, 210, 205, 12, 19, 236, 95, 151, 68, 23, 196, 167, 126, 61, 100, 93, 25, 115, 96, 129, 79, 220, 34, 42, 144, 136, 70, 238, 184, 20, 222, 94, 11, 219, 224, 50, 58, 10, 73, 6, 36, 92, 194, 211, 172, 98, 145, 149, 228, 121, 231, 200, 55, 109, 141, 213, 78, 169, 108, 86, 244, 234, 101, 122, 174, 8, 186, 120, 37, 46, 28, 166, 180, 198, 232, 221, 116, 31, 75, 189, 139, 138, 112, 62, 181, 102, 72, 3, 246, 14, 97, 53, 87, 185, 134, 193, 29, 158, 225, 248, 152, 17, 105, 217, 142, 148, 155, 30, 135, 233, 206, 85, 40, 223, 140, 161, 137, 13, 191, 230, 66, 104, 65, 153, 45, 15, 176, 84, 187, 22],
-  en = [82, 9, 106, 213, 48, 54, 165, 56, 191, 64, 163, 158, 129, 243, 215, 251, 124, 227, 57, 130, 155, 47, 255, 135, 52, 142, 67, 68, 196, 222, 233, 203, 84, 123, 148, 50, 166, 194, 35, 61, 238, 76, 149, 11, 66, 250, 195, 78, 8, 46, 161, 102, 40, 217, 36, 178, 118, 91, 162, 73, 109, 139, 209, 37, 114, 248, 246, 100, 134, 104, 152, 22, 212, 164, 92, 204, 93, 101, 182, 146, 108, 112, 72, 80, 253, 237, 185, 218, 94, 21, 70, 87, 167, 141, 157, 132, 144, 216, 171, 0, 140, 188, 211, 10, 247, 228, 88, 5, 184, 179, 69, 6, 208, 44, 30, 143, 202, 63, 15, 2, 193, 175, 189, 3, 1, 19, 138, 107, 58, 145, 17, 65, 79, 103, 220, 234, 151, 242, 207, 206, 240, 180, 230, 115, 150, 172, 116, 34, 231, 173, 53, 133, 226, 249, 55, 232, 28, 117, 223, 110, 71, 241, 26, 113, 29, 41, 197, 137, 111, 183, 98, 14, 170, 24, 190, 27, 252, 86, 62, 75, 198, 210, 121, 32, 154, 219, 192, 254, 120, 205, 90, 244, 31, 221, 168, 51, 136, 7, 199, 49, 177, 18, 16, 89, 39, 128, 236, 95, 96, 81, 127, 169, 25, 181, 74, 13, 45, 229, 122, 159, 147, 201, 156, 239, 160, 224, 59, 77, 174, 42, 245, 176, 200, 235, 187, 60, 131, 83, 153, 97, 23, 43, 4, 126, 186, 119, 214, 38, 225, 105, 20, 99, 85, 33, 12, 125],
-  tn = [3328402341, 4168907908, 4000806809, 4135287693, 4294111757, 3597364157, 3731845041, 2445657428, 1613770832, 33620227, 3462883241, 1445669757, 3892248089, 3050821474, 1303096294, 3967186586, 2412431941, 528646813, 2311702848, 4202528135, 4026202645, 2992200171, 2387036105, 4226871307, 1101901292, 3017069671, 1604494077, 1169141738, 597466303, 1403299063, 3832705686, 2613100635, 1974974402, 3791519004, 1033081774, 1277568618, 1815492186, 2118074177, 4126668546, 2211236943, 1748251740, 1369810420, 3521504564, 4193382664, 3799085459, 2883115123, 1647391059, 706024767, 134480908, 2512897874, 1176707941, 2646852446, 806885416, 932615841, 168101135, 798661301, 235341577, 605164086, 461406363, 3756188221, 3454790438, 1311188841, 2142417613, 3933566367, 302582043, 495158174, 1479289972, 874125870, 907746093, 3698224818, 3025820398, 1537253627, 2756858614, 1983593293, 3084310113, 2108928974, 1378429307, 3722699582, 1580150641, 327451799, 2790478837, 3117535592, 0, 3253595436, 1075847264, 3825007647, 2041688520, 3059440621, 3563743934, 2378943302, 1740553945, 1916352843, 2487896798, 2555137236, 2958579944, 2244988746, 3151024235, 3320835882, 1336584933, 3992714006, 2252555205, 2588757463, 1714631509, 293963156, 2319795663, 3925473552, 67240454, 4269768577, 2689618160, 2017213508, 631218106, 1269344483, 2723238387, 1571005438, 2151694528, 93294474, 1066570413, 563977660, 1882732616, 4059428100, 1673313503, 2008463041, 2950355573, 1109467491, 537923632, 3858759450, 4260623118, 3218264685, 2177748300, 403442708, 638784309, 3287084079, 3193921505, 899127202, 2286175436, 773265209, 2479146071, 1437050866, 4236148354, 2050833735, 3362022572, 3126681063, 840505643, 3866325909, 3227541664, 427917720, 2655997905, 2749160575, 1143087718, 1412049534, 999329963, 193497219, 2353415882, 3354324521, 1807268051, 672404540, 2816401017, 3160301282, 369822493, 2916866934, 3688947771, 1681011286, 1949973070, 336202270, 2454276571, 201721354, 1210328172, 3093060836, 2680341085, 3184776046, 1135389935, 3294782118, 965841320, 831886756, 3554993207, 4068047243, 3588745010, 2345191491, 1849112409, 3664604599, 26054028, 2983581028, 2622377682, 1235855840, 3630984372, 2891339514, 4092916743, 3488279077, 3395642799, 4101667470, 1202630377, 268961816, 1874508501, 4034427016, 1243948399, 1546530418, 941366308, 1470539505, 1941222599, 2546386513, 3421038627, 2715671932, 3899946140, 1042226977, 2521517021, 1639824860, 227249030, 260737669, 3765465232, 2084453954, 1907733956, 3429263018, 2420656344, 100860677, 4160157185, 470683154, 3261161891, 1781871967, 2924959737, 1773779408, 394692241, 2579611992, 974986535, 664706745, 3655459128, 3958962195, 731420851, 571543859, 3530123707, 2849626480, 126783113, 865375399, 765172662, 1008606754, 361203602, 3387549984, 2278477385, 2857719295, 1344809080, 2782912378, 59542671, 1503764984, 160008576, 437062935, 1707065306, 3622233649, 2218934982, 3496503480, 2185314755, 697932208, 1512910199, 504303377, 2075177163, 2824099068, 1841019862, 739644986],
-  nn = [2781242211, 2230877308, 2582542199, 2381740923, 234877682, 3184946027, 2984144751, 1418839493, 1348481072, 50462977, 2848876391, 2102799147, 434634494, 1656084439, 3863849899, 2599188086, 1167051466, 2636087938, 1082771913, 2281340285, 368048890, 3954334041, 3381544775, 201060592, 3963727277, 1739838676, 4250903202, 3930435503, 3206782108, 4149453988, 2531553906, 1536934080, 3262494647, 484572669, 2923271059, 1783375398, 1517041206, 1098792767, 49674231, 1334037708, 1550332980, 4098991525, 886171109, 150598129, 2481090929, 1940642008, 1398944049, 1059722517, 201851908, 1385547719, 1699095331, 1587397571, 674240536, 2704774806, 252314885, 3039795866, 151914247, 908333586, 2602270848, 1038082786, 651029483, 1766729511, 3447698098, 2682942837, 454166793, 2652734339, 1951935532, 775166490, 758520603, 3000790638, 4004797018, 4217086112, 4137964114, 1299594043, 1639438038, 3464344499, 2068982057, 1054729187, 1901997871, 2534638724, 4121318227, 1757008337, 0, 750906861, 1614815264, 535035132, 3363418545, 3988151131, 3201591914, 1183697867, 3647454910, 1265776953, 3734260298, 3566750796, 3903871064, 1250283471, 1807470800, 717615087, 3847203498, 384695291, 3313910595, 3617213773, 1432761139, 2484176261, 3481945413, 283769337, 100925954, 2180939647, 4037038160, 1148730428, 3123027871, 3813386408, 4087501137, 4267549603, 3229630528, 2315620239, 2906624658, 3156319645, 1215313976, 82966005, 3747855548, 3245848246, 1974459098, 1665278241, 807407632, 451280895, 251524083, 1841287890, 1283575245, 337120268, 891687699, 801369324, 3787349855, 2721421207, 3431482436, 959321879, 1469301956, 4065699751, 2197585534, 1199193405, 2898814052, 3887750493, 724703513, 2514908019, 2696962144, 2551808385, 3516813135, 2141445340, 1715741218, 2119445034, 2872807568, 2198571144, 3398190662, 700968686, 3547052216, 1009259540, 2041044702, 3803995742, 487983883, 1991105499, 1004265696, 1449407026, 1316239930, 504629770, 3683797321, 168560134, 1816667172, 3837287516, 1570751170, 1857934291, 4014189740, 2797888098, 2822345105, 2754712981, 936633572, 2347923833, 852879335, 1133234376, 1500395319, 3084545389, 2348912013, 1689376213, 3533459022, 3762923945, 3034082412, 4205598294, 133428468, 634383082, 2949277029, 2398386810, 3913789102, 403703816, 3580869306, 2297460856, 1867130149, 1918643758, 607656988, 4049053350, 3346248884, 1368901318, 600565992, 2090982877, 2632479860, 557719327, 3717614411, 3697393085, 2249034635, 2232388234, 2430627952, 1115438654, 3295786421, 2865522278, 3633334344, 84280067, 33027830, 303828494, 2747425121, 1600795957, 4188952407, 3496589753, 2434238086, 1486471617, 658119965, 3106381470, 953803233, 334231800, 3005978776, 857870609, 3151128937, 1890179545, 2298973838, 2805175444, 3056442267, 574365214, 2450884487, 550103529, 1233637070, 4289353045, 2018519080, 2057691103, 2399374476, 4166623649, 2148108681, 387583245, 3664101311, 836232934, 3330556482, 3100665960, 3280093505, 2955516313, 2002398509, 287182607, 3413881008, 4238890068, 3597515707, 975967766],
-  sn = [1671808611, 2089089148, 2006576759, 2072901243, 4061003762, 1807603307, 1873927791, 3310653893, 810573872, 16974337, 1739181671, 729634347, 4263110654, 3613570519, 2883997099, 1989864566, 3393556426, 2191335298, 3376449993, 2106063485, 4195741690, 1508618841, 1204391495, 4027317232, 2917941677, 3563566036, 2734514082, 2951366063, 2629772188, 2767672228, 1922491506, 3227229120, 3082974647, 4246528509, 2477669779, 644500518, 911895606, 1061256767, 4144166391, 3427763148, 878471220, 2784252325, 3845444069, 4043897329, 1905517169, 3631459288, 827548209, 356461077, 67897348, 3344078279, 593839651, 3277757891, 405286936, 2527147926, 84871685, 2595565466, 118033927, 305538066, 2157648768, 3795705826, 3945188843, 661212711, 2999812018, 1973414517, 152769033, 2208177539, 745822252, 439235610, 455947803, 1857215598, 1525593178, 2700827552, 1391895634, 994932283, 3596728278, 3016654259, 695947817, 3812548067, 795958831, 2224493444, 1408607827, 3513301457, 0, 3979133421, 543178784, 4229948412, 2982705585, 1542305371, 1790891114, 3410398667, 3201918910, 961245753, 1256100938, 1289001036, 1491644504, 3477767631, 3496721360, 4012557807, 2867154858, 4212583931, 1137018435, 1305975373, 861234739, 2241073541, 1171229253, 4178635257, 33948674, 2139225727, 1357946960, 1011120188, 2679776671, 2833468328, 1374921297, 2751356323, 1086357568, 2408187279, 2460827538, 2646352285, 944271416, 4110742005, 3168756668, 3066132406, 3665145818, 560153121, 271589392, 4279952895, 4077846003, 3530407890, 3444343245, 202643468, 322250259, 3962553324, 1608629855, 2543990167, 1154254916, 389623319, 3294073796, 2817676711, 2122513534, 1028094525, 1689045092, 1575467613, 422261273, 1939203699, 1621147744, 2174228865, 1339137615, 3699352540, 577127458, 712922154, 2427141008, 2290289544, 1187679302, 3995715566, 3100863416, 339486740, 3732514782, 1591917662, 186455563, 3681988059, 3762019296, 844522546, 978220090, 169743370, 1239126601, 101321734, 611076132, 1558493276, 3260915650, 3547250131, 2901361580, 1655096418, 2443721105, 2510565781, 3828863972, 2039214713, 3878868455, 3359869896, 928607799, 1840765549, 2374762893, 3580146133, 1322425422, 2850048425, 1823791212, 1459268694, 4094161908, 3928346602, 1706019429, 2056189050, 2934523822, 135794696, 3134549946, 2022240376, 628050469, 779246638, 472135708, 2800834470, 3032970164, 3327236038, 3894660072, 3715932637, 1956440180, 522272287, 1272813131, 3185336765, 2340818315, 2323976074, 1888542832, 1044544574, 3049550261, 1722469478, 1222152264, 50660867, 4127324150, 236067854, 1638122081, 895445557, 1475980887, 3117443513, 2257655686, 3243809217, 489110045, 2662934430, 3778599393, 4162055160, 2561878936, 288563729, 1773916777, 3648039385, 2391345038, 2493985684, 2612407707, 505560094, 2274497927, 3911240169, 3460925390, 1442818645, 678973480, 3749357023, 2358182796, 2717407649, 2306869641, 219617805, 3218761151, 3862026214, 1120306242, 1756942440, 1103331905, 2578459033, 762796589, 252780047, 2966125488, 1425844308, 3151392187, 372911126],
-  rn = [1667474886, 2088535288, 2004326894, 2071694838, 4075949567, 1802223062, 1869591006, 3318043793, 808472672, 16843522, 1734846926, 724270422, 4278065639, 3621216949, 2880169549, 1987484396, 3402253711, 2189597983, 3385409673, 2105378810, 4210693615, 1499065266, 1195886990, 4042263547, 2913856577, 3570689971, 2728590687, 2947541573, 2627518243, 2762274643, 1920112356, 3233831835, 3082273397, 4261223649, 2475929149, 640051788, 909531756, 1061110142, 4160160501, 3435941763, 875846760, 2779116625, 3857003729, 4059105529, 1903268834, 3638064043, 825316194, 353713962, 67374088, 3351728789, 589522246, 3284360861, 404236336, 2526454071, 84217610, 2593830191, 117901582, 303183396, 2155911963, 3806477791, 3958056653, 656894286, 2998062463, 1970642922, 151591698, 2206440989, 741110872, 437923380, 454765878, 1852748508, 1515908788, 2694904667, 1381168804, 993742198, 3604373943, 3014905469, 690584402, 3823320797, 791638366, 2223281939, 1398011302, 3520161977, 0, 3991743681, 538992704, 4244381667, 2981218425, 1532751286, 1785380564, 3419096717, 3200178535, 960056178, 1246420628, 1280103576, 1482221744, 3486468741, 3503319995, 4025428677, 2863326543, 4227536621, 1128514950, 1296947098, 859002214, 2240123921, 1162203018, 4193849577, 33687044, 2139062782, 1347481760, 1010582648, 2678045221, 2829640523, 1364325282, 2745433693, 1077985408, 2408548869, 2459086143, 2644360225, 943212656, 4126475505, 3166494563, 3065430391, 3671750063, 555836226, 269496352, 4294908645, 4092792573, 3537006015, 3452783745, 202118168, 320025894, 3974901699, 1600119230, 2543297077, 1145359496, 387397934, 3301201811, 2812801621, 2122220284, 1027426170, 1684319432, 1566435258, 421079858, 1936954854, 1616945344, 2172753945, 1330631070, 3705438115, 572679748, 707427924, 2425400123, 2290647819, 1179044492, 4008585671, 3099120491, 336870440, 3739122087, 1583276732, 185277718, 3688593069, 3772791771, 842159716, 976899700, 168435220, 1229577106, 101059084, 606366792, 1549591736, 3267517855, 3553849021, 2897014595, 1650632388, 2442242105, 2509612081, 3840161747, 2038008818, 3890688725, 3368567691, 926374254, 1835907034, 2374863873, 3587531953, 1313788572, 2846482505, 1819063512, 1448540844, 4109633523, 3941213647, 1701162954, 2054852340, 2930698567, 134748176, 3132806511, 2021165296, 623210314, 774795868, 471606328, 2795958615, 3031746419, 3334885783, 3907527627, 3722280097, 1953799400, 522133822, 1263263126, 3183336545, 2341176845, 2324333839, 1886425312, 1044267644, 3048588401, 1718004428, 1212733584, 50529542, 4143317495, 235803164, 1633788866, 892690282, 1465383342, 3115962473, 2256965911, 3250673817, 488449850, 2661202215, 3789633753, 4177007595, 2560144171, 286339874, 1768537042, 3654906025, 2391705863, 2492770099, 2610673197, 505291324, 2273808917, 3924369609, 3469625735, 1431699370, 673740880, 3755965093, 2358021891, 2711746649, 2307489801, 218961690, 3217021541, 3873845719, 1111672452, 1751693520, 1094828930, 2576986153, 757954394, 252645662, 2964376443, 1414855848, 3149649517, 370555436],
-  on = [1374988112, 2118214995, 437757123, 975658646, 1001089995, 530400753, 2902087851, 1273168787, 540080725, 2910219766, 2295101073, 4110568485, 1340463100, 3307916247, 641025152, 3043140495, 3736164937, 632953703, 1172967064, 1576976609, 3274667266, 2169303058, 2370213795, 1809054150, 59727847, 361929877, 3211623147, 2505202138, 3569255213, 1484005843, 1239443753, 2395588676, 1975683434, 4102977912, 2572697195, 666464733, 3202437046, 4035489047, 3374361702, 2110667444, 1675577880, 3843699074, 2538681184, 1649639237, 2976151520, 3144396420, 4269907996, 4178062228, 1883793496, 2403728665, 2497604743, 1383856311, 2876494627, 1917518562, 3810496343, 1716890410, 3001755655, 800440835, 2261089178, 3543599269, 807962610, 599762354, 33778362, 3977675356, 2328828971, 2809771154, 4077384432, 1315562145, 1708848333, 101039829, 3509871135, 3299278474, 875451293, 2733856160, 92987698, 2767645557, 193195065, 1080094634, 1584504582, 3178106961, 1042385657, 2531067453, 3711829422, 1306967366, 2438237621, 1908694277, 67556463, 1615861247, 429456164, 3602770327, 2302690252, 1742315127, 2968011453, 126454664, 3877198648, 2043211483, 2709260871, 2084704233, 4169408201, 0, 159417987, 841739592, 504459436, 1817866830, 4245618683, 260388950, 1034867998, 908933415, 168810852, 1750902305, 2606453969, 607530554, 202008497, 2472011535, 3035535058, 463180190, 2160117071, 1641816226, 1517767529, 470948374, 3801332234, 3231722213, 1008918595, 303765277, 235474187, 4069246893, 766945465, 337553864, 1475418501, 2943682380, 4003061179, 2743034109, 4144047775, 1551037884, 1147550661, 1543208500, 2336434550, 3408119516, 3069049960, 3102011747, 3610369226, 1113818384, 328671808, 2227573024, 2236228733, 3535486456, 2935566865, 3341394285, 496906059, 3702665459, 226906860, 2009195472, 733156972, 2842737049, 294930682, 1206477858, 2835123396, 2700099354, 1451044056, 573804783, 2269728455, 3644379585, 2362090238, 2564033334, 2801107407, 2776292904, 3669462566, 1068351396, 742039012, 1350078989, 1784663195, 1417561698, 4136440770, 2430122216, 775550814, 2193862645, 2673705150, 1775276924, 1876241833, 3475313331, 3366754619, 270040487, 3902563182, 3678124923, 3441850377, 1851332852, 3969562369, 2203032232, 3868552805, 2868897406, 566021896, 4011190502, 3135740889, 1248802510, 3936291284, 699432150, 832877231, 708780849, 3332740144, 899835584, 1951317047, 4236429990, 3767586992, 866637845, 4043610186, 1106041591, 2144161806, 395441711, 1984812685, 1139781709, 3433712980, 3835036895, 2664543715, 1282050075, 3240894392, 1181045119, 2640243204, 25965917, 4203181171, 4211818798, 3009879386, 2463879762, 3910161971, 1842759443, 2597806476, 933301370, 1509430414, 3943906441, 3467192302, 3076639029, 3776767469, 2051518780, 2631065433, 1441952575, 404016761, 1942435775, 1408749034, 1610459739, 3745345300, 2017778566, 3400528769, 3110650942, 941896748, 3265478751, 371049330, 3168937228, 675039627, 4279080257, 967311729, 135050206, 3635733660, 1683407248, 2076935265, 3576870512, 1215061108, 3501741890],
-  an = [1347548327, 1400783205, 3273267108, 2520393566, 3409685355, 4045380933, 2880240216, 2471224067, 1428173050, 4138563181, 2441661558, 636813900, 4233094615, 3620022987, 2149987652, 2411029155, 1239331162, 1730525723, 2554718734, 3781033664, 46346101, 310463728, 2743944855, 3328955385, 3875770207, 2501218972, 3955191162, 3667219033, 768917123, 3545789473, 692707433, 1150208456, 1786102409, 2029293177, 1805211710, 3710368113, 3065962831, 401639597, 1724457132, 3028143674, 409198410, 2196052529, 1620529459, 1164071807, 3769721975, 2226875310, 486441376, 2499348523, 1483753576, 428819965, 2274680428, 3075636216, 598438867, 3799141122, 1474502543, 711349675, 129166120, 53458370, 2592523643, 2782082824, 4063242375, 2988687269, 3120694122, 1559041666, 730517276, 2460449204, 4042459122, 2706270690, 3446004468, 3573941694, 533804130, 2328143614, 2637442643, 2695033685, 839224033, 1973745387, 957055980, 2856345839, 106852767, 1371368976, 4181598602, 1033297158, 2933734917, 1179510461, 3046200461, 91341917, 1862534868, 4284502037, 605657339, 2547432937, 3431546947, 2003294622, 3182487618, 2282195339, 954669403, 3682191598, 1201765386, 3917234703, 3388507166, 0, 2198438022, 1211247597, 2887651696, 1315723890, 4227665663, 1443857720, 507358933, 657861945, 1678381017, 560487590, 3516619604, 975451694, 2970356327, 261314535, 3535072918, 2652609425, 1333838021, 2724322336, 1767536459, 370938394, 182621114, 3854606378, 1128014560, 487725847, 185469197, 2918353863, 3106780840, 3356761769, 2237133081, 1286567175, 3152976349, 4255350624, 2683765030, 3160175349, 3309594171, 878443390, 1988838185, 3704300486, 1756818940, 1673061617, 3403100636, 272786309, 1075025698, 545572369, 2105887268, 4174560061, 296679730, 1841768865, 1260232239, 4091327024, 3960309330, 3497509347, 1814803222, 2578018489, 4195456072, 575138148, 3299409036, 446754879, 3629546796, 4011996048, 3347532110, 3252238545, 4270639778, 915985419, 3483825537, 681933534, 651868046, 2755636671, 3828103837, 223377554, 2607439820, 1649704518, 3270937875, 3901806776, 1580087799, 4118987695, 3198115200, 2087309459, 2842678573, 3016697106, 1003007129, 2802849917, 1860738147, 2077965243, 164439672, 4100872472, 32283319, 2827177882, 1709610350, 2125135846, 136428751, 3874428392, 3652904859, 3460984630, 3572145929, 3593056380, 2939266226, 824852259, 818324884, 3224740454, 930369212, 2801566410, 2967507152, 355706840, 1257309336, 4148292826, 243256656, 790073846, 2373340630, 1296297904, 1422699085, 3756299780, 3818836405, 457992840, 3099667487, 2135319889, 77422314, 1560382517, 1945798516, 788204353, 1521706781, 1385356242, 870912086, 325965383, 2358957921, 2050466060, 2388260884, 2313884476, 4006521127, 901210569, 3990953189, 1014646705, 1503449823, 1062597235, 2031621326, 3212035895, 3931371469, 1533017514, 350174575, 2256028891, 2177544179, 1052338372, 741876788, 1606591296, 1914052035, 213705253, 2334669897, 1107234197, 1899603969, 3725069491, 2631447780, 2422494913, 1635502980, 1893020342, 1950903388, 1120974935],
-  cn = [2807058932, 1699970625, 2764249623, 1586903591, 1808481195, 1173430173, 1487645946, 59984867, 4199882800, 1844882806, 1989249228, 1277555970, 3623636965, 3419915562, 1149249077, 2744104290, 1514790577, 459744698, 244860394, 3235995134, 1963115311, 4027744588, 2544078150, 4190530515, 1608975247, 2627016082, 2062270317, 1507497298, 2200818878, 567498868, 1764313568, 3359936201, 2305455554, 2037970062, 1047239e3, 1910319033, 1337376481, 2904027272, 2892417312, 984907214, 1243112415, 830661914, 861968209, 2135253587, 2011214180, 2927934315, 2686254721, 731183368, 1750626376, 4246310725, 1820824798, 4172763771, 3542330227, 48394827, 2404901663, 2871682645, 671593195, 3254988725, 2073724613, 145085239, 2280796200, 2779915199, 1790575107, 2187128086, 472615631, 3029510009, 4075877127, 3802222185, 4107101658, 3201631749, 1646252340, 4270507174, 1402811438, 1436590835, 3778151818, 3950355702, 3963161475, 4020912224, 2667994737, 273792366, 2331590177, 104699613, 95345982, 3175501286, 2377486676, 1560637892, 3564045318, 369057872, 4213447064, 3919042237, 1137477952, 2658625497, 1119727848, 2340947849, 1530455833, 4007360968, 172466556, 266959938, 516552836, 0, 2256734592, 3980931627, 1890328081, 1917742170, 4294704398, 945164165, 3575528878, 958871085, 3647212047, 2787207260, 1423022939, 775562294, 1739656202, 3876557655, 2530391278, 2443058075, 3310321856, 547512796, 1265195639, 437656594, 3121275539, 719700128, 3762502690, 387781147, 218828297, 3350065803, 2830708150, 2848461854, 428169201, 122466165, 3720081049, 1627235199, 648017665, 4122762354, 1002783846, 2117360635, 695634755, 3336358691, 4234721005, 4049844452, 3704280881, 2232435299, 574624663, 287343814, 612205898, 1039717051, 840019705, 2708326185, 793451934, 821288114, 1391201670, 3822090177, 376187827, 3113855344, 1224348052, 1679968233, 2361698556, 1058709744, 752375421, 2431590963, 1321699145, 3519142200, 2734591178, 188127444, 2177869557, 3727205754, 2384911031, 3215212461, 2648976442, 2450346104, 3432737375, 1180849278, 331544205, 3102249176, 4150144569, 2952102595, 2159976285, 2474404304, 766078933, 313773861, 2570832044, 2108100632, 1668212892, 3145456443, 2013908262, 418672217, 3070356634, 2594734927, 1852171925, 3867060991, 3473416636, 3907448597, 2614737639, 919489135, 164948639, 2094410160, 2997825956, 590424639, 2486224549, 1723872674, 3157750862, 3399941250, 3501252752, 3625268135, 2555048196, 3673637356, 1343127501, 4130281361, 3599595085, 2957853679, 1297403050, 81781910, 3051593425, 2283490410, 532201772, 1367295589, 3926170974, 895287692, 1953757831, 1093597963, 492483431, 3528626907, 1446242576, 1192455638, 1636604631, 209336225, 344873464, 1015671571, 669961897, 3375740769, 3857572124, 2973530695, 3747192018, 1933530610, 3464042516, 935293895, 3454686199, 2858115069, 1863638845, 3683022916, 4085369519, 3292445032, 875313188, 1080017571, 3279033885, 621591778, 1233856572, 2504130317, 24197544, 3017672716, 3835484340, 3247465558, 2220981195, 3060847922, 1551124588, 1463996600],
-  un = [4104605777, 1097159550, 396673818, 660510266, 2875968315, 2638606623, 4200115116, 3808662347, 821712160, 1986918061, 3430322568, 38544885, 3856137295, 718002117, 893681702, 1654886325, 2975484382, 3122358053, 3926825029, 4274053469, 796197571, 1290801793, 1184342925, 3556361835, 2405426947, 2459735317, 1836772287, 1381620373, 3196267988, 1948373848, 3764988233, 3385345166, 3263785589, 2390325492, 1480485785, 3111247143, 3780097726, 2293045232, 548169417, 3459953789, 3746175075, 439452389, 1362321559, 1400849762, 1685577905, 1806599355, 2174754046, 137073913, 1214797936, 1174215055, 3731654548, 2079897426, 1943217067, 1258480242, 529487843, 1437280870, 3945269170, 3049390895, 3313212038, 923313619, 679998e3, 3215307299, 57326082, 377642221, 3474729866, 2041877159, 133361907, 1776460110, 3673476453, 96392454, 878845905, 2801699524, 777231668, 4082475170, 2330014213, 4142626212, 2213296395, 1626319424, 1906247262, 1846563261, 562755902, 3708173718, 1040559837, 3871163981, 1418573201, 3294430577, 114585348, 1343618912, 2566595609, 3186202582, 1078185097, 3651041127, 3896688048, 2307622919, 425408743, 3371096953, 2081048481, 1108339068, 2216610296, 0, 2156299017, 736970802, 292596766, 1517440620, 251657213, 2235061775, 2933202493, 758720310, 265905162, 1554391400, 1532285339, 908999204, 174567692, 1474760595, 4002861748, 2610011675, 3234156416, 3693126241, 2001430874, 303699484, 2478443234, 2687165888, 585122620, 454499602, 151849742, 2345119218, 3064510765, 514443284, 4044981591, 1963412655, 2581445614, 2137062819, 19308535, 1928707164, 1715193156, 4219352155, 1126790795, 600235211, 3992742070, 3841024952, 836553431, 1669664834, 2535604243, 3323011204, 1243905413, 3141400786, 4180808110, 698445255, 2653899549, 2989552604, 2253581325, 3252932727, 3004591147, 1891211689, 2487810577, 3915653703, 4237083816, 4030667424, 2100090966, 865136418, 1229899655, 953270745, 3399679628, 3557504664, 4118925222, 2061379749, 3079546586, 2915017791, 983426092, 2022837584, 1607244650, 2118541908, 2366882550, 3635996816, 972512814, 3283088770, 1568718495, 3499326569, 3576539503, 621982671, 2895723464, 410887952, 2623762152, 1002142683, 645401037, 1494807662, 2595684844, 1335535747, 2507040230, 4293295786, 3167684641, 367585007, 3885750714, 1865862730, 2668221674, 2960971305, 2763173681, 1059270954, 2777952454, 2724642869, 1320957812, 2194319100, 2429595872, 2815956275, 77089521, 3973773121, 3444575871, 2448830231, 1305906550, 4021308739, 2857194700, 2516901860, 3518358430, 1787304780, 740276417, 1699839814, 1592394909, 2352307457, 2272556026, 188821243, 1729977011, 3687994002, 274084841, 3594982253, 3613494426, 2701949495, 4162096729, 322734571, 2837966542, 1640576439, 484830689, 1202797690, 3537852828, 4067639125, 349075736, 3342319475, 4157467219, 4255800159, 1030690015, 1155237496, 2951971274, 1757691577, 607398968, 2738905026, 499347990, 3794078908, 1011452712, 227885567, 2818666809, 213114376, 3034881240, 1455525988, 3414450555, 850817237, 1817998408, 3092726480],
-  hn = [0, 235474187, 470948374, 303765277, 941896748, 908933415, 607530554, 708780849, 1883793496, 2118214995, 1817866830, 1649639237, 1215061108, 1181045119, 1417561698, 1517767529, 3767586992, 4003061179, 4236429990, 4069246893, 3635733660, 3602770327, 3299278474, 3400528769, 2430122216, 2664543715, 2362090238, 2193862645, 2835123396, 2801107407, 3035535058, 3135740889, 3678124923, 3576870512, 3341394285, 3374361702, 3810496343, 3977675356, 4279080257, 4043610186, 2876494627, 2776292904, 3076639029, 3110650942, 2472011535, 2640243204, 2403728665, 2169303058, 1001089995, 899835584, 666464733, 699432150, 59727847, 226906860, 530400753, 294930682, 1273168787, 1172967064, 1475418501, 1509430414, 1942435775, 2110667444, 1876241833, 1641816226, 2910219766, 2743034109, 2976151520, 3211623147, 2505202138, 2606453969, 2302690252, 2269728455, 3711829422, 3543599269, 3240894392, 3475313331, 3843699074, 3943906441, 4178062228, 4144047775, 1306967366, 1139781709, 1374988112, 1610459739, 1975683434, 2076935265, 1775276924, 1742315127, 1034867998, 866637845, 566021896, 800440835, 92987698, 193195065, 429456164, 395441711, 1984812685, 2017778566, 1784663195, 1683407248, 1315562145, 1080094634, 1383856311, 1551037884, 101039829, 135050206, 437757123, 337553864, 1042385657, 807962610, 573804783, 742039012, 2531067453, 2564033334, 2328828971, 2227573024, 2935566865, 2700099354, 3001755655, 3168937228, 3868552805, 3902563182, 4203181171, 4102977912, 3736164937, 3501741890, 3265478751, 3433712980, 1106041591, 1340463100, 1576976609, 1408749034, 2043211483, 2009195472, 1708848333, 1809054150, 832877231, 1068351396, 766945465, 599762354, 159417987, 126454664, 361929877, 463180190, 2709260871, 2943682380, 3178106961, 3009879386, 2572697195, 2538681184, 2236228733, 2336434550, 3509871135, 3745345300, 3441850377, 3274667266, 3910161971, 3877198648, 4110568485, 4211818798, 2597806476, 2497604743, 2261089178, 2295101073, 2733856160, 2902087851, 3202437046, 2968011453, 3936291284, 3835036895, 4136440770, 4169408201, 3535486456, 3702665459, 3467192302, 3231722213, 2051518780, 1951317047, 1716890410, 1750902305, 1113818384, 1282050075, 1584504582, 1350078989, 168810852, 67556463, 371049330, 404016761, 841739592, 1008918595, 775550814, 540080725, 3969562369, 3801332234, 4035489047, 4269907996, 3569255213, 3669462566, 3366754619, 3332740144, 2631065433, 2463879762, 2160117071, 2395588676, 2767645557, 2868897406, 3102011747, 3069049960, 202008497, 33778362, 270040487, 504459436, 875451293, 975658646, 675039627, 641025152, 2084704233, 1917518562, 1615861247, 1851332852, 1147550661, 1248802510, 1484005843, 1451044056, 933301370, 967311729, 733156972, 632953703, 260388950, 25965917, 328671808, 496906059, 1206477858, 1239443753, 1543208500, 1441952575, 2144161806, 1908694277, 1675577880, 1842759443, 3610369226, 3644379585, 3408119516, 3307916247, 4011190502, 3776767469, 4077384432, 4245618683, 2809771154, 2842737049, 3144396420, 3043140495, 2673705150, 2438237621, 2203032232, 2370213795],
-  ln = [0, 185469197, 370938394, 487725847, 741876788, 657861945, 975451694, 824852259, 1483753576, 1400783205, 1315723890, 1164071807, 1950903388, 2135319889, 1649704518, 1767536459, 2967507152, 3152976349, 2801566410, 2918353863, 2631447780, 2547432937, 2328143614, 2177544179, 3901806776, 3818836405, 4270639778, 4118987695, 3299409036, 3483825537, 3535072918, 3652904859, 2077965243, 1893020342, 1841768865, 1724457132, 1474502543, 1559041666, 1107234197, 1257309336, 598438867, 681933534, 901210569, 1052338372, 261314535, 77422314, 428819965, 310463728, 3409685355, 3224740454, 3710368113, 3593056380, 3875770207, 3960309330, 4045380933, 4195456072, 2471224067, 2554718734, 2237133081, 2388260884, 3212035895, 3028143674, 2842678573, 2724322336, 4138563181, 4255350624, 3769721975, 3955191162, 3667219033, 3516619604, 3431546947, 3347532110, 2933734917, 2782082824, 3099667487, 3016697106, 2196052529, 2313884476, 2499348523, 2683765030, 1179510461, 1296297904, 1347548327, 1533017514, 1786102409, 1635502980, 2087309459, 2003294622, 507358933, 355706840, 136428751, 53458370, 839224033, 957055980, 605657339, 790073846, 2373340630, 2256028891, 2607439820, 2422494913, 2706270690, 2856345839, 3075636216, 3160175349, 3573941694, 3725069491, 3273267108, 3356761769, 4181598602, 4063242375, 4011996048, 3828103837, 1033297158, 915985419, 730517276, 545572369, 296679730, 446754879, 129166120, 213705253, 1709610350, 1860738147, 1945798516, 2029293177, 1239331162, 1120974935, 1606591296, 1422699085, 4148292826, 4233094615, 3781033664, 3931371469, 3682191598, 3497509347, 3446004468, 3328955385, 2939266226, 2755636671, 3106780840, 2988687269, 2198438022, 2282195339, 2501218972, 2652609425, 1201765386, 1286567175, 1371368976, 1521706781, 1805211710, 1620529459, 2105887268, 1988838185, 533804130, 350174575, 164439672, 46346101, 870912086, 954669403, 636813900, 788204353, 2358957921, 2274680428, 2592523643, 2441661558, 2695033685, 2880240216, 3065962831, 3182487618, 3572145929, 3756299780, 3270937875, 3388507166, 4174560061, 4091327024, 4006521127, 3854606378, 1014646705, 930369212, 711349675, 560487590, 272786309, 457992840, 106852767, 223377554, 1678381017, 1862534868, 1914052035, 2031621326, 1211247597, 1128014560, 1580087799, 1428173050, 32283319, 182621114, 401639597, 486441376, 768917123, 651868046, 1003007129, 818324884, 1503449823, 1385356242, 1333838021, 1150208456, 1973745387, 2125135846, 1673061617, 1756818940, 2970356327, 3120694122, 2802849917, 2887651696, 2637442643, 2520393566, 2334669897, 2149987652, 3917234703, 3799141122, 4284502037, 4100872472, 3309594171, 3460984630, 3545789473, 3629546796, 2050466060, 1899603969, 1814803222, 1730525723, 1443857720, 1560382517, 1075025698, 1260232239, 575138148, 692707433, 878443390, 1062597235, 243256656, 91341917, 409198410, 325965383, 3403100636, 3252238545, 3704300486, 3620022987, 3874428392, 3990953189, 4042459122, 4227665663, 2460449204, 2578018489, 2226875310, 2411029155, 3198115200, 3046200461, 2827177882, 2743944855],
-  dn = [0, 218828297, 437656594, 387781147, 875313188, 958871085, 775562294, 590424639, 1750626376, 1699970625, 1917742170, 2135253587, 1551124588, 1367295589, 1180849278, 1265195639, 3501252752, 3720081049, 3399941250, 3350065803, 3835484340, 3919042237, 4270507174, 4085369519, 3102249176, 3051593425, 2734591178, 2952102595, 2361698556, 2177869557, 2530391278, 2614737639, 3145456443, 3060847922, 2708326185, 2892417312, 2404901663, 2187128086, 2504130317, 2555048196, 3542330227, 3727205754, 3375740769, 3292445032, 3876557655, 3926170974, 4246310725, 4027744588, 1808481195, 1723872674, 1910319033, 2094410160, 1608975247, 1391201670, 1173430173, 1224348052, 59984867, 244860394, 428169201, 344873464, 935293895, 984907214, 766078933, 547512796, 1844882806, 1627235199, 2011214180, 2062270317, 1507497298, 1423022939, 1137477952, 1321699145, 95345982, 145085239, 532201772, 313773861, 830661914, 1015671571, 731183368, 648017665, 3175501286, 2957853679, 2807058932, 2858115069, 2305455554, 2220981195, 2474404304, 2658625497, 3575528878, 3625268135, 3473416636, 3254988725, 3778151818, 3963161475, 4213447064, 4130281361, 3599595085, 3683022916, 3432737375, 3247465558, 3802222185, 4020912224, 4172763771, 4122762354, 3201631749, 3017672716, 2764249623, 2848461854, 2331590177, 2280796200, 2431590963, 2648976442, 104699613, 188127444, 472615631, 287343814, 840019705, 1058709744, 671593195, 621591778, 1852171925, 1668212892, 1953757831, 2037970062, 1514790577, 1463996600, 1080017571, 1297403050, 3673637356, 3623636965, 3235995134, 3454686199, 4007360968, 3822090177, 4107101658, 4190530515, 2997825956, 3215212461, 2830708150, 2779915199, 2256734592, 2340947849, 2627016082, 2443058075, 172466556, 122466165, 273792366, 492483431, 1047239e3, 861968209, 612205898, 695634755, 1646252340, 1863638845, 2013908262, 1963115311, 1446242576, 1530455833, 1277555970, 1093597963, 1636604631, 1820824798, 2073724613, 1989249228, 1436590835, 1487645946, 1337376481, 1119727848, 164948639, 81781910, 331544205, 516552836, 1039717051, 821288114, 669961897, 719700128, 2973530695, 3157750862, 2871682645, 2787207260, 2232435299, 2283490410, 2667994737, 2450346104, 3647212047, 3564045318, 3279033885, 3464042516, 3980931627, 3762502690, 4150144569, 4199882800, 3070356634, 3121275539, 2904027272, 2686254721, 2200818878, 2384911031, 2570832044, 2486224549, 3747192018, 3528626907, 3310321856, 3359936201, 3950355702, 3867060991, 4049844452, 4234721005, 1739656202, 1790575107, 2108100632, 1890328081, 1402811438, 1586903591, 1233856572, 1149249077, 266959938, 48394827, 369057872, 418672217, 1002783846, 919489135, 567498868, 752375421, 209336225, 24197544, 376187827, 459744698, 945164165, 895287692, 574624663, 793451934, 1679968233, 1764313568, 2117360635, 1933530610, 1343127501, 1560637892, 1243112415, 1192455638, 3704280881, 3519142200, 3336358691, 3419915562, 3907448597, 3857572124, 4075877127, 4294704398, 3029510009, 3113855344, 2927934315, 2744104290, 2159976285, 2377486676, 2594734927, 2544078150],
-  pn = [0, 151849742, 303699484, 454499602, 607398968, 758720310, 908999204, 1059270954, 1214797936, 1097159550, 1517440620, 1400849762, 1817998408, 1699839814, 2118541908, 2001430874, 2429595872, 2581445614, 2194319100, 2345119218, 3034881240, 3186202582, 2801699524, 2951971274, 3635996816, 3518358430, 3399679628, 3283088770, 4237083816, 4118925222, 4002861748, 3885750714, 1002142683, 850817237, 698445255, 548169417, 529487843, 377642221, 227885567, 77089521, 1943217067, 2061379749, 1640576439, 1757691577, 1474760595, 1592394909, 1174215055, 1290801793, 2875968315, 2724642869, 3111247143, 2960971305, 2405426947, 2253581325, 2638606623, 2487810577, 3808662347, 3926825029, 4044981591, 4162096729, 3342319475, 3459953789, 3576539503, 3693126241, 1986918061, 2137062819, 1685577905, 1836772287, 1381620373, 1532285339, 1078185097, 1229899655, 1040559837, 923313619, 740276417, 621982671, 439452389, 322734571, 137073913, 19308535, 3871163981, 4021308739, 4104605777, 4255800159, 3263785589, 3414450555, 3499326569, 3651041127, 2933202493, 2815956275, 3167684641, 3049390895, 2330014213, 2213296395, 2566595609, 2448830231, 1305906550, 1155237496, 1607244650, 1455525988, 1776460110, 1626319424, 2079897426, 1928707164, 96392454, 213114376, 396673818, 514443284, 562755902, 679998e3, 865136418, 983426092, 3708173718, 3557504664, 3474729866, 3323011204, 4180808110, 4030667424, 3945269170, 3794078908, 2507040230, 2623762152, 2272556026, 2390325492, 2975484382, 3092726480, 2738905026, 2857194700, 3973773121, 3856137295, 4274053469, 4157467219, 3371096953, 3252932727, 3673476453, 3556361835, 2763173681, 2915017791, 3064510765, 3215307299, 2156299017, 2307622919, 2459735317, 2610011675, 2081048481, 1963412655, 1846563261, 1729977011, 1480485785, 1362321559, 1243905413, 1126790795, 878845905, 1030690015, 645401037, 796197571, 274084841, 425408743, 38544885, 188821243, 3613494426, 3731654548, 3313212038, 3430322568, 4082475170, 4200115116, 3780097726, 3896688048, 2668221674, 2516901860, 2366882550, 2216610296, 3141400786, 2989552604, 2837966542, 2687165888, 1202797690, 1320957812, 1437280870, 1554391400, 1669664834, 1787304780, 1906247262, 2022837584, 265905162, 114585348, 499347990, 349075736, 736970802, 585122620, 972512814, 821712160, 2595684844, 2478443234, 2293045232, 2174754046, 3196267988, 3079546586, 2895723464, 2777952454, 3537852828, 3687994002, 3234156416, 3385345166, 4142626212, 4293295786, 3841024952, 3992742070, 174567692, 57326082, 410887952, 292596766, 777231668, 660510266, 1011452712, 893681702, 1108339068, 1258480242, 1343618912, 1494807662, 1715193156, 1865862730, 1948373848, 2100090966, 2701949495, 2818666809, 3004591147, 3122358053, 2235061775, 2352307457, 2535604243, 2653899549, 3915653703, 3764988233, 4219352155, 4067639125, 3444575871, 3294430577, 3746175075, 3594982253, 836553431, 953270745, 600235211, 718002117, 367585007, 484830689, 133361907, 251657213, 2041877159, 1891211689, 1806599355, 1654886325, 1568718495, 1418573201, 1335535747, 1184342925];
-function fn(e) {
+  tn = [1, 2, 4, 8, 16, 32, 64, 128, 27, 54, 108, 216, 171, 77, 154, 47, 94, 188, 99, 198, 151, 53, 106, 212, 179, 125, 250, 239, 197, 145],
+  nn = [99, 124, 119, 123, 242, 107, 111, 197, 48, 1, 103, 43, 254, 215, 171, 118, 202, 130, 201, 125, 250, 89, 71, 240, 173, 212, 162, 175, 156, 164, 114, 192, 183, 253, 147, 38, 54, 63, 247, 204, 52, 165, 229, 241, 113, 216, 49, 21, 4, 199, 35, 195, 24, 150, 5, 154, 7, 18, 128, 226, 235, 39, 178, 117, 9, 131, 44, 26, 27, 110, 90, 160, 82, 59, 214, 179, 41, 227, 47, 132, 83, 209, 0, 237, 32, 252, 177, 91, 106, 203, 190, 57, 74, 76, 88, 207, 208, 239, 170, 251, 67, 77, 51, 133, 69, 249, 2, 127, 80, 60, 159, 168, 81, 163, 64, 143, 146, 157, 56, 245, 188, 182, 218, 33, 16, 255, 243, 210, 205, 12, 19, 236, 95, 151, 68, 23, 196, 167, 126, 61, 100, 93, 25, 115, 96, 129, 79, 220, 34, 42, 144, 136, 70, 238, 184, 20, 222, 94, 11, 219, 224, 50, 58, 10, 73, 6, 36, 92, 194, 211, 172, 98, 145, 149, 228, 121, 231, 200, 55, 109, 141, 213, 78, 169, 108, 86, 244, 234, 101, 122, 174, 8, 186, 120, 37, 46, 28, 166, 180, 198, 232, 221, 116, 31, 75, 189, 139, 138, 112, 62, 181, 102, 72, 3, 246, 14, 97, 53, 87, 185, 134, 193, 29, 158, 225, 248, 152, 17, 105, 217, 142, 148, 155, 30, 135, 233, 206, 85, 40, 223, 140, 161, 137, 13, 191, 230, 66, 104, 65, 153, 45, 15, 176, 84, 187, 22],
+  sn = [82, 9, 106, 213, 48, 54, 165, 56, 191, 64, 163, 158, 129, 243, 215, 251, 124, 227, 57, 130, 155, 47, 255, 135, 52, 142, 67, 68, 196, 222, 233, 203, 84, 123, 148, 50, 166, 194, 35, 61, 238, 76, 149, 11, 66, 250, 195, 78, 8, 46, 161, 102, 40, 217, 36, 178, 118, 91, 162, 73, 109, 139, 209, 37, 114, 248, 246, 100, 134, 104, 152, 22, 212, 164, 92, 204, 93, 101, 182, 146, 108, 112, 72, 80, 253, 237, 185, 218, 94, 21, 70, 87, 167, 141, 157, 132, 144, 216, 171, 0, 140, 188, 211, 10, 247, 228, 88, 5, 184, 179, 69, 6, 208, 44, 30, 143, 202, 63, 15, 2, 193, 175, 189, 3, 1, 19, 138, 107, 58, 145, 17, 65, 79, 103, 220, 234, 151, 242, 207, 206, 240, 180, 230, 115, 150, 172, 116, 34, 231, 173, 53, 133, 226, 249, 55, 232, 28, 117, 223, 110, 71, 241, 26, 113, 29, 41, 197, 137, 111, 183, 98, 14, 170, 24, 190, 27, 252, 86, 62, 75, 198, 210, 121, 32, 154, 219, 192, 254, 120, 205, 90, 244, 31, 221, 168, 51, 136, 7, 199, 49, 177, 18, 16, 89, 39, 128, 236, 95, 96, 81, 127, 169, 25, 181, 74, 13, 45, 229, 122, 159, 147, 201, 156, 239, 160, 224, 59, 77, 174, 42, 245, 176, 200, 235, 187, 60, 131, 83, 153, 97, 23, 43, 4, 126, 186, 119, 214, 38, 225, 105, 20, 99, 85, 33, 12, 125],
+  rn = [3328402341, 4168907908, 4000806809, 4135287693, 4294111757, 3597364157, 3731845041, 2445657428, 1613770832, 33620227, 3462883241, 1445669757, 3892248089, 3050821474, 1303096294, 3967186586, 2412431941, 528646813, 2311702848, 4202528135, 4026202645, 2992200171, 2387036105, 4226871307, 1101901292, 3017069671, 1604494077, 1169141738, 597466303, 1403299063, 3832705686, 2613100635, 1974974402, 3791519004, 1033081774, 1277568618, 1815492186, 2118074177, 4126668546, 2211236943, 1748251740, 1369810420, 3521504564, 4193382664, 3799085459, 2883115123, 1647391059, 706024767, 134480908, 2512897874, 1176707941, 2646852446, 806885416, 932615841, 168101135, 798661301, 235341577, 605164086, 461406363, 3756188221, 3454790438, 1311188841, 2142417613, 3933566367, 302582043, 495158174, 1479289972, 874125870, 907746093, 3698224818, 3025820398, 1537253627, 2756858614, 1983593293, 3084310113, 2108928974, 1378429307, 3722699582, 1580150641, 327451799, 2790478837, 3117535592, 0, 3253595436, 1075847264, 3825007647, 2041688520, 3059440621, 3563743934, 2378943302, 1740553945, 1916352843, 2487896798, 2555137236, 2958579944, 2244988746, 3151024235, 3320835882, 1336584933, 3992714006, 2252555205, 2588757463, 1714631509, 293963156, 2319795663, 3925473552, 67240454, 4269768577, 2689618160, 2017213508, 631218106, 1269344483, 2723238387, 1571005438, 2151694528, 93294474, 1066570413, 563977660, 1882732616, 4059428100, 1673313503, 2008463041, 2950355573, 1109467491, 537923632, 3858759450, 4260623118, 3218264685, 2177748300, 403442708, 638784309, 3287084079, 3193921505, 899127202, 2286175436, 773265209, 2479146071, 1437050866, 4236148354, 2050833735, 3362022572, 3126681063, 840505643, 3866325909, 3227541664, 427917720, 2655997905, 2749160575, 1143087718, 1412049534, 999329963, 193497219, 2353415882, 3354324521, 1807268051, 672404540, 2816401017, 3160301282, 369822493, 2916866934, 3688947771, 1681011286, 1949973070, 336202270, 2454276571, 201721354, 1210328172, 3093060836, 2680341085, 3184776046, 1135389935, 3294782118, 965841320, 831886756, 3554993207, 4068047243, 3588745010, 2345191491, 1849112409, 3664604599, 26054028, 2983581028, 2622377682, 1235855840, 3630984372, 2891339514, 4092916743, 3488279077, 3395642799, 4101667470, 1202630377, 268961816, 1874508501, 4034427016, 1243948399, 1546530418, 941366308, 1470539505, 1941222599, 2546386513, 3421038627, 2715671932, 3899946140, 1042226977, 2521517021, 1639824860, 227249030, 260737669, 3765465232, 2084453954, 1907733956, 3429263018, 2420656344, 100860677, 4160157185, 470683154, 3261161891, 1781871967, 2924959737, 1773779408, 394692241, 2579611992, 974986535, 664706745, 3655459128, 3958962195, 731420851, 571543859, 3530123707, 2849626480, 126783113, 865375399, 765172662, 1008606754, 361203602, 3387549984, 2278477385, 2857719295, 1344809080, 2782912378, 59542671, 1503764984, 160008576, 437062935, 1707065306, 3622233649, 2218934982, 3496503480, 2185314755, 697932208, 1512910199, 504303377, 2075177163, 2824099068, 1841019862, 739644986],
+  on = [2781242211, 2230877308, 2582542199, 2381740923, 234877682, 3184946027, 2984144751, 1418839493, 1348481072, 50462977, 2848876391, 2102799147, 434634494, 1656084439, 3863849899, 2599188086, 1167051466, 2636087938, 1082771913, 2281340285, 368048890, 3954334041, 3381544775, 201060592, 3963727277, 1739838676, 4250903202, 3930435503, 3206782108, 4149453988, 2531553906, 1536934080, 3262494647, 484572669, 2923271059, 1783375398, 1517041206, 1098792767, 49674231, 1334037708, 1550332980, 4098991525, 886171109, 150598129, 2481090929, 1940642008, 1398944049, 1059722517, 201851908, 1385547719, 1699095331, 1587397571, 674240536, 2704774806, 252314885, 3039795866, 151914247, 908333586, 2602270848, 1038082786, 651029483, 1766729511, 3447698098, 2682942837, 454166793, 2652734339, 1951935532, 775166490, 758520603, 3000790638, 4004797018, 4217086112, 4137964114, 1299594043, 1639438038, 3464344499, 2068982057, 1054729187, 1901997871, 2534638724, 4121318227, 1757008337, 0, 750906861, 1614815264, 535035132, 3363418545, 3988151131, 3201591914, 1183697867, 3647454910, 1265776953, 3734260298, 3566750796, 3903871064, 1250283471, 1807470800, 717615087, 3847203498, 384695291, 3313910595, 3617213773, 1432761139, 2484176261, 3481945413, 283769337, 100925954, 2180939647, 4037038160, 1148730428, 3123027871, 3813386408, 4087501137, 4267549603, 3229630528, 2315620239, 2906624658, 3156319645, 1215313976, 82966005, 3747855548, 3245848246, 1974459098, 1665278241, 807407632, 451280895, 251524083, 1841287890, 1283575245, 337120268, 891687699, 801369324, 3787349855, 2721421207, 3431482436, 959321879, 1469301956, 4065699751, 2197585534, 1199193405, 2898814052, 3887750493, 724703513, 2514908019, 2696962144, 2551808385, 3516813135, 2141445340, 1715741218, 2119445034, 2872807568, 2198571144, 3398190662, 700968686, 3547052216, 1009259540, 2041044702, 3803995742, 487983883, 1991105499, 1004265696, 1449407026, 1316239930, 504629770, 3683797321, 168560134, 1816667172, 3837287516, 1570751170, 1857934291, 4014189740, 2797888098, 2822345105, 2754712981, 936633572, 2347923833, 852879335, 1133234376, 1500395319, 3084545389, 2348912013, 1689376213, 3533459022, 3762923945, 3034082412, 4205598294, 133428468, 634383082, 2949277029, 2398386810, 3913789102, 403703816, 3580869306, 2297460856, 1867130149, 1918643758, 607656988, 4049053350, 3346248884, 1368901318, 600565992, 2090982877, 2632479860, 557719327, 3717614411, 3697393085, 2249034635, 2232388234, 2430627952, 1115438654, 3295786421, 2865522278, 3633334344, 84280067, 33027830, 303828494, 2747425121, 1600795957, 4188952407, 3496589753, 2434238086, 1486471617, 658119965, 3106381470, 953803233, 334231800, 3005978776, 857870609, 3151128937, 1890179545, 2298973838, 2805175444, 3056442267, 574365214, 2450884487, 550103529, 1233637070, 4289353045, 2018519080, 2057691103, 2399374476, 4166623649, 2148108681, 387583245, 3664101311, 836232934, 3330556482, 3100665960, 3280093505, 2955516313, 2002398509, 287182607, 3413881008, 4238890068, 3597515707, 975967766],
+  an = [1671808611, 2089089148, 2006576759, 2072901243, 4061003762, 1807603307, 1873927791, 3310653893, 810573872, 16974337, 1739181671, 729634347, 4263110654, 3613570519, 2883997099, 1989864566, 3393556426, 2191335298, 3376449993, 2106063485, 4195741690, 1508618841, 1204391495, 4027317232, 2917941677, 3563566036, 2734514082, 2951366063, 2629772188, 2767672228, 1922491506, 3227229120, 3082974647, 4246528509, 2477669779, 644500518, 911895606, 1061256767, 4144166391, 3427763148, 878471220, 2784252325, 3845444069, 4043897329, 1905517169, 3631459288, 827548209, 356461077, 67897348, 3344078279, 593839651, 3277757891, 405286936, 2527147926, 84871685, 2595565466, 118033927, 305538066, 2157648768, 3795705826, 3945188843, 661212711, 2999812018, 1973414517, 152769033, 2208177539, 745822252, 439235610, 455947803, 1857215598, 1525593178, 2700827552, 1391895634, 994932283, 3596728278, 3016654259, 695947817, 3812548067, 795958831, 2224493444, 1408607827, 3513301457, 0, 3979133421, 543178784, 4229948412, 2982705585, 1542305371, 1790891114, 3410398667, 3201918910, 961245753, 1256100938, 1289001036, 1491644504, 3477767631, 3496721360, 4012557807, 2867154858, 4212583931, 1137018435, 1305975373, 861234739, 2241073541, 1171229253, 4178635257, 33948674, 2139225727, 1357946960, 1011120188, 2679776671, 2833468328, 1374921297, 2751356323, 1086357568, 2408187279, 2460827538, 2646352285, 944271416, 4110742005, 3168756668, 3066132406, 3665145818, 560153121, 271589392, 4279952895, 4077846003, 3530407890, 3444343245, 202643468, 322250259, 3962553324, 1608629855, 2543990167, 1154254916, 389623319, 3294073796, 2817676711, 2122513534, 1028094525, 1689045092, 1575467613, 422261273, 1939203699, 1621147744, 2174228865, 1339137615, 3699352540, 577127458, 712922154, 2427141008, 2290289544, 1187679302, 3995715566, 3100863416, 339486740, 3732514782, 1591917662, 186455563, 3681988059, 3762019296, 844522546, 978220090, 169743370, 1239126601, 101321734, 611076132, 1558493276, 3260915650, 3547250131, 2901361580, 1655096418, 2443721105, 2510565781, 3828863972, 2039214713, 3878868455, 3359869896, 928607799, 1840765549, 2374762893, 3580146133, 1322425422, 2850048425, 1823791212, 1459268694, 4094161908, 3928346602, 1706019429, 2056189050, 2934523822, 135794696, 3134549946, 2022240376, 628050469, 779246638, 472135708, 2800834470, 3032970164, 3327236038, 3894660072, 3715932637, 1956440180, 522272287, 1272813131, 3185336765, 2340818315, 2323976074, 1888542832, 1044544574, 3049550261, 1722469478, 1222152264, 50660867, 4127324150, 236067854, 1638122081, 895445557, 1475980887, 3117443513, 2257655686, 3243809217, 489110045, 2662934430, 3778599393, 4162055160, 2561878936, 288563729, 1773916777, 3648039385, 2391345038, 2493985684, 2612407707, 505560094, 2274497927, 3911240169, 3460925390, 1442818645, 678973480, 3749357023, 2358182796, 2717407649, 2306869641, 219617805, 3218761151, 3862026214, 1120306242, 1756942440, 1103331905, 2578459033, 762796589, 252780047, 2966125488, 1425844308, 3151392187, 372911126],
+  cn = [1667474886, 2088535288, 2004326894, 2071694838, 4075949567, 1802223062, 1869591006, 3318043793, 808472672, 16843522, 1734846926, 724270422, 4278065639, 3621216949, 2880169549, 1987484396, 3402253711, 2189597983, 3385409673, 2105378810, 4210693615, 1499065266, 1195886990, 4042263547, 2913856577, 3570689971, 2728590687, 2947541573, 2627518243, 2762274643, 1920112356, 3233831835, 3082273397, 4261223649, 2475929149, 640051788, 909531756, 1061110142, 4160160501, 3435941763, 875846760, 2779116625, 3857003729, 4059105529, 1903268834, 3638064043, 825316194, 353713962, 67374088, 3351728789, 589522246, 3284360861, 404236336, 2526454071, 84217610, 2593830191, 117901582, 303183396, 2155911963, 3806477791, 3958056653, 656894286, 2998062463, 1970642922, 151591698, 2206440989, 741110872, 437923380, 454765878, 1852748508, 1515908788, 2694904667, 1381168804, 993742198, 3604373943, 3014905469, 690584402, 3823320797, 791638366, 2223281939, 1398011302, 3520161977, 0, 3991743681, 538992704, 4244381667, 2981218425, 1532751286, 1785380564, 3419096717, 3200178535, 960056178, 1246420628, 1280103576, 1482221744, 3486468741, 3503319995, 4025428677, 2863326543, 4227536621, 1128514950, 1296947098, 859002214, 2240123921, 1162203018, 4193849577, 33687044, 2139062782, 1347481760, 1010582648, 2678045221, 2829640523, 1364325282, 2745433693, 1077985408, 2408548869, 2459086143, 2644360225, 943212656, 4126475505, 3166494563, 3065430391, 3671750063, 555836226, 269496352, 4294908645, 4092792573, 3537006015, 3452783745, 202118168, 320025894, 3974901699, 1600119230, 2543297077, 1145359496, 387397934, 3301201811, 2812801621, 2122220284, 1027426170, 1684319432, 1566435258, 421079858, 1936954854, 1616945344, 2172753945, 1330631070, 3705438115, 572679748, 707427924, 2425400123, 2290647819, 1179044492, 4008585671, 3099120491, 336870440, 3739122087, 1583276732, 185277718, 3688593069, 3772791771, 842159716, 976899700, 168435220, 1229577106, 101059084, 606366792, 1549591736, 3267517855, 3553849021, 2897014595, 1650632388, 2442242105, 2509612081, 3840161747, 2038008818, 3890688725, 3368567691, 926374254, 1835907034, 2374863873, 3587531953, 1313788572, 2846482505, 1819063512, 1448540844, 4109633523, 3941213647, 1701162954, 2054852340, 2930698567, 134748176, 3132806511, 2021165296, 623210314, 774795868, 471606328, 2795958615, 3031746419, 3334885783, 3907527627, 3722280097, 1953799400, 522133822, 1263263126, 3183336545, 2341176845, 2324333839, 1886425312, 1044267644, 3048588401, 1718004428, 1212733584, 50529542, 4143317495, 235803164, 1633788866, 892690282, 1465383342, 3115962473, 2256965911, 3250673817, 488449850, 2661202215, 3789633753, 4177007595, 2560144171, 286339874, 1768537042, 3654906025, 2391705863, 2492770099, 2610673197, 505291324, 2273808917, 3924369609, 3469625735, 1431699370, 673740880, 3755965093, 2358021891, 2711746649, 2307489801, 218961690, 3217021541, 3873845719, 1111672452, 1751693520, 1094828930, 2576986153, 757954394, 252645662, 2964376443, 1414855848, 3149649517, 370555436],
+  un = [1374988112, 2118214995, 437757123, 975658646, 1001089995, 530400753, 2902087851, 1273168787, 540080725, 2910219766, 2295101073, 4110568485, 1340463100, 3307916247, 641025152, 3043140495, 3736164937, 632953703, 1172967064, 1576976609, 3274667266, 2169303058, 2370213795, 1809054150, 59727847, 361929877, 3211623147, 2505202138, 3569255213, 1484005843, 1239443753, 2395588676, 1975683434, 4102977912, 2572697195, 666464733, 3202437046, 4035489047, 3374361702, 2110667444, 1675577880, 3843699074, 2538681184, 1649639237, 2976151520, 3144396420, 4269907996, 4178062228, 1883793496, 2403728665, 2497604743, 1383856311, 2876494627, 1917518562, 3810496343, 1716890410, 3001755655, 800440835, 2261089178, 3543599269, 807962610, 599762354, 33778362, 3977675356, 2328828971, 2809771154, 4077384432, 1315562145, 1708848333, 101039829, 3509871135, 3299278474, 875451293, 2733856160, 92987698, 2767645557, 193195065, 1080094634, 1584504582, 3178106961, 1042385657, 2531067453, 3711829422, 1306967366, 2438237621, 1908694277, 67556463, 1615861247, 429456164, 3602770327, 2302690252, 1742315127, 2968011453, 126454664, 3877198648, 2043211483, 2709260871, 2084704233, 4169408201, 0, 159417987, 841739592, 504459436, 1817866830, 4245618683, 260388950, 1034867998, 908933415, 168810852, 1750902305, 2606453969, 607530554, 202008497, 2472011535, 3035535058, 463180190, 2160117071, 1641816226, 1517767529, 470948374, 3801332234, 3231722213, 1008918595, 303765277, 235474187, 4069246893, 766945465, 337553864, 1475418501, 2943682380, 4003061179, 2743034109, 4144047775, 1551037884, 1147550661, 1543208500, 2336434550, 3408119516, 3069049960, 3102011747, 3610369226, 1113818384, 328671808, 2227573024, 2236228733, 3535486456, 2935566865, 3341394285, 496906059, 3702665459, 226906860, 2009195472, 733156972, 2842737049, 294930682, 1206477858, 2835123396, 2700099354, 1451044056, 573804783, 2269728455, 3644379585, 2362090238, 2564033334, 2801107407, 2776292904, 3669462566, 1068351396, 742039012, 1350078989, 1784663195, 1417561698, 4136440770, 2430122216, 775550814, 2193862645, 2673705150, 1775276924, 1876241833, 3475313331, 3366754619, 270040487, 3902563182, 3678124923, 3441850377, 1851332852, 3969562369, 2203032232, 3868552805, 2868897406, 566021896, 4011190502, 3135740889, 1248802510, 3936291284, 699432150, 832877231, 708780849, 3332740144, 899835584, 1951317047, 4236429990, 3767586992, 866637845, 4043610186, 1106041591, 2144161806, 395441711, 1984812685, 1139781709, 3433712980, 3835036895, 2664543715, 1282050075, 3240894392, 1181045119, 2640243204, 25965917, 4203181171, 4211818798, 3009879386, 2463879762, 3910161971, 1842759443, 2597806476, 933301370, 1509430414, 3943906441, 3467192302, 3076639029, 3776767469, 2051518780, 2631065433, 1441952575, 404016761, 1942435775, 1408749034, 1610459739, 3745345300, 2017778566, 3400528769, 3110650942, 941896748, 3265478751, 371049330, 3168937228, 675039627, 4279080257, 967311729, 135050206, 3635733660, 1683407248, 2076935265, 3576870512, 1215061108, 3501741890],
+  hn = [1347548327, 1400783205, 3273267108, 2520393566, 3409685355, 4045380933, 2880240216, 2471224067, 1428173050, 4138563181, 2441661558, 636813900, 4233094615, 3620022987, 2149987652, 2411029155, 1239331162, 1730525723, 2554718734, 3781033664, 46346101, 310463728, 2743944855, 3328955385, 3875770207, 2501218972, 3955191162, 3667219033, 768917123, 3545789473, 692707433, 1150208456, 1786102409, 2029293177, 1805211710, 3710368113, 3065962831, 401639597, 1724457132, 3028143674, 409198410, 2196052529, 1620529459, 1164071807, 3769721975, 2226875310, 486441376, 2499348523, 1483753576, 428819965, 2274680428, 3075636216, 598438867, 3799141122, 1474502543, 711349675, 129166120, 53458370, 2592523643, 2782082824, 4063242375, 2988687269, 3120694122, 1559041666, 730517276, 2460449204, 4042459122, 2706270690, 3446004468, 3573941694, 533804130, 2328143614, 2637442643, 2695033685, 839224033, 1973745387, 957055980, 2856345839, 106852767, 1371368976, 4181598602, 1033297158, 2933734917, 1179510461, 3046200461, 91341917, 1862534868, 4284502037, 605657339, 2547432937, 3431546947, 2003294622, 3182487618, 2282195339, 954669403, 3682191598, 1201765386, 3917234703, 3388507166, 0, 2198438022, 1211247597, 2887651696, 1315723890, 4227665663, 1443857720, 507358933, 657861945, 1678381017, 560487590, 3516619604, 975451694, 2970356327, 261314535, 3535072918, 2652609425, 1333838021, 2724322336, 1767536459, 370938394, 182621114, 3854606378, 1128014560, 487725847, 185469197, 2918353863, 3106780840, 3356761769, 2237133081, 1286567175, 3152976349, 4255350624, 2683765030, 3160175349, 3309594171, 878443390, 1988838185, 3704300486, 1756818940, 1673061617, 3403100636, 272786309, 1075025698, 545572369, 2105887268, 4174560061, 296679730, 1841768865, 1260232239, 4091327024, 3960309330, 3497509347, 1814803222, 2578018489, 4195456072, 575138148, 3299409036, 446754879, 3629546796, 4011996048, 3347532110, 3252238545, 4270639778, 915985419, 3483825537, 681933534, 651868046, 2755636671, 3828103837, 223377554, 2607439820, 1649704518, 3270937875, 3901806776, 1580087799, 4118987695, 3198115200, 2087309459, 2842678573, 3016697106, 1003007129, 2802849917, 1860738147, 2077965243, 164439672, 4100872472, 32283319, 2827177882, 1709610350, 2125135846, 136428751, 3874428392, 3652904859, 3460984630, 3572145929, 3593056380, 2939266226, 824852259, 818324884, 3224740454, 930369212, 2801566410, 2967507152, 355706840, 1257309336, 4148292826, 243256656, 790073846, 2373340630, 1296297904, 1422699085, 3756299780, 3818836405, 457992840, 3099667487, 2135319889, 77422314, 1560382517, 1945798516, 788204353, 1521706781, 1385356242, 870912086, 325965383, 2358957921, 2050466060, 2388260884, 2313884476, 4006521127, 901210569, 3990953189, 1014646705, 1503449823, 1062597235, 2031621326, 3212035895, 3931371469, 1533017514, 350174575, 2256028891, 2177544179, 1052338372, 741876788, 1606591296, 1914052035, 213705253, 2334669897, 1107234197, 1899603969, 3725069491, 2631447780, 2422494913, 1635502980, 1893020342, 1950903388, 1120974935],
+  ln = [2807058932, 1699970625, 2764249623, 1586903591, 1808481195, 1173430173, 1487645946, 59984867, 4199882800, 1844882806, 1989249228, 1277555970, 3623636965, 3419915562, 1149249077, 2744104290, 1514790577, 459744698, 244860394, 3235995134, 1963115311, 4027744588, 2544078150, 4190530515, 1608975247, 2627016082, 2062270317, 1507497298, 2200818878, 567498868, 1764313568, 3359936201, 2305455554, 2037970062, 1047239e3, 1910319033, 1337376481, 2904027272, 2892417312, 984907214, 1243112415, 830661914, 861968209, 2135253587, 2011214180, 2927934315, 2686254721, 731183368, 1750626376, 4246310725, 1820824798, 4172763771, 3542330227, 48394827, 2404901663, 2871682645, 671593195, 3254988725, 2073724613, 145085239, 2280796200, 2779915199, 1790575107, 2187128086, 472615631, 3029510009, 4075877127, 3802222185, 4107101658, 3201631749, 1646252340, 4270507174, 1402811438, 1436590835, 3778151818, 3950355702, 3963161475, 4020912224, 2667994737, 273792366, 2331590177, 104699613, 95345982, 3175501286, 2377486676, 1560637892, 3564045318, 369057872, 4213447064, 3919042237, 1137477952, 2658625497, 1119727848, 2340947849, 1530455833, 4007360968, 172466556, 266959938, 516552836, 0, 2256734592, 3980931627, 1890328081, 1917742170, 4294704398, 945164165, 3575528878, 958871085, 3647212047, 2787207260, 1423022939, 775562294, 1739656202, 3876557655, 2530391278, 2443058075, 3310321856, 547512796, 1265195639, 437656594, 3121275539, 719700128, 3762502690, 387781147, 218828297, 3350065803, 2830708150, 2848461854, 428169201, 122466165, 3720081049, 1627235199, 648017665, 4122762354, 1002783846, 2117360635, 695634755, 3336358691, 4234721005, 4049844452, 3704280881, 2232435299, 574624663, 287343814, 612205898, 1039717051, 840019705, 2708326185, 793451934, 821288114, 1391201670, 3822090177, 376187827, 3113855344, 1224348052, 1679968233, 2361698556, 1058709744, 752375421, 2431590963, 1321699145, 3519142200, 2734591178, 188127444, 2177869557, 3727205754, 2384911031, 3215212461, 2648976442, 2450346104, 3432737375, 1180849278, 331544205, 3102249176, 4150144569, 2952102595, 2159976285, 2474404304, 766078933, 313773861, 2570832044, 2108100632, 1668212892, 3145456443, 2013908262, 418672217, 3070356634, 2594734927, 1852171925, 3867060991, 3473416636, 3907448597, 2614737639, 919489135, 164948639, 2094410160, 2997825956, 590424639, 2486224549, 1723872674, 3157750862, 3399941250, 3501252752, 3625268135, 2555048196, 3673637356, 1343127501, 4130281361, 3599595085, 2957853679, 1297403050, 81781910, 3051593425, 2283490410, 532201772, 1367295589, 3926170974, 895287692, 1953757831, 1093597963, 492483431, 3528626907, 1446242576, 1192455638, 1636604631, 209336225, 344873464, 1015671571, 669961897, 3375740769, 3857572124, 2973530695, 3747192018, 1933530610, 3464042516, 935293895, 3454686199, 2858115069, 1863638845, 3683022916, 4085369519, 3292445032, 875313188, 1080017571, 3279033885, 621591778, 1233856572, 2504130317, 24197544, 3017672716, 3835484340, 3247465558, 2220981195, 3060847922, 1551124588, 1463996600],
+  dn = [4104605777, 1097159550, 396673818, 660510266, 2875968315, 2638606623, 4200115116, 3808662347, 821712160, 1986918061, 3430322568, 38544885, 3856137295, 718002117, 893681702, 1654886325, 2975484382, 3122358053, 3926825029, 4274053469, 796197571, 1290801793, 1184342925, 3556361835, 2405426947, 2459735317, 1836772287, 1381620373, 3196267988, 1948373848, 3764988233, 3385345166, 3263785589, 2390325492, 1480485785, 3111247143, 3780097726, 2293045232, 548169417, 3459953789, 3746175075, 439452389, 1362321559, 1400849762, 1685577905, 1806599355, 2174754046, 137073913, 1214797936, 1174215055, 3731654548, 2079897426, 1943217067, 1258480242, 529487843, 1437280870, 3945269170, 3049390895, 3313212038, 923313619, 679998e3, 3215307299, 57326082, 377642221, 3474729866, 2041877159, 133361907, 1776460110, 3673476453, 96392454, 878845905, 2801699524, 777231668, 4082475170, 2330014213, 4142626212, 2213296395, 1626319424, 1906247262, 1846563261, 562755902, 3708173718, 1040559837, 3871163981, 1418573201, 3294430577, 114585348, 1343618912, 2566595609, 3186202582, 1078185097, 3651041127, 3896688048, 2307622919, 425408743, 3371096953, 2081048481, 1108339068, 2216610296, 0, 2156299017, 736970802, 292596766, 1517440620, 251657213, 2235061775, 2933202493, 758720310, 265905162, 1554391400, 1532285339, 908999204, 174567692, 1474760595, 4002861748, 2610011675, 3234156416, 3693126241, 2001430874, 303699484, 2478443234, 2687165888, 585122620, 454499602, 151849742, 2345119218, 3064510765, 514443284, 4044981591, 1963412655, 2581445614, 2137062819, 19308535, 1928707164, 1715193156, 4219352155, 1126790795, 600235211, 3992742070, 3841024952, 836553431, 1669664834, 2535604243, 3323011204, 1243905413, 3141400786, 4180808110, 698445255, 2653899549, 2989552604, 2253581325, 3252932727, 3004591147, 1891211689, 2487810577, 3915653703, 4237083816, 4030667424, 2100090966, 865136418, 1229899655, 953270745, 3399679628, 3557504664, 4118925222, 2061379749, 3079546586, 2915017791, 983426092, 2022837584, 1607244650, 2118541908, 2366882550, 3635996816, 972512814, 3283088770, 1568718495, 3499326569, 3576539503, 621982671, 2895723464, 410887952, 2623762152, 1002142683, 645401037, 1494807662, 2595684844, 1335535747, 2507040230, 4293295786, 3167684641, 367585007, 3885750714, 1865862730, 2668221674, 2960971305, 2763173681, 1059270954, 2777952454, 2724642869, 1320957812, 2194319100, 2429595872, 2815956275, 77089521, 3973773121, 3444575871, 2448830231, 1305906550, 4021308739, 2857194700, 2516901860, 3518358430, 1787304780, 740276417, 1699839814, 1592394909, 2352307457, 2272556026, 188821243, 1729977011, 3687994002, 274084841, 3594982253, 3613494426, 2701949495, 4162096729, 322734571, 2837966542, 1640576439, 484830689, 1202797690, 3537852828, 4067639125, 349075736, 3342319475, 4157467219, 4255800159, 1030690015, 1155237496, 2951971274, 1757691577, 607398968, 2738905026, 499347990, 3794078908, 1011452712, 227885567, 2818666809, 213114376, 3034881240, 1455525988, 3414450555, 850817237, 1817998408, 3092726480],
+  pn = [0, 235474187, 470948374, 303765277, 941896748, 908933415, 607530554, 708780849, 1883793496, 2118214995, 1817866830, 1649639237, 1215061108, 1181045119, 1417561698, 1517767529, 3767586992, 4003061179, 4236429990, 4069246893, 3635733660, 3602770327, 3299278474, 3400528769, 2430122216, 2664543715, 2362090238, 2193862645, 2835123396, 2801107407, 3035535058, 3135740889, 3678124923, 3576870512, 3341394285, 3374361702, 3810496343, 3977675356, 4279080257, 4043610186, 2876494627, 2776292904, 3076639029, 3110650942, 2472011535, 2640243204, 2403728665, 2169303058, 1001089995, 899835584, 666464733, 699432150, 59727847, 226906860, 530400753, 294930682, 1273168787, 1172967064, 1475418501, 1509430414, 1942435775, 2110667444, 1876241833, 1641816226, 2910219766, 2743034109, 2976151520, 3211623147, 2505202138, 2606453969, 2302690252, 2269728455, 3711829422, 3543599269, 3240894392, 3475313331, 3843699074, 3943906441, 4178062228, 4144047775, 1306967366, 1139781709, 1374988112, 1610459739, 1975683434, 2076935265, 1775276924, 1742315127, 1034867998, 866637845, 566021896, 800440835, 92987698, 193195065, 429456164, 395441711, 1984812685, 2017778566, 1784663195, 1683407248, 1315562145, 1080094634, 1383856311, 1551037884, 101039829, 135050206, 437757123, 337553864, 1042385657, 807962610, 573804783, 742039012, 2531067453, 2564033334, 2328828971, 2227573024, 2935566865, 2700099354, 3001755655, 3168937228, 3868552805, 3902563182, 4203181171, 4102977912, 3736164937, 3501741890, 3265478751, 3433712980, 1106041591, 1340463100, 1576976609, 1408749034, 2043211483, 2009195472, 1708848333, 1809054150, 832877231, 1068351396, 766945465, 599762354, 159417987, 126454664, 361929877, 463180190, 2709260871, 2943682380, 3178106961, 3009879386, 2572697195, 2538681184, 2236228733, 2336434550, 3509871135, 3745345300, 3441850377, 3274667266, 3910161971, 3877198648, 4110568485, 4211818798, 2597806476, 2497604743, 2261089178, 2295101073, 2733856160, 2902087851, 3202437046, 2968011453, 3936291284, 3835036895, 4136440770, 4169408201, 3535486456, 3702665459, 3467192302, 3231722213, 2051518780, 1951317047, 1716890410, 1750902305, 1113818384, 1282050075, 1584504582, 1350078989, 168810852, 67556463, 371049330, 404016761, 841739592, 1008918595, 775550814, 540080725, 3969562369, 3801332234, 4035489047, 4269907996, 3569255213, 3669462566, 3366754619, 3332740144, 2631065433, 2463879762, 2160117071, 2395588676, 2767645557, 2868897406, 3102011747, 3069049960, 202008497, 33778362, 270040487, 504459436, 875451293, 975658646, 675039627, 641025152, 2084704233, 1917518562, 1615861247, 1851332852, 1147550661, 1248802510, 1484005843, 1451044056, 933301370, 967311729, 733156972, 632953703, 260388950, 25965917, 328671808, 496906059, 1206477858, 1239443753, 1543208500, 1441952575, 2144161806, 1908694277, 1675577880, 1842759443, 3610369226, 3644379585, 3408119516, 3307916247, 4011190502, 3776767469, 4077384432, 4245618683, 2809771154, 2842737049, 3144396420, 3043140495, 2673705150, 2438237621, 2203032232, 2370213795],
+  fn = [0, 185469197, 370938394, 487725847, 741876788, 657861945, 975451694, 824852259, 1483753576, 1400783205, 1315723890, 1164071807, 1950903388, 2135319889, 1649704518, 1767536459, 2967507152, 3152976349, 2801566410, 2918353863, 2631447780, 2547432937, 2328143614, 2177544179, 3901806776, 3818836405, 4270639778, 4118987695, 3299409036, 3483825537, 3535072918, 3652904859, 2077965243, 1893020342, 1841768865, 1724457132, 1474502543, 1559041666, 1107234197, 1257309336, 598438867, 681933534, 901210569, 1052338372, 261314535, 77422314, 428819965, 310463728, 3409685355, 3224740454, 3710368113, 3593056380, 3875770207, 3960309330, 4045380933, 4195456072, 2471224067, 2554718734, 2237133081, 2388260884, 3212035895, 3028143674, 2842678573, 2724322336, 4138563181, 4255350624, 3769721975, 3955191162, 3667219033, 3516619604, 3431546947, 3347532110, 2933734917, 2782082824, 3099667487, 3016697106, 2196052529, 2313884476, 2499348523, 2683765030, 1179510461, 1296297904, 1347548327, 1533017514, 1786102409, 1635502980, 2087309459, 2003294622, 507358933, 355706840, 136428751, 53458370, 839224033, 957055980, 605657339, 790073846, 2373340630, 2256028891, 2607439820, 2422494913, 2706270690, 2856345839, 3075636216, 3160175349, 3573941694, 3725069491, 3273267108, 3356761769, 4181598602, 4063242375, 4011996048, 3828103837, 1033297158, 915985419, 730517276, 545572369, 296679730, 446754879, 129166120, 213705253, 1709610350, 1860738147, 1945798516, 2029293177, 1239331162, 1120974935, 1606591296, 1422699085, 4148292826, 4233094615, 3781033664, 3931371469, 3682191598, 3497509347, 3446004468, 3328955385, 2939266226, 2755636671, 3106780840, 2988687269, 2198438022, 2282195339, 2501218972, 2652609425, 1201765386, 1286567175, 1371368976, 1521706781, 1805211710, 1620529459, 2105887268, 1988838185, 533804130, 350174575, 164439672, 46346101, 870912086, 954669403, 636813900, 788204353, 2358957921, 2274680428, 2592523643, 2441661558, 2695033685, 2880240216, 3065962831, 3182487618, 3572145929, 3756299780, 3270937875, 3388507166, 4174560061, 4091327024, 4006521127, 3854606378, 1014646705, 930369212, 711349675, 560487590, 272786309, 457992840, 106852767, 223377554, 1678381017, 1862534868, 1914052035, 2031621326, 1211247597, 1128014560, 1580087799, 1428173050, 32283319, 182621114, 401639597, 486441376, 768917123, 651868046, 1003007129, 818324884, 1503449823, 1385356242, 1333838021, 1150208456, 1973745387, 2125135846, 1673061617, 1756818940, 2970356327, 3120694122, 2802849917, 2887651696, 2637442643, 2520393566, 2334669897, 2149987652, 3917234703, 3799141122, 4284502037, 4100872472, 3309594171, 3460984630, 3545789473, 3629546796, 2050466060, 1899603969, 1814803222, 1730525723, 1443857720, 1560382517, 1075025698, 1260232239, 575138148, 692707433, 878443390, 1062597235, 243256656, 91341917, 409198410, 325965383, 3403100636, 3252238545, 3704300486, 3620022987, 3874428392, 3990953189, 4042459122, 4227665663, 2460449204, 2578018489, 2226875310, 2411029155, 3198115200, 3046200461, 2827177882, 2743944855],
+  gn = [0, 218828297, 437656594, 387781147, 875313188, 958871085, 775562294, 590424639, 1750626376, 1699970625, 1917742170, 2135253587, 1551124588, 1367295589, 1180849278, 1265195639, 3501252752, 3720081049, 3399941250, 3350065803, 3835484340, 3919042237, 4270507174, 4085369519, 3102249176, 3051593425, 2734591178, 2952102595, 2361698556, 2177869557, 2530391278, 2614737639, 3145456443, 3060847922, 2708326185, 2892417312, 2404901663, 2187128086, 2504130317, 2555048196, 3542330227, 3727205754, 3375740769, 3292445032, 3876557655, 3926170974, 4246310725, 4027744588, 1808481195, 1723872674, 1910319033, 2094410160, 1608975247, 1391201670, 1173430173, 1224348052, 59984867, 244860394, 428169201, 344873464, 935293895, 984907214, 766078933, 547512796, 1844882806, 1627235199, 2011214180, 2062270317, 1507497298, 1423022939, 1137477952, 1321699145, 95345982, 145085239, 532201772, 313773861, 830661914, 1015671571, 731183368, 648017665, 3175501286, 2957853679, 2807058932, 2858115069, 2305455554, 2220981195, 2474404304, 2658625497, 3575528878, 3625268135, 3473416636, 3254988725, 3778151818, 3963161475, 4213447064, 4130281361, 3599595085, 3683022916, 3432737375, 3247465558, 3802222185, 4020912224, 4172763771, 4122762354, 3201631749, 3017672716, 2764249623, 2848461854, 2331590177, 2280796200, 2431590963, 2648976442, 104699613, 188127444, 472615631, 287343814, 840019705, 1058709744, 671593195, 621591778, 1852171925, 1668212892, 1953757831, 2037970062, 1514790577, 1463996600, 1080017571, 1297403050, 3673637356, 3623636965, 3235995134, 3454686199, 4007360968, 3822090177, 4107101658, 4190530515, 2997825956, 3215212461, 2830708150, 2779915199, 2256734592, 2340947849, 2627016082, 2443058075, 172466556, 122466165, 273792366, 492483431, 1047239e3, 861968209, 612205898, 695634755, 1646252340, 1863638845, 2013908262, 1963115311, 1446242576, 1530455833, 1277555970, 1093597963, 1636604631, 1820824798, 2073724613, 1989249228, 1436590835, 1487645946, 1337376481, 1119727848, 164948639, 81781910, 331544205, 516552836, 1039717051, 821288114, 669961897, 719700128, 2973530695, 3157750862, 2871682645, 2787207260, 2232435299, 2283490410, 2667994737, 2450346104, 3647212047, 3564045318, 3279033885, 3464042516, 3980931627, 3762502690, 4150144569, 4199882800, 3070356634, 3121275539, 2904027272, 2686254721, 2200818878, 2384911031, 2570832044, 2486224549, 3747192018, 3528626907, 3310321856, 3359936201, 3950355702, 3867060991, 4049844452, 4234721005, 1739656202, 1790575107, 2108100632, 1890328081, 1402811438, 1586903591, 1233856572, 1149249077, 266959938, 48394827, 369057872, 418672217, 1002783846, 919489135, 567498868, 752375421, 209336225, 24197544, 376187827, 459744698, 945164165, 895287692, 574624663, 793451934, 1679968233, 1764313568, 2117360635, 1933530610, 1343127501, 1560637892, 1243112415, 1192455638, 3704280881, 3519142200, 3336358691, 3419915562, 3907448597, 3857572124, 4075877127, 4294704398, 3029510009, 3113855344, 2927934315, 2744104290, 2159976285, 2377486676, 2594734927, 2544078150],
+  mn = [0, 151849742, 303699484, 454499602, 607398968, 758720310, 908999204, 1059270954, 1214797936, 1097159550, 1517440620, 1400849762, 1817998408, 1699839814, 2118541908, 2001430874, 2429595872, 2581445614, 2194319100, 2345119218, 3034881240, 3186202582, 2801699524, 2951971274, 3635996816, 3518358430, 3399679628, 3283088770, 4237083816, 4118925222, 4002861748, 3885750714, 1002142683, 850817237, 698445255, 548169417, 529487843, 377642221, 227885567, 77089521, 1943217067, 2061379749, 1640576439, 1757691577, 1474760595, 1592394909, 1174215055, 1290801793, 2875968315, 2724642869, 3111247143, 2960971305, 2405426947, 2253581325, 2638606623, 2487810577, 3808662347, 3926825029, 4044981591, 4162096729, 3342319475, 3459953789, 3576539503, 3693126241, 1986918061, 2137062819, 1685577905, 1836772287, 1381620373, 1532285339, 1078185097, 1229899655, 1040559837, 923313619, 740276417, 621982671, 439452389, 322734571, 137073913, 19308535, 3871163981, 4021308739, 4104605777, 4255800159, 3263785589, 3414450555, 3499326569, 3651041127, 2933202493, 2815956275, 3167684641, 3049390895, 2330014213, 2213296395, 2566595609, 2448830231, 1305906550, 1155237496, 1607244650, 1455525988, 1776460110, 1626319424, 2079897426, 1928707164, 96392454, 213114376, 396673818, 514443284, 562755902, 679998e3, 865136418, 983426092, 3708173718, 3557504664, 3474729866, 3323011204, 4180808110, 4030667424, 3945269170, 3794078908, 2507040230, 2623762152, 2272556026, 2390325492, 2975484382, 3092726480, 2738905026, 2857194700, 3973773121, 3856137295, 4274053469, 4157467219, 3371096953, 3252932727, 3673476453, 3556361835, 2763173681, 2915017791, 3064510765, 3215307299, 2156299017, 2307622919, 2459735317, 2610011675, 2081048481, 1963412655, 1846563261, 1729977011, 1480485785, 1362321559, 1243905413, 1126790795, 878845905, 1030690015, 645401037, 796197571, 274084841, 425408743, 38544885, 188821243, 3613494426, 3731654548, 3313212038, 3430322568, 4082475170, 4200115116, 3780097726, 3896688048, 2668221674, 2516901860, 2366882550, 2216610296, 3141400786, 2989552604, 2837966542, 2687165888, 1202797690, 1320957812, 1437280870, 1554391400, 1669664834, 1787304780, 1906247262, 2022837584, 265905162, 114585348, 499347990, 349075736, 736970802, 585122620, 972512814, 821712160, 2595684844, 2478443234, 2293045232, 2174754046, 3196267988, 3079546586, 2895723464, 2777952454, 3537852828, 3687994002, 3234156416, 3385345166, 4142626212, 4293295786, 3841024952, 3992742070, 174567692, 57326082, 410887952, 292596766, 777231668, 660510266, 1011452712, 893681702, 1108339068, 1258480242, 1343618912, 1494807662, 1715193156, 1865862730, 1948373848, 2100090966, 2701949495, 2818666809, 3004591147, 3122358053, 2235061775, 2352307457, 2535604243, 2653899549, 3915653703, 3764988233, 4219352155, 4067639125, 3444575871, 3294430577, 3746175075, 3594982253, 836553431, 953270745, 600235211, 718002117, 367585007, 484830689, 133361907, 251657213, 2041877159, 1891211689, 1806599355, 1654886325, 1568718495, 1418573201, 1335535747, 1184342925];
+function yn(e) {
   for (var t = [], n = 0; n < e.length; n += 4) {
     t.push(e[n] << 24 | e[n + 1] << 16 | e[n + 2] << 8 | e[n + 3]);
   }
   return t;
 }
-var gn = /*#__PURE__*/function () {
-  function gn(e) {
-    (0, _classCallCheck2.default)(this, gn);
-    if (!(this instanceof gn)) throw Error("AES must be instanitated with `new`");
+var _n = /*#__PURE__*/function () {
+  function _n(e) {
+    (0, _classCallCheck2.default)(this, _n);
+    if (!(this instanceof _n)) throw Error("AES must be instanitated with `new`");
     Object.defineProperty(this, "key", {
-      value: Ht(e, !0)
+      value: Vt(e, !0)
     }), this._prepare();
   }
-  (0, _createClass2.default)(gn, [{
+  (0, _createClass2.default)(_n, [{
     key: "_prepare",
     value: function _prepare() {
-      var e = Qt[this.key.length];
+      var e = en[this.key.length];
       if (null == e) throw new Error("invalid key size (must be 16, 24 or 32 bytes)");
       this._Ke = [], this._Kd = [];
       for (var t = 0; t <= e; t++) {
@@ -44008,18 +44065,18 @@ var gn = /*#__PURE__*/function () {
       var n,
         s = 4 * (e + 1),
         r = this.key.length / 4,
-        i = fn(this.key);
+        i = yn(this.key);
       for (t = 0; t < r; t++) {
         n = t >> 2, this._Ke[n][t % 4] = i[t], this._Kd[e - n][t % 4] = i[t];
       }
       for (var o, a = 0, c = r; c < s;) {
-        if (o = i[r - 1], i[0] ^= Zt[o >> 16 & 255] << 24 ^ Zt[o >> 8 & 255] << 16 ^ Zt[255 & o] << 8 ^ Zt[o >> 24 & 255] ^ Xt[a] << 24, a += 1, 8 != r) for (t = 1; t < r; t++) {
+        if (o = i[r - 1], i[0] ^= nn[o >> 16 & 255] << 24 ^ nn[o >> 8 & 255] << 16 ^ nn[255 & o] << 8 ^ nn[o >> 24 & 255] ^ tn[a] << 24, a += 1, 8 != r) for (t = 1; t < r; t++) {
           i[t] ^= i[t - 1];
         } else {
           for (t = 1; t < r / 2; t++) {
             i[t] ^= i[t - 1];
           }
-          o = i[r / 2 - 1], i[r / 2] ^= Zt[255 & o] ^ Zt[o >> 8 & 255] << 8 ^ Zt[o >> 16 & 255] << 16 ^ Zt[o >> 24 & 255] << 24;
+          o = i[r / 2 - 1], i[r / 2] ^= nn[255 & o] ^ nn[o >> 8 & 255] << 8 ^ nn[o >> 16 & 255] << 16 ^ nn[o >> 24 & 255] << 24;
           for (t = r / 2 + 1; t < r; t++) {
             i[t] ^= i[t - 1];
           }
@@ -44030,7 +44087,7 @@ var gn = /*#__PURE__*/function () {
       }
       for (var u = 1; u < e; u++) {
         for (var h = 0; h < 4; h++) {
-          o = this._Kd[u][h], this._Kd[u][h] = hn[o >> 24 & 255] ^ ln[o >> 16 & 255] ^ dn[o >> 8 & 255] ^ pn[255 & o];
+          o = this._Kd[u][h], this._Kd[u][h] = pn[o >> 24 & 255] ^ fn[o >> 16 & 255] ^ gn[o >> 8 & 255] ^ mn[255 & o];
         }
       }
     }
@@ -44038,19 +44095,19 @@ var gn = /*#__PURE__*/function () {
     key: "encrypt",
     value: function encrypt(e) {
       if (16 != e.length) throw new Error("invalid plaintext size (must be 16 bytes)");
-      for (var t = this._Ke.length - 1, n = [0, 0, 0, 0], s = fn(e), r = 0; r < 4; r++) {
+      for (var t = this._Ke.length - 1, n = [0, 0, 0, 0], s = yn(e), r = 0; r < 4; r++) {
         s[r] ^= this._Ke[0][r];
       }
       for (var i = 1; i < t; i++) {
         for (r = 0; r < 4; r++) {
-          n[r] = tn[s[r] >> 24 & 255] ^ nn[s[(r + 1) % 4] >> 16 & 255] ^ sn[s[(r + 2) % 4] >> 8 & 255] ^ rn[255 & s[(r + 3) % 4]] ^ this._Ke[i][r];
+          n[r] = rn[s[r] >> 24 & 255] ^ on[s[(r + 1) % 4] >> 16 & 255] ^ an[s[(r + 2) % 4] >> 8 & 255] ^ cn[255 & s[(r + 3) % 4]] ^ this._Ke[i][r];
         }
         s = n.slice();
       }
       var o,
-        a = zt(16);
+        a = Gt(16);
       for (r = 0; r < 4; r++) {
-        o = this._Ke[t][r], a[4 * r] = 255 & (Zt[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (Zt[s[(r + 1) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (Zt[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (Zt[255 & s[(r + 3) % 4]] ^ o);
+        o = this._Ke[t][r], a[4 * r] = 255 & (nn[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (nn[s[(r + 1) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (nn[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (nn[255 & s[(r + 3) % 4]] ^ o);
       }
       return a;
     }
@@ -44058,109 +44115,109 @@ var gn = /*#__PURE__*/function () {
     key: "decrypt",
     value: function decrypt(e) {
       if (16 != e.length) throw new Error("invalid ciphertext size (must be 16 bytes)");
-      for (var t = this._Kd.length - 1, n = [0, 0, 0, 0], s = fn(e), r = 0; r < 4; r++) {
+      for (var t = this._Kd.length - 1, n = [0, 0, 0, 0], s = yn(e), r = 0; r < 4; r++) {
         s[r] ^= this._Kd[0][r];
       }
       for (var i = 1; i < t; i++) {
         for (r = 0; r < 4; r++) {
-          n[r] = on[s[r] >> 24 & 255] ^ an[s[(r + 3) % 4] >> 16 & 255] ^ cn[s[(r + 2) % 4] >> 8 & 255] ^ un[255 & s[(r + 1) % 4]] ^ this._Kd[i][r];
+          n[r] = un[s[r] >> 24 & 255] ^ hn[s[(r + 3) % 4] >> 16 & 255] ^ ln[s[(r + 2) % 4] >> 8 & 255] ^ dn[255 & s[(r + 1) % 4]] ^ this._Kd[i][r];
         }
         s = n.slice();
       }
       var o,
-        a = zt(16);
+        a = Gt(16);
       for (r = 0; r < 4; r++) {
-        o = this._Kd[t][r], a[4 * r] = 255 & (en[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (en[s[(r + 3) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (en[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (en[255 & s[(r + 1) % 4]] ^ o);
+        o = this._Kd[t][r], a[4 * r] = 255 & (sn[s[r] >> 24 & 255] ^ o >> 24), a[4 * r + 1] = 255 & (sn[s[(r + 3) % 4] >> 16 & 255] ^ o >> 16), a[4 * r + 2] = 255 & (sn[s[(r + 2) % 4] >> 8 & 255] ^ o >> 8), a[4 * r + 3] = 255 & (sn[255 & s[(r + 1) % 4]] ^ o);
       }
       return a;
     }
   }]);
-  return gn;
+  return _n;
 }();
-var mn = /*#__PURE__*/function () {
-  function mn(e) {
-    (0, _classCallCheck2.default)(this, mn);
-    if (!(this instanceof mn)) throw Error("AES must be instanitated with `new`");
-    this.description = "Electronic Code Block", this.name = "ecb", this._aes = new gn(e);
+var wn = /*#__PURE__*/function () {
+  function wn(e) {
+    (0, _classCallCheck2.default)(this, wn);
+    if (!(this instanceof wn)) throw Error("AES must be instanitated with `new`");
+    this.description = "Electronic Code Block", this.name = "ecb", this._aes = new _n(e);
   }
-  (0, _createClass2.default)(mn, [{
+  (0, _createClass2.default)(wn, [{
     key: "encrypt",
     value: function encrypt(e) {
-      if ((e = Ht(e)).length % 16 != 0) throw new Error("invalid plaintext size (must be multiple of 16 bytes)");
-      for (var t = zt(e.length), n = zt(16), s = 0; s < e.length; s += 16) {
-        Jt(e, n, 0, s, s + 16), Jt(n = this._aes.encrypt(n), t, s);
+      if ((e = Vt(e)).length % 16 != 0) throw new Error("invalid plaintext size (must be multiple of 16 bytes)");
+      for (var t = Gt(e.length), n = Gt(16), s = 0; s < e.length; s += 16) {
+        Yt(e, n, 0, s, s + 16), Yt(n = this._aes.encrypt(n), t, s);
       }
       return t;
     }
   }, {
     key: "decrypt",
     value: function decrypt(e) {
-      if ((e = Ht(e)).length % 16 != 0) throw new Error("invalid ciphertext size (must be multiple of 16 bytes)");
-      for (var t = zt(e.length), n = zt(16), s = 0; s < e.length; s += 16) {
-        Jt(e, n, 0, s, s + 16), Jt(n = this._aes.decrypt(n), t, s);
+      if ((e = Vt(e)).length % 16 != 0) throw new Error("invalid ciphertext size (must be multiple of 16 bytes)");
+      for (var t = Gt(e.length), n = Gt(16), s = 0; s < e.length; s += 16) {
+        Yt(e, n, 0, s, s + 16), Yt(n = this._aes.decrypt(n), t, s);
       }
       return t;
     }
   }]);
-  return mn;
+  return wn;
 }();
-var yn = /*#__PURE__*/function () {
-  function yn(e, t) {
-    (0, _classCallCheck2.default)(this, yn);
-    if (!(this instanceof yn)) throw Error("AES must be instanitated with `new`");
+var vn = /*#__PURE__*/function () {
+  function vn(e, t) {
+    (0, _classCallCheck2.default)(this, vn);
+    if (!(this instanceof vn)) throw Error("AES must be instanitated with `new`");
     if (this.description = "Cipher Block Chaining", this.name = "cbc", t) {
       if (16 != t.length) throw new Error("invalid initialation vector size (must be 16 bytes)");
-    } else t = zt(16);
-    this._lastCipherblock = Ht(t, !0), this._aes = new gn(e);
+    } else t = Gt(16);
+    this._lastCipherblock = Vt(t, !0), this._aes = new _n(e);
   }
-  (0, _createClass2.default)(yn, [{
+  (0, _createClass2.default)(vn, [{
     key: "encrypt",
     value: function encrypt(e) {
-      if ((e = Ht(e)).length % 16 != 0) throw new Error("invalid plaintext size (must be multiple of 16 bytes)");
-      for (var t = zt(e.length), n = zt(16), s = 0; s < e.length; s += 16) {
-        Jt(e, n, 0, s, s + 16);
+      if ((e = Vt(e)).length % 16 != 0) throw new Error("invalid plaintext size (must be multiple of 16 bytes)");
+      for (var t = Gt(e.length), n = Gt(16), s = 0; s < e.length; s += 16) {
+        Yt(e, n, 0, s, s + 16);
         for (var r = 0; r < 16; r++) {
           n[r] ^= this._lastCipherblock[r];
         }
-        this._lastCipherblock = this._aes.encrypt(n), Jt(this._lastCipherblock, t, s);
+        this._lastCipherblock = this._aes.encrypt(n), Yt(this._lastCipherblock, t, s);
       }
       return t;
     }
   }, {
     key: "decrypt",
     value: function decrypt(e) {
-      if ((e = Ht(e)).length % 16 != 0) throw new Error("invalid ciphertext size (must be multiple of 16 bytes)");
-      for (var t = zt(e.length), n = zt(16), s = 0; s < e.length; s += 16) {
-        Jt(e, n, 0, s, s + 16), n = this._aes.decrypt(n);
+      if ((e = Vt(e)).length % 16 != 0) throw new Error("invalid ciphertext size (must be multiple of 16 bytes)");
+      for (var t = Gt(e.length), n = Gt(16), s = 0; s < e.length; s += 16) {
+        Yt(e, n, 0, s, s + 16), n = this._aes.decrypt(n);
         for (var r = 0; r < 16; r++) {
           t[s + r] = n[r] ^ this._lastCipherblock[r];
         }
-        Jt(e, this._lastCipherblock, 0, s, s + 16);
+        Yt(e, this._lastCipherblock, 0, s, s + 16);
       }
       return t;
     }
   }]);
-  return yn;
+  return vn;
 }();
-var _n = /*#__PURE__*/function () {
-  function _n(e, t, n) {
-    (0, _classCallCheck2.default)(this, _n);
-    if (!(this instanceof _n)) throw Error("AES must be instanitated with `new`");
+var In = /*#__PURE__*/function () {
+  function In(e, t, n) {
+    (0, _classCallCheck2.default)(this, In);
+    if (!(this instanceof In)) throw Error("AES must be instanitated with `new`");
     if (this.description = "Cipher Feedback", this.name = "cfb", t) {
       if (16 != t.length) throw new Error("invalid initialation vector size (must be 16 size)");
-    } else t = zt(16);
-    n || (n = 1), this.segmentSize = n, this._shiftRegister = Ht(t, !0), this._aes = new gn(e);
+    } else t = Gt(16);
+    n || (n = 1), this.segmentSize = n, this._shiftRegister = Vt(t, !0), this._aes = new _n(e);
   }
-  (0, _createClass2.default)(_n, [{
+  (0, _createClass2.default)(In, [{
     key: "encrypt",
     value: function encrypt(e) {
       if (e.length % this.segmentSize != 0) throw new Error("invalid plaintext size (must be segmentSize bytes)");
-      for (var t, n = Ht(e, !0), s = 0; s < n.length; s += this.segmentSize) {
+      for (var t, n = Vt(e, !0), s = 0; s < n.length; s += this.segmentSize) {
         t = this._aes.encrypt(this._shiftRegister);
         for (var r = 0; r < this.segmentSize; r++) {
           n[s + r] ^= t[r];
         }
-        Jt(this._shiftRegister, this._shiftRegister, 0, this.segmentSize), Jt(n, this._shiftRegister, 16 - this.segmentSize, s, s + this.segmentSize);
+        Yt(this._shiftRegister, this._shiftRegister, 0, this.segmentSize), Yt(n, this._shiftRegister, 16 - this.segmentSize, s, s + this.segmentSize);
       }
       return n;
     }
@@ -44168,31 +44225,31 @@ var _n = /*#__PURE__*/function () {
     key: "decrypt",
     value: function decrypt(e) {
       if (e.length % this.segmentSize != 0) throw new Error("invalid ciphertext size (must be segmentSize bytes)");
-      for (var t, n = Ht(e, !0), s = 0; s < n.length; s += this.segmentSize) {
+      for (var t, n = Vt(e, !0), s = 0; s < n.length; s += this.segmentSize) {
         t = this._aes.encrypt(this._shiftRegister);
         for (var r = 0; r < this.segmentSize; r++) {
           n[s + r] ^= t[r];
         }
-        Jt(this._shiftRegister, this._shiftRegister, 0, this.segmentSize), Jt(e, this._shiftRegister, 16 - this.segmentSize, s, s + this.segmentSize);
+        Yt(this._shiftRegister, this._shiftRegister, 0, this.segmentSize), Yt(e, this._shiftRegister, 16 - this.segmentSize, s, s + this.segmentSize);
       }
       return n;
     }
   }]);
-  return _n;
+  return In;
 }();
-var wn = /*#__PURE__*/function () {
-  function wn(e, t) {
-    (0, _classCallCheck2.default)(this, wn);
-    if (!(this instanceof wn)) throw Error("AES must be instanitated with `new`");
+var Sn = /*#__PURE__*/function () {
+  function Sn(e, t) {
+    (0, _classCallCheck2.default)(this, Sn);
+    if (!(this instanceof Sn)) throw Error("AES must be instanitated with `new`");
     if (this.description = "Output Feedback", this.name = "ofb", t) {
       if (16 != t.length) throw new Error("invalid initialation vector size (must be 16 bytes)");
-    } else t = zt(16);
-    this._lastPrecipher = Ht(t, !0), this._lastPrecipherIndex = 16, this._aes = new gn(e);
+    } else t = Gt(16);
+    this._lastPrecipher = Vt(t, !0), this._lastPrecipherIndex = 16, this._aes = new _n(e);
   }
-  (0, _createClass2.default)(wn, [{
+  (0, _createClass2.default)(Sn, [{
     key: "encrypt",
     value: function encrypt(e) {
-      for (var t = Ht(e, !0), n = 0; n < t.length; n++) {
+      for (var t = Vt(e, !0), n = 0; n < t.length; n++) {
         16 === this._lastPrecipherIndex && (this._lastPrecipher = this._aes.encrypt(this._lastPrecipher), this._lastPrecipherIndex = 0), t[n] ^= this._lastPrecipher[this._lastPrecipherIndex++];
       }
       return t;
@@ -44203,15 +44260,15 @@ var wn = /*#__PURE__*/function () {
       return this.encrypt(e);
     }
   }]);
-  return wn;
+  return Sn;
 }();
-var vn = /*#__PURE__*/function () {
-  function vn(e) {
-    (0, _classCallCheck2.default)(this, vn);
-    if (!(this instanceof vn)) throw Error("Counter must be instanitated with `new`");
-    0 === e || e || (e = 1), "number" == typeof e ? (this._counter = zt(16), this.setValue(e)) : this.setBytes(e);
+var bn = /*#__PURE__*/function () {
+  function bn(e) {
+    (0, _classCallCheck2.default)(this, bn);
+    if (!(this instanceof bn)) throw Error("Counter must be instanitated with `new`");
+    0 === e || e || (e = 1), "number" == typeof e ? (this._counter = Gt(16), this.setValue(e)) : this.setBytes(e);
   }
-  (0, _createClass2.default)(vn, [{
+  (0, _createClass2.default)(bn, [{
     key: "setValue",
     value: function setValue(e) {
       if ("number" != typeof e || parseInt(e) != e) throw new Error("invalid counter value (must be an integer)");
@@ -44223,7 +44280,7 @@ var vn = /*#__PURE__*/function () {
   }, {
     key: "setBytes",
     value: function setBytes(e) {
-      if (16 != (e = Ht(e, !0)).length) throw new Error("invalid counter bytes size (must be 16 bytes)");
+      if (16 != (e = Vt(e, !0)).length) throw new Error("invalid counter bytes size (must be 16 bytes)");
       this._counter = e;
     }
   }, {
@@ -44238,18 +44295,18 @@ var vn = /*#__PURE__*/function () {
       }
     }
   }]);
-  return vn;
+  return bn;
 }();
-var In = /*#__PURE__*/function () {
-  function In(e, t) {
-    (0, _classCallCheck2.default)(this, In);
-    if (!(this instanceof In)) throw Error("AES must be instanitated with `new`");
-    this.description = "Counter", this.name = "ctr", t instanceof vn || (t = new vn(t)), this._counter = t, this._remainingCounter = null, this._remainingCounterIndex = 16, this._aes = new gn(e);
+var kn = /*#__PURE__*/function () {
+  function kn(e, t) {
+    (0, _classCallCheck2.default)(this, kn);
+    if (!(this instanceof kn)) throw Error("AES must be instanitated with `new`");
+    this.description = "Counter", this.name = "ctr", t instanceof bn || (t = new bn(t)), this._counter = t, this._remainingCounter = null, this._remainingCounterIndex = 16, this._aes = new _n(e);
   }
-  (0, _createClass2.default)(In, [{
+  (0, _createClass2.default)(kn, [{
     key: "encrypt",
     value: function encrypt(e) {
-      for (var t = Ht(e, !0), n = 0; n < t.length; n++) {
+      for (var t = Vt(e, !0), n = 0; n < t.length; n++) {
         16 === this._remainingCounterIndex && (this._remainingCounter = this._aes.encrypt(this._counter._counter), this._remainingCounterIndex = 0, this._counter.increment()), t[n] ^= this._remainingCounter[this._remainingCounterIndex++];
       }
       return t;
@@ -44260,79 +44317,79 @@ var In = /*#__PURE__*/function () {
       return this.encrypt(e);
     }
   }]);
-  return In;
+  return kn;
 }();
-var Sn = {
-  AES: gn,
-  Counter: vn,
+var An = {
+  AES: _n,
+  Counter: bn,
   ModeOfOperation: {
-    ecb: mn,
-    cbc: yn,
-    cfb: _n,
-    ofb: wn,
-    ctr: In
+    ecb: wn,
+    cbc: vn,
+    cfb: In,
+    ofb: Sn,
+    ctr: kn
   },
   utils: {
-    hex: Yt,
-    utf8: Vt
+    hex: Zt,
+    utf8: Xt
   },
   padding: {
     pkcs7: {
       pad: function pad(e) {
-        var t = 16 - (e = Ht(e, !0)).length % 16,
-          n = zt(e.length + t);
-        Jt(e, n);
+        var t = 16 - (e = Vt(e, !0)).length % 16,
+          n = Gt(e.length + t);
+        Yt(e, n);
         for (var s = e.length; s < n.length; s++) {
           n[s] = t;
         }
         return n;
       },
       strip: function strip(e) {
-        if ((e = Ht(e, !0)).length < 16) throw new Error("PKCS#7 invalid length");
+        if ((e = Vt(e, !0)).length < 16) throw new Error("PKCS#7 invalid length");
         var t = e[e.length - 1];
         if (t > 16) throw new Error("PKCS#7 padding byte out of range");
         for (var n = e.length - t, s = 0; s < t; s++) {
           if (e[n + s] !== t) throw new Error("PKCS#7 invalid padding byte");
         }
-        var r = zt(n);
-        return Jt(e, r, 0, 0, n), r;
+        var r = Gt(n);
+        return Yt(e, r, 0, 0, n), r;
       }
     }
   },
   _arrayTest: {
-    coerceArray: Ht,
-    createArray: zt,
-    copyArray: Jt
+    coerceArray: Vt,
+    createArray: Gt,
+    copyArray: Yt
   }
 };
-function bn(e, t, n) {
+function Cn(e, t, n) {
   var s = new Uint8Array(uni.base64ToArrayBuffer(t)),
-    r = Sn.utils.utf8.toBytes(n),
-    i = Sn.utils.utf8.toBytes(e),
-    o = new Sn.ModeOfOperation.cbc(s, r),
-    a = Sn.padding.pkcs7.pad(i),
+    r = An.utils.utf8.toBytes(n),
+    i = An.utils.utf8.toBytes(e),
+    o = new An.ModeOfOperation.cbc(s, r),
+    a = An.padding.pkcs7.pad(i),
     c = o.encrypt(a);
   return uni.arrayBufferToBase64(c);
 }
-var kn = {
+var Pn = {
     code: 2e4,
     message: "System error"
   },
-  An = {
+  Tn = {
     code: 20101,
     message: "Invalid client"
   },
-  Pn = {
+  xn = {
     code: 20102,
     message: "Get encrypt key failed"
   },
-  Tn = {
+  On = {
     10001: "Secure network is not supported on current playground or unimpsdk",
     10003: "Config missing in current app. If the problem pesist, please contact DCloud.",
     10009: "Encrypt payload failed",
     10010: "Decrypt response failed"
   };
-function Cn(e) {
+function En(e) {
   var _ref32 = e || {},
     t = _ref32.errSubject,
     n = _ref32.subject,
@@ -44343,24 +44400,24 @@ function Cn(e) {
     a = _ref32.cause;
   return new te({
     subject: t || n || "uni-secure-network",
-    code: s || i || kn.code,
+    code: s || i || Pn.code,
     message: r || o,
     cause: a
   });
 }
-var xn,
-  On,
-  En = null;
-var Ln = /*#__PURE__*/function (_$t) {
-  (0, _inherits2.default)(Ln, _$t);
-  var _super9 = _createSuper(Ln);
-  function Ln(e) {
+var Ln,
+  Rn,
+  Un = null;
+var Nn = /*#__PURE__*/function (_Ht) {
+  (0, _inherits2.default)(Nn, _Ht);
+  var _super9 = _createSuper(Nn);
+  function Nn(e) {
     var _this15;
-    (0, _classCallCheck2.default)(this, Ln);
+    (0, _classCallCheck2.default)(this, Nn);
     _this15 = _super9.call(this, e), _this15.clientType = "mp-weixin", _this15.userEncryptKey = null;
     return _this15;
   }
-  (0, _createClass2.default)(Ln, [{
+  (0, _createClass2.default)(Nn, [{
     key: "isLogin",
     value: function isLogin() {
       return !!this.scopedGlobalCache.mpWeixinCode || !!this.scopedGlobalCache.mpWeixinOpenid;
@@ -44368,35 +44425,35 @@ var Ln = /*#__PURE__*/function (_$t) {
   }, {
     key: "prepare",
     value: function () {
-      var _prepare2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee40() {
-        return _regenerator.default.wrap(function _callee40$(_context40) {
+      var _prepare2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee41() {
+        return _regenerator.default.wrap(function _callee41$(_context41) {
           while (1) {
-            switch (_context40.prev = _context40.next) {
+            switch (_context41.prev = _context41.next) {
               case 0:
                 if (this.isLogin()) {
-                  _context40.next = 7;
+                  _context41.next = 7;
                   break;
                 }
                 if (this.scopedGlobalCache.initPromise) {
-                  _context40.next = 3;
+                  _context41.next = 3;
                   break;
                 }
                 throw new Error("`uniCloud.initSecureNetworkByWeixin` has not yet been called");
               case 3:
-                _context40.next = 5;
+                _context41.next = 5;
                 return this.scopedGlobalCache.initPromise;
               case 5:
                 if (this.isLogin()) {
-                  _context40.next = 7;
+                  _context41.next = 7;
                   break;
                 }
                 throw new Error("uniCloud.initSecureNetworkByWeixin` has not yet been called or successfully excuted");
               case 7:
               case "end":
-                return _context40.stop();
+                return _context41.stop();
             }
           }
-        }, _callee40, this);
+        }, _callee41, this);
       }));
       function prepare() {
         return _prepare2.apply(this, arguments);
@@ -44406,37 +44463,37 @@ var Ln = /*#__PURE__*/function (_$t) {
   }, {
     key: "getUserEncryptKey",
     value: function () {
-      var _getUserEncryptKey = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee41() {
+      var _getUserEncryptKey = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee42() {
         var _this16 = this;
         var e;
-        return _regenerator.default.wrap(function _callee41$(_context41) {
+        return _regenerator.default.wrap(function _callee42$(_context42) {
           while (1) {
-            switch (_context41.prev = _context41.next) {
+            switch (_context42.prev = _context42.next) {
               case 0:
                 if (!this.userEncryptKey) {
-                  _context41.next = 2;
+                  _context42.next = 2;
                   break;
                 }
-                return _context41.abrupt("return", this.userEncryptKey);
+                return _context42.abrupt("return", this.userEncryptKey);
               case 2:
-                if (!(En && En.expireTime)) {
-                  _context41.next = 6;
+                if (!(Un && Un.expireTime)) {
+                  _context42.next = 6;
                   break;
                 }
                 e = Date.now();
-                if (!(En.expireTime - e > 0)) {
-                  _context41.next = 6;
+                if (!(Un.expireTime - e > 0)) {
+                  _context42.next = 6;
                   break;
                 }
-                return _context41.abrupt("return", (this.userEncryptKey = En, this.userEncryptKey));
+                return _context42.abrupt("return", (this.userEncryptKey = Un, this.userEncryptKey));
               case 6:
-                return _context41.abrupt("return", new Promise(function (e, t) {
+                return _context42.abrupt("return", new Promise(function (e, t) {
                   uni.getUserCryptoManager().getLatestUserKey({
                     success: function success(t) {
-                      En = t, _this16.userEncryptKey = t, e(_this16.userEncryptKey);
+                      Un = t, _this16.userEncryptKey = t, e(_this16.userEncryptKey);
                     },
                     fail: function fail(e) {
-                      t(Cn(_objectSpread(_objectSpread({}, Pn), {}, {
+                      t(En(_objectSpread(_objectSpread({}, xn), {}, {
                         cause: e
                       })));
                     }
@@ -44444,10 +44501,10 @@ var Ln = /*#__PURE__*/function (_$t) {
                 }));
               case 7:
               case "end":
-                return _context41.stop();
+                return _context42.stop();
             }
           }
-        }, _callee41, this);
+        }, _callee42, this);
       }));
       function getUserEncryptKey() {
         return _getUserEncryptKey.apply(this, arguments);
@@ -44462,21 +44519,21 @@ var Ln = /*#__PURE__*/function (_$t) {
   }, {
     key: "platformGetSignOption",
     value: function () {
-      var _platformGetSignOption = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee42() {
+      var _platformGetSignOption = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee43() {
         var _yield$this$getUserEn, e, t, n;
-        return _regenerator.default.wrap(function _callee42$(_context42) {
+        return _regenerator.default.wrap(function _callee43$(_context43) {
           while (1) {
-            switch (_context42.prev = _context42.next) {
+            switch (_context43.prev = _context43.next) {
               case 0:
-                _context42.next = 2;
+                _context43.next = 2;
                 return this.getUserEncryptKey();
               case 2:
-                _yield$this$getUserEn = _context42.sent;
+                _yield$this$getUserEn = _context43.sent;
                 e = _yield$this$getUserEn.encryptKey;
                 t = _yield$this$getUserEn.iv;
                 n = _yield$this$getUserEn.version;
-                return _context42.abrupt("return", {
-                  verifyClientSign: bn(JSON.stringify({
+                return _context43.abrupt("return", {
+                  verifyClientSign: Cn(JSON.stringify({
                     data: JSON.stringify({}),
                     appId: this.appId,
                     deviceId: this.deviceId,
@@ -44490,10 +44547,10 @@ var Ln = /*#__PURE__*/function (_$t) {
                 });
               case 7:
               case "end":
-                return _context42.stop();
+                return _context43.stop();
             }
           }
-        }, _callee42, this);
+        }, _callee43, this);
       }));
       function platformGetSignOption() {
         return _platformGetSignOption.apply(this, arguments);
@@ -44503,16 +44560,16 @@ var Ln = /*#__PURE__*/function (_$t) {
   }, {
     key: "platformEncryptData",
     value: function () {
-      var _platformEncryptData = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee43(e) {
+      var _platformEncryptData = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee44(e) {
         var _yield$this$getUserEn2, t, n, s, r;
-        return _regenerator.default.wrap(function _callee43$(_context43) {
+        return _regenerator.default.wrap(function _callee44$(_context44) {
           while (1) {
-            switch (_context43.prev = _context43.next) {
+            switch (_context44.prev = _context44.next) {
               case 0:
-                _context43.next = 2;
+                _context44.next = 2;
                 return this.getUserEncryptKey();
               case 2:
-                _yield$this$getUserEn2 = _context43.sent;
+                _yield$this$getUserEn2 = _context44.sent;
                 t = _yield$this$getUserEn2.encryptKey;
                 n = _yield$this$getUserEn2.iv;
                 s = _yield$this$getUserEn2.version;
@@ -44522,11 +44579,11 @@ var Ln = /*#__PURE__*/function (_$t) {
                   mpWeixinCode: this.scopedGlobalCache.mpWeixinCode,
                   mpWeixinOpenid: this.scopedGlobalCache.mpWeixinOpenid
                 };
-                return _context43.abrupt("return", this.secretType === Kt ? {
+                return _context44.abrupt("return", this.secretType === Bt ? {
                   content: e,
                   _uniCloudOptions: r
                 } : {
-                  content: bn(JSON.stringify({
+                  content: Cn(JSON.stringify({
                     data: JSON.stringify(e),
                     appId: this.appId,
                     deviceId: this.deviceId,
@@ -44538,12 +44595,12 @@ var Ln = /*#__PURE__*/function (_$t) {
                 });
               case 8:
               case "end":
-                return _context43.stop();
+                return _context44.stop();
             }
           }
-        }, _callee43, this);
+        }, _callee44, this);
       }));
-      function platformEncryptData(_x35) {
+      function platformEncryptData(_x36) {
         return _platformEncryptData.apply(this, arguments);
       }
       return platformEncryptData;
@@ -44551,35 +44608,35 @@ var Ln = /*#__PURE__*/function (_$t) {
   }, {
     key: "platformDecryptResult",
     value: function () {
-      var _platformDecryptResult = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee44(e) {
+      var _platformDecryptResult = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee45(e) {
         var t, _yield$this$getUserEn3, n, s;
-        return _regenerator.default.wrap(function _callee44$(_context44) {
+        return _regenerator.default.wrap(function _callee45$(_context45) {
           while (1) {
-            switch (_context44.prev = _context44.next) {
+            switch (_context45.prev = _context45.next) {
               case 0:
                 t = e.content;
-                _context44.next = 3;
+                _context45.next = 3;
                 return this.getUserEncryptKey();
               case 3:
-                _yield$this$getUserEn3 = _context44.sent;
+                _yield$this$getUserEn3 = _context45.sent;
                 n = _yield$this$getUserEn3.encryptKey;
                 s = _yield$this$getUserEn3.iv;
-                return _context44.abrupt("return", JSON.parse(function (e, t, n) {
+                return _context45.abrupt("return", JSON.parse(function (e, t, n) {
                   var s = new Uint8Array(uni.base64ToArrayBuffer(e)),
                     r = new Uint8Array(uni.base64ToArrayBuffer(t)),
-                    i = Sn.utils.utf8.toBytes(n),
-                    o = new Sn.ModeOfOperation.cbc(r, i),
-                    a = Sn.padding.pkcs7.strip(o.decrypt(s));
-                  return Sn.utils.utf8.fromBytes(a);
+                    i = An.utils.utf8.toBytes(n),
+                    o = new An.ModeOfOperation.cbc(r, i),
+                    a = An.padding.pkcs7.strip(o.decrypt(s));
+                  return An.utils.utf8.fromBytes(a);
                 }(t, n, s)));
               case 7:
               case "end":
-                return _context44.stop();
+                return _context45.stop();
             }
           }
-        }, _callee44, this);
+        }, _callee45, this);
       }));
-      function platformDecryptResult(_x36) {
+      function platformDecryptResult(_x37) {
         return _platformDecryptResult.apply(this, arguments);
       }
       return platformDecryptResult;
@@ -44590,9 +44647,9 @@ var Ln = /*#__PURE__*/function (_$t) {
       return !1;
     }
   }]);
-  return Ln;
-}($t);
-function Rn(e) {
+  return Nn;
+}(Ht);
+function Dn(e) {
   var t = ["hasClientKey", "encryptGetClientKeyPayload", "setClientKey", "encrypt", "decrypt"],
     n = {};
   var _loop = function _loop(_s11) {
@@ -44610,12 +44667,12 @@ function Rn(e) {
             i = _ref33.errMsg,
             o = _ref33.errSubject,
             a = _ref33.message;
-          "success" === e ? n(t) : s(Cn({
+          "success" === e ? n(t) : s(En({
             errCode: r,
-            errMsg: Tn[r] || i || a,
+            errMsg: On[r] || i || a,
             errSubject: o
           }));
-        }])) : s(Cn({
+        }])) : s(En({
           message: "请检查manifest.json内是否开启安全网络模块，另外注意标准基座不支持安全网络模块"
         }));
       });
@@ -44626,37 +44683,37 @@ function Rn(e) {
   }
   return n;
 }
-var Un = /*#__PURE__*/function (_$t2) {
-  (0, _inherits2.default)(Un, _$t2);
-  var _super10 = _createSuper(Un);
-  function Un(e) {
+var Mn = /*#__PURE__*/function (_Ht2) {
+  (0, _inherits2.default)(Mn, _Ht2);
+  var _super10 = _createSuper(Mn);
+  function Mn(e) {
     var _this17;
-    (0, _classCallCheck2.default)(this, Un);
-    _this17 = _super10.call(this, e), _this17.clientType = "app", _this17.appUtils = _objectSpread({}, Rn(uni.requireNativePlugin("plus"))), _this17.systemInfo = xn || (xn = ae());
+    (0, _classCallCheck2.default)(this, Mn);
+    _this17 = _super10.call(this, e), _this17.clientType = "app", _this17.appUtils = _objectSpread({}, Dn(uni.requireNativePlugin("plus"))), _this17.systemInfo = Ln || (Ln = ae());
     return _this17;
   }
-  (0, _createClass2.default)(Un, [{
+  (0, _createClass2.default)(Mn, [{
     key: "hasClientKey",
     value: function () {
-      var _hasClientKey = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee45() {
-        return _regenerator.default.wrap(function _callee45$(_context45) {
+      var _hasClientKey = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee46() {
+        return _regenerator.default.wrap(function _callee46$(_context46) {
           while (1) {
-            switch (_context45.prev = _context45.next) {
+            switch (_context46.prev = _context46.next) {
               case 0:
-                _context45.next = 2;
+                _context46.next = 2;
                 return this.appUtils.hasClientKey({
                   provider: this.provider,
                   spaceId: this.spaceId
                 });
               case 2:
-                this._hasClientKey = _context45.sent;
-                return _context45.abrupt("return", this._hasClientKey);
+                this._hasClientKey = _context46.sent;
+                return _context46.abrupt("return", this._hasClientKey);
               case 4:
               case "end":
-                return _context45.stop();
+                return _context46.stop();
             }
           }
-        }, _callee45, this);
+        }, _callee46, this);
       }));
       function hasClientKey() {
         return _hasClientKey.apply(this, arguments);
@@ -44666,21 +44723,21 @@ var Un = /*#__PURE__*/function (_$t2) {
   }, {
     key: "getAppClientKey",
     value: function () {
-      var _getAppClientKey = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee46() {
+      var _getAppClientKey = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee47() {
         var _yield$this$appUtils$, e, t, n, s, r;
-        return _regenerator.default.wrap(function _callee46$(_context46) {
+        return _regenerator.default.wrap(function _callee47$(_context47) {
           while (1) {
-            switch (_context46.prev = _context46.next) {
+            switch (_context47.prev = _context47.next) {
               case 0:
-                _context46.next = 2;
+                _context47.next = 2;
                 return this.appUtils.encryptGetClientKeyPayload({
                   data: JSON.stringify({})
                 });
               case 2:
-                _yield$this$appUtils$ = _context46.sent;
+                _yield$this$appUtils$ = _context47.sent;
                 e = _yield$this$appUtils$.data;
                 t = _yield$this$appUtils$.key;
-                _context46.next = 7;
+                _context47.next = 7;
                 return this.uniCloudIns.callFunction({
                   name: "DCloud-clientDB",
                   data: {
@@ -44691,28 +44748,28 @@ var Un = /*#__PURE__*/function (_$t2) {
                   }
                 });
               case 7:
-                _context46.t0 = _context46.sent.result;
-                if (_context46.t0) {
-                  _context46.next = 10;
+                _context47.t0 = _context47.sent.result;
+                if (_context47.t0) {
+                  _context47.next = 10;
                   break;
                 }
-                _context46.t0 = {};
+                _context47.t0 = {};
               case 10:
-                n = _context46.t0;
+                n = _context47.t0;
                 if (!(0 !== n.errCode)) {
-                  _context46.next = 13;
+                  _context47.next = 13;
                   break;
                 }
                 throw function (e) {
                   return new te({
                     subject: e.errSubject || "uni-secure-network",
-                    code: e.errCode || e.code || kn.code,
+                    code: e.errCode || e.code || Pn.code,
                     message: e.errMsg || e.message
                   });
                 }(n);
               case 13:
                 s = n.clientKey, r = n.key;
-                _context46.next = 16;
+                _context47.next = 16;
                 return this.appUtils.setClientKey({
                   provider: this.provider,
                   spaceId: this.spaceId,
@@ -44721,10 +44778,10 @@ var Un = /*#__PURE__*/function (_$t2) {
                 });
               case 16:
               case "end":
-                return _context46.stop();
+                return _context47.stop();
             }
           }
-        }, _callee46, this);
+        }, _callee47, this);
       }));
       function getAppClientKey() {
         return _getAppClientKey.apply(this, arguments);
@@ -44734,44 +44791,44 @@ var Un = /*#__PURE__*/function (_$t2) {
   }, {
     key: "ensureClientKey",
     value: function () {
-      var _ensureClientKey = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee47() {
+      var _ensureClientKey = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee48() {
         var _this18 = this;
         var _ref34,
           _ref34$forceUpdate,
           e,
-          _args47 = arguments;
-        return _regenerator.default.wrap(function _callee47$(_context47) {
+          _args48 = arguments;
+        return _regenerator.default.wrap(function _callee48$(_context48) {
           while (1) {
-            switch (_context47.prev = _context47.next) {
+            switch (_context48.prev = _context48.next) {
               case 0:
-                _ref34 = _args47.length > 0 && _args47[0] !== undefined ? _args47[0] : {}, _ref34$forceUpdate = _ref34.forceUpdate, e = _ref34$forceUpdate === void 0 ? !1 : _ref34$forceUpdate;
-                _context47.t1 = !0;
-                _context47.next = 4;
+                _ref34 = _args48.length > 0 && _args48[0] !== undefined ? _args48[0] : {}, _ref34$forceUpdate = _ref34.forceUpdate, e = _ref34$forceUpdate === void 0 ? !1 : _ref34$forceUpdate;
+                _context48.t1 = !0;
+                _context48.next = 4;
                 return this.hasClientKey();
               case 4:
-                _context47.t2 = _context47.sent;
-                _context47.t0 = _context47.t1 !== _context47.t2;
-                if (_context47.t0) {
-                  _context47.next = 8;
+                _context48.t2 = _context48.sent;
+                _context48.t0 = _context48.t1 !== _context48.t2;
+                if (_context48.t0) {
+                  _context48.next = 8;
                   break;
                 }
-                _context47.t0 = e;
+                _context48.t0 = e;
               case 8:
-                if (!_context47.t0) {
-                  _context47.next = 10;
+                if (!_context48.t0) {
+                  _context48.next = 10;
                   break;
                 }
-                return _context47.abrupt("return", (e && this.scopedGlobalCache.initPromise && this.scopedGlobalCache.initStatus === l || !e && this.scopedGlobalCache.initPromise && this.scopedGlobalCache.initStatus !== p || (this.scopedGlobalCache.initPromise = this.getAppClientKey(), this.scopedGlobalCache.initPromise.then(function (e) {
+                return _context48.abrupt("return", (e && this.scopedGlobalCache.initPromise && this.scopedGlobalCache.initStatus === l || !e && this.scopedGlobalCache.initPromise && this.scopedGlobalCache.initStatus !== p || (this.scopedGlobalCache.initPromise = this.getAppClientKey(), this.scopedGlobalCache.initPromise.then(function (e) {
                   _this18.scopedGlobalCache.initStatus = d;
                 }).catch(function (e) {
                   throw _this18.scopedGlobalCache.initStatus = p, e;
                 }), this.scopedGlobalCache.initStatus = l), this.scopedGlobalCache.initPromise));
               case 10:
               case "end":
-                return _context47.stop();
+                return _context48.stop();
             }
           }
-        }, _callee47, this);
+        }, _callee48, this);
       }));
       function ensureClientKey() {
         return _ensureClientKey.apply(this, arguments);
@@ -44781,26 +44838,26 @@ var Un = /*#__PURE__*/function (_$t2) {
   }, {
     key: "prepare",
     value: function () {
-      var _prepare3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee48() {
+      var _prepare3 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee49() {
         var _ref35,
           _ref35$forceUpdate,
           e,
-          _args48 = arguments;
-        return _regenerator.default.wrap(function _callee48$(_context48) {
+          _args49 = arguments;
+        return _regenerator.default.wrap(function _callee49$(_context49) {
           while (1) {
-            switch (_context48.prev = _context48.next) {
+            switch (_context49.prev = _context49.next) {
               case 0:
-                _ref35 = _args48.length > 0 && _args48[0] !== undefined ? _args48[0] : {}, _ref35$forceUpdate = _ref35.forceUpdate, e = _ref35$forceUpdate === void 0 ? !1 : _ref35$forceUpdate;
-                _context48.next = 3;
+                _ref35 = _args49.length > 0 && _args49[0] !== undefined ? _args49[0] : {}, _ref35$forceUpdate = _ref35.forceUpdate, e = _ref35$forceUpdate === void 0 ? !1 : _ref35$forceUpdate;
+                _context49.next = 3;
                 return this.ensureClientKey({
                   forceUpdate: e
                 });
               case 3:
               case "end":
-                return _context48.stop();
+                return _context49.stop();
             }
           }
-        }, _callee48, this);
+        }, _callee49, this);
       }));
       function prepare() {
         return _prepare3.apply(this, arguments);
@@ -44810,32 +44867,32 @@ var Un = /*#__PURE__*/function (_$t2) {
   }, {
     key: "platformGetSignOption",
     value: function () {
-      var _platformGetSignOption2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee49() {
+      var _platformGetSignOption2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee50() {
         var _yield$this$appUtils$2, e, t;
-        return _regenerator.default.wrap(function _callee49$(_context49) {
+        return _regenerator.default.wrap(function _callee50$(_context50) {
           while (1) {
-            switch (_context49.prev = _context49.next) {
+            switch (_context50.prev = _context50.next) {
               case 0:
-                _context49.next = 2;
+                _context50.next = 2;
                 return this.appUtils.encrypt({
                   provider: this.provider,
                   spaceId: this.spaceId,
                   data: JSON.stringify({})
                 });
               case 2:
-                _yield$this$appUtils$2 = _context49.sent;
+                _yield$this$appUtils$2 = _context50.sent;
                 e = _yield$this$appUtils$2.data;
                 t = _yield$this$appUtils$2.key;
-                return _context49.abrupt("return", {
+                return _context50.abrupt("return", {
                   verifyClientSign: e,
                   encryptKeyId: t
                 });
               case 6:
               case "end":
-                return _context49.stop();
+                return _context50.stop();
             }
           }
-        }, _callee49, this);
+        }, _callee50, this);
       }));
       function platformGetSignOption() {
         return _platformGetSignOption2.apply(this, arguments);
@@ -44845,27 +44902,27 @@ var Un = /*#__PURE__*/function (_$t2) {
   }, {
     key: "platformEncryptData",
     value: function () {
-      var _platformEncryptData2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee50(e) {
+      var _platformEncryptData2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee51(e) {
         var _yield$this$appUtils$3, t, n, s;
-        return _regenerator.default.wrap(function _callee50$(_context50) {
+        return _regenerator.default.wrap(function _callee51$(_context51) {
           while (1) {
-            switch (_context50.prev = _context50.next) {
+            switch (_context51.prev = _context51.next) {
               case 0:
-                _context50.next = 2;
+                _context51.next = 2;
                 return this.appUtils.encrypt({
                   provider: this.provider,
                   spaceId: this.spaceId,
                   data: JSON.stringify(e)
                 });
               case 2:
-                _yield$this$appUtils$3 = _context50.sent;
+                _yield$this$appUtils$3 = _context51.sent;
                 t = _yield$this$appUtils$3.data;
                 n = _yield$this$appUtils$3.key;
                 s = {
                   secretType: this.secretType,
                   encryptKeyId: n
                 };
-                return _context50.abrupt("return", this.secretType === Kt ? {
+                return _context51.abrupt("return", this.secretType === Bt ? {
                   content: e,
                   _uniCloudOptions: s
                 } : {
@@ -44874,12 +44931,12 @@ var Un = /*#__PURE__*/function (_$t2) {
                 });
               case 7:
               case "end":
-                return _context50.stop();
+                return _context51.stop();
             }
           }
-        }, _callee50, this);
+        }, _callee51, this);
       }));
-      function platformEncryptData(_x37) {
+      function platformEncryptData(_x38) {
         return _platformEncryptData2.apply(this, arguments);
       }
       return platformEncryptData;
@@ -44887,17 +44944,17 @@ var Un = /*#__PURE__*/function (_$t2) {
   }, {
     key: "platformDecryptResult",
     value: function () {
-      var _platformDecryptResult2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee51(e) {
+      var _platformDecryptResult2 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee52(e) {
         var t, _e$_uniCloudOptions, n, s, r;
-        return _regenerator.default.wrap(function _callee51$(_context51) {
+        return _regenerator.default.wrap(function _callee52$(_context52) {
           while (1) {
-            switch (_context51.prev = _context51.next) {
+            switch (_context52.prev = _context52.next) {
               case 0:
                 t = e.content;
                 _e$_uniCloudOptions = e._uniCloudOptions;
                 n = _e$_uniCloudOptions === void 0 ? {} : _e$_uniCloudOptions;
                 s = n.encryptKeyId;
-                _context51.next = 6;
+                _context52.next = 6;
                 return this.appUtils.decrypt({
                   provider: this.provider,
                   spaceId: this.spaceId,
@@ -44905,16 +44962,16 @@ var Un = /*#__PURE__*/function (_$t2) {
                   key: s
                 });
               case 6:
-                r = _context51.sent;
-                return _context51.abrupt("return", JSON.parse(r.data));
+                r = _context52.sent;
+                return _context52.abrupt("return", JSON.parse(r.data));
               case 8:
               case "end":
-                return _context51.stop();
+                return _context52.stop();
             }
           }
-        }, _callee51, this);
+        }, _callee52, this);
       }));
-      function platformDecryptResult(_x38) {
+      function platformDecryptResult(_x39) {
         return _platformDecryptResult2.apply(this, arguments);
       }
       return platformDecryptResult;
@@ -44927,21 +44984,21 @@ var Un = /*#__PURE__*/function (_$t2) {
       return 70009 === t.errCode && "uni-secure-network" === t.errSubject;
     }
   }]);
-  return Un;
-}($t);
-function Nn() {
+  return Mn;
+}(Ht);
+function qn() {
   var _ref36 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref36.secretType;
-  return e === Ft || e === Kt || e === jt;
+  return e === $t || e === Bt || e === Wt;
 }
-function Dn() {
+function Fn() {
   var _ref37 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref37.name,
     _ref37$data = _ref37.data,
     t = _ref37$data === void 0 ? {} : _ref37$data;
-  return "app" === P && "DCloud-clientDB" === e && "encryption" === t.redirectTo && "getAppClientKey" === t.action;
+  return "app" === C && "DCloud-clientDB" === e && "encryption" === t.redirectTo && "getAppClientKey" === t.action;
 }
-function Mn() {
+function Kn() {
   var _ref38 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref38.provider,
     t = _ref38.spaceId,
@@ -44988,9 +45045,9 @@ function Mn() {
     var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     return e.appId === s && (e.platform || "").toLowerCase() === o.toLowerCase();
   })) return !0;
-  throw console.error("\u6B64\u5E94\u7528[appId: ".concat(s, ", platform: ").concat(o, "]\u4E0D\u5728\u4E91\u7AEF\u914D\u7F6E\u7684\u5141\u8BB8\u8BBF\u95EE\u7684\u5E94\u7528\u5217\u8868\u5185\uFF0C\u53C2\u8003\uFF1Ahttps://uniapp.dcloud.net.cn/uniCloud/secure-network.html#verify-client")), Cn(An);
+  throw console.error("\u6B64\u5E94\u7528[appId: ".concat(s, ", platform: ").concat(o, "]\u4E0D\u5728\u4E91\u7AEF\u914D\u7F6E\u7684\u5141\u8BB8\u8BBF\u95EE\u7684\u5E94\u7528\u5217\u8868\u5185\uFF0C\u53C2\u8003\uFF1Ahttps://uniapp.dcloud.net.cn/uniCloud/secure-network.html#verify-client")), En(Tn);
 }
-function qn(_ref40) {
+function jn(_ref40) {
   var e = _ref40.functionName,
     t = _ref40.result,
     n = _ref40.logPvd;
@@ -45003,13 +45060,13 @@ function qn(_ref40) {
     console.log("[".concat(n, "-request]").concat(_s12, "[/").concat(n, "-request]"));
   }
 }
-function Fn(e) {
+function $n(e) {
   var t = e.callFunction,
-    n = function n(_n9) {
+    n = function n(_n10) {
       var _this19 = this;
-      var s = _n9.name;
-      _n9.data = Lt.call(e, {
-        data: _n9.data
+      var s = _n10.name;
+      _n10.data = Nt.call(e, {
+        data: _n10.data
       });
       var r = {
           aliyun: "aliyun",
@@ -45017,17 +45074,17 @@ function Fn(e) {
           tcb: "tcb",
           alipay: "alipay"
         }[this.config.provider],
-        i = Nn(_n9),
-        o = Dn(_n9),
+        i = qn(_n10),
+        o = Fn(_n10),
         a = i || o;
-      return t.call(this, _n9).then(function (e) {
-        return e.errCode = 0, !a && qn.call(_this19, {
+      return t.call(this, _n10).then(function (e) {
+        return e.errCode = 0, !a && jn.call(_this19, {
           functionName: s,
           result: e,
           logPvd: r
         }), Promise.resolve(e);
       }, function (e) {
-        return !a && qn.call(_this19, {
+        return !a && jn.call(_this19, {
           functionName: s,
           result: e,
           logPvd: r
@@ -45048,17 +45105,17 @@ function Fn(e) {
             if (!_a) continue;
             var _c = _i3;
             for (var _e19 = 1; _e19 < _a.length; _e19++) {
-              _c = Mt(_c, "{$".concat(_e19, "}"), _a[_e19]);
+              _c = Kt(_c, "{$".concat(_e19, "}"), _a[_e19]);
             }
             for (var _e20 in t) {
-              _c = Mt(_c, "{".concat(_e20, "}"), t[_e20]);
+              _c = Kt(_c, "{".concat(_e20, "}"), t[_e20]);
             }
             return "replace" === _o3 ? _c : e + _c;
           }
           return e;
         }({
-          message: "[".concat(_n9.name, "]: ").concat(e.message),
-          formatter: Ut,
+          message: "[".concat(_n10.name, "]: ").concat(e.message),
+          formatter: Mt,
           extraInfo: {
             functionName: s
           }
@@ -45071,22 +45128,22 @@ function Fn(e) {
       r = _e$config.spaceId,
       i = t.name;
     var o, a;
-    if (t.data = t.data || {}, S && e.__dev__.debugInfo && !e.__dev__.debugInfo.forceRemote && C ? (e._callCloudFunction || (e._callCloudFunction = n, e._callLocalFunction = Rt), o = Rt) : o = n, o = o.bind(e), Dn(t)) a = n.call(e, t);else if (function (_ref42) {
+    if (t.data = t.data || {}, S && e.__dev__.debugInfo && !e.__dev__.debugInfo.forceRemote && T ? (e._callCloudFunction || (e._callCloudFunction = n, e._callLocalFunction = Dt), o = Dt) : o = n, o = o.bind(e), Fn(t)) a = n.call(e, t);else if (function (_ref42) {
       var e = _ref42.name,
         _ref42$data = _ref42.data,
         t = _ref42$data === void 0 ? {} : _ref42$data;
-      return "mp-weixin" === P && "uni-id-co" === e && "secureNetworkHandshakeByWeixin" === t.method;
-    }(t)) a = o.call(e, t);else if (Nn(t)) {
-      a = new On({
+      return "mp-weixin" === C && "uni-id-co" === e && "secureNetworkHandshakeByWeixin" === t.method;
+    }(t)) a = o.call(e, t);else if (qn(t)) {
+      a = new Rn({
         secretType: t.secretType,
         uniCloudIns: e
       }).wrapEncryptDataCallFunction(n.bind(e))(t);
-    } else if (Mn({
+    } else if (Kn({
       provider: s,
       spaceId: r,
       functionName: i
     })) {
-      a = new On({
+      a = new Rn({
         secretType: t.secretType,
         uniCloudIns: e
       }).wrapVerifyClientCallFunction(n.bind(e))(t);
@@ -45100,26 +45157,26 @@ function Fn(e) {
     });
   };
 }
-On = "mp-weixin" !== P && "app" !== P ? /*#__PURE__*/function () {
+Rn = "mp-weixin" !== C && "app" !== C ? /*#__PURE__*/function () {
   function _class2() {
     (0, _classCallCheck2.default)(this, _class2);
-    throw Cn({
-      message: "Platform ".concat(P, " is not supported by secure network")
+    throw En({
+      message: "Platform ".concat(C, " is not supported by secure network")
     });
   }
   return (0, _createClass2.default)(_class2);
-}() : k ? "mp-weixin" === P ? Ln : Un : /*#__PURE__*/function () {
+}() : k ? "mp-weixin" === C ? Nn : Mn : /*#__PURE__*/function () {
   function _class3() {
     (0, _classCallCheck2.default)(this, _class3);
-    throw Cn({
-      message: "Platform ".concat(P, " is not enabled, please check whether secure network module is enabled in your manifest.json")
+    throw En({
+      message: "Platform ".concat(C, " is not enabled, please check whether secure network module is enabled in your manifest.json")
     });
   }
   return (0, _createClass2.default)(_class3);
 }();
-var Kn = Symbol("CLIENT_DB_INTERNAL");
-function jn(e, t) {
-  return e.then = "DoNotReturnProxyWithAFunctionNamedThen", e._internalType = Kn, e.inspect = null, e.__ob__ = void 0, new Proxy(e, {
+var Bn = Symbol("CLIENT_DB_INTERNAL");
+function Wn(e, t) {
+  return e.then = "DoNotReturnProxyWithAFunctionNamedThen", e._internalType = Bn, e.inspect = null, e.__ob__ = void 0, new Proxy(e, {
     get: function get(e, n, s) {
       if ("_uniClient" === n) return null;
       if ("symbol" == (0, _typeof2.default)(n)) return e[n];
@@ -45131,7 +45188,7 @@ function jn(e, t) {
     }
   });
 }
-function $n(e) {
+function Hn(e) {
   return {
     on: function on(t, n) {
       e[t] = e[t] || [], e[t].indexOf(n) > -1 || e[t].push(n);
@@ -45143,19 +45200,19 @@ function $n(e) {
     }
   };
 }
-var Bn = ["db.Geo", "db.command", "command.aggregate"];
-function Wn(e, t) {
-  return Bn.indexOf("".concat(e, ".").concat(t)) > -1;
+var zn = ["db.Geo", "db.command", "command.aggregate"];
+function Jn(e, t) {
+  return zn.indexOf("".concat(e, ".").concat(t)) > -1;
 }
-function Hn(e) {
+function Vn(e) {
   switch (f(e)) {
     case "array":
       return e.map(function (e) {
-        return Hn(e);
+        return Vn(e);
       });
     case "object":
-      return e._internalType === Kn || Object.keys(e).forEach(function (t) {
-        e[t] = Hn(e[t]);
+      return e._internalType === Bn || Object.keys(e).forEach(function (t) {
+        e[t] = Vn(e[t]);
       }), e;
     case "regexp":
       return {
@@ -45172,15 +45229,15 @@ function Hn(e) {
       return e;
   }
 }
-function zn(e) {
+function Gn(e) {
   return e && e.content && e.content.$method;
 }
-var Jn = /*#__PURE__*/function () {
-  function Jn(e, t, n) {
-    (0, _classCallCheck2.default)(this, Jn);
+var Yn = /*#__PURE__*/function () {
+  function Yn(e, t, n) {
+    (0, _classCallCheck2.default)(this, Yn);
     this.content = e, this.prevStage = t || null, this.udb = null, this._database = n;
   }
-  (0, _createClass2.default)(Jn, [{
+  (0, _createClass2.default)(Yn, [{
     key: "toJSON",
     value: function toJSON() {
       var e = this;
@@ -45192,7 +45249,7 @@ var Jn = /*#__PURE__*/function () {
         $db: t.reverse().map(function (e) {
           return {
             $method: e.$method,
-            $param: Hn(e.$param)
+            $param: Vn(e.$param)
           };
         })
       };
@@ -45224,9 +45281,9 @@ var Jn = /*#__PURE__*/function () {
     get: function get() {
       var e = this;
       for (; e;) {
-        var t = zn(e),
-          _n10 = zn(e.prevStage);
-        if ("aggregate" === t && "collection" === _n10 || "pipeline" === t) return !0;
+        var t = Gn(e),
+          _n11 = Gn(e.prevStage);
+        if ("aggregate" === t && "collection" === _n11 || "pipeline" === t) return !0;
         e = e.prevStage;
       }
       return !1;
@@ -45236,7 +45293,7 @@ var Jn = /*#__PURE__*/function () {
     get: function get() {
       var e = this;
       for (; e;) {
-        if ("command" === zn(e)) return !0;
+        if ("command" === Gn(e)) return !0;
         e = e.prevStage;
       }
       return !1;
@@ -45246,9 +45303,9 @@ var Jn = /*#__PURE__*/function () {
     get: function get() {
       var e = this;
       for (; e;) {
-        var t = zn(e),
-          _n11 = zn(e.prevStage);
-        if ("aggregate" === t && "command" === _n11) return !0;
+        var t = Gn(e),
+          _n12 = Gn(e.prevStage);
+        if ("aggregate" === t && "command" === _n12) return !0;
         e = e.prevStage;
       }
       return !1;
@@ -45258,9 +45315,9 @@ var Jn = /*#__PURE__*/function () {
     value: function getNextStageFn(e) {
       var t = this;
       return function () {
-        return Gn({
+        return Qn({
           $method: e,
-          $param: Hn(Array.from(arguments))
+          $param: Vn(Array.from(arguments))
         }, t, t._database);
       };
     }
@@ -45314,7 +45371,7 @@ var Jn = /*#__PURE__*/function () {
         s = this.getCommand();
       if (s.$db.push({
         $method: e,
-        $param: Hn(t)
+        $param: Vn(t)
       }), S) {
         var _e21 = s.$db.find(function (e) {
             return "collection" === e.$method;
@@ -45328,24 +45385,24 @@ var Jn = /*#__PURE__*/function () {
       });
     }
   }]);
-  return Jn;
+  return Yn;
 }();
-function Gn(e, t, n) {
-  return jn(new Jn(e, t, n), {
+function Qn(e, t, n) {
+  return Wn(new Yn(e, t, n), {
     get: function get(e, t) {
       var s = "db";
-      return e && e.content && (s = e.content.$method), Wn(s, t) ? Gn({
+      return e && e.content && (s = e.content.$method), Jn(s, t) ? Qn({
         $method: t
       }, e, n) : function () {
-        return Gn({
+        return Qn({
           $method: t,
-          $param: Hn(Array.from(arguments))
+          $param: Vn(Array.from(arguments))
         }, e, n);
       };
     }
   });
 }
-function Vn(_ref43) {
+function Xn(_ref43) {
   var e = _ref43.path,
     t = _ref43.method;
   return /*#__PURE__*/function () {
@@ -45376,29 +45433,29 @@ function Vn(_ref43) {
     return _class4;
   }();
 }
-function Yn(e) {
+function Zn(e) {
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  return jn(new e(t), {
+  return Wn(new e(t), {
     get: function get(e, t) {
-      return Wn("db", t) ? Gn({
+      return Jn("db", t) ? Qn({
         $method: t
       }, null, e) : function () {
-        return Gn({
+        return Qn({
           $method: t,
-          $param: Hn(Array.from(arguments))
+          $param: Vn(Array.from(arguments))
         }, null, e);
       };
     }
   });
 }
-var Qn = /*#__PURE__*/function (_ref44) {
-  (0, _inherits2.default)(Qn, _ref44);
-  var _super11 = _createSuper(Qn);
-  function Qn() {
-    (0, _classCallCheck2.default)(this, Qn);
+var es = /*#__PURE__*/function (_ref44) {
+  (0, _inherits2.default)(es, _ref44);
+  var _super11 = _createSuper(es);
+  function es() {
+    (0, _classCallCheck2.default)(this, es);
     return _super11.apply(this, arguments);
   }
-  (0, _createClass2.default)(Qn, [{
+  (0, _createClass2.default)(es, [{
     key: "_parseResult",
     value: function _parseResult(e) {
       return this._isJQL ? e.result : e;
@@ -45412,9 +45469,9 @@ var Qn = /*#__PURE__*/function (_ref44) {
         n = _ref45.multiCommand,
         s = _ref45.queryList;
       function r(e, t) {
-        if (n && s) for (var _n12 = 0; _n12 < s.length; _n12++) {
-          var _r7 = s[_n12];
-          _r7.udb && "function" == typeof _r7.udb.setResult && (t ? _r7.udb.setResult(t) : _r7.udb.setResult(e.result.dataList[_n12]));
+        if (n && s) for (var _n13 = 0; _n13 < s.length; _n13++) {
+          var _r7 = s[_n13];
+          _r7.udb && "function" == typeof _r7.udb.setResult && (t ? _r7.udb.setResult(t) : _r7.udb.setResult(e.result.dataList[_n13]));
         }
       }
       var i = this,
@@ -45452,10 +45509,10 @@ var Qn = /*#__PURE__*/function (_ref44) {
         if (u) for (var _e22 = 0; _e22 < u.length; _e22++) {
           var _u$_e = u[_e22],
             _t13 = _u$_e.level,
-            _n13 = _u$_e.message,
+            _n14 = _u$_e.message,
             _s14 = _u$_e.detail,
-            _r8 = console["app" === P && "warn" === _t13 ? "error" : _t13] || console.log;
-          var _i4 = "[System Info]" + _n13;
+            _r8 = console["app" === C && "warn" === _t13 ? "error" : _t13] || console.log;
+          var _i4 = "[System Info]" + _n14;
           _s14 && (_i4 = "".concat(_i4, "\n\u8BE6\u7EC6\u4FE1\u606F\uFF1A").concat(_s14)), _r8(_i4);
         }
         if (t) {
@@ -45526,7 +45583,7 @@ var Qn = /*#__PURE__*/function (_ref44) {
       });
     }
   }]);
-  return Qn;
+  return es;
 }( /*#__PURE__*/function () {
   function _class5() {
     var _ref46 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
@@ -45535,23 +45592,23 @@ var Qn = /*#__PURE__*/function (_ref44) {
       _ref46$isJQL = _ref46.isJQL,
       t = _ref46$isJQL === void 0 ? !1 : _ref46$isJQL;
     (0, _classCallCheck2.default)(this, _class5);
-    this._uniClient = e, this._authCallBacks = {}, this._dbCallBacks = {}, e._isDefault && (this._dbCallBacks = L("_globalUniCloudDatabaseCallback")), t || (this.auth = $n(this._authCallBacks)), this._isJQL = t, Object.assign(this, $n(this._dbCallBacks)), this.env = jn({}, {
+    this._uniClient = e, this._authCallBacks = {}, this._dbCallBacks = {}, e._isDefault && (this._dbCallBacks = L("_globalUniCloudDatabaseCallback")), t || (this.auth = Hn(this._authCallBacks)), this._isJQL = t, Object.assign(this, Hn(this._dbCallBacks)), this.env = Wn({}, {
       get: function get(e, t) {
         return {
           $env: t
         };
       }
-    }), this.Geo = jn({}, {
+    }), this.Geo = Wn({}, {
       get: function get(e, t) {
-        return Vn({
+        return Xn({
           path: ["Geo"],
           method: t
         });
       }
-    }), this.serverDate = Vn({
+    }), this.serverDate = Xn({
       path: [],
       method: "serverDate"
-    }), this.RegExp = Vn({
+    }), this.RegExp = Xn({
       path: [],
       method: "RegExp"
     });
@@ -45601,41 +45658,41 @@ var Qn = /*#__PURE__*/function (_ref44) {
   }]);
   return _class5;
 }());
-var Xn = "token无效，跳转登录页面",
-  Zn = "token过期，跳转登录页面",
-  es = {
-    TOKEN_INVALID_TOKEN_EXPIRED: Zn,
-    TOKEN_INVALID_INVALID_CLIENTID: Xn,
-    TOKEN_INVALID: Xn,
-    TOKEN_INVALID_WRONG_TOKEN: Xn,
-    TOKEN_INVALID_ANONYMOUS_USER: Xn
+var ts = "token无效，跳转登录页面",
+  ns = "token过期，跳转登录页面",
+  ss = {
+    TOKEN_INVALID_TOKEN_EXPIRED: ns,
+    TOKEN_INVALID_INVALID_CLIENTID: ts,
+    TOKEN_INVALID: ts,
+    TOKEN_INVALID_WRONG_TOKEN: ts,
+    TOKEN_INVALID_ANONYMOUS_USER: ts
   },
-  ts = {
-    "uni-id-token-expired": Zn,
-    "uni-id-check-token-failed": Xn,
-    "uni-id-token-not-exist": Xn,
-    "uni-id-check-device-feature-failed": Xn
+  rs = {
+    "uni-id-token-expired": ns,
+    "uni-id-check-token-failed": ts,
+    "uni-id-token-not-exist": ts,
+    "uni-id-check-device-feature-failed": ts
   };
-function ns(e, t) {
+function is(e, t) {
   var n = "";
   return n = e ? "".concat(e, "/").concat(t) : t, n.replace(/^\//, "");
 }
-function ss() {
+function os() {
   var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
   var n = [],
     s = [];
   return e.forEach(function (e) {
-    !0 === e.needLogin ? n.push(ns(t, e.path)) : !1 === e.needLogin && s.push(ns(t, e.path));
+    !0 === e.needLogin ? n.push(is(t, e.path)) : !1 === e.needLogin && s.push(is(t, e.path));
   }), {
     needLoginPage: n,
     notNeedLoginPage: s
   };
 }
-function rs(e) {
+function as(e) {
   return e.split("?")[0].replace(/^\//, "");
 }
-function is() {
+function cs() {
   return function (e) {
     var t = e && e.$page && e.$page.fullPath || "";
     return t ? ("/" !== t.charAt(0) && (t = "/" + t), t) : t;
@@ -45644,21 +45701,21 @@ function is() {
     return e[e.length - 1];
   }());
 }
-function os() {
-  return rs(is());
+function us() {
+  return as(cs());
 }
-function as() {
+function hs() {
   var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   var t = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   if (!e) return !1;
   if (!(t && t.list && t.list.length)) return !1;
   var n = t.list,
-    s = rs(e);
+    s = as(e);
   return n.some(function (e) {
     return e.pagePath === s;
   });
 }
-var cs = !!_pages.default.uniIdRouter;
+var ls = !!_pages.default.uniIdRouter;
 var _ref47 = function () {
     var _ref28 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : _pages.default,
       _ref28$pages = _ref28.pages,
@@ -45674,9 +45731,9 @@ var _ref47 = function () {
       o = _s$needLogin === void 0 ? [] : _s$needLogin,
       _s$resToLogin = s.resToLogin,
       a = _s$resToLogin === void 0 ? !0 : _s$resToLogin,
-      _ss = ss(t),
-      c = _ss.needLoginPage,
-      u = _ss.notNeedLoginPage,
+      _os = os(t),
+      c = _os.needLoginPage,
+      u = _os.notNeedLoginPage,
       _ref30 = function () {
         var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
         var t = [],
@@ -45685,9 +45742,9 @@ var _ref47 = function () {
           var s = e.root,
             _e$pages = e.pages,
             r = _e$pages === void 0 ? [] : _e$pages,
-            _ss2 = ss(r, s),
-            i = _ss2.needLoginPage,
-            o = _ss2.notNeedLoginPage;
+            _os2 = os(r, s),
+            i = _os2.needLoginPage,
+            o = _os2.notNeedLoginPage;
           t.push.apply(t, (0, _toConsumableArray2.default)(i)), n.push.apply(n, (0, _toConsumableArray2.default)(o));
         }), {
           needLoginPage: t,
@@ -45702,18 +45759,18 @@ var _ref47 = function () {
       resToLogin: a,
       needLoginPage: [].concat((0, _toConsumableArray2.default)(c), (0, _toConsumableArray2.default)(h)),
       notNeedLoginPage: [].concat((0, _toConsumableArray2.default)(u), (0, _toConsumableArray2.default)(l)),
-      loginPageInTabBar: as(i, r)
+      loginPageInTabBar: hs(i, r)
     };
   }(),
-  us = _ref47.loginPage,
-  hs = _ref47.routerNeedLogin,
-  ls = _ref47.resToLogin,
-  ds = _ref47.needLoginPage,
-  ps = _ref47.notNeedLoginPage,
-  fs = _ref47.loginPageInTabBar;
-if (ds.indexOf(us) > -1) throw new Error("Login page [".concat(us, "] should not be \"needLogin\", please check your pages.json"));
-function gs(e) {
-  var t = os();
+  ds = _ref47.loginPage,
+  ps = _ref47.routerNeedLogin,
+  fs = _ref47.resToLogin,
+  gs = _ref47.needLoginPage,
+  ms = _ref47.notNeedLoginPage,
+  ys = _ref47.loginPageInTabBar;
+if (gs.indexOf(ds) > -1) throw new Error("Login page [".concat(ds, "] should not be \"needLogin\", please check your pages.json"));
+function _s(e) {
+  var t = us();
   if ("/" === e.charAt(0)) return e;
   var _e$split = e.split("?"),
     _e$split2 = (0, _slicedToArray2.default)(_e$split, 2),
@@ -45728,31 +45785,31 @@ function gs(e) {
   }
   return "" === i[0] && i.shift(), "/" + i.join("/") + (s ? "?" + s : "");
 }
-function ms(e) {
-  var t = rs(gs(e));
-  return !(ps.indexOf(t) > -1) && (ds.indexOf(t) > -1 || hs.some(function (t) {
+function ws(e) {
+  var t = as(_s(e));
+  return !(ms.indexOf(t) > -1) && (gs.indexOf(t) > -1 || ps.some(function (t) {
     return function (e, t) {
       return new RegExp(t).test(e);
     }(e, t);
   }));
 }
-function ys(_ref48) {
+function vs(_ref48) {
   var e = _ref48.redirect;
-  var t = rs(e),
-    n = rs(us);
-  return os() !== n && t !== n;
+  var t = as(e),
+    n = as(ds);
+  return us() !== n && t !== n;
 }
-function _s() {
+function Is() {
   var _ref49 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref49.api,
     t = _ref49.redirect;
-  if (!t || !ys({
+  if (!t || !vs({
     redirect: t
   })) return;
   var n = function (e, t) {
     return "/" !== e.charAt(0) && (e = "/" + e), t ? e.indexOf("?") > -1 ? e + "&uniIdRedirectUrl=".concat(encodeURIComponent(t)) : e + "?uniIdRedirectUrl=".concat(encodeURIComponent(t)) : e;
-  }(us, t);
-  fs ? "navigateTo" !== e && "redirectTo" !== e || (e = "switchTab") : "switchTab" === e && (e = "navigateTo");
+  }(ds, t);
+  ys ? "navigateTo" !== e && "redirectTo" !== e || (e = "switchTab") : "switchTab" === e && (e = "navigateTo");
   var s = {
     navigateTo: uni.navigateTo,
     redirectTo: uni.redirectTo,
@@ -45765,7 +45822,7 @@ function _s() {
     });
   }, 0);
 }
-function ws() {
+function Ss() {
   var _ref50 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
     e = _ref50.url;
   var t = {
@@ -45782,19 +45839,19 @@ function ws() {
           var _e24 = "uni-id-token-expired";
           n = {
             errCode: _e24,
-            errMsg: ts[_e24]
+            errMsg: rs[_e24]
           };
         }
       } else {
         var _e25 = "uni-id-check-token-failed";
         n = {
           errCode: _e25,
-          errMsg: ts[_e25]
+          errMsg: rs[_e25]
         };
       }
       return n;
     }();
-  if (ms(e) && n) {
+  if (ws(e) && n) {
     n.uniIdRedirectUrl = e;
     if (J($).length > 0) return setTimeout(function () {
       Y($, n);
@@ -45803,15 +45860,15 @@ function ws() {
   }
   return t;
 }
-function vs() {
+function bs() {
   !function () {
-    var e = is(),
-      _ws = ws({
+    var e = cs(),
+      _Ss = Ss({
         url: e
       }),
-      t = _ws.abortLoginPageJump,
-      n = _ws.autoToLoginPage;
-    t || n && _s({
+      t = _Ss.abortLoginPageJump,
+      n = _Ss.autoToLoginPage;
+    t || n && Is({
       api: "redirectTo",
       redirect: e
     });
@@ -45821,14 +45878,14 @@ function vs() {
     var n = e[_t17];
     uni.addInterceptor(n, {
       invoke: function invoke(e) {
-        var _ws2 = ws({
+        var _Ss2 = Ss({
             url: e.url
           }),
-          t = _ws2.abortLoginPageJump,
-          s = _ws2.autoToLoginPage;
-        return t ? e : s ? (_s({
+          t = _Ss2.abortLoginPageJump,
+          s = _Ss2.autoToLoginPage;
+        return t ? e : s ? (Is({
           api: n,
-          redirect: gs(e.url)
+          redirect: _s(e.url)
         }), !1) : e;
       }
     });
@@ -45837,7 +45894,7 @@ function vs() {
     _loop3(_t17);
   }
 }
-function Is() {
+function ks() {
   this.onResponse(function (e) {
     var t = e.type,
       n = e.content;
@@ -45848,7 +45905,7 @@ function Is() {
           if ("object" != (0, _typeof2.default)(e)) return !1;
           var _ref51 = e || {},
             t = _ref51.errCode;
-          return t in ts;
+          return t in rs;
         }(n);
         break;
       case "clientdb":
@@ -45856,19 +45913,19 @@ function Is() {
           if ("object" != (0, _typeof2.default)(e)) return !1;
           var _ref52 = e || {},
             t = _ref52.errCode;
-          return t in es;
+          return t in ss;
         }(n);
     }
     s && function () {
       var e = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       var t = J($);
       Z().then(function () {
-        var n = is();
-        if (n && ys({
+        var n = cs();
+        if (n && vs({
           redirect: n
         })) return t.length > 0 ? Y($, Object.assign({
           uniIdRedirectUrl: n
-        }, e)) : void (us && _s({
+        }, e)) : void (ds && Is({
           api: "navigateTo",
           redirect: n
         }));
@@ -45876,33 +45933,33 @@ function Is() {
     }(n);
   });
 }
-function Ss(e) {
+function As(e) {
   !function (e) {
     e.onResponse = function (e) {
-      G(j, e);
-    }, e.offResponse = function (e) {
       V(j, e);
+    }, e.offResponse = function (e) {
+      G(j, e);
     };
   }(e), function (e) {
     e.onNeedLogin = function (e) {
-      G($, e);
-    }, e.offNeedLogin = function (e) {
       V($, e);
-    }, cs && (L("_globalUniCloudStatus").needLoginInit || (L("_globalUniCloudStatus").needLoginInit = !0, Z().then(function () {
-      vs.call(e);
-    }), ls && Is.call(e)));
+    }, e.offNeedLogin = function (e) {
+      G($, e);
+    }, ls && (L("_globalUniCloudStatus").needLoginInit || (L("_globalUniCloudStatus").needLoginInit = !0, Z().then(function () {
+      bs.call(e);
+    }), fs && ks.call(e)));
   }(e), function (e) {
     e.onRefreshToken = function (e) {
-      G(B, e);
-    }, e.offRefreshToken = function (e) {
       V(B, e);
+    }, e.offRefreshToken = function (e) {
+      G(B, e);
     };
   }(e);
 }
-var bs;
-var ks = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-  As = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
-function Ps() {
+var Cs;
+var Ps = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+  Ts = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
+function xs() {
   var e = se().token || "",
     t = e.split(".");
   if (!e || 3 !== t.length) return {
@@ -45913,7 +45970,7 @@ function Ps() {
   };
   var n;
   try {
-    n = JSON.parse((s = t[1], decodeURIComponent(bs(s).split("").map(function (e) {
+    n = JSON.parse((s = t[1], decodeURIComponent(Cs(s).split("").map(function (e) {
       return "%" + ("00" + e.charCodeAt(0).toString(16)).slice(-2);
     }).join(""))));
   } catch (e) {
@@ -45922,16 +45979,16 @@ function Ps() {
   var s;
   return n.tokenExpired = 1e3 * n.exp, delete n.exp, delete n.iat, n;
 }
-bs = "function" != typeof atob ? function (e) {
-  if (e = String(e).replace(/[\t\n\f\r ]+/g, ""), !As.test(e)) throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+Cs = "function" != typeof atob ? function (e) {
+  if (e = String(e).replace(/[\t\n\f\r ]+/g, ""), !Ts.test(e)) throw new Error("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
   var t;
   e += "==".slice(2 - (3 & e.length));
   for (var n, s, r = "", i = 0; i < e.length;) {
-    t = ks.indexOf(e.charAt(i++)) << 18 | ks.indexOf(e.charAt(i++)) << 12 | (n = ks.indexOf(e.charAt(i++))) << 6 | (s = ks.indexOf(e.charAt(i++))), r += 64 === n ? String.fromCharCode(t >> 16 & 255) : 64 === s ? String.fromCharCode(t >> 16 & 255, t >> 8 & 255) : String.fromCharCode(t >> 16 & 255, t >> 8 & 255, 255 & t);
+    t = Ps.indexOf(e.charAt(i++)) << 18 | Ps.indexOf(e.charAt(i++)) << 12 | (n = Ps.indexOf(e.charAt(i++))) << 6 | (s = Ps.indexOf(e.charAt(i++))), r += 64 === n ? String.fromCharCode(t >> 16 & 255) : 64 === s ? String.fromCharCode(t >> 16 & 255, t >> 8 & 255) : String.fromCharCode(t >> 16 & 255, t >> 8 & 255, 255 & t);
   }
   return r;
 } : atob;
-var Ts = n(function (e, t) {
+var Os = n(function (e, t) {
     Object.defineProperty(t, "__esModule", {
       value: !0
     });
@@ -46092,9 +46149,9 @@ var Ts = n(function (e, t) {
       };
     };
   }),
-  Cs = t(Ts);
-var xs = "manual";
-function Os(e) {
+  Es = t(Os);
+var Ls = "manual";
+function Rs(e) {
   return {
     props: {
       localdata: {
@@ -46214,7 +46271,7 @@ function Os(e) {
           e.push(_this21[t]);
         }), e;
       }, function (e, t) {
-        if (_this21.loadtime === xs) return;
+        if (_this21.loadtime === Ls) return;
         var n = !1;
         var s = [];
         for (var _r9 = 2; _r9 < e.length; _r9++) {
@@ -46245,14 +46302,14 @@ function Os(e) {
         }));
       },
       mixinDatacomGet: function mixinDatacomGet() {
-        var _n14;
+        var _n15;
         var t = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
         var n;
         t = t || {}, n = "undefined" != typeof __uniX && __uniX ? e.databaseForJQL(this.spaceInfo) : e.database(this.spaceInfo);
         var s = t.action || this.action;
         s && (n = n.action(s));
         var r = t.collection || this.collection;
-        n = Array.isArray(r) ? (_n14 = n).collection.apply(_n14, (0, _toConsumableArray2.default)(r)) : n.collection(r);
+        n = Array.isArray(r) ? (_n15 = n).collection.apply(_n15, (0, _toConsumableArray2.default)(r)) : n.collection(r);
         var i = t.where || this.where;
         i && Object.keys(i).length && (n = n.where(i));
         var o = t.field || this.field;
@@ -46283,7 +46340,7 @@ function Os(e) {
     }
   };
 }
-function Es(e) {
+function Us(e) {
   return function (t) {
     var n = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     n = function (e) {
@@ -46300,11 +46357,11 @@ function Es(e) {
         retry: !1
       }
     }, n);
-    var _n15 = n,
-      s = _n15.customUI,
-      r = _n15.loadingOptions,
-      i = _n15.errorOptions,
-      o = _n15.parseSystemError,
+    var _n16 = n,
+      s = _n16.customUI,
+      r = _n16.loadingOptions,
+      i = _n16.errorOptions,
+      o = _n16.parseSystemError,
       a = !s;
     return new Proxy({}, {
       get: function get(s, c) {
@@ -46319,7 +46376,7 @@ function Es(e) {
             e = _ref55.fn,
             t = _ref55.interceptorName,
             n = _ref55.getCallbackArgs;
-          return /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee52() {
+          return /*#__PURE__*/(0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee53() {
             var _len2,
               s,
               _key2,
@@ -46327,9 +46384,9 @@ function Es(e) {
               i,
               o,
               _args = arguments;
-            return _regenerator.default.wrap(function _callee52$(_context52) {
+            return _regenerator.default.wrap(function _callee53$(_context53) {
               while (1) {
-                switch (_context52.prev = _context52.next) {
+                switch (_context53.prev = _context53.next) {
                   case 0:
                     for (_len2 = _args.length, s = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
                       s[_key2] = _args[_key2];
@@ -46337,50 +46394,50 @@ function Es(e) {
                     r = n ? n({
                       params: s
                     }) : {};
-                    _context52.prev = 2;
-                    _context52.next = 5;
+                    _context53.prev = 2;
+                    _context53.next = 5;
                     return M(q(t, "invoke"), _objectSpread({}, r));
                   case 5:
-                    _context52.next = 7;
+                    _context53.next = 7;
                     return e.apply(void 0, s);
                   case 7:
-                    i = _context52.sent;
-                    _context52.next = 10;
+                    i = _context53.sent;
+                    _context53.next = 10;
                     return M(q(t, "success"), _objectSpread(_objectSpread({}, r), {}, {
                       result: i
                     }));
                   case 10:
-                    return _context52.abrupt("return", i);
+                    return _context53.abrupt("return", i);
                   case 13:
-                    _context52.prev = 13;
-                    _context52.t0 = _context52["catch"](2);
-                    o = _context52.t0;
-                    _context52.next = 18;
+                    _context53.prev = 13;
+                    _context53.t0 = _context53["catch"](2);
+                    o = _context53.t0;
+                    _context53.next = 18;
                     return M(q(t, "fail"), _objectSpread(_objectSpread({}, r), {}, {
                       error: o
                     }));
                   case 18:
                     throw o;
                   case 19:
-                    _context52.prev = 19;
-                    _context52.next = 22;
+                    _context53.prev = 19;
+                    _context53.next = 22;
                     return M(q(t, "complete"), o ? _objectSpread(_objectSpread({}, r), {}, {
                       error: o
                     }) : _objectSpread(_objectSpread({}, r), {}, {
                       result: i
                     }));
                   case 22:
-                    return _context52.finish(19);
+                    return _context53.finish(19);
                   case 23:
                   case "end":
-                    return _context52.stop();
+                    return _context53.stop();
                 }
               }
-            }, _callee52, null, [[2, 13, 19, 23]]);
+            }, _callee53, null, [[2, 13, 19, 23]]);
           }));
         }({
           fn: function () {
-            var _s15 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee54() {
+            var _s15 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee55() {
               var l,
                 _len3,
                 h,
@@ -46395,11 +46452,11 @@ function Es(e) {
                 _e26,
                 _yield,
                 _t19,
-                _n16,
+                _n17,
                 _args4 = arguments;
-              return _regenerator.default.wrap(function _callee54$(_context54) {
+              return _regenerator.default.wrap(function _callee55$(_context55) {
                 while (1) {
-                  switch (_context54.prev = _context54.next) {
+                  switch (_context55.prev = _context55.next) {
                     case 0:
                       a && uni.showLoading({
                         title: r.title,
@@ -46423,31 +46480,31 @@ function Es(e) {
                         r && (t.secretType = r);
                       }(n, d);
                       p = !1;
-                      _context54.prev = 5;
-                      _context54.next = 8;
+                      _context55.prev = 5;
+                      _context55.next = 8;
                       return e.callFunction(d);
                     case 8:
-                      l = _context54.sent;
-                      _context54.next = 14;
+                      l = _context55.sent;
+                      _context55.next = 14;
                       break;
                     case 11:
-                      _context54.prev = 11;
-                      _context54.t0 = _context54["catch"](5);
+                      _context55.prev = 11;
+                      _context55.t0 = _context55["catch"](5);
                       p = !0, l = {
-                        result: new te(_context54.t0)
+                        result: new te(_context55.t0)
                       };
                     case 14:
                       _ref57 = l.result || {}, f = _ref57.errSubject, g = _ref57.errCode, m = _ref57.errMsg, y = _ref57.newToken;
                       if (!(a && uni.hideLoading(), y && y.token && y.tokenExpired && (re(y), Y(B, _objectSpread({}, y))), g)) {
-                        _context54.next = 39;
+                        _context55.next = 39;
                         break;
                       }
                       _e26 = m;
                       if (!(p && o)) {
-                        _context54.next = 24;
+                        _context55.next = 24;
                         break;
                       }
-                      _context54.next = 20;
+                      _context55.next = 20;
                       return o({
                         objectName: t,
                         methodName: c,
@@ -46457,38 +46514,38 @@ function Es(e) {
                         errMsg: m
                       });
                     case 20:
-                      _context54.t1 = _context54.sent.errMsg;
-                      if (_context54.t1) {
-                        _context54.next = 23;
+                      _context55.t1 = _context55.sent.errMsg;
+                      if (_context55.t1) {
+                        _context55.next = 23;
                         break;
                       }
-                      _context54.t1 = m;
+                      _context55.t1 = m;
                     case 23:
-                      _e26 = _context54.t1;
+                      _e26 = _context55.t1;
                     case 24:
                       if (!a) {
-                        _context54.next = 37;
+                        _context55.next = 37;
                         break;
                       }
                       if (!("toast" === i.type)) {
-                        _context54.next = 29;
+                        _context55.next = 29;
                         break;
                       }
                       uni.showToast({
                         title: _e26,
                         icon: "none"
                       });
-                      _context54.next = 37;
+                      _context55.next = 37;
                       break;
                     case 29:
                       if (!("modal" !== i.type)) {
-                        _context54.next = 31;
+                        _context55.next = 31;
                         break;
                       }
                       throw new Error("Invalid errorOptions.type: ".concat(i.type));
                     case 31:
-                      _context54.next = 33;
-                      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee53() {
+                      _context55.next = 33;
+                      return (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee54() {
                         var _ref59,
                           e,
                           t,
@@ -46496,12 +46553,12 @@ function Es(e) {
                           s,
                           r,
                           _args2 = arguments;
-                        return _regenerator.default.wrap(function _callee53$(_context53) {
+                        return _regenerator.default.wrap(function _callee54$(_context54) {
                           while (1) {
-                            switch (_context53.prev = _context53.next) {
+                            switch (_context54.prev = _context54.next) {
                               case 0:
                                 _ref59 = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : {}, e = _ref59.title, t = _ref59.content, n = _ref59.showCancel, s = _ref59.cancelText, r = _ref59.confirmText;
-                                return _context53.abrupt("return", new Promise(function (i, o) {
+                                return _context54.abrupt("return", new Promise(function (i, o) {
                                   uni.showModal({
                                     title: e,
                                     content: t,
@@ -46521,10 +46578,10 @@ function Es(e) {
                                 }));
                               case 2:
                               case "end":
-                                return _context53.stop();
+                                return _context54.stop();
                             }
                           }
-                        }, _callee53);
+                        }, _callee54);
                       }))({
                         title: "提示",
                         content: _e26,
@@ -46533,35 +46590,35 @@ function Es(e) {
                         confirmText: i.retry ? "重试" : "确定"
                       });
                     case 33:
-                      _yield = _context54.sent;
+                      _yield = _context55.sent;
                       _t19 = _yield.confirm;
                       if (!(i.retry && _t19)) {
-                        _context54.next = 37;
+                        _context55.next = 37;
                         break;
                       }
-                      return _context54.abrupt("return", s.apply(void 0, h));
+                      return _context55.abrupt("return", s.apply(void 0, h));
                     case 37:
-                      _n16 = new te({
+                      _n17 = new te({
                         subject: f,
                         code: g,
                         message: m,
                         requestId: l.requestId
                       });
-                      throw _n16.detail = l.result, Y(j, {
+                      throw _n17.detail = l.result, Y(j, {
                         type: z,
-                        content: _n16
-                      }), _n16;
+                        content: _n17
+                      }), _n17;
                     case 39:
-                      return _context54.abrupt("return", (Y(j, {
+                      return _context55.abrupt("return", (Y(j, {
                         type: z,
                         content: l.result
                       }), l.result));
                     case 40:
                     case "end":
-                      return _context54.stop();
+                      return _context55.stop();
                   }
                 }
-              }, _callee54, null, [[5, 11]]);
+              }, _callee55, null, [[5, 11]]);
             }));
             function s() {
               return _s15.apply(this, arguments);
@@ -46583,14 +46640,14 @@ function Es(e) {
     });
   };
 }
-function Ls(e) {
+function Ns(e) {
   return L("_globalUniCloudSecureNetworkCache__{spaceId}".replace("{spaceId}", e.config.spaceId));
 }
-function Rs() {
-  return _Rs.apply(this, arguments);
+function Ds() {
+  return _Ds.apply(this, arguments);
 }
-function _Rs() {
-  _Rs = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee57() {
+function _Ds() {
+  _Ds = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee58() {
     var _ref72,
       e,
       _ref72$callLoginByWei,
@@ -46599,31 +46656,31 @@ function _Rs() {
       s,
       r,
       _args7 = arguments;
-    return _regenerator.default.wrap(function _callee57$(_context57) {
+    return _regenerator.default.wrap(function _callee58$(_context58) {
       while (1) {
-        switch (_context57.prev = _context57.next) {
+        switch (_context58.prev = _context58.next) {
           case 0:
             _ref72 = _args7.length > 0 && _args7[0] !== undefined ? _args7[0] : {}, e = _ref72.openid, _ref72$callLoginByWei = _ref72.callLoginByWeixin, t = _ref72$callLoginByWei === void 0 ? !1 : _ref72$callLoginByWei;
-            n = Ls(this);
-            if (!("mp-weixin" !== P)) {
-              _context57.next = 4;
+            n = Ns(this);
+            if (!("mp-weixin" !== C)) {
+              _context58.next = 4;
               break;
             }
-            throw new Error("[SecureNetwork] API `initSecureNetworkByWeixin` is not supported on platform `".concat(P, "`"));
+            throw new Error("[SecureNetwork] API `initSecureNetworkByWeixin` is not supported on platform `".concat(C, "`"));
           case 4:
             if (!(e && t)) {
-              _context57.next = 6;
+              _context58.next = 6;
               break;
             }
             throw new Error("[SecureNetwork] openid and callLoginByWeixin cannot be passed at the same time");
           case 6:
             if (!e) {
-              _context57.next = 8;
+              _context58.next = 8;
               break;
             }
-            return _context57.abrupt("return", (n.mpWeixinOpenid = e, {}));
+            return _context58.abrupt("return", (n.mpWeixinOpenid = e, {}));
           case 8:
-            _context57.next = 10;
+            _context58.next = 10;
             return new Promise(function (e, t) {
               uni.login({
                 success: function success(t) {
@@ -46635,67 +46692,72 @@ function _Rs() {
               });
             });
           case 10:
-            s = _context57.sent;
+            s = _context58.sent;
             r = this.importObject("uni-id-co", {
               customUI: !0
             });
-            _context57.next = 14;
+            _context58.next = 14;
             return r.secureNetworkHandshakeByWeixin({
               code: s,
               callLoginByWeixin: t
             });
           case 14:
             n.mpWeixinCode = s;
-            return _context57.abrupt("return", {
+            return _context58.abrupt("return", {
               code: s
             });
           case 16:
-          case "end":
-            return _context57.stop();
-        }
-      }
-    }, _callee57, this);
-  }));
-  return _Rs.apply(this, arguments);
-}
-function Us(_x39) {
-  return _Us.apply(this, arguments);
-}
-function _Us() {
-  _Us = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee58(e) {
-    var t;
-    return _regenerator.default.wrap(function _callee58$(_context58) {
-      while (1) {
-        switch (_context58.prev = _context58.next) {
-          case 0:
-            t = Ls(this);
-            return _context58.abrupt("return", (t.initPromise || (t.initPromise = Rs.call(this, e).then(function (e) {
-              return e;
-            }).catch(function (e) {
-              throw delete t.initPromise, e;
-            })), t.initPromise));
-          case 2:
           case "end":
             return _context58.stop();
         }
       }
     }, _callee58, this);
   }));
-  return _Us.apply(this, arguments);
+  return _Ds.apply(this, arguments);
 }
-function Ns(e) {
+function Ms(_x40) {
+  return _Ms.apply(this, arguments);
+}
+function _Ms() {
+  _Ms = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee59(e) {
+    var t;
+    return _regenerator.default.wrap(function _callee59$(_context59) {
+      while (1) {
+        switch (_context59.prev = _context59.next) {
+          case 0:
+            t = Ns(this);
+            return _context59.abrupt("return", (t.initPromise || (t.initPromise = Ds.call(this, e).then(function (e) {
+              return e;
+            }).catch(function (e) {
+              throw delete t.initPromise, e;
+            })), t.initPromise));
+          case 2:
+          case "end":
+            return _context59.stop();
+        }
+      }
+    }, _callee59, this);
+  }));
+  return _Ms.apply(this, arguments);
+}
+function qs(e) {
   return function () {
     var _ref61 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
       t = _ref61.openid,
       _ref61$callLoginByWei = _ref61.callLoginByWeixin,
       n = _ref61$callLoginByWei === void 0 ? !1 : _ref61$callLoginByWei;
-    return Us.call(e, {
+    return Ms.call(e, {
       openid: t,
       callLoginByWeixin: n
     });
   };
 }
-function Ds(e) {
+function Fs(e) {
+  !function (e) {
+    ue = e;
+  }(e);
+}
+function Ks(e) {
   var t = {
     getSystemInfo: uni.getSystemInfo,
     getPushClientId: uni.getPushClientId
@@ -46713,20 +46775,20 @@ function Ds(e) {
     });
   };
 }
-var Ms = /*#__PURE__*/function (_ref62) {
-  (0, _inherits2.default)(Ms, _ref62);
-  var _super12 = _createSuper(Ms);
-  function Ms() {
+var js = /*#__PURE__*/function (_ref62) {
+  (0, _inherits2.default)(js, _ref62);
+  var _super12 = _createSuper(js);
+  function js() {
     var _this23;
-    (0, _classCallCheck2.default)(this, Ms);
+    (0, _classCallCheck2.default)(this, js);
     _this23 = _super12.call(this), _this23._uniPushMessageCallback = _this23._receivePushMessage.bind((0, _assertThisInitialized2.default)(_this23)), _this23._currentMessageId = -1, _this23._payloadQueue = [];
     return _this23;
   }
-  (0, _createClass2.default)(Ms, [{
+  (0, _createClass2.default)(js, [{
     key: "init",
     value: function init() {
       var _this24 = this;
-      return Promise.all([Ds("getSystemInfo")(), Ds("getPushClientId")()]).then(function () {
+      return Promise.all([Ks("getSystemInfo")(), Ks("getPushClientId")()]).then(function () {
         var _ref63 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [],
           _ref64 = (0, _slicedToArray2.default)(_ref63, 2),
           _ref64$ = _ref64[0];
@@ -46745,18 +46807,18 @@ var Ms = /*#__PURE__*/function (_ref62) {
   }, {
     key: "open",
     value: function () {
-      var _open = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee55() {
-        return _regenerator.default.wrap(function _callee55$(_context55) {
+      var _open = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee56() {
+        return _regenerator.default.wrap(function _callee56$(_context56) {
           while (1) {
-            switch (_context55.prev = _context55.next) {
+            switch (_context56.prev = _context56.next) {
               case 0:
-                return _context55.abrupt("return", this.init());
+                return _context56.abrupt("return", this.init());
               case 1:
               case "end":
-                return _context55.stop();
+                return _context56.stop();
             }
           }
-        }, _callee55, this);
+        }, _callee56, this);
       }));
       function open() {
         return _open.apply(this, arguments);
@@ -46851,7 +46913,7 @@ var Ms = /*#__PURE__*/function (_ref62) {
       this._destroy(), this.emit("close");
     }
   }]);
-  return Ms;
+  return js;
 }( /*#__PURE__*/function () {
   function _class6() {
     (0, _classCallCheck2.default)(this, _class6);
@@ -46874,8 +46936,8 @@ var Ms = /*#__PURE__*/function (_ref62) {
       var n = this._callback[e];
       if (!n) return;
       var s = function (e, t) {
-        for (var _n17 = e.length - 1; _n17 >= 0; _n17--) {
-          if (e[_n17] === t) return _n17;
+        for (var _n18 = e.length - 1; _n18 >= 0; _n18--) {
+          if (e[_n18] === t) return _n18;
         }
         return -1;
       }(n, t);
@@ -46905,19 +46967,19 @@ var Ms = /*#__PURE__*/function (_ref62) {
   }]);
   return _class6;
 }());
-function qs(_x40, _x41) {
-  return _qs.apply(this, arguments);
+function $s(_x41, _x42) {
+  return _$s.apply(this, arguments);
 }
-function _qs() {
-  _qs = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee59(e, t) {
-    var n, _e32, s;
-    return _regenerator.default.wrap(function _callee59$(_context59) {
+function _$s() {
+  _$s = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee60(e, t) {
+    var n, _e31, s;
+    return _regenerator.default.wrap(function _callee60$(_context60) {
       while (1) {
-        switch (_context59.prev = _context59.next) {
+        switch (_context60.prev = _context60.next) {
           case 0:
             n = "http://".concat(e, ":").concat(t, "/system/ping");
-            _context59.prev = 1;
-            _context59.next = 4;
+            _context60.prev = 1;
+            _context60.next = 4;
             return s = {
               url: n,
               timeout: 500
@@ -46932,40 +46994,40 @@ function _qs() {
               }));
             });
           case 4:
-            _e32 = _context59.sent;
-            return _context59.abrupt("return", !(!_e32.data || 0 !== _e32.data.code));
+            _e31 = _context60.sent;
+            return _context60.abrupt("return", !(!_e31.data || 0 !== _e31.data.code));
           case 8:
-            _context59.prev = 8;
-            _context59.t0 = _context59["catch"](1);
-            return _context59.abrupt("return", !1);
+            _context60.prev = 8;
+            _context60.t0 = _context60["catch"](1);
+            return _context60.abrupt("return", !1);
           case 11:
           case "end":
-            return _context59.stop();
+            return _context60.stop();
         }
       }
-    }, _callee59, null, [[1, 8]]);
+    }, _callee60, null, [[1, 8]]);
   }));
-  return _qs.apply(this, arguments);
+  return _$s.apply(this, arguments);
 }
-function Fs(_x42) {
-  return _Fs.apply(this, arguments);
+function Bs(_x43) {
+  return _Bs.apply(this, arguments);
 }
-function _Fs() {
-  _Fs = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee61(e) {
-    var _ae2, _e33, _t21, t, _t$debugInfo, n, s, _yield2, r, i, o;
-    return _regenerator.default.wrap(function _callee61$(_context61) {
+function _Bs() {
+  _Bs = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee62(e) {
+    var _ae2, _e32, _t21, t, _t$debugInfo, n, s, _yield2, r, i, o;
+    return _regenerator.default.wrap(function _callee62$(_context62) {
       while (1) {
-        switch (_context61.prev = _context61.next) {
+        switch (_context62.prev = _context62.next) {
           case 0:
             if (S) {
-              _context61.next = 2;
+              _context62.next = 2;
               break;
             }
-            return _context61.abrupt("return", Promise.resolve());
+            return _context62.abrupt("return", Promise.resolve());
           case 2:
-            if ("app" === P) {
-              _ae2 = ae(), _e33 = _ae2.osName, _t21 = _ae2.osVersion;
-              "ios" === _e33 && function (e) {
+            if ("app" === C) {
+              _ae2 = ae(), _e32 = _ae2.osName, _t21 = _ae2.osVersion;
+              "ios" === _e32 && function (e) {
                 if (!e || "string" != typeof e) return 0;
                 var t = e.match(/^(\d+)./);
                 return t && t[1] ? parseInt(t[1]) : 0;
@@ -46973,71 +47035,71 @@ function _Fs() {
             }
             t = e.__dev__;
             if (t.debugInfo) {
-              _context61.next = 6;
+              _context62.next = 6;
               break;
             }
-            return _context61.abrupt("return");
+            return _context62.abrupt("return");
           case 6:
             _t$debugInfo = t.debugInfo;
             n = _t$debugInfo.address;
             s = _t$debugInfo.servePort;
-            _context61.next = 11;
+            _context62.next = 11;
             return function () {
-              var _ref73 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee60(e, t) {
+              var _ref73 = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee61(e, t) {
                 var n, _s16, _r10;
-                return _regenerator.default.wrap(function _callee60$(_context60) {
+                return _regenerator.default.wrap(function _callee61$(_context61) {
                   while (1) {
-                    switch (_context60.prev = _context60.next) {
+                    switch (_context61.prev = _context61.next) {
                       case 0:
                         _s16 = 0;
                       case 1:
                         if (!(_s16 < e.length)) {
-                          _context60.next = 11;
+                          _context61.next = 11;
                           break;
                         }
                         _r10 = e[_s16];
-                        _context60.next = 5;
-                        return qs(_r10, t);
+                        _context61.next = 5;
+                        return $s(_r10, t);
                       case 5:
-                        if (!_context60.sent) {
-                          _context60.next = 8;
+                        if (!_context61.sent) {
+                          _context61.next = 8;
                           break;
                         }
                         n = _r10;
-                        return _context60.abrupt("break", 11);
+                        return _context61.abrupt("break", 11);
                       case 8:
                         _s16++;
-                        _context60.next = 1;
+                        _context61.next = 1;
                         break;
                       case 11:
-                        return _context60.abrupt("return", {
+                        return _context61.abrupt("return", {
                           address: n,
                           port: t
                         });
                       case 12:
                       case "end":
-                        return _context60.stop();
+                        return _context61.stop();
                     }
                   }
-                }, _callee60);
+                }, _callee61);
               }));
-              return function (_x43, _x44) {
+              return function (_x44, _x45) {
                 return _ref73.apply(this, arguments);
               };
             }()(n, s);
           case 11:
-            _yield2 = _context61.sent;
+            _yield2 = _context62.sent;
             r = _yield2.address;
             if (!r) {
-              _context61.next = 15;
+              _context62.next = 15;
               break;
             }
-            return _context61.abrupt("return", (t.localAddress = r, void (t.localPort = s)));
+            return _context62.abrupt("return", (t.localAddress = r, void (t.localPort = s)));
           case 15:
-            i = console["app" === P ? "error" : "warn"];
+            i = console["app" === C ? "error" : "warn"];
             o = "";
-            if (!("remote" === t.debugInfo.initialLaunchType ? (t.debugInfo.forceRemote = !0, o = "当前客户端和HBuilderX不在同一局域网下（或其他网络原因无法连接HBuilderX），uniCloud本地调试服务不对当前客户端生效。\n- 如果不使用uniCloud本地调试服务，请直接忽略此信息。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。") : o = "无法连接uniCloud本地调试服务，请检查当前客户端是否与主机在同一局域网下。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。", o += "\n- 如果在HBuilderX开启的状态下切换过网络环境，请重启HBuilderX后再试\n- 检查系统防火墙是否拦截了HBuilderX自带的nodejs\n- 检查是否错误的使用拦截器修改uni.request方法的参数", "web" === P && (o += "\n- 部分浏览器开启节流模式之后访问本地地址受限，请检查是否启用了节流模式"), 0 === P.indexOf("mp-") && (o += "\n- 小程序中如何使用uniCloud，请参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinmp"), !t.debugInfo.forceRemote)) {
-              _context61.next = 19;
+            if (!("remote" === t.debugInfo.initialLaunchType ? (t.debugInfo.forceRemote = !0, o = "当前客户端和HBuilderX不在同一局域网下（或其他网络原因无法连接HBuilderX），uniCloud本地调试服务不对当前客户端生效。\n- 如果不使用uniCloud本地调试服务，请直接忽略此信息。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。") : o = "无法连接uniCloud本地调试服务，请检查当前客户端是否与主机在同一局域网下。\n- 如需使用uniCloud本地调试服务，请将客户端与主机连接到同一局域网下并重新运行到客户端。", o += "\n- 如果在HBuilderX开启的状态下切换过网络环境，请重启HBuilderX后再试\n- 检查系统防火墙是否拦截了HBuilderX自带的nodejs\n- 检查是否错误的使用拦截器修改uni.request方法的参数", "web" === C && (o += "\n- 部分浏览器开启节流模式之后访问本地地址受限，请检查是否启用了节流模式"), 0 === C.indexOf("mp-") && (o += "\n- 小程序中如何使用uniCloud，请参考：https://uniapp.dcloud.net.cn/uniCloud/publish.html#useinmp"), !t.debugInfo.forceRemote)) {
+              _context62.next = 19;
               break;
             }
             throw new Error(o);
@@ -47045,14 +47107,14 @@ function _Fs() {
             i(o);
           case 20:
           case "end":
-            return _context61.stop();
+            return _context62.stop();
         }
       }
-    }, _callee61);
+    }, _callee62);
   }));
-  return _Fs.apply(this, arguments);
+  return _Bs.apply(this, arguments);
 }
-function Ks(e) {
+function Ws(e) {
   e._initPromiseHub || (e._initPromiseHub = new v({
     createPromise: function createPromise() {
       var t = Promise.resolve();
@@ -47071,14 +47133,14 @@ function Ks(e) {
     }
   }));
 }
-var js = {
-  tcb: It,
-  tencent: It,
-  aliyun: de,
-  private: bt,
-  alipay: Et
+var Hs = {
+  tcb: St,
+  tencent: St,
+  aliyun: pe,
+  private: kt,
+  alipay: Ut
 };
-var $s = new ( /*#__PURE__*/function () {
+var zs = new ( /*#__PURE__*/function () {
   function _class7() {
     (0, _classCallCheck2.default)(this, _class7);
   }
@@ -47086,23 +47148,23 @@ var $s = new ( /*#__PURE__*/function () {
     key: "init",
     value: function init(e) {
       var t = {};
-      var n = js[e.provider];
+      var n = Hs[e.provider];
       if (!n) throw new Error("未提供正确的provider参数");
       t = n.init(e), S && function (e) {
         if (!S) return;
         var t = {};
-        e.__dev__ = t, t.debugLog = S && ("web" === P && navigator.userAgent.indexOf("HBuilderX") > 0 || "app" === P);
-        var n = T;
+        e.__dev__ = t, t.debugLog = S && ("web" === C && navigator.userAgent.indexOf("HBuilderX") > 0 || "app" === C);
+        var n = P;
         n && !n.code && (t.debugInfo = n);
         var s = new v({
           createPromise: function createPromise() {
-            return Fs(e);
+            return Bs(e);
           }
         });
         t.initLocalNetwork = function () {
           return s.exec();
         };
-      }(t), Ks(t), Fn(t), function (e) {
+      }(t), Ws(t), $n(t), function (e) {
         var t = e.uploadFile;
         e.uploadFile = function (e) {
           return t.call(this, e);
@@ -47111,25 +47173,25 @@ var $s = new ( /*#__PURE__*/function () {
         e.database = function (t) {
           if (t && Object.keys(t).length > 0) return e.init(t).database();
           if (this._database) return this._database;
-          var n = Yn(Qn, {
+          var n = Zn(es, {
             uniClient: e
           });
           return this._database = n, n;
         }, e.databaseForJQL = function (t) {
           if (t && Object.keys(t).length > 0) return e.init(t).databaseForJQL();
           if (this._databaseForJQL) return this._databaseForJQL;
-          var n = Yn(Qn, {
+          var n = Zn(es, {
             uniClient: e,
             isJQL: !0
           });
           return this._databaseForJQL = n, n;
         };
       }(t), function (e) {
-        e.getCurrentUserInfo = Ps, e.chooseAndUploadFile = Cs.initChooseAndUploadFile(e), Object.assign(e, {
+        e.getCurrentUserInfo = xs, e.chooseAndUploadFile = Es.initChooseAndUploadFile(e), Object.assign(e, {
           get mixinDatacom() {
-            return Os(e);
+            return Rs(e);
           }
-        }), e.SSEChannel = Ms, e.initSecureNetworkByWeixin = Ns(e), e.importObject = Es(e);
+        }), e.SSEChannel = js, e.initSecureNetworkByWeixin = qs(e), e.setCustomClientInfo = Fs, e.importObject = Us(e);
       }(t);
       return ["callFunction", "uploadFile", "deleteFile", "getTempFileURL", "downloadFile", "chooseAndUploadFile"].forEach(function (e) {
         if (!t[e]) return;
@@ -47194,33 +47256,33 @@ var $s = new ( /*#__PURE__*/function () {
   return _class7;
 }())();
 (function () {
-  var e = C;
+  var e = T;
   var t = {};
-  if (e && 1 === e.length) t = e[0], $s = $s.init(t), $s._isDefault = !0;else {
+  if (e && 1 === e.length) t = e[0], zs = zs.init(t), zs._isDefault = !0;else {
     var _t20 = ["auth", "callFunction", "uploadFile", "deleteFile", "getTempFileURL", "downloadFile", "database", "getCurrentUSerInfo", "importObject"];
-    var _n18;
-    _n18 = e && e.length > 0 ? "应用有多个服务空间，请通过uniCloud.init方法指定要使用的服务空间" : x ? "应用未关联服务空间，请在uniCloud目录右键关联服务空间" : "uni-app cli项目内使用uniCloud需要使用HBuilderX的运行菜单运行项目，且需要在uniCloud目录关联服务空间", _t20.forEach(function (e) {
-      $s[e] = function () {
-        return console.error(_n18), Promise.reject(new te({
+    var _n19;
+    _n19 = e && e.length > 0 ? "应用有多个服务空间，请通过uniCloud.init方法指定要使用的服务空间" : x ? "应用未关联服务空间，请在uniCloud目录右键关联服务空间" : "uni-app cli项目内使用uniCloud需要使用HBuilderX的运行菜单运行项目，且需要在uniCloud目录关联服务空间", _t20.forEach(function (e) {
+      zs[e] = function () {
+        return console.error(_n19), Promise.reject(new te({
           code: "SYS_ERR",
-          message: _n18
+          message: _n19
         }));
       };
     });
   }
-  Object.assign($s, {
+  Object.assign(zs, {
     get mixinDatacom() {
-      return Os($s);
+      return Rs(zs);
     }
-  }), Ss($s), $s.addInterceptor = N, $s.removeInterceptor = D, $s.interceptObject = F, S && "web" === P && (window.uniCloud = $s);
+  }), As(zs), zs.addInterceptor = N, zs.removeInterceptor = D, zs.interceptObject = F, S && "web" === C && (window.uniCloud = zs);
 })();
-var Bs = $s;
-exports.default = Bs;
+var Js = zs;
+exports.default = Js;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 3), __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 2)["default"], __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/wx.js */ 1)["default"]))
 
 /***/ }),
 
-/***/ 990:
+/***/ 885:
 /*!**********************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/assertThisInitialized.js ***!
   \**********************************************************************/
@@ -47237,7 +47299,7 @@ module.exports = _assertThisInitialized, module.exports.__esModule = true, modul
 
 /***/ }),
 
-/***/ 991:
+/***/ 886:
 /*!*********************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/inherits.js ***!
   \*********************************************************/
@@ -47265,7 +47327,7 @@ module.exports = _inherits, module.exports.__esModule = true, module.exports["de
 
 /***/ }),
 
-/***/ 992:
+/***/ 887:
 /*!**************************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/possibleConstructorReturn.js ***!
   \**************************************************************************/
@@ -47273,7 +47335,7 @@ module.exports = _inherits, module.exports.__esModule = true, module.exports["de
 /***/ (function(module, exports, __webpack_require__) {
 
 var _typeof = __webpack_require__(/*! ./typeof.js */ 13)["default"];
-var assertThisInitialized = __webpack_require__(/*! ./assertThisInitialized.js */ 990);
+var assertThisInitialized = __webpack_require__(/*! ./assertThisInitialized.js */ 885);
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
     return call;
@@ -47286,7 +47348,7 @@ module.exports = _possibleConstructorReturn, module.exports.__esModule = true, m
 
 /***/ }),
 
-/***/ 993:
+/***/ 888:
 /*!***************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/getPrototypeOf.js ***!
   \***************************************************************/
@@ -47303,16 +47365,16 @@ module.exports = _getPrototypeOf, module.exports.__esModule = true, module.expor
 
 /***/ }),
 
-/***/ 994:
+/***/ 889:
 /*!****************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/wrapNativeSuper.js ***!
   \****************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getPrototypeOf = __webpack_require__(/*! ./getPrototypeOf.js */ 993);
+var getPrototypeOf = __webpack_require__(/*! ./getPrototypeOf.js */ 888);
 var setPrototypeOf = __webpack_require__(/*! ./setPrototypeOf.js */ 16);
-var isNativeFunction = __webpack_require__(/*! ./isNativeFunction.js */ 995);
+var isNativeFunction = __webpack_require__(/*! ./isNativeFunction.js */ 890);
 var construct = __webpack_require__(/*! ./construct.js */ 15);
 function _wrapNativeSuper(Class) {
   var _cache = typeof Map === "function" ? new Map() : undefined;
@@ -47344,7 +47406,7 @@ module.exports = _wrapNativeSuper, module.exports.__esModule = true, module.expo
 
 /***/ }),
 
-/***/ 995:
+/***/ 890:
 /*!*****************************************************************!*\
   !*** ./node_modules/@babel/runtime/helpers/isNativeFunction.js ***!
   \*****************************************************************/
@@ -47362,7 +47424,7 @@ module.exports = _isNativeFunction, module.exports.__esModule = true, module.exp
 
 /***/ }),
 
-/***/ 996:
+/***/ 891:
 /*!************************************************************!*\
   !*** E:/heshangwx/pages.json?{"type":"origin-pages-json"} ***!
   \************************************************************/
@@ -47405,55 +47467,6 @@ var _default = {
       "auth": false,
       "async": true,
       "title": "首页",
-      "group": "商城"
-    }
-  }, {
-    "path": "pages/index/category",
-    "style": {
-      "navigationBarTitleText": "分类"
-    },
-    "meta": {
-      "auth": false,
-      "async": true,
-      "title": "分类",
-      "group": "商城"
-    }
-  }, {
-    "path": "pages/index/cart",
-    "style": {
-      "navigationBarTitleText": "购物车"
-    },
-    "meta": {
-      "auth": false,
-      "async": true,
-      "title": "购物车",
-      "group": "商城"
-    }
-  }, {
-    "path": "pages/index/user",
-    "style": {
-      "navigationBarTitleText": "我的",
-      "navigationStyle": "custom",
-      "navigationBarTextStyle": "white",
-      "enablePullDownRefresh": true
-    },
-    "meta": {
-      "auth": false,
-      "async": true,
-      "title": "我的",
-      "group": "商城"
-    }
-  }, {
-    "path": "pages/index/view",
-    "name": "view",
-    "style": {
-      "navigationBarTitleText": "",
-      "enablePullDownRefresh": true
-    },
-    "meta": {
-      "auth": false,
-      "async": true,
-      "title": "自定义页面",
       "group": "商城"
     }
   }, {
@@ -47526,6 +47539,24 @@ var _default = {
     "path": "pages/templeHome/buddhist/home",
     "style": {
       "navigationBarTitleText": "",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/changeMoney/index",
+    "style": {
+      "navigationBarTitleText": "兑币",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/templeHome/userpolicy/userAgreement",
+    "style": {
+      "navigationBarTitleText": "用户协议",
+      "enablePullDownRefresh": false
+    }
+  }, {
+    "path": "pages/templeHome/userpolicy/userProvacy",
+    "style": {
+      "navigationBarTitleText": "用户隐私政策",
       "enablePullDownRefresh": false
     }
   }],
@@ -48236,33 +48267,6 @@ var _default = {
     "backgroundColor": "#F8F8F8"
   },
   "uniIdRouter": {},
-  "tabBar": {
-    "color": "#333",
-    "selectedColor": "#a8700d",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
-    "list": [{
-      "pagePath": "pages/index/index",
-      "text": "首页",
-      "iconPath": "static/images/tabbar/tabbar_home.png",
-      "selectedIconPath": "/static/images/tabbar/tabbar_home1.png"
-    }, {
-      "pagePath": "pages/index/category",
-      "text": "分类",
-      "iconPath": "static/images/tabbar/tabbar_category.png",
-      "selectedIconPath": "/static/images/tabbar/tabbar_category1.png"
-    }, {
-      "pagePath": "pages/index/cart",
-      "text": "购物车",
-      "iconPath": "static/images/tabbar/tabbar_cart.png",
-      "selectedIconPath": "/static/images/tabbar/tabbar_cart1.png"
-    }, {
-      "pagePath": "pages/index/user",
-      "text": "我的",
-      "iconPath": "static/images/tabbar/tabbar_personal.png",
-      "selectedIconPath": "/static/images/tabbar/tabbar_personal1.png"
-    }]
-  },
   "condition": {
     "current": 0,
     "list": [{
@@ -48276,7 +48280,7 @@ exports.default = _default;
 
 /***/ }),
 
-/***/ 997:
+/***/ 892:
 /*!***********************************************!*\
   !*** E:/heshangwx/pages.json?{"type":"stat"} ***!
   \***********************************************/
@@ -48291,9 +48295,27 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _default = {
-  "appid": "__UNI__4F68B60"
+  "appid": "__UNI__E88DDB9"
 };
 exports.default = _default;
+
+/***/ }),
+
+/***/ 9:
+/*!*****************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/arrayLikeToArray.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+  return arr2;
+}
+module.exports = _arrayLikeToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ })
 

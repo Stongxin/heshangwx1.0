@@ -1,0 +1,1 @@
+.u-waterfall{display:flex;flex-direction:row;flex-direction:row;align-items:flex-start}.u-column{display:flex;flex-direction:row;flex:1;flex-direction:column;height:auto}.tip-list-box{background-color:#f6f6f6;padding:20rpx}.tip-list{font-size:28rpx;background-color:#fff;border-radius:20rpx}

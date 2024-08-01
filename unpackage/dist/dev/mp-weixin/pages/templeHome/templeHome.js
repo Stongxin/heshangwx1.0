@@ -103,7 +103,7 @@ var components
 try {
   components = {
     uSwiper: function () {
-      return __webpack_require__.e(/*! import() | node-modules/uview-ui/components/u-swiper/u-swiper */ "node-modules/uview-ui/components/u-swiper/u-swiper").then(__webpack_require__.bind(null, /*! uview-ui/components/u-swiper/u-swiper.vue */ 714))
+      return __webpack_require__.e(/*! import() | node-modules/uview-ui/components/u-swiper/u-swiper */ "node-modules/uview-ui/components/u-swiper/u-swiper").then(__webpack_require__.bind(null, /*! uview-ui/components/u-swiper/u-swiper.vue */ 708))
     },
   }
 } catch (e) {
@@ -361,8 +361,11 @@ var _default = {
       this.temple_id = options.scene;
       uni.setStorageSync('temple_id', options.scene);
     } else {
-      this.temple_id = 45;
-      uni.setStorageSync('temple_id', 45);
+      // 45 和上 14灵岩山寺  15铁佛寺  47心田寺
+      // this.temple_id = 47
+      // uni.setStorageSync('temple_id', 47)
+      this.temple_id = 14;
+      uni.setStorageSync('temple_id', 14);
       // uni.showToast({
       // 	title: '没有该寺庙信息',
       // 	icon: 'none',
@@ -558,8 +561,13 @@ var _default = {
     openDate: function openDate(e) {
       this.popoverShow = !this.popoverShow;
     },
+    // 兑币
+    goBi: function goBi() {
+      // uni.navigateTo({
+      // 	url: '/pages/changeMoney/index'
+      // })
+    },
     openForm: function openForm(option) {
-      console.log(option);
       if (option.column_type == 'at') {
         uni.navigateTo({
           url: "/pages/pray/components/at/index?column_id=".concat(option.id, "&column_type=").concat(option.column_type, "&buddhist_id=").concat(option.buddhist_id)

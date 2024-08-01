@@ -1,0 +1,1 @@
+.goods-item{margin-right:20rpx;margin-bottom:20rpx}.goods-item:nth-child(2n){margin-right:0}.goods-item .price-box .beans-box{font-size:32rpx;font-weight:700;color:#e48d04}.goods-item .price-box .beans-box .bean-img{width:36rpx;height:36rpx}.goods-item .price-box .sales-box{font-size:22rpx;font-weight:500;color:#999}

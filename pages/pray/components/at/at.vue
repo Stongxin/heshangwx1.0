@@ -4,45 +4,46 @@
 			<image v-if="atDetail.image" :src="$common.disposeSrc(atDetail.image)" mode="widthFix"></image>
 		</view>
 		<view class="at_content">
-			
-		
-		<view class="desc">
-			<text class="title">{{atDetail.category_name}}</text>
-			<text class="lettle">{{atDetail.content}}</text>
-		</view>
-		<view class="merit">
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>参与人数</text>
-				</view>
-				<input class="input_value" type="number" v-model="formState.people_number" placeholder="请输入参与人数" />
+
+
+			<view class="desc">
+				<text class="title">{{atDetail.category_name}}</text>
+				<text class="lettle">{{atDetail.content}}</text>
 			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>提交人</text>
+			<view class="merit">
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>参与人数</text>
+					</view>
+					<input class="input_value" type="number" v-model="formState.people_number" placeholder="请输入参与人数" />
 				</view>
-				<input class="input_value" type="text" v-model="formState.name" placeholder="请输入提交人" />
-			</view>
-			<view class="form_item flex inline">
-				<view class="title">
-					<text>联系方式</text>
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>提交人</text>
+					</view>
+					<input class="input_value" type="text" v-model="formState.name" placeholder="请输入提交人" />
 				</view>
-				<input v-if="formState.mobile" class="input_value" type="number" maxlength="11" v-model="formState.mobile" placeholder="请输入联系方式" />
-				<button v-else class="input_value btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
-					点击获取手机号
+				<view class="form_item flex inline">
+					<view class="title">
+						<text>联系方式</text>
+					</view>
+					<input v-if="formState.mobile" class="input_value" type="number" maxlength="11"
+						v-model="formState.mobile" placeholder="请输入联系方式" />
+					<button v-else class="input_value btn" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber">
+						点击获取手机号
+					</button>
+				</view>
+				<view class="hint">
+					提示：提交后不可修改
+				</view>
+				<!-- v-if="mobile" -->
+				<button class="submit" @click="submit()">
+					提交
 				</button>
-			</view>
-			<view class="hint">
-				提示：提交后不可修改
-			</view>
-			 <!-- v-if="mobile" -->
-			<button class="submit" @click="submit()" >
-				提交
-			</button>
-			<!-- <button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
+				<!-- <button v-else class="submit" open-type="getPhoneNumber" @getphonenumber="getPhoneNumber" >
 				提交
 			</button> -->
-		</view>
+			</view>
 		</view>
 		<u-popup v-model="popupShow" mode="center" border-radius="20">
 			<view class="popupShow">
@@ -78,10 +79,18 @@
 					pay_type: 'wechat', // 支付方式 alipay=支付宝，wechat=微信,balance=余额
 					openid: uni.getStorageSync('openid'), // 微信openid
 				},
-				rules: [
-					{key: 'people_number',message: '请输入参与人数'},
-					{key: 'name',message: '请输入提交人'},
-					{key: 'mobile',message: '请输入联系方式'},
+				rules: [{
+						key: 'people_number',
+						message: '请输入参与人数'
+					},
+					{
+						key: 'name',
+						message: '请输入提交人'
+					},
+					{
+						key: 'mobile',
+						message: '请输入联系方式'
+					},
 				],
 				urlOptions: {},
 				popupShow: false, // 显示金额弹窗
@@ -93,14 +102,14 @@
 			let curPage = getCurrentPages();
 			let options = curPage[curPage.length - 1].options;
 			// this.urlOptions = JSON.parse(options.column)
-			if(options.scene){
+			if (options.scene) {
 				let arr = options.scene.split('_')
 				this.urlOptions = {
 					id: arr[1],
 					column_type: arr[2],
 					buddhist_id: arr[3]
 				}
-			}else{
+			} else {
 				this.urlOptions = {
 					id: options.column_id,
 					column_type: options.column_type,
@@ -112,17 +121,17 @@
 			this.getAtDetail()
 		},
 		methods: {
-			getAtDetail(){
+			getAtDetail() {
 				this.$request({
 					url: `buddhist/atInfo/${this.formState.ordinary_id}/${this.formState.category_id}`,
 					method: 'GET'
-				}).then(res=>{
+				}).then(res => {
 					this.atDetail = res
 					console.log(res);
 				})
 			},
-			getPhoneNumber(e){
-				if(e.detail.code){
+			getPhoneNumber(e) {
+				if (e.detail.code) {
 					this.$request({
 						url: 'user/WxXxLogin',
 						data: {
@@ -130,7 +139,7 @@
 							code: e.detail.code,
 							temple_id: uni.getStorageSync('temple_id')
 						}
-					}).then(res=>{
+					}).then(res => {
 						uni.setStorageSync('token', res.token)
 						uni.setStorageSync('mobile', res.mobile)
 						// this.mobile = res.mobile
@@ -139,7 +148,7 @@
 					})
 				}
 			},
-			submit(){
+			submit() {
 				for (const i in this.rules) {
 					let key = this.rules[i].key
 					if (this.formState[key] == '') {
@@ -151,45 +160,50 @@
 						return
 					}
 				}
-				uni.login({
-					provider: 'weixin', //使用微信登录
-					success:  (loginRes)=>{
-						this.$request({
-							url: 'onLogin',
-							version: '/vx/',
-							method: 'GET',
-							data: {
-								code: loginRes.code,
-								temple_id: uni.getStorageSync('temple_id')
-							}
-						}).then(openIdData=>{
-							uni.setStorageSync('openid', openIdData.openid)
-							this.$request({
-								url: 'user/WxXxOpendiLogin',
-								data: {
-									openid: openIdData.openid
-								}
-							}).then(res=>{
-								uni.setStorageSync('token', res.token)
-								uni.setStorageSync('mobile', res.mobile)
-								this.mobile = res.mobile
-								this.$request({
-									url: 'buddhist/atSubmit',
-									data: this.formState,
-									header: {
-										token: uni.getStorageSync('token')
-									}
-								},true).then(res=>{
-									this.popupShow = true
-									this.orderDetail = res
-								})
-							})
-						})
-					}
-				});
+				uni.showToast({
+					title: '报名成功',
+					icon: 'success',
+					mask: true
+				})
+				// uni.login({
+				// 	provider: 'weixin', //使用微信登录
+				// 	success: (loginRes) => {
+				// 		this.$request({
+				// 			url: 'onLogin',
+				// 			version: '/vx/',
+				// 			method: 'GET',
+				// 			data: {
+				// 				code: loginRes.code,
+				// 				temple_id: uni.getStorageSync('temple_id')
+				// 			}
+				// 		}).then(openIdData => {
+				// 			uni.setStorageSync('openid', openIdData.openid)
+				// 			this.$request({
+				// 				url: 'user/WxXxOpendiLogin',
+				// 				data: {
+				// 					openid: openIdData.openid
+				// 				}
+				// 			}).then(res => {
+				// 				uni.setStorageSync('token', res.token)
+				// 				uni.setStorageSync('mobile', res.mobile)
+				// 				this.mobile = res.mobile
+				// 				this.$request({
+				// 					url: 'buddhist/atSubmit',
+				// 					data: this.formState,
+				// 					header: {
+				// 						token: uni.getStorageSync('token')
+				// 					}
+				// 				}, true).then(res => {
+				// 					// this.popupShow = true
+				// 					this.orderDetail = res
+				// 				})
+				// 			})
+				// 		})
+				// 	}
+				// });
 			},
 			// 去支付
-			payment(){
+			payment() {
 				uni.requestPayment({
 					provider: 'wxpay', // 服务提提供商
 					timeStamp: this.orderDetail.miniPayRequest.timeStamp, // 时间戳
@@ -197,20 +211,20 @@
 					package: this.orderDetail.miniPayRequest.package,
 					signType: this.orderDetail.miniPayRequest.signType, // 签名算法
 					paySign: this.orderDetail.miniPayRequest.paySign, // 签名
-					success: (res)=>{
+					success: (res) => {
 						uni.redirectTo({
 							url: `/pages/hisOrder/orderDetail?result=true&showImg=true&order_id=${this.orderDetail.merOrderId}`
 						})
-						console.log('支付成功',res);
+						console.log('支付成功', res);
 						// 业务逻辑。。。
 					},
-					fail: function (err) {
+					fail: function(err) {
 						uni.showToast({
 							title: '支付失败',
 							icon: 'error',
 							mask: true
 						})
-						console.log('支付失败',err);
+						console.log('支付失败', err);
 					}
 				});
 			},
@@ -219,20 +233,23 @@
 </script>
 
 <style lang="scss" scoped>
-	.at{
-		.at_content{
+	.at {
+		.at_content {
 			padding: 0 50rpx;
 		}
-		.cover{
-			image{
+
+		.cover {
+			image {
 				width: 100%;
 			}
 		}
-		.desc{
-			text{
+
+		.desc {
+			text {
 				display: block;
 			}
-			.title{
+
+			.title {
 				font-size: 40rpx;
 				font-family: Source Han Serif CN;
 				font-weight: 500;
@@ -240,7 +257,8 @@
 				text-align: center;
 				margin: 49rpx 0 32rpx;
 			}
-			.lettle{
+
+			.lettle {
 				font-size: 30rpx;
 				font-family: PingFang SC;
 				font-weight: 500;
@@ -249,26 +267,31 @@
 				text-indent: 2rem;
 			}
 		}
-		.merit{
+
+		.merit {
 			margin-top: 40rpx;
-			.form_item{
-				.title{
+
+			.form_item {
+				.title {
 					display: inline-block;
-					text{
+
+					text {
 						font-size: 30rpx;
 						font-family: Source Han Serif CN;
 						font-weight: 400;
 						color: #D6CFBC;
 						line-height: 34px;
 					}
-					
+
 				}
-				.items{
+
+				.items {
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
 					flex-wrap: wrap;
-					view{
+
+					view {
 						width: 312rpx;
 						height: 60rpx;
 						display: flex;
@@ -277,21 +300,25 @@
 						border: 1px solid #373737;
 						border-radius: 10rpx;
 						margin-top: 20rpx;
-						text{
+
+						text {
 							font-size: 24rpx;
 							font-family: PingFang SC;
 							font-weight: 400;
 							color: #9D998E;
 						}
-						&.active{
+
+						&.active {
 							border: 1px solid #BEAD7A;
-							text{
+
+							text {
 								color: #BCAA72;
 							}
 						}
 					}
 				}
-				.input_value{
+
+				.input_value {
 					height: 100rpx;
 					line-height: 100rpx;
 					font-size: 30rpx;
@@ -299,19 +326,22 @@
 					font-weight: 500;
 					color: #BEAD7A;
 					background-color: inherit;
-					&.btn{
+
+					&.btn {
 						color: #808080;
 					}
 				}
 			}
-			.hint{
+
+			.hint {
 				font-size: 24rpx;
 				font-family: PingFang SC;
 				font-weight: 500;
 				color: #6F6C64;
 				margin-top: 10rpx;
 			}
-			.submit{
+
+			.submit {
 				width: 300rpx;
 				height: 90rpx;
 				background: #BEAD7A;
@@ -326,41 +356,50 @@
 				color: #3C3C3C;
 				letter-spacing: 10rpx;
 			}
-			.flex{
+
+			.flex {
 				display: flex;
 				justify-content: space-between;
 				align-items: center;
-				.input_value{
+
+				.input_value {
 					flex: 1;
 					text-align: right;
 				}
-				.suffix{
+
+				.suffix {
 					color: #BEAD7A;
 				}
 			}
-			.inline{
+
+			.inline {
 				height: 100rpx;
-				.title{
-					flex: 0 0 120rpx;//长度根据最长的文字宽度设置
+
+				.title {
+					flex: 0 0 120rpx; //长度根据最长的文字宽度设置
 					text-align: justify;
 					font-size: 0;
 					margin-right: 20rpx;
-					&::after{
-					    content: "";
-					    display: inline-block;
-					    width: 100%;  
+
+					&::after {
+						content: "";
+						display: inline-block;
+						width: 100%;
 					}
 				}
-				.input_value{
+
+				.input_value {
 					height: 100rpx;
 					line-height: 100rpx;
 				}
-				.suffix{
+
+				.suffix {
 					margin-left: 10rpx;
 				}
 			}
 		}
-		.popupShow{
+
+		.popupShow {
 			width: 600rpx;
 			height: 600rpx;
 			display: flex;
@@ -371,38 +410,45 @@
 			border-radius: 20rpx;
 			padding: 20rpx 0;
 			position: relative;
-			.close{
+
+			.close {
 				position: absolute;
 				top: 20rpx;
 				right: 20rpx;
 				width: 44rpx;
 				height: 44rpx;
 			}
-			.logo{
+
+			.logo {
 				width: 240rpx;
 				height: 218rpx;
 			}
-			.title{
+
+			.title {
 				font-size: 36rpx;
 				font-family: PingFang SC;
 				font-weight: bold;
 				color: #BCAA72;
 			}
-			.amount{
+
+			.amount {
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				text{
+
+				text {
 					font-size: 32rpx;
 					font-weight: bold;
 					color: #BEAD7A;
 					line-height: 1;
 				}
-				.money{
+
+				.money {
 					font-size: 46rpx;
 				}
 			}
-			.pay_btn{
+
+			.pay_btn {
 				width: 550rpx;
 				height: 80rpx;
 				background: #BCAA72;
@@ -416,6 +462,6 @@
 				color: #fff;
 				letter-spacing: 10rpx;
 			}
-		}	
+		}
 	}
 </style>

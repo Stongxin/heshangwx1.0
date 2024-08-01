@@ -1,0 +1,1 @@
+.search{height:100rpx;width:750rpx;background:#fff}.search .search-content{width:710rpx;padding:0 18rpx;background-color:#f2f2f2;border-radius:100rpx;height:64rpx}.search .search-content .search-icon{color:#606266;size:34rpx}.search .search-content .pl-text{color:#909399;margin-left:10rpx}

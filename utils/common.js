@@ -23,7 +23,7 @@ export const common = {
 			uni.switchTab({
 				url
 			})
-		} else if (type == 'red'){
+		} else if (type == 'red') {
 			uni.redirectTo({
 				url
 			})
@@ -134,7 +134,7 @@ export const common = {
 		}
 		return newTime;
 	},
-	disposeSrc(src,type) {
+	disposeSrc(src, type) {
 		try {
 			if (src == '') {
 				return ''
@@ -143,9 +143,9 @@ export const common = {
 			} else if (src.indexOf('base64') > -1) {
 				return src
 			} else {
-				if(type == 'domain'){
+				if (type == 'domain') {
 					return domain + '/' + src
-				}else{
+				} else {
 					return 'https://heshang-app.oss-cn-hangzhou.aliyuncs.com' + src
 				}
 			}
@@ -165,7 +165,7 @@ export const common = {
 		}
 	},
 	baseUrl: domain + version,
-	
+
 }
 export const request = function(options, showLoading = false) {
 	return new Promise((resolved, rejected) => {
@@ -185,7 +185,10 @@ export const request = function(options, showLoading = false) {
 		requestTree[options.url] = uni.request({
 			url: domain + (options.version ? options.version : version) + options.url, // 请求接口地址
 			method: options.method || 'POST', // 方法从options中获取，如果没有传入method，则默认为POST，
-			data: {...options.data,uuid: 'wx3348010e520bdffa'}, // 请求接口参数
+			data: {
+				...options.data,
+				uuid: 'wx28e269b3f78c2d01'
+			}, // 请求接口参数
 			dataType: 'json',
 			header: options.header || {
 				'content-type': 'application/x-www-form-urlencoded',
@@ -195,61 +198,77 @@ export const request = function(options, showLoading = false) {
 			success: (res) => {
 				// console.log(res);
 				if (res.statusCode == 200) {
-					if(res.data.code == 406){
+					if (res.data.code == 406) {
 						uni.login({
 							provider: 'weixin', //使用微信登录
-							success:  (loginRes)=>{
+							success: (loginRes) => {
 								request({
 									url: 'onLogin',
 									version: '/vx/',
 									method: 'GET',
 									data: {
 										code: loginRes.code,
-										temple_id: uni.getStorageSync('temple_id')
+										temple_id: uni.getStorageSync(
+											'temple_id')
 									}
-								}).then(openIdData=>{
-									if(!openIdData.openid){
+								}).then(openIdData => {
+									if (!openIdData.openid) {
 										uni.showModal({
 											title: '提示',
 											content: '配置信息错误',
-											success: function (res) {
-												if (res.confirm) {
-													console.log('用户点击确定');
-												} else if (res.cancel) {
-													console.log('用户点击取消');
+											success: function(res) {
+												if (res
+													.confirm) {
+													console.log(
+														'用户点击确定'
+														);
+												} else if (res
+													.cancel) {
+													console.log(
+														'用户点击取消'
+														);
 												}
 											}
 										});
 										return
 									}
-									let temple_id = uni.getStorageSync('temple_id')
+									let temple_id = uni.getStorageSync(
+										'temple_id')
 									let scene = uni.getStorageSync('scene')
 									uni.clearStorageSync()
-									uni.setStorageSync('openid', openIdData.openid)
-									uni.setStorageSync('temple_id', temple_id)
+									uni.setStorageSync('openid', openIdData
+										.openid)
+									uni.setStorageSync('temple_id',
+										temple_id)
 									uni.setStorageSync('scene', scene)
 									request({
 										url: 'user/WxXxOpendiLogin',
 										data: {
-											openid: openIdData.openid
+											openid: openIdData
+												.openid
 										}
-									}).then(res=>{
-										uni.setStorageSync('token', res.token)
-										uni.setStorageSync('mobile', res.mobile)
+									}).then(res => {
+										uni.setStorageSync('token',
+											res.token)
+										uni.setStorageSync('mobile',
+											res.mobile)
 										// 页面重载
-										const pages = getCurrentPages()
+										const pages =
+											getCurrentPages()
 										// 声明一个pages使用getCurrentPages方法
-										const curPage = pages[pages.length - 1]
+										const curPage = pages[pages
+											.length - 1]
 										console.log(curPage);
 										// 声明一个当前页面
-										curPage.onLoad(curPage.options) // 传入参数
+										curPage.onLoad(curPage
+											.options) // 传入参数
 										curPage.onShow()
 										curPage.onReady()
 									})
 								})
 							}
 						});
-					}else if (res.data.code != 1) {
+					} else if (res.data.code != 1) {
 						uni.showToast({
 							title: res.data.msg,
 							icon: 'none'
@@ -280,13 +299,13 @@ export const request = function(options, showLoading = false) {
 					// 	url: "/pages/login/login"
 					// })
 					rejected(res)
-				}else if(res.statusCode == 404){
+				} else if (res.statusCode == 404) {
 					uni.showToast({
 						title: '找不到资源',
 						icon: 'none'
 					})
 					rejected(res)
-				}  else if (res.statusCode == 500) {
+				} else if (res.statusCode == 500) {
 					uni.showToast({
 						title: '服务器错误',
 						icon: 'none'
@@ -299,12 +318,12 @@ export const request = function(options, showLoading = false) {
 					})
 					rejected(res)
 				}
-				if(options.isTransformResponse){
+				if (options.isTransformResponse) {
 					resolved(res.data)
-				}else{
+				} else {
 					resolved(res.data.data)
 				}
-				
+
 			},
 			fail: (err) => {
 				rejected(err)
@@ -318,11 +337,11 @@ export const request = function(options, showLoading = false) {
 	})
 }
 
-export const login = function(){
-	return new Promise((reslove,rejected)=>{
+export const login = function() {
+	return new Promise((reslove, rejected) => {
 		uni.login({
 			provider: 'weixin', //使用微信登录
-			success:  (loginRes)=>{
+			success: (loginRes) => {
 				this.$request({
 					url: 'onLogin',
 					version: '/vx/',
@@ -331,14 +350,14 @@ export const login = function(){
 						code: loginRes.code,
 						temple_id: uni.getStorageSync('temple_id')
 					}
-				}).then(openIdData=>{
+				}).then(openIdData => {
 					uni.setStorageSync('openid', openIdData.openid)
 					this.$request({
 						url: 'user/WxXxOpendiLogin',
 						data: {
 							openid: openIdData.openid
 						}
-					}).then(res=>{
+					}).then(res => {
 						uni.setStorageSync('token', res.token)
 						uni.setStorageSync('mobile', res.mobile)
 						reslove(true)
@@ -348,9 +367,9 @@ export const login = function(){
 		});
 	})
 }
-export const abortRequest = function(name){
-	console.log(requestTree,111111);
-	requestTree[name].abort();  
+export const abortRequest = function(name) {
+	console.log(requestTree, 111111);
+	requestTree[name].abort();
 }
 export const alUploadImage = function(path, showLoading = true) {
 	return new Promise((resolve, reject) => {
@@ -406,49 +425,49 @@ export const alUploadImage = function(path, showLoading = true) {
 	})
 }
 
-export const push = function(params){
+export const push = function(params) {
 	request({
 		url: 'user/imJgSend',
 		data: params
-	}).then(res=>{
-		
-	},err=>{
+	}).then(res => {
+
+	}, err => {
 		console.log(err);
 	})
 }
 
 /**
-        * debounce 函数在给定的时间间隔内只允许你提供的回调函数执行一次，以此降低它的执行频率。
-        * @method 防抖函数(设定时间之后出结果，重复点击无效，如果重复点击，从点击的时刻,重新计算时间)
-        * @param func 目标函数
-        * @param wait 延迟执行毫秒数
-      */
+ * debounce 函数在给定的时间间隔内只允许你提供的回调函数执行一次，以此降低它的执行频率。
+ * @method 防抖函数(设定时间之后出结果，重复点击无效，如果重复点击，从点击的时刻,重新计算时间)
+ * @param func 目标函数
+ * @param wait 延迟执行毫秒数
+ */
 
 export const debounce = (func, wait) => {
-    let _lastTime
-    return function() {
-        clearTimeout(_lastTime)
-        _lastTime = setTimeout(() => {
-            func.apply(this, arguments)
-        }, wait)
-    }
+	let _lastTime
+	return function() {
+		clearTimeout(_lastTime)
+		_lastTime = setTimeout(() => {
+			func.apply(this, arguments)
+		}, wait)
+	}
 }
 /**
-    * @method 节流函数(设定时间之内只能点击一次，点击后立即触发，重复点击无效，必须等到设定时间执行完才执行第二次)	
-    * @param func 函数
-    * @param wait 延迟执行毫秒数
+ * @method 节流函数(设定时间之内只能点击一次，点击后立即触发，重复点击无效，必须等到设定时间执行完才执行第二次)	
+ * @param func 函数
+ * @param wait 延迟执行毫秒数
  */
 export const throttle = (func, wait) => {
-    if (wait == null || wait == undefined) {
-        wait = 3000
-    }
-    let _lastTime = null
-    // 返回新的函数
-    return function() {
-        let _nowTime = +new Date()
-        if (_nowTime - _lastTime > wait || !_lastTime) {
-            func.apply(this, arguments) // 将this和参数传给原函数
-            _lastTime = _nowTime
-        }
-    }
+	if (wait == null || wait == undefined) {
+		wait = 3000
+	}
+	let _lastTime = null
+	// 返回新的函数
+	return function() {
+		let _nowTime = +new Date()
+		if (_nowTime - _lastTime > wait || !_lastTime) {
+			func.apply(this, arguments) // 将this和参数传给原函数
+			_lastTime = _nowTime
+		}
+	}
 }

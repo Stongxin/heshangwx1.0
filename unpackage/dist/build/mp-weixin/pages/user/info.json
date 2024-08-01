@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "个人信息",
+  "usingComponents": {
+    "shopro-auth-modal": "/components/shopro-auth-modal/shopro-auth-modal",
+    "u-picker": "/node-modules/uview-ui/components/u-picker/u-picker",
+    "u-modal": "/node-modules/uview-ui/components/u-modal/u-modal"
+  }
+}

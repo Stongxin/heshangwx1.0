@@ -18,10 +18,11 @@
 </script>
 
 <style lang="scss">
-	*{
+	* {
 		margin: 0;
 		padding: 0;
 	}
+
 	@import 'static/style/index.scss';
 	@import "uview-ui/index.scss";
 	/*每个页面公共css */
