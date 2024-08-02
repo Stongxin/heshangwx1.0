@@ -2,9 +2,9 @@
 	<view class="change_index">
 		<view class="content">
 			<view class="main_title">
-				灵岩山寺兑币机({{lastMacno}})
+				灵岩山寺兑币机
 			</view>
-			<view class="sub_title">
+			<view class="sub_title" v-if="lastMacno">
 				请选择您要兑换的数量
 			</view>
 			<view class="bi_list">
