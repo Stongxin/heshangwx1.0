@@ -39,7 +39,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="dynamic" v-if="fo == 1">
+			<!-- <view class="dynamic" v-if="fo == 1">
 				<view class="calendar">
 					<image src="/static/date.png" mode="" @click="openDate"></image>
 					<view class="box" v-show="popoverShow">
@@ -76,6 +76,7 @@
 					</view>
 				</view>
 			</view>
+		 -->
 		</view>
 		<!-- @click="$common.skip('/pages/hisOrder/hisOrder','to')" -->
 		<view class="hisOrder" @click="$common.skip('/pages/hisOrder/hisOrder','to')">

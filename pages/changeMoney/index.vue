@@ -2,7 +2,7 @@
 	<view class="change_index">
 		<view class="content">
 			<view class="main_title">
-				灵岩山寺兑币机
+				灵岩山寺兑币机({{lastMacno}})
 			</view>
 			<view class="sub_title">
 				请选择您要兑换的数量
@@ -17,7 +17,9 @@
 		<button class="submit" @click="submit()">提交</button>
 		<u-popup v-model="popupShow" mode="center" border-radius="20">
 			<view class="popupShow">
-				<image class="logo" src="https://lysmall.heshangsz.com/imgs/hs-logo.png" mode=""></image>
+				<image class="logo"
+					src="https://heshang-app.oss-cn-hangzhou.aliyuncs.com/uploads/20230925/8aadf3e11ed1aedaee8c0782057e2f29.png"
+					mode=""></image>
 				<view class="title">
 					支付金额
 				</view>
@@ -80,12 +82,15 @@
 				}],
 				macno: '', // 设备编号
 				temple_id: '', // 寺庙id
+				lastMacno: '', // 设备编号后四位
+				url: '',
 			};
 		},
 		onLoad() {
 			if (this.$Route.query) {
 				this.temple_id = this.$Route.query.scene.split('_')[0];
 				this.macno = this.$Route.query.scene.split('_')[1];
+				this.lastMacno = this.macno.slice(-4);
 			} else {
 				uni.showToast({
 					title: '设备故障',
@@ -111,7 +116,6 @@
 				}
 			},
 			submit() {
-				// this.walkBi();
 				// 提交之前先判断是否存在设备编号
 				if (this.macno) {
 					// 找到选择的为多少金额的 判断必须选择其中一项兑币金额 
@@ -170,8 +174,8 @@
 												token: uni.getStorageSync('token')
 											}
 										}, true).then(res => {
-											this.popupShow = true
-											this.orderDetail = res
+											this.popupShow = true;
+											this.orderDetail = res;
 										})
 									})
 								})
@@ -189,6 +193,7 @@
 			},
 			// 去支付
 			payment() {
+				this.popupShow = false;
 				uni.requestPayment({
 					provider: 'wxpay', // 服务提提供商
 					timeStamp: this.orderDetail.miniPayRequest.timeStamp, // 时间戳
@@ -197,12 +202,18 @@
 					signType: this.orderDetail.miniPayRequest.signType, // 签名算法
 					paySign: this.orderDetail.miniPayRequest.paySign, // 签名
 					success: (res) => {
-						uni.redirectTo({
-							url: `/pages/hisOrder/orderDetail?result=true&showImg=true&order_id=${this.orderDetail.merOrderId}`
-						})
-						console.log('支付成功', res);
+						// 重定向,参数丢失
+						// uni.redirectTo({
+						// 	url: `/pages/hisOrder/orderDetail?result=true&showImg=true&order_id=${this.orderDetail.merOrderId}`
+						// })
+						// console.log('支付成功', res);
 						// 业务逻辑。。。
 						// 支付成功后，开始唤醒投币机出币
+						uni.showToast({
+							title: '支付成功',
+							icon: 'success',
+							mask: true
+						})
 						this.walkBi();
 					},
 					fail: function(err) {
@@ -211,7 +222,7 @@
 							icon: 'error',
 							mask: true
 						})
-						console.log('支付失败', err);
+						// console.log('支付失败', err);
 					}
 				});
 
@@ -222,10 +233,18 @@
 					url: `https://paybackend.enjoyiot.cn/Wxsite/Device/api?api_name=open_device&macno=${this.macno}&type=2&value=${this.formState.amount}`,
 					method: 'GET',
 					success: function(res) {
-						console.log(res.data);
+						uni.showToast({
+							title: res.data.msg,
+							icon: 'success',
+							mask: true
+						})
 					},
 					fail: function(err) {
-						console.error(err);
+						// uni.showToast({
+						// 	title: '出币失败',
+						// 	icon: 'error',
+						// 	mask: true
+						// })
 					}
 				});
 			}
@@ -273,6 +292,7 @@
 					padding: 20rpx;
 					text-align: center;
 					display: inline-block;
+					border-radius: 20rpx;
 				}
 
 				.isbi_content {
