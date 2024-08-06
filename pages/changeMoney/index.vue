@@ -5,7 +5,7 @@
 				灵岩山寺兑币机
 			</view>
 			<view class="sub_title" v-if="lastMacno">
-				请选择您要兑换的数量
+				请选择您要兑换的数量(1元=1币)
 			</view>
 			<view class="bi_list">
 				<view :class="item.ischecked?'isbi_content':'bi_content'" v-for="(item,index) in payList" :key="index"
@@ -33,6 +33,19 @@
 				<image class="close" src="/static/close.png" mode="" @click="popupShow = false"></image>
 			</view>
 		</u-popup>
+		<!-- <u-popup v-model="popupShowBi" mode="center" border-radius="20">
+			<view class="popupShow">
+				<image class="logo"
+					src="https://heshang-app.oss-cn-hangzhou.aliyuncs.com/uploads/20230925/8aadf3e11ed1aedaee8c0782057e2f29.png"
+					mode=""></image>
+				<view class="title">
+					您已支付成功,是否现在开始出币?
+				</view>
+				<view class="pay_btn" @click="walkBi()">
+					开始出币
+				</view>
+			</view>
+		</u-popup> -->
 	</view>
 </template>
 
@@ -84,10 +97,11 @@
 				temple_id: '', // 寺庙id
 				lastMacno: '', // 设备编号后四位
 				url: '',
+				// popupShowBi: false, // 支付成功后开始出币
 			};
 		},
 		onLoad() {
-			if (this.$Route.query) {
+			if (this.$Route.query && this.$Route.query.scene) {
 				this.temple_id = this.$Route.query.scene.split('_')[0];
 				this.macno = this.$Route.query.scene.split('_')[1];
 				this.lastMacno = this.macno.slice(-4);
@@ -154,10 +168,11 @@
 									method: 'GET',
 									data: {
 										code: loginRes.code,
-										temple_id: uni.getStorageSync('temple_id')
+										temple_id: 14,
 									}
 								}).then(openIdData => {
 									uni.setStorageSync('openid', openIdData.openid)
+									this.formState.openid = openIdData.openid;
 									this.$request({
 										url: 'user/WxXxOpendiLogin',
 										data: {
@@ -175,6 +190,10 @@
 											}
 										}, true).then(res => {
 											this.popupShow = true;
+											console.log('开始唤醒196this.macno', this
+												.macno);
+											console.log('开始唤醒198this.formState', this
+												.formState.amount);
 											this.orderDetail = res;
 										})
 									})
@@ -202,19 +221,13 @@
 					signType: this.orderDetail.miniPayRequest.signType, // 签名算法
 					paySign: this.orderDetail.miniPayRequest.paySign, // 签名
 					success: (res) => {
-						// 重定向,参数丢失
-						// uni.redirectTo({
-						// 	url: `/pages/hisOrder/orderDetail?result=true&showImg=true&order_id=${this.orderDetail.merOrderId}`
-						// })
-						// console.log('支付成功', res);
-						// 业务逻辑。。。
 						// 支付成功后，开始唤醒投币机出币
+						this.walkBi();
 						uni.showToast({
 							title: '支付成功',
 							icon: 'success',
 							mask: true
 						})
-						this.walkBi();
 					},
 					fail: function(err) {
 						uni.showToast({
@@ -222,7 +235,6 @@
 							icon: 'error',
 							mask: true
 						})
-						// console.log('支付失败', err);
 					}
 				});
 
@@ -240,11 +252,11 @@
 						})
 					},
 					fail: function(err) {
-						// uni.showToast({
-						// 	title: '出币失败',
-						// 	icon: 'error',
-						// 	mask: true
-						// })
+						uni.showToast({
+							title: res.data.msg,
+							icon: 'error',
+							mask: true
+						})
 					}
 				});
 			}
@@ -381,5 +393,6 @@
 				letter-spacing: 10rpx;
 			}
 		}
+
 	}
 </style>
